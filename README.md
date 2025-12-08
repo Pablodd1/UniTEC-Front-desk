@@ -1,11 +1,76 @@
-<div align="center">
+# UNITEC Design Recepcionista
 
-<img width="1200" height="475" alt="GHBanner" src="https://github.com/user-attachments/assets/0aa67016-6eaf-458a-adb2-6e31a0763ed6" />
+**UNITEC Design Recepcionista** is an AI-powered front desk coordinator designed for **UNITEC USA DESIGN**, a wholesale distributor of construction materials. The application provides a seamless experience for customers to inquire about products, check stock, and book appointments via both Text Chat and Real-time Voice Calls.
 
-  <h1>Built with AI Studio</h2>
+## 🚀 Key Features
 
-  <p>The fastest path from prompt to production with Gemini.</p>
+*   **🎙️ AI Voice Assistant (Gemini Live)**: Real-time, low-latency voice interaction capable of handling interruptions and complex queries.
+*   **💬 Intelligent Chat**: Text-based assistant with context awareness of the entire product catalog (WPC Panels, SPC Flooring, etc.).
+*   **📊 Audio Visualizer**: Real-time frequency analysis visualization during voice calls.
+*   **🛠️ Tools & CRM Integration**:
+    *   **Appointment Booking**: Simulates booking appointments with email confirmation.
+    *   **CRM Logging**: Automatically categorizes and logs conversation summaries and sentiment.
+*   **🔐 Admin Dashboard**: A PIN-protected (Default: `1234`) master control panel to view CRM logs and toggle "Emergency Mode".
+*   **📦 Dynamic Product Catalog**: Visual display of services and products with direct links to chat inquiries.
 
-  <a href="https://aistudio.google.com/apps">Start building</a>
+## 🛠️ Tech Stack
 
-</div>
+*   **Frontend**: React 19, TypeScript
+*   **Styling**: Tailwind CSS
+*   **AI SDK**: Google GenAI SDK (`@google/genai`)
+*   **Icons**: Lucide React
+*   **Audio**: Web Audio API (Native implementation for PCM streaming)
+
+## ⚙️ Prerequisites & Setup
+
+### 1. API Key Requirement
+This project requires a **Google Gemini API Key**.
+*   Get your key from [Google AI Studio](https://aistudio.google.com/).
+*   **Crucial**: The `API_KEY` must be available in your environment variables.
+
+### 2. Local Development (Vite)
+
+If you are cloning this repository to run locally:
+
+1.  **Install dependencies**:
+    ```bash
+    npm install
+    ```
+
+2.  **Configure Environment**:
+    Create a `.env` file in the root directory:
+    ```env
+    VITE_API_KEY=your_actual_google_api_key_here
+    ```
+    *Note: The code uses `process.env.API_KEY`. If using Vite, you might need to update the code to use `import.meta.env.VITE_API_KEY` or use a define plugin in `vite.config.ts`.*
+
+3.  **Run the App**:
+    ```bash
+    npm run dev
+    ```
+
+## 📂 Project Structure
+
+*   `App.tsx`: Main entry point and state manager (Dashboard visibility, Routing).
+*   `services/geminiService.ts`: Core service handling Google GenAI Chat and Live API connections.
+*   `components/CallTab.tsx`: The Voice interface with the Audio Visualizer.
+*   `components/ChatTab.tsx`: Text chat interface.
+*   `components/AdminDashboard.tsx`: Secure panel for CRM logs and System Status.
+*   `constants.ts`: Business logic, Product Data, System Instructions, and Tool Definitions.
+*   `utils/audioUtils.ts`: Low-level audio encoding/decoding for the Live API PCM stream.
+
+## 🔒 Security Notes
+
+*   **Admin PIN**: The default PIN for the dashboard is `1234`. In a production environment, this should be moved to a secure backend authentication service.
+*   **API Key**: Never commit your `.env` file to public repositories.
+
+## 🤝 Contribution
+
+1.  Fork the repository.
+2.  Create a feature branch.
+3.  Commit your changes.
+4.  Push to the branch.
+5.  Open a Pull Request.
+
+---
+**UNITEC USA DESIGN** - *Direct Importer & Wholesale Distributor*
