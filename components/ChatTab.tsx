@@ -1,29 +1,49 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { Message, QuickAction } from '../types';
+import { Message, QuickAction, Language } from '../types';
 import { sendMessageToGemini } from '../services/geminiService';
-import { Send, Bot, User, Loader2, Box, DollarSign, Hammer, BookOpen, AlertTriangle } from 'lucide-react';
+import { Send, Bot, User, Loader2, Box, DollarSign, Hammer, BookOpen, AlertTriangle, CheckCircle2 } from 'lucide-react';
 import { GenerateContentResponse } from '@google/genai';
+import { UI_TRANSLATIONS } from '../constants';
 
 interface ChatTabProps {
   quickActions: QuickAction[];
   initialMessage?: string;
   emergencyMode?: boolean;
+  language: Language;
 }
 
-const ChatTab: React.FC<ChatTabProps> = ({ quickActions, initialMessage, emergencyMode }) => {
+const ChatTab: React.FC<ChatTabProps> = ({ quickActions, initialMessage, emergencyMode, language }) => {
+  const t = UI_TRANSLATIONS[language];
+  
   const [messages, setMessages] = useState<Message[]>([
     {
       id: 'welcome',
       role: 'model',
-      text: "Hello! Welcome to UNITEC USA DESIGN. I can help you with wholesale pricing, product stock in Florida, or installation guides. How can I assist you today?",
+      text: t.chatWelcome,
       timestamp: new Date()
     }
   ]);
   const [inputText, setInputText] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  
+  const [showBookingConfirmation, setShowBookingConfirmation] = useState(false);
+  const [confirmedDate, setConfirmedDate] = useState<string | null>(null);
+
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const hasProcessedInitial = useRef(false);
+
+  // Update welcome message when language changes, but only if it's the only message
+  useEffect(() => {
+    if (messages.length === 1 && messages[0].id === 'welcome') {
+        setMessages([{
+            id: 'welcome',
+            role: 'model',
+            text: t.chatWelcome,
+            timestamp: new Date()
+        }]);
+    }
+  }, [language, t.chatWelcome]);
 
   // Check for API Key on mount
   useEffect(() => {
@@ -38,6 +58,13 @@ const ChatTab: React.FC<ChatTabProps> = ({ quickActions, initialMessage, emergen
       handleSendMessage(initialMessage);
     }
   }, [initialMessage]);
+
+  useEffect(() => {
+    if (showBookingConfirmation) {
+        const timer = setTimeout(() => setShowBookingConfirmation(false), 5000);
+        return () => clearTimeout(timer);
+    }
+  }, [showBookingConfirmation]);
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
@@ -65,7 +92,17 @@ const ChatTab: React.FC<ChatTabProps> = ({ quickActions, initialMessage, emergen
     setIsLoading(true);
 
     try {
-      const responseStream = await sendMessageToGemini(text, emergencyMode);
+      const responseGenerator = sendMessageToGemini(
+          text, 
+          emergencyMode, 
+          language,
+          (toolName, result) => {
+              if (toolName === 'book_appointment') {
+                  setConfirmedDate(result.date || null);
+                  setShowBookingConfirmation(true);
+              }
+          }
+      );
       
       const botMsgId = (Date.now() + 1).toString();
       setMessages(prev => [...prev, {
@@ -77,7 +114,7 @@ const ChatTab: React.FC<ChatTabProps> = ({ quickActions, initialMessage, emergen
 
       let fullText = '';
       
-      for await (const chunk of responseStream) {
+      for await (const chunk of responseGenerator) {
         const c = chunk as GenerateContentResponse;
         const chunkText = c.text || '';
         fullText += chunkText;
@@ -88,21 +125,18 @@ const ChatTab: React.FC<ChatTabProps> = ({ quickActions, initialMessage, emergen
       }
     } catch (error: any) {
       console.error("Chat error:", error);
-      let errorMsg = "I'm having trouble connecting to the server. Please try again.";
+      let errorMsg = language === 'en' ? "I'm having trouble connecting. Please try again." : "Tengo problemas de conexión. Inténtalo de nuevo.";
       
       if (error.message?.includes("API_KEY_MISSING")) {
-        errorMsg = "Configuration Error: API Key is missing.";
-      } else if (error.message?.includes("quota")) {
-        errorMsg = "System is currently busy (Quota Exceeded). Please try again later.";
+        errorMsg = language === 'en' ? "Configuration Error: API Key is missing." : "Error de Configuración: Falta la API Key.";
       }
       
       setError(errorMsg);
       
-      // Add a visual indicator in the chat stream as well
       setMessages(prev => [...prev, {
         id: Date.now().toString(),
         role: 'model',
-        text: "⚠️ Connection interrupted. Please check your internet or try again.",
+        text: language === 'en' ? "⚠️ Connection interrupted. Please check your internet." : "⚠️ Conexión interrumpida. Revisa tu internet.",
         timestamp: new Date()
       }]);
     } finally {
@@ -121,7 +155,24 @@ const ChatTab: React.FC<ChatTabProps> = ({ quickActions, initialMessage, emergen
   };
 
   return (
-    <div className="flex flex-col h-full">
+    <div className="flex flex-col h-full relative">
+      
+      {/* Success Banner Overlay */}
+      <div className={`absolute top-4 left-4 right-4 z-50 transition-all duration-500 transform ${showBookingConfirmation ? 'translate-y-0 opacity-100' : '-translate-y-full opacity-0 pointer-events-none'}`}>
+        <div className="bg-emerald-50 border border-emerald-200 text-emerald-800 p-4 rounded-xl shadow-lg flex items-center gap-3">
+            <div className="bg-emerald-100 p-2 rounded-full text-emerald-600">
+                <CheckCircle2 size={24} />
+            </div>
+            <div>
+                <p className="font-bold text-sm">Success</p>
+                <p className="text-xs">{t.bookingConfirmed}</p>
+                {confirmedDate && (
+                  <p className="text-xs font-bold mt-1 text-emerald-700">{confirmedDate}</p>
+                )}
+            </div>
+        </div>
+      </div>
+
       {/* Messages Area */}
       <div className="flex-1 overflow-y-auto p-4 space-y-6 no-scrollbar relative">
         {messages.map((msg) => (
@@ -201,7 +252,7 @@ const ChatTab: React.FC<ChatTabProps> = ({ quickActions, initialMessage, emergen
             value={inputText}
             onChange={(e) => setInputText(e.target.value)}
             onKeyDown={(e) => e.key === 'Enter' && handleSendMessage(inputText)}
-            placeholder={error ? "Chat disabled due to error" : "Type your message..."}
+            placeholder={error ? (language === 'en' ? "Chat disabled" : "Chat deshabilitado") : t.chatPlaceholder}
             className="flex-1 bg-transparent border-none outline-none text-sm px-2 text-gray-800 placeholder-gray-400 disabled:text-gray-400"
             disabled={isLoading || !!error}
           />

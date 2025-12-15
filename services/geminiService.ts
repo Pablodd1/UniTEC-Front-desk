@@ -1,6 +1,7 @@
-import { GoogleGenAI, Chat, LiveServerMessage, Modality } from "@google/genai";
-import { SYSTEM_INSTRUCTION, TOOLS } from "../constants";
-import { createBlob, decodeAudioData, base64ToUint8Array, blobToBase64 } from "../utils/audioUtils";
+import { GoogleGenAI, Chat, LiveServerMessage, Modality, FunctionCall } from "@google/genai";
+import { getSystemInstruction, TOOLS } from "../constants";
+import { createBlob, decodeAudioData, base64ToUint8Array, blobToBase64, pcmToWavBlob } from "../utils/audioUtils";
+import { Language, VoiceName } from "../types";
 
 const API_KEY = process.env.API_KEY || ''; 
 
@@ -24,7 +25,11 @@ export const mockBookAppointment = async (data: any) => {
       throw new Error("Missing required booking fields");
     }
 
-    return { status: "success", confirmationId: "APT-" + Math.floor(Math.random() * 10000) };
+    return { 
+        status: "success", 
+        confirmationId: "APT-" + Math.floor(Math.random() * 10000),
+        date: data.date 
+    };
   } catch (error) {
     console.error("Booking failed:", error);
     return { status: "error", message: "Failed to book appointment" };
@@ -63,16 +68,18 @@ export const mockLogToCRM = async (data: any) => {
 // --- Chat Service ---
 
 let chatSession: Chat | null = null;
+let currentLanguage: Language = 'en';
 
-// Helper to reset session if needed (e.g. emergency mode toggle)
+// Helper to reset session if needed (e.g. emergency mode toggle or language change)
 export const resetChatSession = () => {
   chatSession = null;
 };
 
-export const getChatSession = (emergencyMode: boolean = false) => {
-  if (!chatSession) {
+export const getChatSession = (emergencyMode: boolean = false, language: Language = 'en') => {
+  if (!chatSession || currentLanguage !== language) {
     const ai = getAIClient();
-    let instructions = SYSTEM_INSTRUCTION;
+    let instructions = getSystemInstruction(language);
+    currentLanguage = language;
     
     if (emergencyMode) {
       instructions += "\n\n[SYSTEM OVERRIDE: EMERGENCY MODE ACTIVE]. Respond concisely. Prioritize safety protocols immediately.";
@@ -82,22 +89,77 @@ export const getChatSession = (emergencyMode: boolean = false) => {
       model: 'gemini-2.5-flash',
       config: {
         systemInstruction: instructions,
+        tools: [{ functionDeclarations: TOOLS }],
       },
     });
   }
   return chatSession;
 };
 
-export const sendMessageToGemini = async (message: string, emergencyMode: boolean = false) => {
+export async function* sendMessageToGemini(
+  message: string, 
+  emergencyMode: boolean = false, 
+  language: Language = 'en',
+  onToolSuccess?: (toolName: string, result: any) => void
+) {
   try {
-    const session = getChatSession(emergencyMode);
-    const response = await session.sendMessageStream({ message });
-    return response;
+    const session = getChatSession(emergencyMode, language);
+    let responseStream = await session.sendMessageStream({ message });
+    
+    while (true) {
+        let toolCalls: FunctionCall[] = [];
+        
+        for await (const chunk of responseStream) {
+            // Check for tool calls
+            const fc = chunk.functionCalls;
+            if (fc && fc.length > 0) {
+                toolCalls.push(...fc);
+            }
+            
+            // Yield text content if present
+            if (chunk.text) {
+                yield chunk;
+            }
+        }
+
+        if (toolCalls.length > 0) {
+            const functionResponses = [];
+            for (const call of toolCalls) {
+                let result = {};
+                if (call.name === 'book_appointment') {
+                    result = await mockBookAppointment(call.args);
+                    if ((result as any).status === 'success') {
+                        onToolSuccess?.(call.name, result);
+                    }
+                } else if (call.name === 'log_to_crm') {
+                    result = await mockLogToCRM(call.args);
+                    if ((result as any).status === 'logged') {
+                        onToolSuccess?.(call.name, result);
+                    }
+                }
+                
+                functionResponses.push({
+                    name: call.name,
+                    response: { result },
+                    id: call.id
+                });
+            }
+
+            // Send tool responses back to model
+            responseStream = await session.sendMessageStream({
+                parts: [{ functionResponse: { functionResponses: functionResponses } }]
+            } as any);
+        } else {
+            // No more tool calls, we are done
+            break;
+        }
+    }
+
   } catch (error) {
     console.error("Gemini Chat Error:", error);
     throw error;
   }
-};
+}
 
 // --- Live API (Voice) Service ---
 
@@ -108,9 +170,15 @@ export interface LiveSessionCallbacks {
   onError: (error: Error) => void;
   onClose: () => void;
   onToolCall: (toolName: string) => void;
+  onToolSuccess?: (toolName: string, result: any) => void;
 }
 
-export const connectLiveSession = async (callbacks: LiveSessionCallbacks, emergencyMode: boolean = false) => {
+export const connectLiveSession = async (
+    callbacks: LiveSessionCallbacks, 
+    emergencyMode: boolean = false, 
+    language: Language = 'en',
+    voiceName: VoiceName = 'Kore'
+) => {
   let ai;
   try {
     ai = getAIClient();
@@ -143,6 +211,7 @@ export const connectLiveSession = async (callbacks: LiveSessionCallbacks, emerge
 
   let nextStartTime = 0;
   const sources = new Set<AudioBufferSourceNode>();
+  const audioChunks: Uint8Array[] = [];
   
   let stream: MediaStream;
   try {
@@ -164,7 +233,7 @@ export const connectLiveSession = async (callbacks: LiveSessionCallbacks, emerge
   await inputAudioContext.resume();
   await outputAudioContext.resume();
 
-  let instructions = SYSTEM_INSTRUCTION;
+  let instructions = getSystemInstruction(language);
   if (emergencyMode) {
     instructions += "\n\n[SYSTEM OVERRIDE: EMERGENCY MODE ACTIVE]. Respond concisely. Prioritize safety protocols immediately.";
   }
@@ -206,8 +275,14 @@ export const connectLiveSession = async (callbacks: LiveSessionCallbacks, emerge
                 let result = {};
                 if (fc.name === 'book_appointment') {
                     result = await mockBookAppointment(fc.args);
+                    if ((result as any).status === 'success') {
+                        callbacks.onToolSuccess?.(fc.name, result);
+                    }
                 } else if (fc.name === 'log_to_crm') {
                     result = await mockLogToCRM(fc.args);
+                    if ((result as any).status === 'logged') {
+                        callbacks.onToolSuccess?.(fc.name, result);
+                    }
                 }
 
                 sessionPromise.then(session => {
@@ -228,9 +303,15 @@ export const connectLiveSession = async (callbacks: LiveSessionCallbacks, emerge
 
         if (base64Audio) {
           try {
+            // 1. Convert to Uint8Array
+            const audioData = base64ToUint8Array(base64Audio);
+            // 2. Store for download
+            audioChunks.push(audioData);
+
+            // 3. Playback logic
             nextStartTime = Math.max(nextStartTime, outputAudioContext.currentTime);
             audioBuffer = await decodeAudioData(
-              base64ToUint8Array(base64Audio),
+              audioData,
               outputAudioContext,
               24000,
               1
@@ -238,7 +319,6 @@ export const connectLiveSession = async (callbacks: LiveSessionCallbacks, emerge
             
             const source = outputAudioContext.createBufferSource();
             source.buffer = audioBuffer;
-            // Connect to analyser, which is already connected to destination
             source.connect(analyser); 
             
             source.addEventListener('ended', () => {
@@ -276,7 +356,7 @@ export const connectLiveSession = async (callbacks: LiveSessionCallbacks, emerge
     config: {
       responseModalities: [Modality.AUDIO],
       speechConfig: {
-        voiceConfig: { prebuiltVoiceConfig: { voiceName: 'Kore' } }
+        voiceConfig: { prebuiltVoiceConfig: { voiceName: voiceName } }
       },
       systemInstruction: instructions,
       tools: [{ functionDeclarations: TOOLS }]
@@ -299,6 +379,9 @@ export const connectLiveSession = async (callbacks: LiveSessionCallbacks, emerge
       
       if (inputAudioContext.state !== 'closed') inputAudioContext.close();
       if (outputAudioContext.state !== 'closed') outputAudioContext.close();
+    },
+    getAudioBlob: () => {
+      return pcmToWavBlob(audioChunks, 24000);
     }
   };
 };

@@ -58,3 +58,9 @@ export interface AppState {
 }
 
 export type VisualizerData = Uint8Array;
+
+export type Language = 'en' | 'es';
+
+export type VoiceProvider = 'gemini' | 'deepgram';
+
+export type VoiceName = 'Puck' | 'Charon' | 'Kore' | 'Fenrir' | 'Zephyr' | 'asteria-en' | 'luna-en' | 'orion-en' | 'arcas-en';

@@ -1,17 +1,22 @@
 import React from 'react';
-import { ServiceOffering } from '../types';
+import { ServiceOffering, Language } from '../types';
 import { Check, ArrowRight } from 'lucide-react';
+import { UI_TRANSLATIONS } from '../constants';
 
 interface ServicesTabProps {
   services: ServiceOffering[];
+  language: Language;
+  onConsultProduct: (productName: string) => void;
 }
 
-const ServicesTab: React.FC<ServicesTabProps> = ({ services }) => {
+const ServicesTab: React.FC<ServicesTabProps> = ({ services, language, onConsultProduct }) => {
+  const t = UI_TRANSLATIONS[language];
+
   return (
     <div className="h-full overflow-y-auto p-4 space-y-6 no-scrollbar">
       <div className="space-y-1 mb-6">
-        <h2 className="text-xl font-bold text-brand-900">Product Catalog</h2>
-        <p className="text-sm text-gray-500">Premium materials for your next project</p>
+        <h2 className="text-xl font-bold text-brand-900">{t.productCatalog}</h2>
+        <p className="text-sm text-gray-500">{language === 'en' ? 'Premium materials for your next project' : 'Materiales premium para tu próximo proyecto'}</p>
       </div>
 
       <div className="grid grid-cols-1 gap-5">
@@ -44,8 +49,11 @@ const ServicesTab: React.FC<ServicesTabProps> = ({ services }) => {
 
               <div className="flex items-center justify-between pt-3 border-t border-gray-100">
                 <span className="text-sm font-semibold text-brand-700">{service.pricing}</span>
-                <button className="text-xs bg-gray-50 text-gray-900 px-3 py-1.5 rounded-lg flex items-center gap-1 hover:bg-gray-100 font-medium">
-                  Details <ArrowRight size={12} />
+                <button 
+                  onClick={() => onConsultProduct(service.name)}
+                  className="text-xs bg-gray-50 text-gray-900 px-3 py-1.5 rounded-lg flex items-center gap-1 hover:bg-gray-100 font-medium"
+                >
+                  {t.details} <ArrowRight size={12} />
                 </button>
               </div>
             </div>

@@ -1,19 +1,34 @@
 import React, { useState, useEffect } from 'react';
-import { ShieldCheck, X, Activity, Database, Lock, Power, AlertTriangle } from 'lucide-react';
-import { CrmLog } from '../types';
+import { ShieldCheck, X, Activity, Database, Lock, Power, Mic2, AlertTriangle, UploadCloud, Key, Globe } from 'lucide-react';
+import { CrmLog, VoiceName, VoiceProvider } from '../types';
 
 interface AdminDashboardProps {
   isOpen: boolean;
   onClose: () => void;
   emergencyMode: boolean;
   setEmergencyMode: (val: boolean) => void;
+  voiceName: VoiceName;
+  setVoiceName: (voice: VoiceName) => void;
+  voiceProvider: VoiceProvider;
+  setVoiceProvider: (provider: VoiceProvider) => void;
+  deepgramKey: string;
+  setDeepgramKey: (key: string) => void;
 }
 
-const AdminDashboard: React.FC<AdminDashboardProps> = ({ isOpen, onClose, emergencyMode, setEmergencyMode }) => {
+const AdminDashboard: React.FC<AdminDashboardProps> = ({ 
+    isOpen, onClose, 
+    emergencyMode, setEmergencyMode, 
+    voiceName, setVoiceName,
+    voiceProvider, setVoiceProvider,
+    deepgramKey, setDeepgramKey
+}) => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [pin, setPin] = useState('');
   const [logs, setLogs] = useState<CrmLog[]>([]);
   const [loginError, setLoginError] = useState('');
+
+  const geminiVoices: VoiceName[] = ['Puck', 'Charon', 'Kore', 'Fenrir', 'Zephyr'];
+  const deepgramVoices: VoiceName[] = ['asteria-en', 'luna-en', 'orion-en', 'arcas-en'];
 
   useEffect(() => {
     if (!isOpen) return;
@@ -99,6 +114,86 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({ isOpen, onClose, emerge
         ) : (
           <div className="flex-1 overflow-y-auto p-4 space-y-6">
             
+            {/* Integrations Section */}
+            <div className="space-y-3">
+               <h3 className="text-xs font-bold text-gray-400 uppercase tracking-wider">Integrations</h3>
+               
+               {/* Deepgram Key Input */}
+               <div className="p-3 bg-gray-50 rounded-xl border border-gray-100">
+                  <div className="flex items-center gap-2 mb-2 text-sm font-semibold text-gray-700">
+                     <Key size={16} className="text-purple-600"/>
+                     <span>Deepgram API Key</span>
+                  </div>
+                  <input 
+                    type="password" 
+                    value={deepgramKey}
+                    onChange={(e) => setDeepgramKey(e.target.value)}
+                    placeholder="Enter Deepgram Key for Custom Voice"
+                    className="w-full text-xs p-2 border border-gray-200 rounded-lg focus:outline-none focus:border-purple-400 focus:ring-1 focus:ring-purple-400"
+                  />
+                  <p className="text-[10px] text-gray-400 mt-1">Required if selecting 'Deepgram' provider below.</p>
+               </div>
+            </div>
+
+            {/* AI Settings Section */}
+            <div className="space-y-3">
+               <h3 className="text-xs font-bold text-gray-400 uppercase tracking-wider">Configuration</h3>
+               
+               {/* Provider Selection */}
+               <div className="grid grid-cols-2 gap-2 mb-2">
+                 <button
+                    onClick={() => {
+                        setVoiceProvider('gemini');
+                        setVoiceName('Kore'); // Reset to default Gemini voice
+                    }}
+                    className={`p-2 rounded-lg border text-xs font-semibold flex items-center justify-center gap-2 ${
+                        voiceProvider === 'gemini' 
+                        ? 'bg-brand-500 text-white border-brand-600' 
+                        : 'bg-white text-gray-600 border-gray-200'
+                    }`}
+                 >
+                    <Globe size={14} /> Gemini Live
+                 </button>
+                 <button
+                    onClick={() => {
+                        setVoiceProvider('deepgram');
+                        setVoiceName('asteria-en'); // Default Deepgram voice
+                    }}
+                    className={`p-2 rounded-lg border text-xs font-semibold flex items-center justify-center gap-2 ${
+                        voiceProvider === 'deepgram' 
+                        ? 'bg-purple-600 text-white border-purple-700' 
+                        : 'bg-white text-gray-600 border-gray-200'
+                    }`}
+                 >
+                    <Activity size={14} /> Deepgram
+                 </button>
+               </div>
+
+               {/* Voice Selection */}
+               <div className="p-3 bg-gray-50 rounded-xl border border-gray-100">
+                  <div className="flex items-center gap-2 mb-2 text-sm font-semibold text-gray-700">
+                     <Mic2 size={16} className={voiceProvider === 'gemini' ? 'text-brand-600' : 'text-purple-600'}/>
+                     <span>{voiceProvider === 'gemini' ? 'Gemini Voices' : 'Deepgram Aura Voices'}</span>
+                  </div>
+                  <div className="grid grid-cols-3 gap-2">
+                     {(voiceProvider === 'gemini' ? geminiVoices : deepgramVoices).map(v => (
+                       <button
+                         key={v}
+                         onClick={() => setVoiceName(v)}
+                         className={`text-xs py-1.5 rounded-lg border transition-all truncate px-1 ${
+                            voiceName === v 
+                            ? (voiceProvider === 'gemini' ? 'bg-brand-500 text-white border-brand-600' : 'bg-purple-600 text-white border-purple-700')
+                            : 'bg-white text-gray-600 border-gray-200 hover:border-gray-300'
+                         }`}
+                         title={v}
+                       >
+                         {v.replace('-en', '')}
+                       </button>
+                     ))}
+                  </div>
+               </div>
+            </div>
+
             {/* System Status */}
             <div className="space-y-3">
               <h3 className="text-xs font-bold text-gray-400 uppercase tracking-wider">System Status</h3>
