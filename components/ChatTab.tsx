@@ -1,3 +1,4 @@
+
 import React, { useState, useRef, useEffect } from 'react';
 import { Message, QuickAction, Language } from '../types';
 import { sendMessageToGemini } from '../services/geminiService';
@@ -61,7 +62,7 @@ const ChatTab: React.FC<ChatTabProps> = ({ quickActions, initialMessage, emergen
 
   useEffect(() => {
     if (showBookingConfirmation) {
-        const timer = setTimeout(() => setShowBookingConfirmation(false), 5000);
+        const timer = setTimeout(() => setShowBookingConfirmation(false), 8000);
         return () => clearTimeout(timer);
     }
   }, [showBookingConfirmation]);
@@ -72,7 +73,7 @@ const ChatTab: React.FC<ChatTabProps> = ({ quickActions, initialMessage, emergen
 
   useEffect(() => {
     scrollToBottom();
-  }, [messages]);
+  }, [messages, isLoading]);
 
   const handleSendMessage = async (text: string) => {
     if (!text.trim() || isLoading) return;
@@ -159,15 +160,15 @@ const ChatTab: React.FC<ChatTabProps> = ({ quickActions, initialMessage, emergen
       
       {/* Success Banner Overlay */}
       <div className={`absolute top-4 left-4 right-4 z-50 transition-all duration-500 transform ${showBookingConfirmation ? 'translate-y-0 opacity-100' : '-translate-y-full opacity-0 pointer-events-none'}`}>
-        <div className="bg-emerald-50 border border-emerald-200 text-emerald-800 p-4 rounded-xl shadow-lg flex items-center gap-3">
-            <div className="bg-emerald-100 p-2 rounded-full text-emerald-600">
-                <CheckCircle2 size={24} />
+        <div className="bg-emerald-50 border-2 border-emerald-200 text-emerald-800 p-5 rounded-2xl shadow-2xl flex items-center gap-4">
+            <div className="bg-emerald-100 p-2 rounded-full text-emerald-600 ring-4 ring-emerald-50">
+                <CheckCircle2 size={28} />
             </div>
             <div>
-                <p className="font-bold text-sm">Success</p>
-                <p className="text-xs">{t.bookingConfirmed}</p>
+                <p className="font-bold text-sm uppercase tracking-wider text-emerald-600">Action Confirmed</p>
+                <p className="text-sm font-medium">{t.bookingConfirmed}</p>
                 {confirmedDate && (
-                  <p className="text-xs font-bold mt-1 text-emerald-700">{confirmedDate}</p>
+                  <p className="text-xs font-bold mt-1 text-emerald-700 bg-emerald-100/50 px-2 py-0.5 rounded-md inline-block">{confirmedDate}</p>
                 )}
             </div>
         </div>
@@ -206,8 +207,15 @@ const ChatTab: React.FC<ChatTabProps> = ({ quickActions, initialMessage, emergen
                 <div className="w-8 h-8 rounded-full bg-brand-900 text-accent-500 flex items-center justify-center shrink-0">
                   <Bot size={16} />
                 </div>
-                <div className="bg-white p-3 rounded-2xl rounded-bl-none border border-gray-100 shadow-sm">
-                  <Loader2 className="animate-spin text-brand-500" size={18} />
+                <div className="bg-white p-3 rounded-2xl rounded-bl-none border border-gray-100 shadow-sm flex items-center gap-3">
+                  <div className="flex gap-1">
+                    <div className="w-1.5 h-1.5 bg-brand-400 rounded-full animate-bounce [animation-delay:-0.3s]"></div>
+                    <div className="w-1.5 h-1.5 bg-brand-400 rounded-full animate-bounce [animation-delay:-0.15s]"></div>
+                    <div className="w-1.5 h-1.5 bg-brand-400 rounded-full animate-bounce"></div>
+                  </div>
+                  <span className="text-xs font-bold text-slate-400 uppercase tracking-widest animate-pulse">
+                    {language === 'en' ? 'typing...' : 'escribiendo...'}
+                  </span>
                 </div>
              </div>
           </div>

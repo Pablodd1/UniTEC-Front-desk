@@ -1,3 +1,4 @@
+
 export interface ServiceOffering {
   id: string;
   name: string;
@@ -23,10 +24,19 @@ export interface Message {
 }
 
 export enum Tab {
+  DASHBOARD = 'dashboard', 
   CHAT = 'chat',
   CALL = 'call',
+  CALENDAR = 'calendar',
   SERVICES = 'services',
   INFO = 'info',
+  ADMIN_SETTINGS = 'admin_settings'
+}
+
+export interface EscalaConfig {
+  apiKey: string;
+  accountId: string;
+  isActive: boolean;
 }
 
 export interface BusinessConfig {
@@ -38,9 +48,8 @@ export interface BusinessConfig {
     location: string;
   };
   promotions: string[];
+  systemInstructionOverride?: string;
 }
-
-// --- New Types for Advanced Features ---
 
 export interface CrmLog {
   id: string;
@@ -49,12 +58,32 @@ export interface CrmLog {
   summary: string;
   actionTaken: string;
   sentiment: 'Positive' | 'Neutral' | 'Negative';
+  provider?: 'Internal' | 'Escala';
 }
 
-export interface AppState {
-  emergencyMode: boolean;
-  maintenanceMode: boolean;
-  crmLogs: CrmLog[];
+export interface CallRecording {
+  id: string;
+  name: string;
+  timestamp: string;
+  duration: string;
+  blobUrl?: string;
+}
+
+export interface CalendarEvent {
+  id: string;
+  title: string;
+  start: Date;
+  end: Date;
+  attendees: string[];
+  status: 'confirmed' | 'pending';
+}
+
+export interface UsageStats {
+  tokensUsed: number;
+  tokensLimit: number;
+  minutesUsed: number;
+  minutesLimit: number;
+  costEstimate: number;
 }
 
 export type VisualizerData = Uint8Array;
@@ -63,4 +92,5 @@ export type Language = 'en' | 'es';
 
 export type VoiceProvider = 'gemini' | 'deepgram';
 
-export type VoiceName = 'Puck' | 'Charon' | 'Kore' | 'Fenrir' | 'Zephyr' | 'asteria-en' | 'luna-en' | 'orion-en' | 'arcas-en';
+// Updated to allow any string for dynamic clones
+export type VoiceName = 'Puck' | 'Charon' | 'Kore' | 'Fenrir' | 'Zephyr' | 'asteria-en' | 'luna-en' | 'orion-en' | 'arcas-en' | string;

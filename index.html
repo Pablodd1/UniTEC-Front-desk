@@ -24,6 +24,32 @@
               },
               accent: {
                 500: '#f59e0b', // Construction/Gold accent
+              },
+              grass: {
+                100: '#f0fdf4',
+                200: '#dcfce7',
+                500: '#22c55e',
+                600: '#16a34a',
+                700: '#15803d',
+                800: '#166534',
+                900: '#14532d',
+              }
+            },
+            backgroundImage: {
+              'grass-gradient': 'linear-gradient(135deg, #15803d 0%, #166534 50%, #064e3b 100%)',
+            },
+            animation: {
+              'soft-spin': 'soft-spin 3s linear infinite',
+              'grass-glow': 'grass-glow 2s ease-in-out infinite',
+            },
+            keyframes: {
+              'soft-spin': {
+                'from': { transform: 'rotate(0deg)' },
+                'to': { transform: 'rotate(360deg)' },
+              },
+              'grass-glow': {
+                '0%, 100%': { boxShadow: '0 0 5px rgba(21, 128, 61, 0.4), 0 0 10px rgba(21, 128, 61, 0.2)' },
+                '50%': { boxShadow: '0 0 20px rgba(22, 197, 94, 0.6), 0 0 40px rgba(22, 197, 94, 0.3)' },
               }
             }
           }
@@ -47,6 +73,23 @@
       .animate-pulse-ring {
         animation: pulse-ring 2s cubic-bezier(0.215, 0.61, 0.355, 1) infinite;
       }
+      .btn-grass {
+        background: linear-gradient(135deg, #166534 0%, #15803d 40%, #065f46 100%);
+        box-shadow: 0 4px 14px 0 rgba(22, 101, 52, 0.3);
+        transition: all 0.3s ease;
+      }
+      .btn-grass:hover {
+        background: linear-gradient(135deg, #15803d 0%, #16a34a 50%, #15803d 100%);
+        transform: translateY(-1px);
+        box-shadow: 0 6px 20px rgba(22, 101, 52, 0.4);
+      }
+      .btn-grass:active {
+        transform: scale(0.98);
+      }
+      .grass-texture {
+        background-image: radial-gradient(circle at 2px 2px, rgba(255,255,255,0.05) 1px, transparent 0);
+        background-size: 4px 4px;
+      }
     </style>
   <script type="importmap">
 {
@@ -62,8 +105,8 @@
 }
 </script>
 </head>
-  <body class="bg-gray-50 text-slate-800 antialiased h-screen overflow-hidden">
-    <div id="root"></div>
+  <body class="bg-gray-50 text-slate-800 antialiased h-screen w-screen overflow-hidden selection:bg-brand-200">
+    <div id="root" class="h-full w-full"></div>
     <script type="module" src="./index.tsx"></script>
   </body>
 </html>

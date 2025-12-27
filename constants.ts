@@ -1,3 +1,4 @@
+
 import { BusinessConfig, QuickAction, ServiceOffering } from './types';
 import { FunctionDeclaration, Type } from "@google/genai";
 import { Language } from './types';
@@ -127,7 +128,7 @@ export const UI_TRANSLATIONS = {
   en: {
     chatPlaceholder: "Type your message...",
     send: "Send",
-    chatWelcome: "Hello! Welcome to UNITEC USA DESIGN. I can help you with wholesale pricing, product stock in Florida, or installation guides. How can I assist you today?",
+    chatWelcome: "Hello! Welcome to UNITEC USA DESIGN. I can help you with wholesale pricing, product stock in Florida, installation guides, or even talk to you via our new AI Voice Assistant. How can I assist you today?",
     voiceTitle: "Voice Assistant",
     tapToStart: "Tap the microphone to start",
     connecting: "Connecting securely...",
@@ -163,7 +164,7 @@ export const UI_TRANSLATIONS = {
   es: {
     chatPlaceholder: "Escribe tu mensaje...",
     send: "Enviar",
-    chatWelcome: "¡Hola! Bienvenido a UNITEC USA DESIGN. Puedo ayudarte con precios mayoristas, stock en Florida o guías de instalación. ¿En qué puedo ayudarte hoy?",
+    chatWelcome: "¡Hola! Bienvenido a UNITEC USA DESIGN. Puedo ayudarte con precios mayoristas, stock en Florida, guías de instalación, o incluso hablar contigo a través de nuestro nuevo Asistente de Voz IA. ¿En qué puedo ayudarte hoy?",
     voiceTitle: "Asistente de Voz",
     tapToStart: "Toca el micrófono para iniciar",
     connecting: "Conectando...",
