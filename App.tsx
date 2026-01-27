@@ -60,6 +60,7 @@ const App: React.FC = () => {
             emergencyMode={emergencyMode} 
             language={language}
             initialMessage={initialMessage}
+            customGreeting={activeConfig.customGreeting}
         />;
       case Tab.CALL:
         return <CallTab 
@@ -68,6 +69,7 @@ const App: React.FC = () => {
             voiceName={voiceName}
             voiceProvider={voiceProvider}
             deepgramKey={deepgramKey}
+            customGreeting={activeConfig.customGreeting}
         />;
       case Tab.SERVICES:
         return <ServicesTab 

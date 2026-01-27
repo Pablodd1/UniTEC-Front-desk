@@ -5,7 +5,7 @@ import {
   Save, Cpu, HardDrive, RefreshCw, Check, Loader2, Volume2, Download, 
   Pause, Play, Music, CheckCircle2, Server, Headphones, ToggleLeft, 
   ToggleRight, AlertCircle, TrendingUp, Zap, CreditCard, PieChart, 
-  Receipt, FileText, Plus, BarChart3, Trash2, DollarSign, Gauge, Building2, Store
+  Receipt, FileText, Plus, BarChart3, Trash2, DollarSign, Gauge, Building2, Store, Brain
 } from 'lucide-react';
 import { CrmLog, VoiceName, VoiceProvider, UsageStats, EscalaConfig, CallRecording, BillingInvoice } from '../types';
 import { playGeminiTTS } from '../services/geminiService';
@@ -43,7 +43,7 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({
     currentBrandId = 'unitec',
     onToggleBrand
 }) => {
-  const [activeSubTab, setActiveSubTab] = useState<'usage' | 'voice' | 'integrations' | 'general'>('usage');
+  const [activeSubTab, setActiveSubTab] = useState<'usage' | 'voice' | 'integrations' | 'general' | 'training'>('usage');
   const [recordings, setRecordings] = useState<CallRecording[]>([]);
   
   // Usage & Billing State
@@ -64,6 +64,10 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({
   const [isTestingVoice, setIsTestingVoice] = useState<string | null>(null);
   const [testFeedback, setTestFeedback] = useState<string | null>(null);
   
+  // Model Training State
+  const [trainingData, setTrainingData] = useState<string>('');
+  const [isSavingTraining, setIsSavingTraining] = useState(false);
+
   const audioRef = useRef<HTMLAudioElement | null>(null);
   const geminiVoices: VoiceName[] = ['Aoede', 'Kore', 'Zephyr', 'Puck', 'Fenrir', 'Charon'];
   const deepgramVoices: VoiceName[] = ['asteria-en', 'luna-en', 'orion-en', 'arcas-en'];
@@ -76,6 +80,10 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({
     if (storedLib) setRecordings(JSON.parse(storedLib));
     setEscalaConfig(getEscalaConfig());
     
+    // Load Training Data
+    const storedTraining = localStorage.getItem('unitec_training_data');
+    if (storedTraining) setTrainingData(storedTraining);
+
     const interval = setInterval(() => {
       setUsage(getUsageStats());
       setProfit(getProfitEstimate());
@@ -139,6 +147,12 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({
     setIsSavingEscala(true);
     saveEscalaConfig(escalaConfig);
     setTimeout(() => setIsSavingEscala(false), 800);
+  };
+
+  const handleSaveTraining = () => {
+    setIsSavingTraining(true);
+    localStorage.setItem('unitec_training_data', trainingData);
+    setTimeout(() => setIsSavingTraining(false), 1000);
   };
 
   const currentVoiceList = [...geminiVoices, ...customClones];
@@ -379,6 +393,46 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({
                 </div>
             );
 
+        case 'training':
+            return (
+                <div className="space-y-8 animate-in slide-in-from-bottom-2 duration-500 pb-20">
+                    <div className="bg-white p-8 rounded-2xl border border-slate-200 shadow-sm relative">
+                        <div className="flex items-center justify-between mb-8">
+                            <div className="flex items-center gap-4">
+                                <div className="w-12 h-12 bg-indigo-50 text-indigo-600 rounded-2xl flex items-center justify-center shrink-0">
+                                    <Brain size={24} />
+                                </div>
+                                <div>
+                                    <h3 className="text-lg font-bold text-slate-800">Model Training Data</h3>
+                                    <p className="text-xs text-slate-500">Add custom knowledge, FAQs, or brand voice examples.</p>
+                                </div>
+                            </div>
+                            <button 
+                                onClick={handleSaveTraining}
+                                disabled={isSavingTraining}
+                                className="px-8 py-2.5 bg-brand-600 text-white rounded-xl text-xs font-bold shadow-lg hover:bg-brand-700 flex items-center gap-2 transition-all active:scale-95"
+                            >
+                                {isSavingTraining ? <Loader2 size={14} className="animate-spin" /> : <Save size={14} />}
+                                Save Training Data
+                            </button>
+                        </div>
+                        
+                        <div className="space-y-4">
+                            <label className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Knowledge Base Content</label>
+                            <textarea
+                                value={trainingData}
+                                onChange={(e) => setTrainingData(e.target.value)}
+                                className="w-full h-96 p-4 bg-slate-50 border border-slate-200 rounded-xl text-sm text-slate-700 font-mono focus:ring-2 focus:ring-brand-500 outline-none resize-none"
+                                placeholder="Enter custom instructions, FAQs, or product details here..."
+                            />
+                            <p className="text-[10px] text-slate-400 italic">
+                                This content will be injected into the system prompt for both Chat and Voice interactions.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            );
+
         case 'general':
             return (
                 <div className="space-y-8 animate-in slide-in-from-bottom-2 duration-500 pb-20">
@@ -454,6 +508,7 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({
                  {[
                     { id: 'usage', label: 'Usage & Billing', icon: <DollarSign size={14} /> },
                     { id: 'voice', label: 'Voice Config', icon: <Mic2 size={14} /> },
+                    { id: 'training', label: 'Model Training', icon: <Brain size={14} /> },
                     { id: 'integrations', label: 'CRM Sync', icon: <Database size={14} /> },
                     { id: 'general', label: 'Config & Security', icon: <ShieldCheck size={14} /> }
                  ].map(t => (

@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect, useRef } from 'react';
 import { Mic, Phone, AlertCircle, Loader2, CheckCircle2, Download, Headphones, Camera, CameraOff, Video as VideoIcon, Sparkles } from 'lucide-react';
 import { connectLiveSession, sendMessageToGemini } from '../services/geminiService';
@@ -13,9 +14,10 @@ interface CallTabProps {
   voiceName: VoiceName;
   voiceProvider: VoiceProvider;
   deepgramKey?: string;
+  customGreeting?: string;
 }
 
-const CallTab: React.FC<CallTabProps> = ({ emergencyMode, language, voiceName, voiceProvider, deepgramKey }) => {
+const CallTab: React.FC<CallTabProps> = ({ emergencyMode, language, voiceName, voiceProvider, deepgramKey, customGreeting }) => {
   const t = UI_TRANSLATIONS[language];
   
   const [status, setStatus] = useState<'idle' | 'connecting' | 'connected' | 'error' | 'listening' | 'processing' | 'speaking'>('idle');
@@ -133,7 +135,7 @@ const CallTab: React.FC<CallTabProps> = ({ emergencyMode, language, voiceName, v
                 setStatus('error');
             },
             onClose: () => setStatus('idle')
-        }, emergencyMode, language, voiceName);
+        }, emergencyMode, language, voiceName, customGreeting);
         
         if (session) {
             sessionControllerRef.current = session;

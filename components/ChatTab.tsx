@@ -11,16 +11,17 @@ interface ChatTabProps {
   initialMessage?: string;
   emergencyMode?: boolean;
   language: Language;
+  customGreeting?: string;
 }
 
-const ChatTab: React.FC<ChatTabProps> = ({ quickActions, initialMessage, emergencyMode, language }) => {
+const ChatTab: React.FC<ChatTabProps> = ({ quickActions, initialMessage, emergencyMode, language, customGreeting }) => {
   const t = UI_TRANSLATIONS[language];
   
   const [messages, setMessages] = useState<Message[]>([
     {
       id: 'welcome',
       role: 'model',
-      text: t.chatWelcome,
+      text: customGreeting || t.chatWelcome,
       timestamp: new Date()
     }
   ]);
@@ -34,17 +35,17 @@ const ChatTab: React.FC<ChatTabProps> = ({ quickActions, initialMessage, emergen
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const hasProcessedInitial = useRef(false);
 
-  // Update welcome message when language changes, but only if it's the only message
+  // Update welcome message when language or customGreeting changes, but only if it's the only message
   useEffect(() => {
     if (messages.length === 1 && messages[0].id === 'welcome') {
         setMessages([{
             id: 'welcome',
             role: 'model',
-            text: t.chatWelcome,
+            text: customGreeting || t.chatWelcome,
             timestamp: new Date()
         }]);
     }
-  }, [language, t.chatWelcome]);
+  }, [language, customGreeting, t.chatWelcome]);
 
   // Check for API Key on mount
   useEffect(() => {
@@ -102,7 +103,8 @@ const ChatTab: React.FC<ChatTabProps> = ({ quickActions, initialMessage, emergen
                   setConfirmedDate(result.date || null);
                   setShowBookingConfirmation(true);
               }
-          }
+          },
+          customGreeting
       );
       
       const botMsgId = (Date.now() + 1).toString();

@@ -49,6 +49,7 @@ export interface BusinessConfig {
   };
   promotions: string[];
   systemInstructionOverride?: string;
+  customGreeting?: string;
 }
 
 export interface CrmLog {

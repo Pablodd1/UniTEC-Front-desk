@@ -1,3 +1,4 @@
+
 // geminiService.ts handles interactions with the Google GenAI SDK
 import { GoogleGenAI, LiveServerMessage, Modality, GenerateContentResponse } from "@google/genai";
 import { getSystemInstruction, TOOLS } from "../constants";
@@ -59,10 +60,11 @@ export async function* sendMessageToGemini(
   message: string,
   emergencyMode: boolean = false,
   language: Language = 'en',
-  onToolSuccess?: (toolName: string, result: any) => void
+  onToolSuccess?: (toolName: string, result: any) => void,
+  customGreeting?: string
 ) {
   const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
-  let instructions = getSystemInstruction(language);
+  let instructions = getSystemInstruction(language, customGreeting);
   if (emergencyMode) {
     instructions += "\n\n[SYSTEM OVERRIDE: EMERGENCY MODE ACTIVE]. Respond concisely. Prioritize safety protocols immediately.";
   }
@@ -113,7 +115,8 @@ export const connectLiveSession = async (
     callbacks: LiveSessionCallbacks, 
     emergencyMode: boolean = false, 
     language: Language = 'en',
-    voiceName: VoiceName = 'Kore'
+    voiceName: VoiceName = 'Kore',
+    customGreeting?: string
 ) => {
   const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
   const startTime = Date.now();
@@ -154,7 +157,7 @@ export const connectLiveSession = async (
   await inputAudioContext.resume();
   await outputAudioContext.resume();
 
-  let instructions = getSystemInstruction(language);
+  let instructions = getSystemInstruction(language, customGreeting);
   instructions += "\n\nVISION ENABLED: You can see the user and their environment. If they show you a product sample, floorplan, or space, comment on it to assist them. Be descriptive but concise.";
   
   if (emergencyMode) {
