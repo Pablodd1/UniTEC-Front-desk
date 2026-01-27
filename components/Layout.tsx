@@ -1,6 +1,6 @@
 import React from 'react';
 import { Tab, BusinessConfig, Language } from '../types';
-import { MessageSquare, Phone, Grid, Info, ShieldCheck, Settings, Calendar, LogOut, LayoutDashboard } from 'lucide-react';
+import { MessageSquare, Phone, Grid, Info, ShieldCheck, LayoutDashboard, ChevronDown } from 'lucide-react';
 import { UI_TRANSLATIONS } from '../constants';
 
 interface LayoutProps {
@@ -12,114 +12,81 @@ interface LayoutProps {
   language: Language;
   setLanguage: (lang: Language) => void;
   onLogout: () => void;
+  onCloseWidget: () => void;
 }
 
-const Layout: React.FC<LayoutProps> = ({ children, activeTab, onTabChange, config, onOpenDashboard, language, setLanguage, onLogout }) => {
+const Layout: React.FC<LayoutProps> = ({ children, activeTab, onTabChange, language, setLanguage, onCloseWidget }) => {
   const t = UI_TRANSLATIONS[language];
 
-  const MenuItem = ({ tab, icon, label, onClick }: { tab?: Tab, icon: React.ReactNode, label: string, onClick?: () => void }) => {
+  const NavItem = ({ tab, icon, label }: { tab: Tab, icon: React.ReactNode, label: string }) => {
     const isActive = tab === activeTab;
     return (
-        <button
-            onClick={onClick || (() => tab && onTabChange(tab))}
-            className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-200 group ${
-                isActive 
-                ? 'bg-brand-600 text-white shadow-lg shadow-brand-500/30' 
-                : 'text-brand-100 hover:bg-brand-800 hover:text-white'
-            }`}
-        >
-            <div className={`${isActive ? 'text-white' : 'text-brand-300 group-hover:text-white'}`}>
-                {icon}
-            </div>
-            <span className="font-medium text-sm">{label}</span>
-        </button>
+      <button
+        onClick={() => onTabChange(tab)}
+        className={`flex flex-col items-center justify-center flex-1 py-2 transition-all duration-300 ${
+          isActive ? 'text-brand-600' : 'text-slate-400 hover:text-slate-600'
+        }`}
+      >
+        <div className={`p-1.5 rounded-xl transition-colors ${isActive ? 'bg-brand-50' : ''}`}>
+          {/* Fix: cast icon to React.ReactElement<any> to allow 'size' property in cloneElement */}
+          {React.cloneElement(icon as React.ReactElement<any>, { size: 20 })}
+        </div>
+        <span className="text-[10px] font-bold uppercase tracking-tight mt-1">{label}</span>
+      </button>
     );
   };
 
   return (
-    <div className="flex h-full w-full bg-slate-100">
+    <div className="fixed inset-0 z-[9999] flex flex-col bg-white overflow-hidden animate-in slide-in-from-bottom-8 fade-in duration-500 md:inset-auto md:bottom-24 md:right-6 md:w-[400px] md:h-[700px] md:max-h-[90vh] md:rounded-[32px] md:shadow-2xl md:border md:border-slate-200">
       
-      {/* Sidebar Navigation */}
-      <aside className="w-64 bg-brand-900 flex flex-col shrink-0 h-full border-r border-brand-800">
-        {/* Brand Header */}
-        <div className="p-6 border-b border-brand-800">
-            <div className="flex items-center gap-3 mb-2">
-                <ShieldCheck size={28} className="text-accent-500" />
-                <h1 className="font-bold text-white text-lg tracking-wide leading-none">UNITEC <br/><span className="text-brand-300 font-light">DESIGN</span></h1>
-            </div>
+      {/* Widget Header */}
+      <header className="bg-brand-900 p-4 shrink-0 relative overflow-hidden md:rounded-t-[32px]">
+        <div className="absolute top-0 left-0 w-full h-full opacity-10 grass-texture pointer-events-none"></div>
+        <div className="flex items-center justify-between relative z-10">
+          <div className="flex items-center gap-3">
+             <div className="w-10 h-10 rounded-2xl bg-white/10 flex items-center justify-center backdrop-blur-md border border-white/20">
+                <ShieldCheck className="text-accent-500" size={24} />
+             </div>
+             <div>
+               <h1 className="text-white text-sm font-black tracking-wider uppercase leading-none">UNITEC <span className="text-brand-300 font-light">DESIGN</span></h1>
+               <div className="flex items-center gap-1.5 mt-1">
+                  <div className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></div>
+                  <span className="text-[9px] text-brand-300 font-bold uppercase tracking-widest">Florida Stock Active</span>
+               </div>
+             </div>
+          </div>
+          <div className="flex items-center gap-2">
+            <button 
+              onClick={() => setLanguage(language === 'en' ? 'es' : 'en')}
+              className="px-3 py-1.5 rounded-lg bg-white/10 hover:bg-white/20 text-[11px] text-white font-black transition-colors border border-white/10"
+            >
+              {language === 'en' ? 'ESP' : 'ENG'}
+            </button>
+            <button 
+              onClick={onCloseWidget}
+              className="p-2 rounded-full hover:bg-white/10 text-white/60 hover:text-white transition-all"
+            >
+              <ChevronDown size={24} />
+            </button>
+          </div>
         </div>
+      </header>
 
-        {/* Navigation Items */}
-        <div className="flex-1 overflow-y-auto py-6 px-4 space-y-2">
-            <div className="text-xs font-bold text-brand-400 uppercase tracking-widest px-4 mb-2">Communication</div>
-            <MenuItem tab={Tab.CHAT} icon={<MessageSquare size={20} />} label={t.navChat} />
-            <MenuItem tab={Tab.CALL} icon={<Phone size={20} />} label={t.navCall} />
-            
-            <div className="text-xs font-bold text-brand-400 uppercase tracking-widest px-4 mb-2 mt-6">Operations</div>
-            <MenuItem tab={Tab.CALENDAR} icon={<Calendar size={20} />} label="Calendar & Email" />
-            <MenuItem tab={Tab.SERVICES} icon={<Grid size={20} />} label={t.navServices} />
-            
-            <div className="text-xs font-bold text-brand-400 uppercase tracking-widest px-4 mb-2 mt-6">System</div>
-            <MenuItem tab={Tab.ADMIN_SETTINGS} icon={<LayoutDashboard size={20} />} label="Admin Dashboard" />
-            <MenuItem tab={Tab.INFO} icon={<Info size={20} />} label={t.navInfo} />
-        </div>
-
-        {/* User / Footer */}
-        <div className="p-4 border-t border-brand-800 bg-brand-950/30">
-            <div className="flex items-center justify-between">
-                <div className="flex items-center gap-3">
-                    <div className="w-8 h-8 rounded-full bg-accent-500 flex items-center justify-center text-brand-900 font-bold text-xs">
-                        AD
-                    </div>
-                    <div>
-                        <p className="text-white text-sm font-medium">Admin User</p>
-                        <p className="text-brand-400 text-xs">Online</p>
-                    </div>
-                </div>
-                <button onClick={onLogout} className="text-brand-400 hover:text-white transition-colors" title="Logout">
-                    <LogOut size={18} />
-                </button>
-            </div>
-        </div>
-      </aside>
-
-      {/* Main Content Area */}
-      <main className="flex-1 flex flex-col h-full overflow-hidden relative">
-        
-        {/* Top Header */}
-        <header className="h-16 bg-white border-b border-gray-200 flex items-center justify-between px-6 shrink-0">
-            <h2 className="text-xl font-bold text-slate-800">
-                {activeTab === Tab.CHAT && t.navChat}
-                {activeTab === Tab.CALL && t.navCall}
-                {activeTab === Tab.SERVICES && t.navServices}
-                {activeTab === Tab.INFO && t.navInfo}
-                {activeTab === Tab.CALENDAR && "Calendar & Email"}
-                {activeTab === Tab.ADMIN_SETTINGS && "Admin Dashboard"}
-            </h2>
-
-            <div className="flex items-center gap-4">
-                 {/* Language Toggle */}
-                 <button
-                    onClick={() => setLanguage(language === 'en' ? 'es' : 'en')}
-                    className="flex items-center bg-gray-100 hover:bg-gray-200 rounded-lg px-3 py-1.5 transition-colors border border-gray-200"
-                >
-                    <span className={`text-xs font-bold ${language === 'en' ? 'text-brand-600' : 'text-gray-400'}`}>EN</span>
-                    <span className="text-gray-300 mx-2">|</span>
-                    <span className={`text-xs font-bold ${language === 'es' ? 'text-brand-600' : 'text-gray-400'}`}>ES</span>
-                </button>
-            </div>
-        </header>
-
-        {/* Content Viewport */}
-        <div className="flex-1 overflow-hidden bg-slate-50 relative">
-            <div className="absolute inset-0 overflow-y-auto">
-                 {/* Container constraint only for specific tabs to maintain readability */}
-                 <div className={`h-full mx-auto ${activeTab === Tab.CHAT || activeTab === Tab.CALL ? 'max-w-4xl bg-white shadow-sm border-x border-gray-100' : 'w-full'}`}>
-                    {children}
-                 </div>
-            </div>
-        </div>
+      {/* Content Viewport */}
+      <main className="flex-1 overflow-hidden relative bg-slate-50">
+          <div className="absolute inset-0 overflow-y-auto no-scrollbar pb-safe">
+             {children}
+          </div>
       </main>
+
+      {/* Bottom Navigation */}
+      <nav className="h-20 bg-white border-t border-slate-100 flex items-center justify-around px-2 shrink-0 pb-safe shadow-[0_-4px_12px_rgba(0,0,0,0.03)] md:rounded-b-[32px]">
+          <NavItem tab={Tab.CHAT} icon={<MessageSquare />} label={t.navChat} />
+          <NavItem tab={Tab.CALL} icon={<Phone />} label={t.navCall} />
+          <NavItem tab={Tab.SERVICES} icon={<Grid />} label={t.navServices} />
+          <NavItem tab={Tab.INFO} icon={<Info />} label={t.navInfo} />
+          <NavItem tab={Tab.ADMIN_SETTINGS} icon={<LayoutDashboard />} label="Admin" />
+      </nav>
     </div>
   );
 };

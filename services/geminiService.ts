@@ -1,9 +1,9 @@
-
 // geminiService.ts handles interactions with the Google GenAI SDK
 import { GoogleGenAI, LiveServerMessage, Modality, GenerateContentResponse } from "@google/genai";
 import { getSystemInstruction, TOOLS } from "../constants";
-import { createBlob, decodeAudioData, base64ToUint8Array, blobToBase64, pcmToWavBlob } from "../utils/audioUtils";
+import { createBlob, decodeAudioData, decode, encode, base64ToUint8Array, blobToBase64, pcmToWavBlob } from "../utils/audioUtils";
 import { Language, VoiceName } from "../types";
+import { trackUsage } from "./usageService";
 
 // Helper for stateless reset
 export const resetChatSession = () => {
@@ -11,8 +11,49 @@ export const resetChatSession = () => {
 };
 
 /**
+ * Text-to-speech using Gemini 2.5 Flash TTS model.
+ * Explicitly exported to fix the AdminDashboard error.
+ */
+export async function playGeminiTTS(text: string, voiceName: string = 'Kore') {
+  const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
+  const response = await ai.models.generateContent({
+    model: "gemini-2.5-flash-preview-tts",
+    contents: [{ parts: [{ text: text }] }],
+    config: {
+      responseModalities: [Modality.AUDIO],
+      speechConfig: {
+        voiceConfig: {
+          prebuiltVoiceConfig: { voiceName: voiceName as any },
+        },
+      },
+    },
+  });
+
+  const base64Audio = response.candidates?.[0]?.content?.parts?.[0]?.inlineData?.data;
+  if (base64Audio) {
+    const audioContext = new (window.AudioContext || (window as any).webkitAudioContext)({ sampleRate: 24000 });
+    const audioBuffer = await decodeAudioData(
+      decode(base64Audio),
+      audioContext,
+      24000,
+      1
+    );
+    const source = audioContext.createBufferSource();
+    source.buffer = audioBuffer;
+    source.connect(audioContext.destination);
+    source.start();
+    
+    return new Promise<void>((resolve) => {
+      source.onended = () => {
+        audioContext.close();
+        resolve();
+      };
+    });
+  }
+}
+
+/**
  * Sends a message to Gemini using the generateContentStream API.
- * Handles function calls by notifying the UI through onToolSuccess.
  */
 export async function* sendMessageToGemini(
   message: string,
@@ -20,7 +61,6 @@ export async function* sendMessageToGemini(
   language: Language = 'en',
   onToolSuccess?: (toolName: string, result: any) => void
 ) {
-  // Create a new instance right before use to ensure the latest API key is used
   const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
   let instructions = getSystemInstruction(language);
   if (emergencyMode) {
@@ -37,53 +77,27 @@ export async function* sendMessageToGemini(
   });
 
   for await (const chunk of responseStream) {
-    // Check for function calls in the stream candidates
-    const part = chunk.candidates?.[0]?.content?.parts?.find(p => p.functionCall);
+    const c = chunk as GenerateContentResponse;
+    if (c.usageMetadata) {
+      const totalTokens = c.usageMetadata.totalTokenCount;
+      trackUsage({
+        totalTokens: totalTokens,
+        chatTokens: totalTokens,
+        apiCalls: 1
+      });
+    }
+
+    const part = c.candidates?.[0]?.content?.parts?.find(p => p.functionCall);
     if (part && part.functionCall) {
       if (onToolSuccess) {
         onToolSuccess(part.functionCall.name, part.functionCall.args);
       }
     }
-    yield chunk;
+    yield c;
   }
 }
 
-/**
- * Text-to-speech using Gemini 2.5 Flash TTS model.
- */
-export const playGeminiTTS = async (text: string, voiceName: VoiceName) => {
-  const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
-  const response = await ai.models.generateContent({
-    model: "gemini-2.5-flash-preview-tts",
-    contents: [{ parts: [{ text }] }],
-    config: {
-      responseModalities: [Modality.AUDIO],
-      speechConfig: {
-        voiceConfig: {
-          prebuiltVoiceConfig: { voiceName },
-        },
-      },
-    },
-  });
-
-  const audioPart = response.candidates?.[0]?.content?.parts?.find(p => p.inlineData);
-  const base64Audio = audioPart?.inlineData?.data;
-  if (base64Audio) {
-    const audioContext = new (window.AudioContext || (window as any).webkitAudioContext)({ sampleRate: 24000 });
-    const audioBuffer = await decodeAudioData(
-      base64ToUint8Array(base64Audio),
-      audioContext,
-      24000,
-      1,
-    );
-    const source = audioContext.createBufferSource();
-    source.buffer = audioBuffer;
-    source.connect(audioContext.destination);
-    source.start();
-  }
-};
-
-// --- Live API (Voice) Service ---
+// --- Live API (Voice & Vision) Service ---
 
 export interface LiveSessionCallbacks {
   onOpen: () => void;
@@ -102,6 +116,7 @@ export const connectLiveSession = async (
     voiceName: VoiceName = 'Kore'
 ) => {
   const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
+  const startTime = Date.now();
 
   const inputAudioContext = new (window.AudioContext || (window as any).webkitAudioContext)({ sampleRate: 16000 });
   const outputAudioContext = new (window.AudioContext || (window as any).webkitAudioContext)({ sampleRate: 24000 });
@@ -109,18 +124,11 @@ export const connectLiveSession = async (
   const analyser = outputAudioContext.createAnalyser();
   analyser.fftSize = 64; 
   const dataArray = new Uint8Array(analyser.frequencyBinCount);
-
   analyser.connect(outputAudioContext.destination);
 
   const visualizerInterval = setInterval(() => {
     analyser.getByteFrequencyData(dataArray);
-    let sum = 0;
-    for(let i=0; i<dataArray.length; i++) sum += dataArray[i];
-    if (sum > 0) {
-      callbacks.onAudioData(new Uint8Array(dataArray));
-    } else {
-        callbacks.onAudioData(new Uint8Array(dataArray.fill(0)));
-    }
+    callbacks.onAudioData(new Uint8Array(dataArray));
   }, 50);
 
   let nextStartTime = 0;
@@ -129,45 +137,55 @@ export const connectLiveSession = async (
   
   let stream: MediaStream;
   try {
-    stream = await navigator.mediaDevices.getUserMedia({ audio: true });
-  } catch (err: any) {
-    callbacks.onError(new Error("MIC_NOT_FOUND"));
-    return null;
+    stream = await navigator.mediaDevices.getUserMedia({ 
+      audio: true,
+      video: { width: { ideal: 640 }, height: { ideal: 480 }, frameRate: { ideal: 15 } }
+    });
+  } catch (err) {
+    console.warn("Camera failed, falling back to audio only", err);
+    try {
+      stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+    } catch (innerErr) {
+      callbacks.onError(new Error("MIC_NOT_FOUND"));
+      return null;
+    }
   }
 
   await inputAudioContext.resume();
   await outputAudioContext.resume();
 
-  const effectiveVoice = voiceName === 'Clone-1' ? 'Zephyr' : voiceName;
-
   let instructions = getSystemInstruction(language);
+  instructions += "\n\nVISION ENABLED: You can see the user and their environment. If they show you a product sample, floorplan, or space, comment on it to assist them. Be descriptive but concise.";
+  
   if (emergencyMode) {
-    instructions += "\n\n[SYSTEM OVERRIDE: EMERGENCY MODE ACTIVE]. Respond concisely. Prioritize safety protocols immediately.";
+    instructions += "\n\n[SYSTEM OVERRIDE: EMERGENCY MODE ACTIVE]. Respond concisely.";
   }
 
   const sessionPromise = ai.live.connect({
-    model: 'gemini-2.5-flash-native-audio-preview-09-2025',
+    model: 'gemini-2.5-flash-native-audio-preview-12-2025',
     callbacks: {
       onopen: () => {
         callbacks.onOpen();
         const source = inputAudioContext.createMediaStreamSource(stream);
         const scriptProcessor = inputAudioContext.createScriptProcessor(4096, 1, 1);
-        scriptProcessor.onaudioprocess = async (event) => {
+        scriptProcessor.onaudioprocess = (event) => {
           const inputData = event.inputBuffer.getChannelData(0);
-          const pcmBlob = createBlob(inputData);
-          const base64Data = await blobToBase64(pcmBlob);
-          // Only send data after session is resolved to avoid race conditions
-          sessionPromise.then(s => s.sendRealtimeInput({ media: { mimeType: 'audio/pcm;rate=16000', data: base64Data } }));
+          const int16 = new Int16Array(inputData.length);
+          for (let i = 0; i < inputData.length; i++) {
+            int16[i] = inputData[i] * 32768;
+          }
+          const pcmData = encode(new Uint8Array(int16.buffer));
+          sessionPromise.then(s => s.sendRealtimeInput({ media: { mimeType: 'audio/pcm;rate=16000', data: pcmData } }));
         };
         source.connect(scriptProcessor);
         scriptProcessor.connect(inputAudioContext.destination);
       },
       onmessage: async (message: LiveServerMessage) => {
-        // Handle modelTurn audio output
-        const audioPart = message.serverContent?.modelTurn?.parts?.find(p => p.inlineData);
-        const base64Audio = audioPart?.inlineData?.data;
+        const parts = message.serverContent?.modelTurn?.parts;
+        const base64Audio = parts?.find(p => p.inlineData)?.inlineData?.data;
+
         if (base64Audio) {
-            const audioData = base64ToUint8Array(base64Audio);
+            const audioData = decode(base64Audio);
             audioChunks.push(audioData);
             nextStartTime = Math.max(nextStartTime, outputAudioContext.currentTime);
             const audioBuffer = await decodeAudioData(audioData, outputAudioContext, 24000, 1);
@@ -177,31 +195,41 @@ export const connectLiveSession = async (
             source.start(nextStartTime);
             nextStartTime += audioBuffer.duration;
             sources.add(source);
+            source.onended = () => sources.delete(source);
         }
 
-        // Handle tool calls in Live session
+        if (message.serverContent?.interrupted) {
+          for (const source of sources.values()) {
+            try { source.stop(); } catch(e) {}
+            sources.delete(source);
+          }
+          nextStartTime = 0;
+        }
+
         if (message.toolCall) {
           for (const fc of message.toolCall.functionCalls) {
             callbacks.onToolCall(fc.name);
-            const result = "ok"; // Standard confirmation for mock
             if (callbacks.onToolSuccess) {
               callbacks.onToolSuccess(fc.name, { status: 'success', ...fc.args });
             }
-            // Inform the model that the function was executed
             sessionPromise.then(s => s.sendToolResponse({
-              functionResponses: {
+              functionResponses: [{
                 id: fc.id,
                 name: fc.name,
-                response: { result: result }
-              }
+                response: { result: "ok" }
+              }]
             }));
           }
         }
-
         callbacks.onMessage(null, null, !!message.serverContent?.interrupted);
       },
-      onerror: (e) => callbacks.onError(new Error("CONNECTION_ERROR")),
+      onerror: (e) => {
+        console.error("Live API Error:", e);
+        callbacks.onError(new Error("CONNECTION_ERROR"));
+      },
       onclose: () => {
+        const durationMin = (Date.now() - startTime) / 60000;
+        trackUsage({ minutesUsed: durationMin, apiCalls: 1 });
         callbacks.onClose();
         clearInterval(visualizerInterval);
       }
@@ -209,7 +237,7 @@ export const connectLiveSession = async (
     config: {
       responseModalities: [Modality.AUDIO],
       speechConfig: {
-        voiceConfig: { prebuiltVoiceConfig: { voiceName: (effectiveVoice as any) } }
+        voiceConfig: { prebuiltVoiceConfig: { voiceName: voiceName as any } }
       },
       systemInstruction: instructions,
       tools: [{ functionDeclarations: TOOLS }]
@@ -224,6 +252,12 @@ export const connectLiveSession = async (
       inputAudioContext.close();
       outputAudioContext.close();
     },
-    getAudioBlob: () => pcmToWavBlob(audioChunks, 24000)
+    getAudioBlob: () => pcmToWavBlob(audioChunks, 24000),
+    sendFrame: (base64Image: string) => {
+      sessionPromise.then(s => s.sendRealtimeInput({
+        media: { data: base64Image, mimeType: 'image/jpeg' }
+      }));
+    },
+    stream
   };
 };

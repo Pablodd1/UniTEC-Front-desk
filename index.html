@@ -3,7 +3,15 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>UNITEC Design Recepcionista</title>
+    <title>UNITEC Design | AI Front Desk Assistant</title>
+    <meta name="description" content="Professional AI-powered receptionist for wholesale distribution. Real-time voice calls and automated CRM logging." />
+    
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="UNITEC Design AI Receptionist" />
+    <meta property="og:description" content="Automate your front desk with neural voice synthesis and intelligent lead capturing." />
+    <meta property="og:image" content="https://images.unsplash.com/photo-1497366216548-37526070297c?auto=format&fit=crop&q=80" />
+
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <script>
@@ -17,39 +25,27 @@
               brand: {
                 50: '#f0f9ff',
                 100: '#e0f2fe',
-                500: '#0ea5e9', // Primary Blue
+                500: '#0ea5e9',
                 600: '#0284c7',
                 800: '#075985',
                 900: '#0c4a6e',
               },
               accent: {
-                500: '#f59e0b', // Construction/Gold accent
+                500: '#f59e0b',
               },
               grass: {
-                100: '#f0fdf4',
-                200: '#dcfce7',
                 500: '#22c55e',
-                600: '#16a34a',
-                700: '#15803d',
-                800: '#166534',
                 900: '#14532d',
               }
             },
-            backgroundImage: {
-              'grass-gradient': 'linear-gradient(135deg, #15803d 0%, #166534 50%, #064e3b 100%)',
-            },
             animation: {
               'soft-spin': 'soft-spin 3s linear infinite',
-              'grass-glow': 'grass-glow 2s ease-in-out infinite',
+              'pulse-fast': 'pulse 1.5s cubic-bezier(0.4, 0, 0.6, 1) infinite',
             },
             keyframes: {
               'soft-spin': {
                 'from': { transform: 'rotate(0deg)' },
                 'to': { transform: 'rotate(360deg)' },
-              },
-              'grass-glow': {
-                '0%, 100%': { boxShadow: '0 0 5px rgba(21, 128, 61, 0.4), 0 0 10px rgba(21, 128, 61, 0.2)' },
-                '50%': { boxShadow: '0 0 20px rgba(22, 197, 94, 0.6), 0 0 40px rgba(22, 197, 94, 0.3)' },
               }
             }
           }
@@ -57,34 +53,11 @@
       }
     </script>
     <style>
-      /* Hide scrollbar for Chrome, Safari and Opera */
-      .no-scrollbar::-webkit-scrollbar {
-          display: none;
-      }
-      /* Hide scrollbar for IE, Edge and Firefox */
-      .no-scrollbar {
-          -ms-overflow-style: none;  /* IE and Edge */
-          scrollbar-width: none;  /* Firefox */
-      }
-      @keyframes pulse-ring {
-        0% { transform: scale(0.8); opacity: 0.5; }
-        100% { transform: scale(1.3); opacity: 0; }
-      }
-      .animate-pulse-ring {
-        animation: pulse-ring 2s cubic-bezier(0.215, 0.61, 0.355, 1) infinite;
-      }
+      .no-scrollbar::-webkit-scrollbar { display: none; }
+      .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
       .btn-grass {
         background: linear-gradient(135deg, #166534 0%, #15803d 40%, #065f46 100%);
         box-shadow: 0 4px 14px 0 rgba(22, 101, 52, 0.3);
-        transition: all 0.3s ease;
-      }
-      .btn-grass:hover {
-        background: linear-gradient(135deg, #15803d 0%, #16a34a 50%, #15803d 100%);
-        transform: translateY(-1px);
-        box-shadow: 0 6px 20px rgba(22, 101, 52, 0.4);
-      }
-      .btn-grass:active {
-        transform: scale(0.98);
       }
       .grass-texture {
         background-image: radial-gradient(circle at 2px 2px, rgba(255,255,255,0.05) 1px, transparent 0);

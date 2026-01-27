@@ -78,19 +78,33 @@ export interface CalendarEvent {
   status: 'confirmed' | 'pending';
 }
 
+export interface BillingInvoice {
+  id: string;
+  date: string;
+  amount: number;
+  tokens: number;
+  status: 'Draft' | 'Sent' | 'Paid';
+}
+
 export interface UsageStats {
-  tokensUsed: number;
-  tokensLimit: number;
+  totalTokens: number;
+  chatTokens: number;
+  voiceTokens: number;
+  imageTokens: number;
   minutesUsed: number;
-  minutesLimit: number;
+  apiCalls: number;
+  limitTokens: number;
+  limitMinutes: number;
   costEstimate: number;
+  billingHistory: BillingInvoice[];
+  dailyHistory: {
+    date: string;
+    tokens: number;
+    calls: number;
+  }[];
 }
 
 export type VisualizerData = Uint8Array;
-
 export type Language = 'en' | 'es';
-
 export type VoiceProvider = 'gemini' | 'deepgram';
-
-// Updated to allow any string for dynamic clones
-export type VoiceName = 'Puck' | 'Charon' | 'Kore' | 'Fenrir' | 'Zephyr' | 'asteria-en' | 'luna-en' | 'orion-en' | 'arcas-en' | string;
+export type VoiceName = string;

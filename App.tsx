@@ -10,9 +10,13 @@ import LoginScreen from './components/LoginScreen';
 import { Tab, Language, VoiceName, VoiceProvider } from './types';
 import { BUSINESS_CONFIG, QUICK_ACTIONS, SERVICES } from './constants';
 import { resetChatSession } from './services/geminiService';
+import { MessageSquare, X } from 'lucide-react';
 
 const App: React.FC = () => {
-  // Auth State
+  // Widget Visibility
+  const [isWidgetOpen, setIsWidgetOpen] = useState(false);
+  
+  // Auth State (Within the widget)
   const [isLoggedIn, setIsLoggedIn] = useState(false);
 
   const [activeTab, setActiveTab] = useState<Tab>(Tab.CHAT);
@@ -26,7 +30,6 @@ const App: React.FC = () => {
   
   const [initialMessage, setInitialMessage] = useState<string | undefined>(undefined);
 
-  // Reset chat session when settings change to ensure new context/language is used
   useEffect(() => {
     resetChatSession();
   }, [emergencyMode, language]);
@@ -40,6 +43,11 @@ const App: React.FC = () => {
   };
 
   const renderContent = () => {
+    // Force login if trying to access Admin Settings or Calendar
+    if ((activeTab === Tab.ADMIN_SETTINGS || activeTab === Tab.CALENDAR) && !isLoggedIn) {
+        return <LoginScreen config={BUSINESS_CONFIG} onLogin={() => setIsLoggedIn(true)} />;
+    }
+
     switch (activeTab) {
       case Tab.CHAT:
         return <ChatTab 
@@ -89,22 +97,57 @@ const App: React.FC = () => {
     }
   };
 
-  if (!isLoggedIn) {
-      return <LoginScreen config={BUSINESS_CONFIG} onLogin={() => setIsLoggedIn(true)} />;
-  }
-
   return (
-    <Layout 
-      activeTab={activeTab} 
-      onTabChange={setActiveTab}
-      config={BUSINESS_CONFIG}
-      onOpenDashboard={() => setActiveTab(Tab.ADMIN_SETTINGS)}
-      language={language}
-      setLanguage={setLanguage}
-      onLogout={() => setIsLoggedIn(false)}
-    >
-      {renderContent()}
-    </Layout>
+    <>
+      {/* Background Demo Website */}
+      <div className={`fixed inset-0 bg-slate-100 flex items-center justify-center -z-10 ${isWidgetOpen ? 'blur-lg grayscale-[0.2]' : ''} transition-all duration-700`}>
+          <div className="text-center p-8 max-w-2xl">
+              <h2 className="text-3xl md:text-5xl font-black text-slate-800 mb-6 tracking-tight">UNITEC USA</h2>
+              <p className="text-slate-500 mb-10 leading-relaxed text-sm md:text-base">
+                Professional Construction Materials Distributor. Florida-based stock.
+                This page represents your existing website where the AI assistant widget will be integrated.
+              </p>
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                  {[1,2,3].map(i => (
+                    <div key={i} className="h-40 bg-white rounded-3xl shadow-sm border border-slate-200 p-6 flex items-end">
+                       <div className="w-12 h-2 bg-slate-100 rounded-full"></div>
+                    </div>
+                  ))}
+              </div>
+          </div>
+      </div>
+
+      {/* Widget Trigger Button */}
+      <button 
+        onClick={() => setIsWidgetOpen(!isWidgetOpen)}
+        className={`fixed bottom-6 right-6 w-16 h-16 rounded-full shadow-2xl flex items-center justify-center transition-all duration-500 hover:scale-110 active:scale-95 z-[10000] 
+          ${isWidgetOpen ? 'md:bg-white md:text-slate-800 md:rotate-90 hidden md:flex' : 'bg-brand-600 text-white flex'}
+        `}
+      >
+        {isWidgetOpen ? <X size={28} /> : (
+          <div className="relative">
+            <MessageSquare size={28} />
+            <div className="absolute -top-1 -right-1 w-4 h-4 bg-accent-500 rounded-full border-2 border-brand-600 animate-pulse"></div>
+          </div>
+        )}
+      </button>
+
+      {/* Widget Layout Container */}
+      {isWidgetOpen && (
+        <Layout 
+          activeTab={activeTab} 
+          onTabChange={setActiveTab}
+          config={BUSINESS_CONFIG}
+          onOpenDashboard={() => setActiveTab(Tab.ADMIN_SETTINGS)}
+          language={language}
+          setLanguage={setLanguage}
+          onLogout={() => setIsLoggedIn(false)}
+          onCloseWidget={() => setIsWidgetOpen(false)}
+        >
+          {renderContent()}
+        </Layout>
+      )}
+    </>
   );
 };
 
