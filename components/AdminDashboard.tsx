@@ -5,11 +5,12 @@ import {
   Save, Cpu, HardDrive, RefreshCw, Check, Loader2, Volume2, Download, 
   Pause, Play, Music, CheckCircle2, Server, Headphones, ToggleLeft, 
   ToggleRight, AlertCircle, TrendingUp, Zap, CreditCard, PieChart, 
-  Receipt, FileText, Plus, BarChart3, Trash2, DollarSign, Gauge, Building2, Store, Brain
+  Receipt, FileText, Plus, BarChart3, Trash2, DollarSign, Gauge, Building2, Store, Brain, Code, Copy
 } from 'lucide-react';
 import { CrmLog, VoiceName, VoiceProvider, UsageStats, EscalaConfig, CallRecording, BillingInvoice } from '../types';
 import { playGeminiTTS } from '../services/geminiService';
 import { playDeepgramTTS } from '../services/deepgramService';
+import { playElevenLabsTTS } from '../services/elevenLabsService';
 import { getEscalaConfig, saveEscalaConfig, testEscalaConnection } from '../services/escalaService';
 import { getUsageStats, resetUsage, generateInvoice, getProfitEstimate } from '../services/usageService';
 
@@ -43,7 +44,7 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({
     currentBrandId = 'unitec',
     onToggleBrand
 }) => {
-  const [activeSubTab, setActiveSubTab] = useState<'usage' | 'voice' | 'integrations' | 'general' | 'training'>('usage');
+  const [activeSubTab, setActiveSubTab] = useState<'usage' | 'voice' | 'integrations' | 'deploy' | 'training' | 'general'>('usage');
   const [recordings, setRecordings] = useState<CallRecording[]>([]);
   
   // Usage & Billing State
@@ -64,13 +65,16 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({
   const [isTestingVoice, setIsTestingVoice] = useState<string | null>(null);
   const [testFeedback, setTestFeedback] = useState<string | null>(null);
   
+  // ElevenLabs State
+  const [elevenLabsKey, setElevenLabsKey] = useState('');
+  const [elevenLabsVoiceId, setElevenLabsVoiceId] = useState('');
+
   // Model Training State
   const [trainingData, setTrainingData] = useState<string>('');
   const [isSavingTraining, setIsSavingTraining] = useState(false);
 
   const audioRef = useRef<HTMLAudioElement | null>(null);
   const geminiVoices: VoiceName[] = ['Aoede', 'Kore', 'Zephyr', 'Puck', 'Fenrir', 'Charon'];
-  const deepgramVoices: VoiceName[] = ['asteria-en', 'luna-en', 'orion-en', 'arcas-en'];
   const [customClones, setCustomClones] = useState<string[]>([]);
   
   useEffect(() => {
@@ -83,6 +87,10 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({
     // Load Training Data
     const storedTraining = localStorage.getItem('unitec_training_data');
     if (storedTraining) setTrainingData(storedTraining);
+    
+    // Load ElevenLabs
+    setElevenLabsKey(localStorage.getItem('unitec_elevenlabs_key') || '');
+    setElevenLabsVoiceId(localStorage.getItem('unitec_elevenlabs_voice_id') || '');
 
     const interval = setInterval(() => {
       setUsage(getUsageStats());
@@ -109,6 +117,15 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({
     }, 1200);
   };
 
+  const saveElevenLabsConfig = () => {
+    localStorage.setItem('unitec_elevenlabs_key', elevenLabsKey);
+    localStorage.setItem('unitec_elevenlabs_voice_id', elevenLabsVoiceId);
+    if(elevenLabsVoiceId) {
+        setVoiceName(elevenLabsVoiceId);
+        setVoiceProvider('elevenlabs');
+    }
+  };
+
   const handleTestVoice = async (v: VoiceName) => {
     if (isTestingVoice) return;
     setIsTestingVoice(v);
@@ -117,13 +134,17 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({
         if (voiceProvider === 'gemini') {
             await playGeminiTTS("Hello! This is a test of my voice responsiveness.", v);
             setTestFeedback(`${v} connected.`);
+        } else if (voiceProvider === 'elevenlabs') {
+            await playElevenLabsTTS("Hello! This is my cloned voice.", elevenLabsKey, v || elevenLabsVoiceId);
+            setTestFeedback("Cloned voice active.");
         } else {
-            await playDeepgramTTS("Channel test.", deepgramKey, v, () => {}, () => {
-              setIsTestingVoice(null);
-              setTestFeedback(`${v.replace('-en', '')} ready.`);
-            });
+            // Deepgram fallback
+            await playDeepgramTTS("Channel test.", deepgramKey, v, () => {}, () => {});
         }
+        
         if (voiceProvider === 'gemini') setTimeout(() => setIsTestingVoice(null), 3000);
+        else setTimeout(() => setIsTestingVoice(null), 1000);
+
     } catch (e) {
         setIsTestingVoice(null);
         setTestFeedback("Error testing voice.");
@@ -223,70 +244,6 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({
                             ))}
                         </div>
                     </div>
-
-                    {/* Invoicing Section */}
-                    <div className="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
-                        <div className="p-6 border-b border-slate-100 bg-slate-50/50 flex justify-between items-center">
-                             <div>
-                                <h3 className="text-sm font-bold text-slate-800 flex items-center gap-2">
-                                    <Receipt size={18} className="text-brand-600" /> Professional Billing History
-                                </h3>
-                                <p className="text-[10px] text-slate-500 mt-0.5">Exportable statements for client invoicing.</p>
-                             </div>
-                             <button 
-                                onClick={handleCreateInvoice}
-                                disabled={isGeneratingInvoice}
-                                className="px-4 py-2 bg-brand-600 text-white text-xs font-bold rounded-lg hover:bg-brand-700 transition-all shadow-md flex items-center gap-2"
-                             >
-                                {isGeneratingInvoice ? <Loader2 size={14} className="animate-spin" /> : <Plus size={14} />}
-                                New Invoice
-                             </button>
-                        </div>
-                        <div className="overflow-x-auto">
-                            {usage.billingHistory && usage.billingHistory.length > 0 ? (
-                                <table className="w-full text-left">
-                                    <thead className="bg-slate-50 text-[10px] font-bold text-slate-400 uppercase tracking-widest border-b border-slate-100">
-                                        <tr>
-                                            <th className="px-6 py-4">ID</th>
-                                            <th className="px-6 py-4">Generated</th>
-                                            <th className="px-6 py-4 text-right">Units</th>
-                                            <th className="px-6 py-4 text-right">Total Owed</th>
-                                            <th className="px-6 py-4 text-center">Export</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody className="divide-y divide-slate-50">
-                                        {usage.billingHistory.map((inv) => (
-                                            <tr key={inv.id} className="hover:bg-slate-50/50">
-                                                <td className="px-6 py-4 text-xs font-bold text-slate-700">{inv.id}</td>
-                                                <td className="px-6 py-4 text-xs text-slate-500">{inv.date}</td>
-                                                <td className="px-6 py-4 text-xs text-right text-slate-500">{(inv.tokens / 1000).toFixed(1)}k</td>
-                                                <td className="px-6 py-4 text-xs font-bold text-right text-brand-600">${inv.amount.toFixed(2)}</td>
-                                                <td className="px-6 py-4 text-center">
-                                                    <button className="p-1.5 hover:bg-slate-100 rounded-md text-slate-400 transition-colors">
-                                                      <Download size={14} />
-                                                    </button>
-                                                </td>
-                                            </tr>
-                                        ))}
-                                    </tbody>
-                                </table>
-                            ) : (
-                                <div className="p-16 text-center text-slate-400">
-                                    <FileText size={48} className="mx-auto mb-4 opacity-10" />
-                                    <p className="text-sm font-medium italic">Ready to bill. Generate an invoice to begin.</p>
-                                </div>
-                            )}
-                        </div>
-                    </div>
-                    
-                    <div className="flex justify-center">
-                        <button 
-                            onClick={() => { if(confirm("This will clear ALL billing history. Continue?")) { resetUsage(); setUsage(getUsageStats()); } }}
-                            className="text-[10px] font-bold text-red-400 hover:text-red-600 uppercase tracking-widest flex items-center gap-1"
-                        >
-                            <Trash2 size={12} /> Clear Billing System
-                        </button>
-                    </div>
                 </div>
             );
 
@@ -295,40 +252,111 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({
                 <div className="space-y-8 animate-in slide-in-from-bottom-2 duration-500 pb-20">
                     <div className="bg-white p-8 rounded-2xl border border-slate-200 shadow-sm">
                         <div className="flex justify-between items-center mb-6">
+                            <h3 className="text-xs font-bold text-slate-400 uppercase tracking-widest">Active Provider</h3>
+                            <div className="flex gap-2">
+                                <button 
+                                  onClick={() => setVoiceProvider('gemini')}
+                                  className={`px-4 py-2 rounded-lg text-xs font-bold border ${voiceProvider === 'gemini' ? 'bg-brand-50 border-brand-200 text-brand-700' : 'bg-white border-slate-200 text-slate-500'}`}
+                                >
+                                  Google Gemini (Fastest)
+                                </button>
+                                <button 
+                                  onClick={() => setVoiceProvider('elevenlabs')}
+                                  className={`px-4 py-2 rounded-lg text-xs font-bold border ${voiceProvider === 'elevenlabs' ? 'bg-indigo-50 border-indigo-200 text-indigo-700' : 'bg-white border-slate-200 text-slate-500'}`}
+                                >
+                                  ElevenLabs (Cloned)
+                                </button>
+                            </div>
+                        </div>
+
+                        {voiceProvider === 'elevenlabs' && (
+                             <div className="mb-8 p-6 bg-indigo-50 rounded-xl border border-indigo-100 space-y-4">
+                                <div className="flex items-center gap-2 mb-2">
+                                    <Globe size={16} className="text-indigo-600" />
+                                    <h4 className="font-bold text-indigo-900 text-sm">Voice Cloning Setup</h4>
+                                </div>
+                                <div>
+                                    <label className="text-[10px] font-bold text-indigo-400 uppercase tracking-widest">ElevenLabs API Key</label>
+                                    <input 
+                                        type="password" 
+                                        value={elevenLabsKey}
+                                        onChange={(e) => setElevenLabsKey(e.target.value)}
+                                        className="w-full mt-1 px-4 py-2 rounded-lg border border-indigo-200 focus:ring-2 focus:ring-indigo-500 outline-none text-sm"
+                                        placeholder="xi-..."
+                                    />
+                                </div>
+                                <div>
+                                    <label className="text-[10px] font-bold text-indigo-400 uppercase tracking-widest">Voice ID</label>
+                                    <div className="flex gap-2">
+                                        <input 
+                                            type="text" 
+                                            value={elevenLabsVoiceId}
+                                            onChange={(e) => setElevenLabsVoiceId(e.target.value)}
+                                            className="flex-1 mt-1 px-4 py-2 rounded-lg border border-indigo-200 focus:ring-2 focus:ring-indigo-500 outline-none text-sm"
+                                            placeholder="e.g. 21m00Tcm4TlvDq8ikWAM"
+                                        />
+                                        <button onClick={saveElevenLabsConfig} className="mt-1 px-4 bg-indigo-600 text-white rounded-lg text-xs font-bold hover:bg-indigo-700">
+                                            Save
+                                        </button>
+                                    </div>
+                                </div>
+                             </div>
+                        )}
+
+                        <div className="flex justify-between items-center mb-6">
                             <h3 className="text-xs font-bold text-slate-400 uppercase tracking-widest">Persona Library</h3>
                             <div className="flex items-center gap-1.5 bg-emerald-50 px-2.5 py-1 rounded-md border border-emerald-100">
                                 <Gauge size={12} className="text-emerald-600" />
-                                <span className="text-[10px] font-bold text-emerald-700 uppercase tracking-wide">Flash Native Speed: Active</span>
+                                <span className="text-[10px] font-bold text-emerald-700 uppercase tracking-wide">
+                                    {voiceProvider === 'elevenlabs' ? 'Standard Latency' : 'Flash Native Speed'}
+                                </span>
                             </div>
                         </div>
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                            {currentVoiceList.map(v => {
-                                const details = GEMINI_VOICE_DESCRIPTIONS[v];
-                                return (
-                                    <div key={v} className={`flex items-center justify-between p-4 rounded-xl border transition-all ${voiceName === v ? 'bg-brand-50 border-brand-200 ring-2 ring-brand-100' : 'bg-white border-slate-100'}`}>
-                                        <div className="flex items-center gap-3">
-                                            <div className={`w-10 h-10 rounded-full flex items-center justify-center text-xs font-bold ${voiceName === v ? 'bg-brand-600 text-white' : 'bg-slate-100 text-slate-400'}`}>
-                                                {v.charAt(0)}
-                                            </div>
-                                            <button onClick={() => setVoiceName(v)} className="text-left">
-                                                <div className="flex items-center gap-2">
-                                                    <p className="text-sm font-bold text-slate-800">{v}</p>
-                                                    {voiceName === v && <div className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></div>}
+                        
+                        {voiceProvider === 'gemini' && (
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                {currentVoiceList.map(v => {
+                                    const details = GEMINI_VOICE_DESCRIPTIONS[v];
+                                    return (
+                                        <div key={v} className={`flex items-center justify-between p-4 rounded-xl border transition-all ${voiceName === v ? 'bg-brand-50 border-brand-200 ring-2 ring-brand-100' : 'bg-white border-slate-100'}`}>
+                                            <div className="flex items-center gap-3">
+                                                <div className={`w-10 h-10 rounded-full flex items-center justify-center text-xs font-bold ${voiceName === v ? 'bg-brand-600 text-white' : 'bg-slate-100 text-slate-400'}`}>
+                                                    {v.charAt(0)}
                                                 </div>
-                                                {details && (
-                                                    <p className="text-[10px] text-slate-500 font-medium">
-                                                        {details.style} • {details.gender}
-                                                    </p>
-                                                )}
+                                                <button onClick={() => setVoiceName(v)} className="text-left">
+                                                    <div className="flex items-center gap-2">
+                                                        <p className="text-sm font-bold text-slate-800">{v}</p>
+                                                        {voiceName === v && <div className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></div>}
+                                                    </div>
+                                                    {details && (
+                                                        <p className="text-[10px] text-slate-500 font-medium">
+                                                            {details.style} • {details.gender}
+                                                        </p>
+                                                    )}
+                                                </button>
+                                            </div>
+                                            <button onClick={() => handleTestVoice(v)} className="p-2 bg-white border border-slate-100 rounded-lg shadow-sm hover:shadow-md text-brand-600 transition-all hover:bg-brand-50">
+                                                {isTestingVoice === v ? <Loader2 size={16} className="animate-spin" /> : <Volume2 size={16} />}
                                             </button>
                                         </div>
-                                        <button onClick={() => handleTestVoice(v)} className="p-2 bg-white border border-slate-100 rounded-lg shadow-sm hover:shadow-md text-brand-600 transition-all hover:bg-brand-50">
-                                            {isTestingVoice === v ? <Loader2 size={16} className="animate-spin" /> : <Volume2 size={16} />}
-                                        </button>
-                                    </div>
-                                );
-                            })}
-                        </div>
+                                    );
+                                })}
+                            </div>
+                        )}
+                        
+                        {voiceProvider === 'elevenlabs' && (
+                             <div className="p-12 text-center text-slate-400 bg-slate-50 rounded-xl border border-dashed border-slate-300">
+                                <Mic2 size={48} className="mx-auto mb-4 text-indigo-300" />
+                                <p className="font-bold text-slate-600">Using Cloned Voice ID</p>
+                                <p className="text-xs mt-1 font-mono bg-white px-2 py-1 rounded inline-block border border-slate-200">{elevenLabsVoiceId || "No ID Set"}</p>
+                                <div className="mt-4">
+                                    <button onClick={() => handleTestVoice(elevenLabsVoiceId)} className="px-6 py-2 bg-indigo-600 text-white rounded-full text-sm font-bold hover:bg-indigo-700 flex items-center gap-2 mx-auto">
+                                       {isTestingVoice ? <Loader2 size={14} className="animate-spin" /> : <Volume2 size={14} />}
+                                       Test Clone
+                                    </button>
+                                </div>
+                             </div>
+                        )}
                     </div>
                 </div>
             );
@@ -392,7 +420,7 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({
                     </div>
                 </div>
             );
-
+        
         case 'training':
             return (
                 <div className="space-y-8 animate-in slide-in-from-bottom-2 duration-500 pb-20">
@@ -429,6 +457,41 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({
                                 This content will be injected into the system prompt for both Chat and Voice interactions.
                             </p>
                         </div>
+                    </div>
+                </div>
+            );
+
+        case 'deploy':
+            const currentUrl = window.location.origin;
+            const embedCode = `<iframe src="${currentUrl}" width="400" height="700" style="border:none; position:fixed; bottom:20px; right:20px; z-index:9999; border-radius:24px; box-shadow: 0 10px 40px rgba(0,0,0,0.15);"></iframe>`;
+            
+            return (
+                <div className="space-y-8 animate-in slide-in-from-bottom-2 duration-500 pb-20">
+                    <div className="bg-white p-8 rounded-2xl border border-slate-200 shadow-sm relative">
+                        <div className="flex items-center gap-4 mb-6">
+                            <div className="w-12 h-12 bg-blue-50 text-blue-600 rounded-2xl flex items-center justify-center shrink-0">
+                                <Code size={24} />
+                            </div>
+                            <div>
+                                <h3 className="text-lg font-bold text-slate-800">Website Integration</h3>
+                                <p className="text-xs text-slate-500">Embed this AI Assistant on any website.</p>
+                            </div>
+                        </div>
+
+                        <div className="bg-slate-900 rounded-xl p-6 relative group">
+                            <pre className="text-xs font-mono text-slate-300 whitespace-pre-wrap break-all">
+                                {embedCode}
+                            </pre>
+                            <button 
+                                onClick={() => navigator.clipboard.writeText(embedCode)}
+                                className="absolute top-4 right-4 p-2 bg-white/10 hover:bg-white/20 text-white rounded-lg transition-colors"
+                            >
+                                <Copy size={16} />
+                            </button>
+                        </div>
+                        <p className="text-[10px] text-slate-400 mt-4 text-center">
+                            Copy this code and paste it before the closing <code>&lt;/body&gt;</code> tag of your website.
+                        </p>
                     </div>
                 </div>
             );
@@ -506,11 +569,12 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({
         <div className="bg-white border-b border-slate-200 px-6 pt-2 overflow-x-auto no-scrollbar shrink-0">
              <div className="flex gap-8">
                  {[
-                    { id: 'usage', label: 'Usage & Billing', icon: <DollarSign size={14} /> },
+                    { id: 'usage', label: 'Usage', icon: <DollarSign size={14} /> },
                     { id: 'voice', label: 'Voice Config', icon: <Mic2 size={14} /> },
-                    { id: 'training', label: 'Model Training', icon: <Brain size={14} /> },
-                    { id: 'integrations', label: 'CRM Sync', icon: <Database size={14} /> },
-                    { id: 'general', label: 'Config & Security', icon: <ShieldCheck size={14} /> }
+                    { id: 'training', label: 'Training', icon: <Brain size={14} /> },
+                    { id: 'deploy', label: 'Deploy', icon: <Code size={14} /> },
+                    { id: 'integrations', label: 'CRM', icon: <Database size={14} /> },
+                    { id: 'general', label: 'Settings', icon: <ShieldCheck size={14} /> }
                  ].map(t => (
                     <button 
                         key={t.id}
