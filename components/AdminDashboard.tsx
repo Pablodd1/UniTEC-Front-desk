@@ -5,7 +5,7 @@ import {
   Save, Cpu, HardDrive, RefreshCw, Check, Loader2, Volume2, Download, 
   Pause, Play, Music, CheckCircle2, Server, Headphones, ToggleLeft, 
   ToggleRight, AlertCircle, TrendingUp, Zap, CreditCard, PieChart, 
-  Receipt, FileText, Plus, BarChart3, Trash2, DollarSign, Gauge
+  Receipt, FileText, Plus, BarChart3, Trash2, DollarSign, Gauge, Building2, Store
 } from 'lucide-react';
 import { CrmLog, VoiceName, VoiceProvider, UsageStats, EscalaConfig, CallRecording, BillingInvoice } from '../types';
 import { playGeminiTTS } from '../services/geminiService';
@@ -22,6 +22,8 @@ interface AdminDashboardProps {
   setVoiceProvider: (provider: VoiceProvider) => void;
   deepgramKey: string;
   setDeepgramKey: (key: string) => void;
+  currentBrandId?: 'unitec' | 'building';
+  onToggleBrand?: (brand: 'unitec' | 'building') => void;
 }
 
 const GEMINI_VOICE_DESCRIPTIONS: Record<string, { gender: 'Male' | 'Female', style: string }> = {
@@ -37,7 +39,9 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({
     emergencyMode, setEmergencyMode, 
     voiceName, setVoiceName,
     voiceProvider, setVoiceProvider,
-    deepgramKey, setDeepgramKey
+    deepgramKey, setDeepgramKey,
+    currentBrandId = 'unitec',
+    onToggleBrand
 }) => {
   const [activeSubTab, setActiveSubTab] = useState<'usage' | 'voice' | 'integrations' | 'general'>('usage');
   const [recordings, setRecordings] = useState<CallRecording[]>([]);
@@ -380,6 +384,49 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({
                 <div className="space-y-8 animate-in slide-in-from-bottom-2 duration-500 pb-20">
                      <div className="bg-white p-8 rounded-2xl border border-slate-200 shadow-sm">
                         <h3 className="text-lg font-bold text-slate-800 mb-6 flex items-center gap-2">
+                            <Store size={20} className="text-brand-500" /> Brand Identity
+                        </h3>
+                        <div className="bg-slate-50 p-6 rounded-2xl border border-slate-100">
+                             <div className="flex items-center justify-between mb-4">
+                                <div>
+                                    <p className="text-sm font-bold text-slate-800">Active Business Profile</p>
+                                    <p className="text-[10px] text-slate-400 font-medium mt-1">Select which company identity the AI represents.</p>
+                                </div>
+                             </div>
+                             <div className="grid grid-cols-2 gap-4">
+                                <button 
+                                   onClick={() => onToggleBrand && onToggleBrand('unitec')}
+                                   className={`p-4 rounded-xl border-2 transition-all flex flex-col items-center gap-3 ${currentBrandId === 'unitec' ? 'border-brand-500 bg-white shadow-md' : 'border-slate-100 bg-slate-100 text-slate-400 opacity-60 hover:opacity-100'}`}
+                                >
+                                    <div className={`w-10 h-10 rounded-full flex items-center justify-center ${currentBrandId === 'unitec' ? 'bg-brand-100 text-brand-600' : 'bg-slate-200'}`}>
+                                        <Store size={20} />
+                                    </div>
+                                    <div className="text-center">
+                                        <p className="font-bold text-xs">UNITEC Design</p>
+                                        <p className="text-[9px] mt-0.5">Wholesale Distributor</p>
+                                    </div>
+                                    {currentBrandId === 'unitec' && <div className="w-2 h-2 rounded-full bg-brand-500"></div>}
+                                </button>
+                                
+                                <button 
+                                   onClick={() => onToggleBrand && onToggleBrand('building')}
+                                   className={`p-4 rounded-xl border-2 transition-all flex flex-col items-center gap-3 ${currentBrandId === 'building' ? 'border-indigo-500 bg-white shadow-md' : 'border-slate-100 bg-slate-100 text-slate-400 opacity-60 hover:opacity-100'}`}
+                                >
+                                    <div className={`w-10 h-10 rounded-full flex items-center justify-center ${currentBrandId === 'building' ? 'bg-indigo-100 text-indigo-600' : 'bg-slate-200'}`}>
+                                        <Building2 size={20} />
+                                    </div>
+                                    <div className="text-center">
+                                        <p className="font-bold text-xs">Building Innovation</p>
+                                        <p className="text-[9px] mt-0.5">Construction Solutions</p>
+                                    </div>
+                                    {currentBrandId === 'building' && <div className="w-2 h-2 rounded-full bg-indigo-500"></div>}
+                                </button>
+                             </div>
+                        </div>
+                     </div>
+
+                     <div className="bg-white p-8 rounded-2xl border border-slate-200 shadow-sm">
+                        <h3 className="text-lg font-bold text-slate-800 mb-6 flex items-center gap-2">
                             <ShieldCheck size={20} className="text-brand-500" /> Security Controls
                         </h3>
                         <div className="flex items-center justify-between p-6 rounded-2xl bg-slate-50 border border-slate-100">
@@ -408,7 +455,7 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({
                     { id: 'usage', label: 'Usage & Billing', icon: <DollarSign size={14} /> },
                     { id: 'voice', label: 'Voice Config', icon: <Mic2 size={14} /> },
                     { id: 'integrations', label: 'CRM Sync', icon: <Database size={14} /> },
-                    { id: 'general', label: 'Security', icon: <ShieldCheck size={14} /> }
+                    { id: 'general', label: 'Config & Security', icon: <ShieldCheck size={14} /> }
                  ].map(t => (
                     <button 
                         key={t.id}

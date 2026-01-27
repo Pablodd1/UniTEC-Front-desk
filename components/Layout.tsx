@@ -1,3 +1,4 @@
+
 import React from 'react';
 import { Tab, BusinessConfig, Language } from '../types';
 import { MessageSquare, Phone, Grid, Info, ShieldCheck, LayoutDashboard, ChevronDown } from 'lucide-react';
@@ -15,7 +16,7 @@ interface LayoutProps {
   onCloseWidget: () => void;
 }
 
-const Layout: React.FC<LayoutProps> = ({ children, activeTab, onTabChange, language, setLanguage, onCloseWidget }) => {
+const Layout: React.FC<LayoutProps> = ({ children, activeTab, onTabChange, config, language, setLanguage, onCloseWidget }) => {
   const t = UI_TRANSLATIONS[language];
 
   const NavItem = ({ tab, icon, label }: { tab: Tab, icon: React.ReactNode, label: string }) => {
@@ -36,6 +37,11 @@ const Layout: React.FC<LayoutProps> = ({ children, activeTab, onTabChange, langu
     );
   };
 
+  // Basic logic to split name for 2-tone effect
+  const nameParts = config.name.split(' ');
+  const firstName = nameParts[0];
+  const restName = nameParts.slice(1).join(' ');
+
   return (
     <div className="fixed inset-0 z-[9999] flex flex-col bg-white overflow-hidden animate-in slide-in-from-bottom-8 fade-in duration-500 md:inset-auto md:bottom-24 md:right-6 md:w-[400px] md:h-[700px] md:max-h-[90vh] md:rounded-[32px] md:shadow-2xl md:border md:border-slate-200">
       
@@ -48,7 +54,9 @@ const Layout: React.FC<LayoutProps> = ({ children, activeTab, onTabChange, langu
                 <ShieldCheck className="text-accent-500" size={24} />
              </div>
              <div>
-               <h1 className="text-white text-sm font-black tracking-wider uppercase leading-none">UNITEC <span className="text-brand-300 font-light">DESIGN</span></h1>
+               <h1 className="text-white text-sm font-black tracking-wider uppercase leading-none">
+                 {firstName} <span className="text-brand-300 font-light">{restName}</span>
+               </h1>
                <div className="flex items-center gap-1.5 mt-1">
                   <div className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></div>
                   <span className="text-[9px] text-brand-300 font-bold uppercase tracking-widest">Florida Stock Active</span>

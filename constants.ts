@@ -3,7 +3,7 @@ import { BusinessConfig, QuickAction, ServiceOffering } from './types';
 import { FunctionDeclaration, Type } from "@google/genai";
 import { Language } from './types';
 
-export const BUSINESS_CONFIG: BusinessConfig = {
+export const UNITEC_CONFIG: BusinessConfig = {
   name: "UNITEC USA DESIGN",
   tagline: "Direct Importer - Wholesale Distribution",
   contact: {
@@ -16,6 +16,23 @@ export const BUSINESS_CONFIG: BusinessConfig = {
     "Special pricing on Acrylic Panels"
   ]
 };
+
+export const BUILDING_INNOVATION_CONFIG: BusinessConfig = {
+  name: "BUILDING INNOVATION",
+  tagline: "Advanced Construction Solutions",
+  contact: {
+    whatsapp: "+57 314 233 2147", // Same info as requested
+    instagram: "@buildinginnovation",
+    location: "Florida, USA (Immediate Stock Available)"
+  },
+  promotions: [
+    "New Arrival: Tech-composite Panels",
+    "Innovation Week: Free consultations"
+  ]
+};
+
+// Default export for initial load
+export const BUSINESS_CONFIG = UNITEC_CONFIG;
 
 export const SERVICES: ServiceOffering[] = [
   {
@@ -101,8 +118,8 @@ const logToCrmTool: FunctionDeclaration = {
 export const TOOLS = [bookAppointmentTool, logToCrmTool];
 
 export const getSystemInstruction = (language: Language = 'en') => `
-You are the professional AI Front Desk Assistant for UNITEC USA DESIGN.
-Role: Direct Importer & Wholesale Distributor of construction materials.
+You are the professional AI Front Desk Assistant.
+Current Business Context: UNITEC USA DESIGN or Building Innovation (Wholesale Distribution).
 Location: Operations in Florida, USA (Immediate Stock).
 Current Language Setting: ${language === 'en' ? 'ENGLISH' : 'SPANISH'}.
 
@@ -128,7 +145,7 @@ export const UI_TRANSLATIONS = {
   en: {
     chatPlaceholder: "Type your message...",
     send: "Send",
-    chatWelcome: "Hello! Welcome to UNITEC USA DESIGN. I can help you with wholesale pricing, product stock in Florida, installation guides, or even talk to you via our new AI Voice Assistant. How can I assist you today?",
+    chatWelcome: "Hello! Welcome to our Front Desk. I can help you with wholesale pricing, product stock in Florida, installation guides, or even talk to you via our new AI Voice Assistant. How can I assist you today?",
     voiceTitle: "Voice Assistant",
     tapToStart: "Tap the microphone to start",
     connecting: "Connecting securely...",
@@ -164,7 +181,7 @@ export const UI_TRANSLATIONS = {
   es: {
     chatPlaceholder: "Escribe tu mensaje...",
     send: "Enviar",
-    chatWelcome: "¡Hola! Bienvenido a UNITEC USA DESIGN. Puedo ayudarte con precios mayoristas, stock en Florida, guías de instalación, o incluso hablar contigo a través de nuestro nuevo Asistente de Voz IA. ¿En qué puedo ayudarte hoy?",
+    chatWelcome: "¡Hola! Bienvenido. Puedo ayudarte con precios mayoristas, stock en Florida, guías de instalación, o incluso hablar contigo a través de nuestro nuevo Asistente de Voz IA. ¿En qué puedo ayudarte hoy?",
     voiceTitle: "Asistente de Voz",
     tapToStart: "Toca el micrófono para iniciar",
     connecting: "Conectando...",

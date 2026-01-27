@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from 'react';
 import Layout from './components/Layout';
 import ChatTab from './components/ChatTab';
@@ -8,7 +9,7 @@ import AdminDashboard from './components/AdminDashboard';
 import CalendarTab from './components/CalendarTab';
 import LoginScreen from './components/LoginScreen';
 import { Tab, Language, VoiceName, VoiceProvider } from './types';
-import { BUSINESS_CONFIG, QUICK_ACTIONS, SERVICES } from './constants';
+import { UNITEC_CONFIG, BUILDING_INNOVATION_CONFIG, QUICK_ACTIONS, SERVICES } from './constants';
 import { resetChatSession } from './services/geminiService';
 import { MessageSquare, X } from 'lucide-react';
 
@@ -23,6 +24,10 @@ const App: React.FC = () => {
   const [emergencyMode, setEmergencyMode] = useState(false);
   const [language, setLanguage] = useState<Language>('en');
   
+  // Business Identity State
+  const [currentBrandId, setCurrentBrandId] = useState<'unitec' | 'building'>('unitec');
+  const activeConfig = currentBrandId === 'unitec' ? UNITEC_CONFIG : BUILDING_INNOVATION_CONFIG;
+
   // Voice Settings
   const [voiceProvider, setVoiceProvider] = useState<VoiceProvider>('gemini');
   const [voiceName, setVoiceName] = useState<VoiceName>('Kore');
@@ -32,7 +37,7 @@ const App: React.FC = () => {
 
   useEffect(() => {
     resetChatSession();
-  }, [emergencyMode, language]);
+  }, [emergencyMode, language, currentBrandId]);
 
   const handleConsultProduct = (productName: string) => {
     const msg = language === 'en' 
@@ -45,7 +50,7 @@ const App: React.FC = () => {
   const renderContent = () => {
     // Force login if trying to access Admin Settings or Calendar
     if ((activeTab === Tab.ADMIN_SETTINGS || activeTab === Tab.CALENDAR) && !isLoggedIn) {
-        return <LoginScreen config={BUSINESS_CONFIG} onLogin={() => setIsLoggedIn(true)} />;
+        return <LoginScreen config={activeConfig} onLogin={() => setIsLoggedIn(true)} />;
     }
 
     switch (activeTab) {
@@ -82,10 +87,12 @@ const App: React.FC = () => {
             setVoiceProvider={setVoiceProvider}
             deepgramKey={deepgramKey}
             setDeepgramKey={setDeepgramKey}
+            currentBrandId={currentBrandId}
+            onToggleBrand={setCurrentBrandId}
         />;
       case Tab.INFO:
         return <InfoTab 
-            config={BUSINESS_CONFIG} 
+            config={activeConfig} 
             language={language}
         />;
       default:
@@ -102,7 +109,7 @@ const App: React.FC = () => {
       {/* Background Demo Website */}
       <div className={`fixed inset-0 bg-slate-100 flex items-center justify-center -z-10 ${isWidgetOpen ? 'blur-lg grayscale-[0.2]' : ''} transition-all duration-700`}>
           <div className="text-center p-8 max-w-2xl">
-              <h2 className="text-3xl md:text-5xl font-black text-slate-800 mb-6 tracking-tight">UNITEC USA</h2>
+              <h2 className="text-3xl md:text-5xl font-black text-slate-800 mb-6 tracking-tight">{activeConfig.name}</h2>
               <p className="text-slate-500 mb-10 leading-relaxed text-sm md:text-base">
                 Professional Construction Materials Distributor. Florida-based stock.
                 This page represents your existing website where the AI assistant widget will be integrated.
@@ -137,7 +144,7 @@ const App: React.FC = () => {
         <Layout 
           activeTab={activeTab} 
           onTabChange={setActiveTab}
-          config={BUSINESS_CONFIG}
+          config={activeConfig}
           onOpenDashboard={() => setActiveTab(Tab.ADMIN_SETTINGS)}
           language={language}
           setLanguage={setLanguage}
