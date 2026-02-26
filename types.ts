@@ -68,6 +68,7 @@ export interface CallRecording {
   timestamp: string;
   duration: string;
   blobUrl?: string;
+  transcript?: string;
 }
 
 export interface CalendarEvent {

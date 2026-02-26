@@ -2,7 +2,7 @@
 // geminiService.ts handles interactions with the Google GenAI SDK
 import { GoogleGenAI, LiveServerMessage, Modality, GenerateContentResponse } from "@google/genai";
 import { getSystemInstruction, TOOLS } from "../constants";
-import { createBlob, decodeAudioData, decode, encode, base64ToUint8Array, blobToBase64, pcmToWavBlob } from "../utils/audioUtils";
+import { decodeAudioData, decode, encode, pcmToWavBlob } from "../utils/audioUtils";
 import { Language, VoiceName } from "../types";
 import { trackUsage } from "./usageService";
 
@@ -90,7 +90,7 @@ export async function* sendMessageToGemini(
     }
 
     const part = c.candidates?.[0]?.content?.parts?.find(p => p.functionCall);
-    if (part && part.functionCall) {
+    if (part && part.functionCall && part.functionCall.name) {
       if (onToolSuccess) {
         onToolSuccess(part.functionCall.name, part.functionCall.args);
       }
@@ -187,6 +187,15 @@ export const connectLiveSession = async (
         const parts = message.serverContent?.modelTurn?.parts;
         const base64Audio = parts?.find(p => p.inlineData)?.inlineData?.data;
 
+        // Handle transcriptions
+        const modelTranscript = parts?.find(p => p.text)?.text;
+        // User transcript is in serverContent.userContent if enabled
+        const userTranscript = (message.serverContent as any)?.userContent?.parts?.find((p: any) => p.text)?.text;
+        
+        if (modelTranscript || userTranscript) {
+          callbacks.onMessage(modelTranscript || userTranscript || null, null, false);
+        }
+
         if (base64Audio) {
             const audioData = decode(base64Audio);
             audioChunks.push(audioData);
@@ -209,19 +218,21 @@ export const connectLiveSession = async (
           nextStartTime = 0;
         }
 
-        if (message.toolCall) {
+        if (message.toolCall && message.toolCall.functionCalls) {
           for (const fc of message.toolCall.functionCalls) {
-            callbacks.onToolCall(fc.name);
-            if (callbacks.onToolSuccess) {
-              callbacks.onToolSuccess(fc.name, { status: 'success', ...fc.args });
+            if (fc.name) {
+                callbacks.onToolCall(fc.name);
+                if (callbacks.onToolSuccess) {
+                  callbacks.onToolSuccess(fc.name, { status: 'success', ...fc.args });
+                }
+                sessionPromise.then(s => s.sendToolResponse({
+                  functionResponses: [{
+                    id: fc.id || '',
+                    name: fc.name || '',
+                    response: { result: "ok" }
+                  }]
+                }));
             }
-            sessionPromise.then(s => s.sendToolResponse({
-              functionResponses: [{
-                id: fc.id,
-                name: fc.name,
-                response: { result: "ok" }
-              }]
-            }));
           }
         }
         callbacks.onMessage(null, null, !!message.serverContent?.interrupted);
@@ -243,7 +254,8 @@ export const connectLiveSession = async (
         voiceConfig: { prebuiltVoiceConfig: { voiceName: voiceName as any } }
       },
       systemInstruction: instructions,
-      tools: [{ functionDeclarations: TOOLS }]
+      tools: [{ functionDeclarations: TOOLS }],
+      outputAudioTranscription: {},
     }
   });
 

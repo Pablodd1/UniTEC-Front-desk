@@ -1,6 +1,6 @@
 import React from 'react';
 import { BusinessConfig, Language } from '../types';
-import { MapPin, Phone, Instagram, Clock, MessageCircle } from 'lucide-react';
+import { MapPin, Instagram, Clock, MessageCircle } from 'lucide-react';
 import { UI_TRANSLATIONS } from '../constants';
 
 interface InfoTabProps {

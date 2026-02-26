@@ -2,7 +2,7 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { Message, QuickAction, Language } from '../types';
 import { sendMessageToGemini } from '../services/geminiService';
-import { Send, Bot, User, Loader2, Box, DollarSign, Hammer, BookOpen, AlertTriangle, CheckCircle2 } from 'lucide-react';
+import { Send, Bot, User, Box, DollarSign, Hammer, BookOpen, CheckCircle2 } from 'lucide-react';
 import { GenerateContentResponse } from '@google/genai';
 import { UI_TRANSLATIONS } from '../constants';
 
@@ -33,6 +33,7 @@ const ChatTab: React.FC<ChatTabProps> = ({ quickActions, initialMessage, emergen
   const [confirmedDate, setConfirmedDate] = useState<string | null>(null);
 
   const messagesEndRef = useRef<HTMLDivElement>(null);
+  const scrollContainerRef = useRef<HTMLDivElement>(null);
   const hasProcessedInitial = useRef(false);
 
   // Update welcome message when language or customGreeting changes, but only if it's the only message
@@ -68,12 +69,18 @@ const ChatTab: React.FC<ChatTabProps> = ({ quickActions, initialMessage, emergen
     }
   }, [showBookingConfirmation]);
 
-  const scrollToBottom = () => {
-    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+  // Robust Auto-Scroll Implementation
+  const scrollToBottom = (behavior: ScrollBehavior = 'smooth') => {
+    if (messagesEndRef.current) {
+        messagesEndRef.current.scrollIntoView({ behavior, block: 'end' });
+    }
   };
 
+  // Scroll on message updates or loading state changes
   useEffect(() => {
-    scrollToBottom();
+    // For streaming updates, 'auto' is usually better than 'smooth' to prevent jitter
+    const behavior = isLoading ? 'auto' : 'smooth';
+    scrollToBottom(behavior);
   }, [messages, isLoading]);
 
   const handleSendMessage = async (text: string) => {
@@ -111,7 +118,7 @@ const ChatTab: React.FC<ChatTabProps> = ({ quickActions, initialMessage, emergen
       setMessages(prev => [...prev, {
         id: botMsgId,
         role: 'model',
-        text: '', // Start empty
+        text: '', // Start empty for streaming
         timestamp: new Date()
       }]);
 
@@ -160,31 +167,45 @@ const ChatTab: React.FC<ChatTabProps> = ({ quickActions, initialMessage, emergen
   return (
     <div className="flex flex-col h-full relative">
       
-      {/* Success Banner Overlay */}
-      <div className={`absolute top-4 left-4 right-4 z-50 transition-all duration-500 transform ${showBookingConfirmation ? 'translate-y-0 opacity-100' : '-translate-y-full opacity-0 pointer-events-none'}`}>
-        <div className="bg-emerald-50 border-2 border-emerald-200 text-emerald-800 p-5 rounded-2xl shadow-2xl flex items-center gap-4">
-            <div className="bg-emerald-100 p-2 rounded-full text-emerald-600 ring-4 ring-emerald-50">
-                <CheckCircle2 size={28} />
-            </div>
-            <div>
-                <p className="font-bold text-sm uppercase tracking-wider text-emerald-600">Action Confirmed</p>
-                <p className="text-sm font-medium">{t.bookingConfirmed}</p>
+      {/* Booking Confirmation Modal Overlay */}
+      {showBookingConfirmation && (
+        <div className="absolute inset-0 z-[100] flex items-center justify-center p-6 bg-slate-900/40 backdrop-blur-sm animate-in fade-in duration-300">
+            <div className="bg-white rounded-[40px] p-8 shadow-2xl border border-slate-100 max-w-xs w-full text-center animate-in zoom-in-95 duration-300">
+                <div className="w-20 h-20 bg-emerald-100 text-emerald-600 rounded-full flex items-center justify-center mx-auto mb-6 ring-8 ring-emerald-50">
+                    <CheckCircle2 size={40} />
+                </div>
+                <h3 className="text-xl font-black text-slate-900 mb-2 uppercase tracking-tight">Confirmed!</h3>
+                <p className="text-slate-500 text-sm mb-6 leading-relaxed">
+                    {t.bookingConfirmed}
+                </p>
                 {confirmedDate && (
-                  <p className="text-xs font-bold mt-1 text-emerald-700 bg-emerald-100/50 px-2 py-0.5 rounded-md inline-block">{confirmedDate}</p>
+                    <div className="bg-slate-50 rounded-2xl p-4 mb-8 border border-slate-100">
+                        <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1">Appointment Details</p>
+                        <p className="text-slate-900 font-bold text-sm">{confirmedDate}</p>
+                    </div>
                 )}
+                <button 
+                    onClick={() => setShowBookingConfirmation(false)}
+                    className="w-full py-4 bg-slate-900 text-white rounded-2xl font-black text-xs uppercase tracking-widest hover:bg-slate-800 transition-all active:scale-95"
+                >
+                    Great, thanks!
+                </button>
             </div>
         </div>
-      </div>
+      )}
 
       {/* Messages Area */}
-      <div className="flex-1 overflow-y-auto p-4 space-y-6 no-scrollbar relative">
+      <div 
+        ref={scrollContainerRef}
+        className="flex-1 overflow-y-auto p-4 space-y-6 no-scrollbar relative scroll-smooth"
+      >
         {messages.map((msg) => (
           <div 
             key={msg.id} 
             className={`flex ${msg.role === 'user' ? 'justify-end' : 'justify-start'}`}
           >
             <div className={`flex max-w-[85%] ${msg.role === 'user' ? 'flex-row-reverse' : 'flex-row'} items-end gap-2`}>
-              <div className={`w-8 h-8 rounded-full flex items-center justify-center shrink-0 ${
+              <div className={`w-8 h-8 rounded-full flex items-center justify-center shrink-0 shadow-sm ${
                 msg.role === 'user' ? 'bg-brand-500 text-white' : 'bg-brand-900 text-accent-500'
               }`}>
                 {msg.role === 'user' ? <User size={16} /> : <Bot size={16} />}
@@ -222,22 +243,12 @@ const ChatTab: React.FC<ChatTabProps> = ({ quickActions, initialMessage, emergen
              </div>
           </div>
         )}
-        <div ref={messagesEndRef} />
+        <div ref={messagesEndRef} className="h-4 w-full" />
       </div>
 
-      {/* Error Banner */}
-      {error && (
-        <div className="px-4 pb-2">
-          <div className="bg-red-50 border border-red-100 text-red-700 px-3 py-2 rounded-lg text-xs flex items-center gap-2">
-            <AlertTriangle size={14} />
-            <span>{error}</span>
-          </div>
-        </div>
-      )}
-
-      {/* Quick Actions */}
-      <div className="px-4 py-2">
-         <div className="flex gap-2 overflow-x-auto no-scrollbar pb-2">
+      {/* Input Area and Quick Actions remain the same... */}
+      <div className="px-4 py-2 bg-white/50 backdrop-blur-sm border-t border-gray-50">
+         <div className="flex gap-2 overflow-x-auto no-scrollbar pb-2 pt-1">
             {quickActions.map(action => (
               <button
                 key={action.id}
@@ -252,7 +263,6 @@ const ChatTab: React.FC<ChatTabProps> = ({ quickActions, initialMessage, emergen
          </div>
       </div>
 
-      {/* Input Area */}
       <div className="p-4 bg-white border-t border-gray-100">
         <div className={`flex items-center gap-2 bg-gray-50 p-2 rounded-xl border transition-all ${
           error ? 'border-red-200' : 'border-gray-200 focus-within:border-brand-500 focus-within:ring-1 focus-within:ring-brand-500'

@@ -14,9 +14,10 @@ interface LayoutProps {
   setLanguage: (lang: Language) => void;
   onLogout: () => void;
   onCloseWidget: () => void;
+  isEmbedMode?: boolean;
 }
 
-const Layout: React.FC<LayoutProps> = ({ children, activeTab, onTabChange, config, language, setLanguage, onCloseWidget }) => {
+const Layout: React.FC<LayoutProps> = ({ children, activeTab, onTabChange, config, language, setLanguage, onCloseWidget, isEmbedMode }) => {
   const t = UI_TRANSLATIONS[language];
 
   const NavItem = ({ tab, icon, label }: { tab: Tab, icon: React.ReactNode, label: string }) => {
@@ -29,7 +30,6 @@ const Layout: React.FC<LayoutProps> = ({ children, activeTab, onTabChange, confi
         }`}
       >
         <div className={`p-1.5 rounded-xl transition-colors ${isActive ? 'bg-brand-50' : ''}`}>
-          {/* Fix: cast icon to React.ReactElement<any> to allow 'size' property in cloneElement */}
           {React.cloneElement(icon as React.ReactElement<any>, { size: 20 })}
         </div>
         <span className="text-[10px] font-bold uppercase tracking-tight mt-1">{label}</span>
@@ -37,16 +37,20 @@ const Layout: React.FC<LayoutProps> = ({ children, activeTab, onTabChange, confi
     );
   };
 
-  // Basic logic to split name for 2-tone effect
   const nameParts = config.name.split(' ');
   const firstName = nameParts[0];
   const restName = nameParts.slice(1).join(' ');
 
+  // Dynamic Styles based on Embed Mode
+  const layoutClasses = isEmbedMode 
+    ? "h-screen w-screen flex flex-col bg-white overflow-hidden" 
+    : "fixed inset-0 z-[9999] flex flex-col bg-white overflow-hidden animate-in slide-in-from-bottom-8 fade-in duration-500 md:inset-auto md:bottom-24 md:right-6 md:w-[400px] md:h-[700px] md:max-h-[90vh] md:rounded-[32px] md:shadow-2xl md:border md:border-slate-200";
+
   return (
-    <div className="fixed inset-0 z-[9999] flex flex-col bg-white overflow-hidden animate-in slide-in-from-bottom-8 fade-in duration-500 md:inset-auto md:bottom-24 md:right-6 md:w-[400px] md:h-[700px] md:max-h-[90vh] md:rounded-[32px] md:shadow-2xl md:border md:border-slate-200">
+    <div className={layoutClasses}>
       
       {/* Widget Header */}
-      <header className="bg-brand-900 p-4 shrink-0 relative overflow-hidden md:rounded-t-[32px]">
+      <header className={`bg-brand-900 p-4 shrink-0 relative overflow-hidden ${!isEmbedMode ? 'md:rounded-t-[32px]' : ''}`}>
         <div className="absolute top-0 left-0 w-full h-full opacity-10 grass-texture pointer-events-none"></div>
         <div className="flex items-center justify-between relative z-10">
           <div className="flex items-center gap-3">
@@ -70,12 +74,14 @@ const Layout: React.FC<LayoutProps> = ({ children, activeTab, onTabChange, confi
             >
               {language === 'en' ? 'ESP' : 'ENG'}
             </button>
-            <button 
-              onClick={onCloseWidget}
-              className="p-2 rounded-full hover:bg-white/10 text-white/60 hover:text-white transition-all"
-            >
-              <ChevronDown size={24} />
-            </button>
+            {!isEmbedMode && (
+                <button 
+                onClick={onCloseWidget}
+                className="p-2 rounded-full hover:bg-white/10 text-white/60 hover:text-white transition-all"
+                >
+                <ChevronDown size={24} />
+                </button>
+            )}
           </div>
         </div>
       </header>
@@ -88,7 +94,7 @@ const Layout: React.FC<LayoutProps> = ({ children, activeTab, onTabChange, confi
       </main>
 
       {/* Bottom Navigation */}
-      <nav className="h-20 bg-white border-t border-slate-100 flex items-center justify-around px-2 shrink-0 pb-safe shadow-[0_-4px_12px_rgba(0,0,0,0.03)] md:rounded-b-[32px]">
+      <nav className={`h-20 bg-white border-t border-slate-100 flex items-center justify-around px-2 shrink-0 pb-safe shadow-[0_-4px_12px_rgba(0,0,0,0.03)] ${!isEmbedMode ? 'md:rounded-b-[32px]' : ''}`}>
           <NavItem tab={Tab.CHAT} icon={<MessageSquare />} label={t.navChat} />
           <NavItem tab={Tab.CALL} icon={<Phone />} label={t.navCall} />
           <NavItem tab={Tab.SERVICES} icon={<Grid />} label={t.navServices} />

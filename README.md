@@ -1,3 +1,4 @@
+
 # UNITEC Design Recepcionista
 
 **UNITEC Design Recepcionista** is an AI-powered front desk coordinator designed for **UNITEC USA DESIGN**, a wholesale distributor of construction materials. The application provides a seamless experience for customers to inquire about products, check stock, and book appointments via both Text Chat and Real-time Voice Calls.
@@ -21,6 +22,30 @@
 *   **Icons**: Lucide React
 *   **Audio**: Web Audio API (Native implementation for PCM streaming)
 
+## 📦 Deployment to GitHub
+
+To push this code to the repository **Pablodd1/UniTEC-Front-desk**, follow these steps:
+
+1.  **Initialize Git**:
+    ```bash
+    git init
+    git add .
+    git commit -m "Initial commit"
+    ```
+
+2.  **Add Remote Origin**:
+    ```bash
+    git remote add origin https://github.com/Pablodd1/UniTEC-Front-desk.git
+    # If it says 'remote origin already exists', run:
+    # git remote set-url origin https://github.com/Pablodd1/UniTEC-Front-desk.git
+    ```
+
+3.  **Push Code**:
+    ```bash
+    git branch -M main
+    git push -u origin main
+    ```
+
 ## ⚙️ Prerequisites & Setup
 
 ### 1. API Key Requirement
@@ -29,8 +54,6 @@ This project requires a **Google Gemini API Key**.
 *   **Crucial**: The `API_KEY` must be available in your environment variables.
 
 ### 2. Local Development (Vite)
-
-If you are cloning this repository to run locally:
 
 1.  **Install dependencies**:
     ```bash
@@ -42,7 +65,6 @@ If you are cloning this repository to run locally:
     ```env
     VITE_API_KEY=your_actual_google_api_key_here
     ```
-    *Note: The code uses `process.env.API_KEY`. If using Vite, you might need to update the code to use `import.meta.env.VITE_API_KEY` or use a define plugin in `vite.config.ts`.*
 
 3.  **Run the App**:
     ```bash
@@ -61,16 +83,8 @@ If you are cloning this repository to run locally:
 
 ## 🔒 Security Notes
 
-*   **Admin PIN**: The default PIN for the dashboard is `1234`. In a production environment, this should be moved to a secure backend authentication service.
+*   **Admin PIN**: The default PIN for the dashboard is `1234`.
 *   **API Key**: Never commit your `.env` file to public repositories.
-
-## 🤝 Contribution
-
-1.  Fork the repository.
-2.  Create a feature branch.
-3.  Commit your changes.
-4.  Push to the branch.
-5.  Open a Pull Request.
 
 ---
 **UNITEC USA DESIGN** - *Direct Importer & Wholesale Distributor*

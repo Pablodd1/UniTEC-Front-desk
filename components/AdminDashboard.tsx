@@ -1,18 +1,18 @@
 
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect } from 'react';
 import { 
-  ShieldCheck, Activity, Database, Power, Mic2, UploadCloud, Key, Globe, 
-  Save, Cpu, HardDrive, RefreshCw, Check, Loader2, Volume2, Download, 
-  Pause, Play, Music, CheckCircle2, Server, Headphones, ToggleLeft, 
-  ToggleRight, AlertCircle, TrendingUp, Zap, CreditCard, PieChart, 
-  Receipt, FileText, Plus, BarChart3, Trash2, DollarSign, Gauge, Building2, Store, Brain, Code, Copy
+  ShieldCheck, Database, Mic2, 
+  Save, RefreshCw, Check, Loader2, Volume2, 
+  TrendingUp, Zap, Gauge, Building2, Store, Brain, Code, Copy, ExternalLink, Rocket, Globe, ToggleRight, ToggleLeft,
+  DollarSign
 } from 'lucide-react';
-import { CrmLog, VoiceName, VoiceProvider, UsageStats, EscalaConfig, CallRecording, BillingInvoice } from '../types';
+import { EscalaConfig, VoiceName, VoiceProvider } from '../types';
 import { playGeminiTTS } from '../services/geminiService';
 import { playDeepgramTTS } from '../services/deepgramService';
 import { playElevenLabsTTS } from '../services/elevenLabsService';
 import { getEscalaConfig, saveEscalaConfig, testEscalaConnection } from '../services/escalaService';
-import { getUsageStats, resetUsage, generateInvoice, getProfitEstimate } from '../services/usageService';
+import { getUsageStats, getProfitEstimate } from '../services/usageService';
+import { DEFAULT_TRAINING_DATA } from '../constants';
 
 interface AdminDashboardProps {
   emergencyMode: boolean;
@@ -37,21 +37,26 @@ const GEMINI_VOICE_DESCRIPTIONS: Record<string, { gender: 'Male' | 'Female', sty
 };
 
 const AdminDashboard: React.FC<AdminDashboardProps> = ({ 
-    emergencyMode, setEmergencyMode, 
     voiceName, setVoiceName,
     voiceProvider, setVoiceProvider,
-    deepgramKey, setDeepgramKey,
+    deepgramKey,
     currentBrandId = 'unitec',
     onToggleBrand
 }) => {
   const [activeSubTab, setActiveSubTab] = useState<'usage' | 'voice' | 'integrations' | 'deploy' | 'training' | 'general'>('usage');
-  const [recordings, setRecordings] = useState<CallRecording[]>([]);
   
   // Usage & Billing State
-  const [usage, setUsage] = useState<UsageStats>(getUsageStats());
+  const [totalTokens, setTotalTokens] = useState(0);
+  const [chatTokens, setChatTokens] = useState(0);
+  const [voiceTokens, setVoiceTokens] = useState(0);
+  const [imageTokens, setImageTokens] = useState(0);
+  const [minutesUsed, setMinutesUsed] = useState(0);
+  const [apiCalls, setApiCalls] = useState(0);
+  const [limitTokens, setLimitTokens] = useState(10000000);
+  const [limitMinutes, setLimitMinutes] = useState(5000);
+  const [costEstimate, setCostEstimate] = useState(0);
   const [profit, setProfit] = useState<number>(getProfitEstimate());
   const [isRefreshingUsage, setIsRefreshingUsage] = useState(false);
-  const [isGeneratingInvoice, setIsGeneratingInvoice] = useState(false);
 
   // Escala CRM State
   const [escalaConfig, setEscalaConfig] = useState<EscalaConfig>({ apiKey: '', accountId: '', isActive: false });
@@ -60,10 +65,7 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({
   const [isSavingEscala, setIsSavingEscala] = useState(false);
 
   // Voice Lab States
-  const [voiceUploadStatus, setVoiceUploadStatus] = useState<'idle' | 'uploading' | 'success'>('idle');
-  const [uploadedFileName, setUploadedFileName] = useState('');
   const [isTestingVoice, setIsTestingVoice] = useState<string | null>(null);
-  const [testFeedback, setTestFeedback] = useState<string | null>(null);
   
   // ElevenLabs State
   const [elevenLabsKey, setElevenLabsKey] = useState('');
@@ -73,7 +75,9 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({
   const [trainingData, setTrainingData] = useState<string>('');
   const [isSavingTraining, setIsSavingTraining] = useState(false);
 
-  const audioRef = useRef<HTMLAudioElement | null>(null);
+  // Copy State
+  const [copyStatus, setCopyStatus] = useState<string | null>(null);
+
   const geminiVoices: VoiceName[] = ['Aoede', 'Kore', 'Zephyr', 'Puck', 'Fenrir', 'Charon'];
   const [customClones, setCustomClones] = useState<string[]>([]);
   
@@ -81,40 +85,42 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({
     const savedClones = localStorage.getItem('unitec_voice_clones');
     if (savedClones) setCustomClones(JSON.parse(savedClones));
     const storedLib = localStorage.getItem('unitec_call_library');
-    if (storedLib) setRecordings(JSON.parse(storedLib));
+    if (storedLib) {
+        // Recordings loaded but not used in this view currently
+    }
     setEscalaConfig(getEscalaConfig());
     
-    // Load Training Data
+    // Load Training Data: Use LocalStorage if available, otherwise default to Building Innovation data
     const storedTraining = localStorage.getItem('unitec_training_data');
-    if (storedTraining) setTrainingData(storedTraining);
+    if (storedTraining && storedTraining.length > 50) {
+        setTrainingData(storedTraining);
+    } else {
+        setTrainingData(DEFAULT_TRAINING_DATA);
+    }
     
-    // Load ElevenLabs
     setElevenLabsKey(localStorage.getItem('unitec_elevenlabs_key') || '');
     setElevenLabsVoiceId(localStorage.getItem('unitec_elevenlabs_voice_id') || '');
 
     const interval = setInterval(() => {
-      setUsage(getUsageStats());
+      const stats = getUsageStats();
+      setTotalTokens(stats.totalTokens);
+      setChatTokens(stats.chatTokens);
+      setVoiceTokens(stats.voiceTokens);
+      setImageTokens(stats.imageTokens);
+      setMinutesUsed(stats.minutesUsed);
+      setApiCalls(stats.apiCalls);
+      setLimitTokens(stats.limitTokens);
+      setLimitMinutes(stats.limitMinutes);
+      setCostEstimate(stats.costEstimate);
       setProfit(getProfitEstimate());
     }, 3000);
     return () => clearInterval(interval);
   }, []);
 
-  const handleRefreshUsage = () => {
-    setIsRefreshingUsage(true);
-    setTimeout(() => {
-        setUsage(getUsageStats());
-        setProfit(getProfitEstimate());
-        setIsRefreshingUsage(false);
-    }, 600);
-  };
-
-  const handleCreateInvoice = () => {
-    setIsGeneratingInvoice(true);
-    setTimeout(() => {
-      generateInvoice();
-      setUsage(getUsageStats());
-      setIsGeneratingInvoice(false);
-    }, 1200);
+  const handleCopy = (text: string, id: string) => {
+    navigator.clipboard.writeText(text);
+    setCopyStatus(id);
+    setTimeout(() => setCopyStatus(null), 2000);
   };
 
   const saveElevenLabsConfig = () => {
@@ -129,16 +135,12 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({
   const handleTestVoice = async (v: VoiceName) => {
     if (isTestingVoice) return;
     setIsTestingVoice(v);
-    setTestFeedback(null);
     try {
         if (voiceProvider === 'gemini') {
             await playGeminiTTS("Hello! This is a test of my voice responsiveness.", v);
-            setTestFeedback(`${v} connected.`);
         } else if (voiceProvider === 'elevenlabs') {
             await playElevenLabsTTS("Hello! This is my cloned voice.", elevenLabsKey, v || elevenLabsVoiceId);
-            setTestFeedback("Cloned voice active.");
         } else {
-            // Deepgram fallback
             await playDeepgramTTS("Channel test.", deepgramKey, v, () => {}, () => {});
         }
         
@@ -147,8 +149,25 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({
 
     } catch (e) {
         setIsTestingVoice(null);
-        setTestFeedback("Error testing voice.");
     }
+  };
+
+  const handleRefreshUsage = () => {
+    setIsRefreshingUsage(true);
+    setTimeout(() => {
+        const stats = getUsageStats();
+        setTotalTokens(stats.totalTokens);
+        setChatTokens(stats.chatTokens);
+        setVoiceTokens(stats.voiceTokens);
+        setImageTokens(stats.imageTokens);
+        setMinutesUsed(stats.minutesUsed);
+        setApiCalls(stats.apiCalls);
+        setLimitTokens(stats.limitTokens);
+        setLimitMinutes(stats.limitMinutes);
+        setCostEstimate(stats.costEstimate);
+        setProfit(getProfitEstimate());
+        setIsRefreshingUsage(false);
+    }, 600);
   };
 
   const handleTestEscala = async () => {
@@ -181,16 +200,16 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({
   const renderTabContent = () => {
     switch(activeSubTab) {
         case 'usage':
-            const tokenProgress = Math.min(100, (usage.totalTokens / usage.limitTokens) * 100);
+            const tokenProgress = Math.min(100, (totalTokens / limitTokens) * 100);
+            const minuteProgress = Math.min(100, (minutesUsed / limitMinutes) * 100);
             return (
                 <div className="space-y-8 animate-in slide-in-from-bottom-2 duration-500 pb-20">
-                    {/* Top Stats */}
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                         <div className="bg-gradient-to-br from-brand-900 to-slate-900 p-6 rounded-2xl text-white shadow-xl relative overflow-hidden group">
                             <div className="absolute -right-4 -bottom-4 opacity-10 group-hover:scale-125 transition-transform"><TrendingUp size={120} /></div>
                             <div className="relative z-10">
                                 <span className="text-[10px] font-bold text-brand-300 uppercase tracking-widest">Client Billable</span>
-                                <h4 className="text-4xl font-black mt-2">${usage.costEstimate.toFixed(2)}</h4>
+                                <h4 className="text-4xl font-black mt-2">${costEstimate.toFixed(2)}</h4>
                                 <div className="mt-4 p-2 bg-emerald-500/20 rounded-lg border border-emerald-500/30 flex items-center justify-between">
                                   <span className="text-[10px] font-bold text-emerald-300">EST. PROFIT</span>
                                   <span className="text-xs font-black text-emerald-400">+${profit.toFixed(2)}</span>
@@ -202,22 +221,25 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({
                                 <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Total Tokens</span>
                                 <Zap size={14} className="text-brand-500" />
                             </div>
-                            <h4 className="text-3xl font-bold text-slate-800">{(usage.totalTokens / 1000).toFixed(1)}k</h4>
+                            <h4 className="text-3xl font-bold text-slate-800">{(totalTokens / 1000).toFixed(1)}k</h4>
                             <div className="w-full bg-slate-100 h-2 rounded-full mt-4 overflow-hidden">
                                 <div className="bg-brand-500 h-full transition-all duration-1000 shadow-sm" style={{ width: `${tokenProgress}%` }}></div>
                             </div>
+                            <p className="text-[10px] text-slate-400 font-bold mt-2 uppercase">Limit: {(limitTokens / 1000000).toFixed(1)}M</p>
                         </div>
                         <div className="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm">
                             <div className="flex justify-between items-start mb-2">
                                 <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Voice Connect</span>
                                 <Mic2 size={14} className="text-orange-500" />
                             </div>
-                            <h4 className="text-3xl font-bold text-slate-800">{usage.minutesUsed.toFixed(1)}m</h4>
-                            <p className="text-[10px] text-slate-400 font-bold mt-2 uppercase">Real-time Call Time</p>
+                            <h4 className="text-3xl font-bold text-slate-800">{minutesUsed.toFixed(1)}m</h4>
+                            <div className="w-full bg-slate-100 h-2 rounded-full mt-4 overflow-hidden">
+                                <div className="bg-orange-500 h-full transition-all duration-1000 shadow-sm" style={{ width: `${minuteProgress}%` }}></div>
+                            </div>
+                            <p className="text-[10px] text-slate-400 font-bold mt-2 uppercase">Limit: {limitMinutes}m</p>
                         </div>
                     </div>
 
-                    {/* Breakdown Chart */}
                     <div className="bg-white rounded-2xl border border-slate-200 shadow-sm p-8">
                         <div className="flex items-center justify-between mb-8">
                             <div>
@@ -228,9 +250,11 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({
                         </div>
                         <div className="space-y-6">
                             {[
-                                { label: 'Chat Processing (Input/Output)', val: usage.chatTokens, max: 1000000, color: 'bg-brand-500' },
-                                { label: 'Neural Voice Synthesis (Minutes)', val: Math.floor(usage.minutesUsed), max: 500, color: 'bg-orange-400' },
-                                { label: 'API System Overhead', val: usage.apiCalls, max: 2000, color: 'bg-emerald-400' }
+                                { label: 'Chat Tokens', val: chatTokens, max: limitTokens / 2, color: 'bg-brand-500' },
+                                { label: 'Voice Tokens', val: voiceTokens, max: limitTokens / 4, color: 'bg-indigo-500' },
+                                { label: 'Image Tokens', val: imageTokens, max: limitTokens / 10, color: 'bg-pink-500' },
+                                { label: 'Neural Voice Synthesis (Minutes)', val: Math.floor(minutesUsed), max: limitMinutes, color: 'bg-orange-400' },
+                                { label: 'API System Overhead', val: apiCalls, max: 2000, color: 'bg-emerald-400' }
                             ].map((row, i) => (
                                 <div key={i} className="space-y-2">
                                     <div className="flex justify-between text-[10px] font-bold uppercase tracking-wider text-slate-500">
@@ -361,6 +385,142 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({
                 </div>
             );
 
+        case 'deploy':
+            const currentUrl = window.location.origin;
+
+            const scriptCode = `<script>
+  (function() {
+    var iframe = document.createElement('iframe');
+    iframe.src = "${currentUrl}?embed=true";
+    iframe.style.cssText = "border:none; position:fixed; bottom:20px; right:20px; width:400px; height:700px; z-index:999999; border-radius:32px; box-shadow: 0 10px 50px rgba(0,0,0,0.2); transition: all 0.3s ease;";
+    iframe.id = "ai-front-desk-assistant";
+    document.body.appendChild(iframe);
+  })();
+</script>`;
+
+            return (
+                <div className="space-y-8 animate-in slide-in-from-bottom-2 duration-500 pb-20">
+                    <div className="bg-white p-8 rounded-2xl border border-slate-200 shadow-sm relative overflow-hidden">
+                        <div className="flex items-center gap-4 mb-6">
+                            <div className="w-14 h-14 bg-black text-white rounded-2xl flex items-center justify-center shrink-0 shadow-lg">
+                                <Rocket size={28} />
+                            </div>
+                            <div>
+                                <h3 className="text-xl font-bold text-slate-800">Step 1: Hosting on Vercel</h3>
+                                <p className="text-sm text-slate-500">Deploy the app and set your API keys.</p>
+                            </div>
+                        </div>
+
+                        <div className="space-y-4">
+                            <div className="flex items-start gap-3">
+                                <div className="w-6 h-6 rounded-full bg-slate-100 text-slate-600 flex items-center justify-center text-xs font-bold shrink-0 mt-0.5">1</div>
+                                <p className="text-sm text-slate-700">Push this code to a <b>GitHub</b> repository.</p>
+                            </div>
+                            <div className="flex items-start gap-3">
+                                <div className="w-6 h-6 rounded-full bg-slate-100 text-slate-600 flex items-center justify-center text-xs font-bold shrink-0 mt-0.5">2</div>
+                                <p className="text-sm text-slate-700">Connect the repo to <b>Vercel.com</b>.</p>
+                            </div>
+                            <div className="flex items-start gap-3">
+                                <div className="w-6 h-6 rounded-full bg-brand-100 text-brand-600 flex items-center justify-center text-xs font-bold shrink-0 mt-0.5">3</div>
+                                <div className="flex-1">
+                                    <p className="text-sm text-slate-700 font-bold">Set Environment Variables:</p>
+                                    <p className="text-xs text-slate-500 mt-1">In Vercel Dashboard → Settings → Environment Variables, add:</p>
+                                    <div className="mt-2 space-y-2">
+                                        <div className="p-3 bg-slate-50 rounded-xl border border-slate-200 flex items-center justify-between">
+                                            <code className="text-xs font-mono text-brand-700">VITE_API_KEY</code>
+                                            <span className="text-[10px] text-slate-400">Gemini AI Key</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div className="bg-white p-8 rounded-2xl border border-slate-200 shadow-sm relative">
+                        <div className="flex items-center gap-4 mb-8">
+                            <div className="w-14 h-14 bg-brand-600 text-white rounded-2xl flex items-center justify-center shrink-0 shadow-lg">
+                                <Code size={28} />
+                            </div>
+                            <div>
+                                <h3 className="text-xl font-bold text-slate-800">Step 2: Embed on Your Website</h3>
+                                <p className="text-sm text-slate-500">Copy the code below into your site's HTML.</p>
+                            </div>
+                        </div>
+
+                        <div className="space-y-4">
+                            <div className="flex items-center justify-between">
+                                <h4 className="text-xs font-black text-slate-400 uppercase tracking-widest flex items-center gap-2">
+                                    <Zap size={14} className="text-accent-500" /> Professional Floating Script
+                                </h4>
+                                <button 
+                                    onClick={() => handleCopy(scriptCode, 'script')}
+                                    className={`px-3 py-1.5 rounded-lg text-[10px] font-bold uppercase transition-all flex items-center gap-2 ${copyStatus === 'script' ? 'bg-emerald-500 text-white' : 'bg-slate-100 text-slate-600 hover:bg-slate-200'}`}
+                                >
+                                    {copyStatus === 'script' ? <Check size={12} /> : <Copy size={12} />}
+                                    {copyStatus === 'script' ? 'Copied!' : 'Copy Script'}
+                                </button>
+                            </div>
+                            <div className="bg-slate-900 rounded-2xl p-6 relative group overflow-hidden border border-slate-800">
+                                <div className="absolute top-0 left-0 w-1 h-full bg-brand-500"></div>
+                                <pre className="text-[11px] font-mono text-slate-400 whitespace-pre-wrap break-all leading-relaxed">
+                                    {scriptCode}
+                                </pre>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div className="bg-blue-50 border border-blue-100 p-6 rounded-2xl flex gap-4">
+                        <ExternalLink className="text-blue-500 shrink-0" size={20} />
+                        <div>
+                            <h4 className="text-sm font-bold text-blue-900">Need a direct link?</h4>
+                            <p className="text-xs text-blue-700 leading-relaxed mt-1">
+                                You can also simply send clients directly to your Vercel URL to use the full-screen version of the assistant.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            );
+
+        case 'training':
+            return (
+                <div className="space-y-8 animate-in slide-in-from-bottom-2 duration-500 pb-20">
+                    <div className="bg-white p-8 rounded-2xl border border-slate-200 shadow-sm relative">
+                        <div className="flex items-center justify-between mb-8">
+                            <div className="flex items-center gap-4">
+                                <div className="w-12 h-12 bg-indigo-50 text-indigo-600 rounded-2xl flex items-center justify-center shrink-0">
+                                    <Brain size={24} />
+                                </div>
+                                <div>
+                                    <h3 className="text-lg font-bold text-slate-800">Model Training Data</h3>
+                                    <p className="text-xs text-slate-500">Add custom knowledge, FAQs, or brand voice examples.</p>
+                                </div>
+                            </div>
+                            <button 
+                                onClick={handleSaveTraining}
+                                disabled={isSavingTraining}
+                                className="px-8 py-2.5 bg-brand-600 text-white rounded-xl text-xs font-bold shadow-lg hover:bg-brand-700 flex items-center gap-2 transition-all active:scale-95"
+                            >
+                                {isSavingTraining ? <Loader2 size={14} className="animate-spin" /> : <Save size={14} />}
+                                Save Training Data
+                            </button>
+                        </div>
+                        
+                        <div className="space-y-4">
+                            <label className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Knowledge Base Content</label>
+                            <textarea
+                                value={trainingData}
+                                onChange={(e) => setTrainingData(e.target.value)}
+                                className="w-full h-96 p-4 bg-slate-50 border border-slate-200 rounded-xl text-sm text-slate-700 font-mono focus:ring-2 focus:ring-brand-500 outline-none resize-none"
+                                placeholder="Enter custom instructions, FAQs, or product details here..."
+                            />
+                            <p className="text-[10px] text-slate-400 italic">
+                                This content will be injected into the system prompt for both Chat and Voice interactions.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            );
+
         case 'integrations':
             return (
                 <div className="space-y-8 animate-in slide-in-from-bottom-2 duration-500 pb-20">
@@ -420,81 +580,6 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({
                     </div>
                 </div>
             );
-        
-        case 'training':
-            return (
-                <div className="space-y-8 animate-in slide-in-from-bottom-2 duration-500 pb-20">
-                    <div className="bg-white p-8 rounded-2xl border border-slate-200 shadow-sm relative">
-                        <div className="flex items-center justify-between mb-8">
-                            <div className="flex items-center gap-4">
-                                <div className="w-12 h-12 bg-indigo-50 text-indigo-600 rounded-2xl flex items-center justify-center shrink-0">
-                                    <Brain size={24} />
-                                </div>
-                                <div>
-                                    <h3 className="text-lg font-bold text-slate-800">Model Training Data</h3>
-                                    <p className="text-xs text-slate-500">Add custom knowledge, FAQs, or brand voice examples.</p>
-                                </div>
-                            </div>
-                            <button 
-                                onClick={handleSaveTraining}
-                                disabled={isSavingTraining}
-                                className="px-8 py-2.5 bg-brand-600 text-white rounded-xl text-xs font-bold shadow-lg hover:bg-brand-700 flex items-center gap-2 transition-all active:scale-95"
-                            >
-                                {isSavingTraining ? <Loader2 size={14} className="animate-spin" /> : <Save size={14} />}
-                                Save Training Data
-                            </button>
-                        </div>
-                        
-                        <div className="space-y-4">
-                            <label className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Knowledge Base Content</label>
-                            <textarea
-                                value={trainingData}
-                                onChange={(e) => setTrainingData(e.target.value)}
-                                className="w-full h-96 p-4 bg-slate-50 border border-slate-200 rounded-xl text-sm text-slate-700 font-mono focus:ring-2 focus:ring-brand-500 outline-none resize-none"
-                                placeholder="Enter custom instructions, FAQs, or product details here..."
-                            />
-                            <p className="text-[10px] text-slate-400 italic">
-                                This content will be injected into the system prompt for both Chat and Voice interactions.
-                            </p>
-                        </div>
-                    </div>
-                </div>
-            );
-
-        case 'deploy':
-            const currentUrl = window.location.origin;
-            const embedCode = `<iframe src="${currentUrl}" width="400" height="700" style="border:none; position:fixed; bottom:20px; right:20px; z-index:9999; border-radius:24px; box-shadow: 0 10px 40px rgba(0,0,0,0.15);"></iframe>`;
-            
-            return (
-                <div className="space-y-8 animate-in slide-in-from-bottom-2 duration-500 pb-20">
-                    <div className="bg-white p-8 rounded-2xl border border-slate-200 shadow-sm relative">
-                        <div className="flex items-center gap-4 mb-6">
-                            <div className="w-12 h-12 bg-blue-50 text-blue-600 rounded-2xl flex items-center justify-center shrink-0">
-                                <Code size={24} />
-                            </div>
-                            <div>
-                                <h3 className="text-lg font-bold text-slate-800">Website Integration</h3>
-                                <p className="text-xs text-slate-500">Embed this AI Assistant on any website.</p>
-                            </div>
-                        </div>
-
-                        <div className="bg-slate-900 rounded-xl p-6 relative group">
-                            <pre className="text-xs font-mono text-slate-300 whitespace-pre-wrap break-all">
-                                {embedCode}
-                            </pre>
-                            <button 
-                                onClick={() => navigator.clipboard.writeText(embedCode)}
-                                className="absolute top-4 right-4 p-2 bg-white/10 hover:bg-white/20 text-white rounded-lg transition-colors"
-                            >
-                                <Copy size={16} />
-                            </button>
-                        </div>
-                        <p className="text-[10px] text-slate-400 mt-4 text-center">
-                            Copy this code and paste it before the closing <code>&lt;/body&gt;</code> tag of your website.
-                        </p>
-                    </div>
-                </div>
-            );
 
         case 'general':
             return (
@@ -541,24 +626,6 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({
                              </div>
                         </div>
                      </div>
-
-                     <div className="bg-white p-8 rounded-2xl border border-slate-200 shadow-sm">
-                        <h3 className="text-lg font-bold text-slate-800 mb-6 flex items-center gap-2">
-                            <ShieldCheck size={20} className="text-brand-500" /> Security Controls
-                        </h3>
-                        <div className="flex items-center justify-between p-6 rounded-2xl bg-slate-50 border border-slate-100">
-                            <div>
-                                <p className="text-sm font-bold text-slate-800">Master Emergency Lockdown</p>
-                                <p className="text-[10px] text-slate-400 font-medium mt-1">Force AI to prioritize safety protocols and skip detailed inquiries.</p>
-                            </div>
-                            <button 
-                                onClick={() => setEmergencyMode(!emergencyMode)}
-                                className={`w-14 h-8 rounded-full p-1 transition-colors ${emergencyMode ? 'bg-red-500' : 'bg-slate-300'}`}
-                            >
-                                <div className={`w-6 h-6 rounded-full bg-white shadow transition-transform ${emergencyMode ? 'translate-x-6' : 'translate-x-0'}`} />
-                            </button>
-                        </div>
-                    </div>
                 </div>
             );
     }
@@ -570,9 +637,9 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({
              <div className="flex gap-8">
                  {[
                     { id: 'usage', label: 'Usage', icon: <DollarSign size={14} /> },
-                    { id: 'voice', label: 'Voice Config', icon: <Mic2 size={14} /> },
+                    { id: 'voice', label: 'Voice', icon: <Mic2 size={14} /> },
                     { id: 'training', label: 'Training', icon: <Brain size={14} /> },
-                    { id: 'deploy', label: 'Deploy', icon: <Code size={14} /> },
+                    { id: 'deploy', label: 'Deploy', icon: <Rocket size={14} /> },
                     { id: 'integrations', label: 'CRM', icon: <Database size={14} /> },
                     { id: 'general', label: 'Settings', icon: <ShieldCheck size={14} /> }
                  ].map(t => (
