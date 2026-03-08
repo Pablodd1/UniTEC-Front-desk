@@ -6,12 +6,12 @@ import {
   TrendingUp, Zap, Gauge, Building2, Store, Brain, Code, Copy, ExternalLink, Rocket, Globe, ToggleRight, ToggleLeft,
   DollarSign
 } from 'lucide-react';
-import { EscalaConfig, VoiceName, VoiceProvider } from '../types';
+import { EscalaConfig, VoiceName, VoiceProvider, BillingInvoice } from '../types';
 import { playGeminiTTS } from '../services/geminiService';
 import { playDeepgramTTS } from '../services/deepgramService';
 import { playElevenLabsTTS } from '../services/elevenLabsService';
 import { getEscalaConfig, saveEscalaConfig, testEscalaConnection } from '../services/escalaService';
-import { getUsageStats, getProfitEstimate } from '../services/usageService';
+import { getUsageStats, getProfitEstimate, generateInvoice } from '../services/usageService';
 import { DEFAULT_TRAINING_DATA } from '../constants';
 
 interface AdminDashboardProps {
@@ -55,8 +55,10 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({
   const [limitTokens, setLimitTokens] = useState(10000000);
   const [limitMinutes, setLimitMinutes] = useState(5000);
   const [costEstimate, setCostEstimate] = useState(0);
+  const [billingHistory, setBillingHistory] = useState<BillingInvoice[]>([]);
   const [profit, setProfit] = useState<number>(getProfitEstimate());
   const [isRefreshingUsage, setIsRefreshingUsage] = useState(false);
+  const [isGeneratingInvoice, setIsGeneratingInvoice] = useState(false);
 
   // Escala CRM State
   const [escalaConfig, setEscalaConfig] = useState<EscalaConfig>({ apiKey: '', accountId: '', isActive: false });
@@ -112,6 +114,7 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({
       setLimitTokens(stats.limitTokens);
       setLimitMinutes(stats.limitMinutes);
       setCostEstimate(stats.costEstimate);
+      setBillingHistory(stats.billingHistory || []);
       setProfit(getProfitEstimate());
     }, 3000);
     return () => clearInterval(interval);
@@ -165,9 +168,20 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({
         setLimitTokens(stats.limitTokens);
         setLimitMinutes(stats.limitMinutes);
         setCostEstimate(stats.costEstimate);
+        setBillingHistory(stats.billingHistory || []);
         setProfit(getProfitEstimate());
         setIsRefreshingUsage(false);
     }, 600);
+  };
+
+  const handleGenerateInvoice = () => {
+    setIsGeneratingInvoice(true);
+    setTimeout(() => {
+        generateInvoice();
+        const stats = getUsageStats();
+        setBillingHistory(stats.billingHistory);
+        setIsGeneratingInvoice(false);
+    }, 1000);
   };
 
   const handleTestEscala = async () => {
@@ -266,6 +280,73 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({
                                     </div>
                                 </div>
                             ))}
+                        </div>
+                    </div>
+
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        {/* Cost Estimation Calculation */}
+                        <div className="bg-white rounded-2xl border border-slate-200 shadow-sm p-8">
+                            <h3 className="text-lg font-bold text-slate-800 mb-4">Cost Estimation</h3>
+                            <div className="space-y-4">
+                                <div className="p-4 bg-slate-50 rounded-xl border border-slate-100">
+                                    <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-2">Theoretical Rates (Client)</p>
+                                    <div className="space-y-2">
+                                        <div className="flex justify-between text-xs">
+                                            <span className="text-slate-600">Tokens (per 1M)</span>
+                                            <span className="font-bold text-slate-900">$0.25</span>
+                                        </div>
+                                        <div className="flex justify-between text-xs">
+                                            <span className="text-slate-600">Voice (per minute)</span>
+                                            <span className="font-bold text-slate-900">$0.05</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div className="p-4 bg-brand-50 rounded-xl border border-brand-100">
+                                    <p className="text-[10px] font-black text-brand-400 uppercase tracking-widest mb-2">Calculation Formula</p>
+                                    <p className="text-xs text-brand-700 leading-relaxed">
+                                        Total = (Tokens / 1,000,000 * $0.25) + (Minutes * $0.05)
+                                    </p>
+                                </div>
+                                <button 
+                                    onClick={handleGenerateInvoice}
+                                    disabled={isGeneratingInvoice}
+                                    className="w-full py-3 bg-slate-900 text-white rounded-xl text-xs font-black uppercase tracking-widest hover:bg-slate-800 transition-all flex items-center justify-center gap-2"
+                                >
+                                    {isGeneratingInvoice ? <Loader2 size={14} className="animate-spin" /> : <DollarSign size={14} />}
+                                    Generate Monthly Invoice
+                                </button>
+                            </div>
+                        </div>
+
+                        {/* Billing History */}
+                        <div className="bg-white rounded-2xl border border-slate-200 shadow-sm p-8">
+                            <h3 className="text-lg font-bold text-slate-800 mb-4">Billing History</h3>
+                            <div className="space-y-3 max-h-[280px] overflow-y-auto pr-2 no-scrollbar">
+                                {billingHistory.length === 0 ? (
+                                    <div className="text-center py-12 text-slate-400">
+                                        <DollarSign size={32} className="mx-auto mb-2 opacity-20" />
+                                        <p className="text-xs font-bold uppercase tracking-widest">No history yet</p>
+                                    </div>
+                                ) : (
+                                    billingHistory.map((inv) => (
+                                        <div key={inv.id} className="p-4 bg-slate-50 rounded-xl border border-slate-100 flex items-center justify-between hover:border-brand-200 transition-colors">
+                                            <div>
+                                                <p className="text-[10px] font-black text-brand-600 uppercase tracking-widest">{inv.id}</p>
+                                                <p className="text-xs font-bold text-slate-800">{inv.date}</p>
+                                                <p className="text-[9px] text-slate-400 mt-0.5">{(inv.tokens / 1000).toFixed(1)}k Tokens consumed</p>
+                                            </div>
+                                            <div className="text-right">
+                                                <p className="text-sm font-black text-slate-900">${inv.amount.toFixed(2)}</p>
+                                                <span className={`text-[8px] font-black uppercase tracking-widest px-2 py-0.5 rounded-full ${
+                                                    inv.status === 'Paid' ? 'bg-emerald-100 text-emerald-600' : 'bg-orange-100 text-orange-600'
+                                                }`}>
+                                                    {inv.status}
+                                                </span>
+                                            </div>
+                                        </div>
+                                    ))
+                                )}
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -636,7 +717,7 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({
         <div className="bg-white border-b border-slate-200 px-6 pt-2 overflow-x-auto no-scrollbar shrink-0">
              <div className="flex gap-8">
                  {[
-                    { id: 'usage', label: 'Usage', icon: <DollarSign size={14} /> },
+                    { id: 'usage', label: 'Usage & Power', icon: <DollarSign size={14} /> },
                     { id: 'voice', label: 'Voice', icon: <Mic2 size={14} /> },
                     { id: 'training', label: 'Training', icon: <Brain size={14} /> },
                     { id: 'deploy', label: 'Deploy', icon: <Rocket size={14} /> },

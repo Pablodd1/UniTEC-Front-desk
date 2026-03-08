@@ -112,20 +112,37 @@ const App: React.FC = () => {
     <div className={isEmbedMode ? "h-screen w-screen overflow-hidden bg-transparent" : ""}>
       {/* Background Demo Website (Hidden in Embed Mode) */}
       {!isEmbedMode && (
-        <div className={`fixed inset-0 bg-slate-100 flex items-center justify-center -z-10 ${isWidgetOpen ? 'blur-lg grayscale-[0.2]' : ''} transition-all duration-700`}>
-            <div className="text-center p-8 max-w-2xl">
-                <h2 className="text-3xl md:text-5xl font-black text-slate-800 mb-6 tracking-tight">{activeConfig.name}</h2>
-                <p className="text-slate-500 mb-10 leading-relaxed text-sm md:text-base">
-                  Professional Construction Materials Distributor. Florida-based stock.
-                  This page represents your existing website where the AI assistant widget will be integrated.
-                </p>
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                    {[1,2,3].map(i => (
-                      <div key={i} className="h-40 bg-white rounded-3xl shadow-sm border border-slate-200 p-6 flex items-end">
-                         <div className="w-12 h-2 bg-slate-100 rounded-full"></div>
-                      </div>
-                    ))}
+        <div className={`fixed inset-0 bg-white flex flex-col -z-10 ${isWidgetOpen ? 'blur-lg grayscale-[0.2]' : ''} transition-all duration-700`}>
+            {/* Hero Section with Image */}
+            <div className="relative h-[60vh] w-full overflow-hidden">
+                <img 
+                  src="https://picsum.photos/seed/unitec-design/1920/1080" 
+                  alt="Unitec Design Hero" 
+                  className="w-full h-full object-cover"
+                  referrerPolicy="no-referrer"
+                />
+                <div className="absolute inset-0 bg-gradient-to-b from-black/40 to-white"></div>
+                <div className="absolute inset-0 flex flex-col items-center justify-center text-center p-8">
+                    <h2 className="text-4xl md:text-7xl font-black text-white mb-4 tracking-tighter drop-shadow-2xl">{activeConfig.name}</h2>
+                    <p className="text-white/90 max-w-xl text-sm md:text-lg font-medium drop-shadow-md">
+                      {activeConfig.tagline || "Professional Construction Materials Distributor. Florida-based stock."}
+                    </p>
                 </div>
+            </div>
+
+            {/* Content Section */}
+            <div className="flex-1 max-w-6xl mx-auto w-full p-12 grid grid-cols-1 md:grid-cols-3 gap-8">
+                {[
+                  { title: "Logistics", desc: "Global shipping and local distribution networks." },
+                  { title: "Quality", desc: "Premium materials for high-end construction projects." },
+                  { title: "Support", desc: "24/7 AI-powered customer assistance and booking." }
+                ].map((item, i) => (
+                  <div key={i} className="bg-slate-50 rounded-[32px] p-8 border border-slate-200 shadow-sm hover:shadow-md transition-shadow">
+                     <div className="w-12 h-12 bg-brand-900 rounded-2xl mb-6 flex items-center justify-center text-accent-500 font-bold">0{i+1}</div>
+                     <h3 className="text-xl font-bold text-slate-800 mb-2">{item.title}</h3>
+                     <p className="text-slate-500 text-sm leading-relaxed">{item.desc}</p>
+                  </div>
+                ))}
             </div>
         </div>
       )}

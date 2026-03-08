@@ -199,6 +199,24 @@ const ChatTab: React.FC<ChatTabProps> = ({ quickActions, initialMessage, emergen
         ref={scrollContainerRef}
         className="flex-1 overflow-y-auto p-4 space-y-6 no-scrollbar relative scroll-smooth"
       >
+        {/* Welcome Hero Image */}
+        <div className="mb-8 rounded-3xl overflow-hidden shadow-lg border border-slate-100">
+            <img 
+                src="https://picsum.photos/seed/unitec-collage/800/400" 
+                alt="Welcome" 
+                className="w-full h-40 object-cover"
+                referrerPolicy="no-referrer"
+            />
+            <div className="p-4 bg-white">
+                <p className="text-[10px] font-black text-brand-500 uppercase tracking-widest mb-1">Welcome to {language === 'en' ? 'Support' : 'Soporte'}</p>
+                <p className="text-xs text-slate-500 leading-relaxed">
+                    {language === 'en' 
+                        ? "How can we assist your construction project today?" 
+                        : "¿Cómo podemos ayudarle con su proyecto de construcción hoy?"}
+                </p>
+            </div>
+        </div>
+
         {messages.map((msg) => (
           <div 
             key={msg.id} 
