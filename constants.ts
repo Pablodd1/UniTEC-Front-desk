@@ -2,6 +2,7 @@
 import { BusinessConfig, QuickAction, ServiceOffering } from './types';
 import { FunctionDeclaration, Type } from "@google/genai";
 import { Language } from './types';
+import PRODUCTS from './products.json';
 
 export const UNITEC_CONFIG: BusinessConfig = {
   name: "UNITEC USA DESIGN",
@@ -168,32 +169,9 @@ INSTALLATION METHODS:
 - CLICK-LOCK SYSTEM (SPC Flooring)
 
 ================================================================================
-PRODUCT DATABASE (JSON)
+PRODUCT DATABASE (IMPORTED)
 ================================================================================
-[
-  {
-    "id": "WPC-001",
-    "category": "Wall Panel",
-    "name": "Roble Miel (Honey Oak)",
-    "style_tags": ["Natural", "Campestre", "Warm", "Rustic"],
-    "price_per_m2": 45.00,
-    "description": "Premium WPC wall panel with deep wood grain texture. Waterproof and UV resistant.",
-    "image_url": "https://yourdrive.com/image_roble.jpg",
-    "pdf_tech_sheet": "https://yourdrive.com/spec_roble.pdf",
-    "stock_status": "In Stock"
-  },
-  {
-    "id": "MAR-002",
-    "category": "Wall Sheet",
-    "name": "Mármol Gris Industrial",
-    "style_tags": ["Modern", "Industrial", "Minimalist"],
-    "price_per_m2": 60.00,
-    "description": "High-gloss marble-effect sheet for modern office environments.",
-    "image_url": "https://yourdrive.com/image_marble.jpg",
-    "pdf_tech_sheet": "https://yourdrive.com/spec_marble.pdf",
-    "stock_status": "Limited"
-  }
-]
+(See products.json for full catalog)
 
 ================================================================================
 FAQS & UNIT CONVERSIONS
