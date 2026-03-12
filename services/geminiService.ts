@@ -99,6 +99,29 @@ export async function* sendMessageToGemini(
   }
 }
 
+/**
+ * Generates embeddings for the given text using Gemini Embedding 2.
+ */
+export async function generateEmbedding(text: string): Promise<number[] | null> {
+  try {
+    const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
+    const result = await ai.models.embedContent({
+      model: 'gemini-embedding-2-preview',
+      contents: [text],
+    });
+    
+    if (result.embeddings && result.embeddings.length > 0 && result.embeddings[0].values) {
+      // Track API call usage
+      trackUsage({ apiCalls: 1 });
+      return result.embeddings[0].values;
+    }
+    return null;
+  } catch (error) {
+    console.error("Error generating embedding:", error);
+    return null;
+  }
+}
+
 // --- Live API (Voice & Vision) Service ---
 
 export interface LiveSessionCallbacks {

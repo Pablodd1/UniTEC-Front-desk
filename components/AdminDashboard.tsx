@@ -598,6 +598,30 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({
                                 This content will be injected into the system prompt for both Chat and Voice interactions.
                             </p>
                         </div>
+                        
+                        <div className="mt-8 pt-8 border-t border-slate-100">
+                            <div className="flex items-center justify-between mb-4">
+                                <div>
+                                    <h4 className="text-sm font-bold text-slate-800">Gemini Embedding 2</h4>
+                                    <p className="text-xs text-slate-500">Test generating vector embeddings for semantic search using gemini-embedding-2-preview.</p>
+                                </div>
+                                <button 
+                                    onClick={async () => {
+                                        const { generateEmbedding } = await import('../services/geminiService');
+                                        const sampleText = "Test embedding generation";
+                                        const result = await generateEmbedding(sampleText);
+                                        if (result) {
+                                            alert(`Success! Generated embedding vector with ${result.length} dimensions.`);
+                                        } else {
+                                            alert("Failed to generate embedding.");
+                                        }
+                                    }}
+                                    className="px-4 py-2 bg-slate-100 text-slate-700 rounded-lg text-xs font-bold hover:bg-slate-200 transition-all"
+                                >
+                                    Test Embedding
+                                </button>
+                            </div>
+                        </div>
                     </div>
                 </div>
             );
