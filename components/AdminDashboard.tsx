@@ -4,7 +4,7 @@ import {
   ShieldCheck, Database, Mic2, 
   Save, RefreshCw, Check, Loader2, Volume2, 
   TrendingUp, Zap, Gauge, Building2, Store, Brain, Code, Copy, ExternalLink, Rocket, Globe, ToggleRight, ToggleLeft,
-  DollarSign
+  DollarSign, MessageSquare
 } from 'lucide-react';
 import { EscalaConfig, VoiceName, VoiceProvider, BillingInvoice } from '../types';
 import { playGeminiTTS } from '../services/geminiService';
@@ -43,7 +43,7 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({
     currentBrandId = 'unitec',
     onToggleBrand
 }) => {
-  const [activeSubTab, setActiveSubTab] = useState<'usage' | 'voice' | 'integrations' | 'deploy' | 'training' | 'general'>('usage');
+  const [activeSubTab, setActiveSubTab] = useState<'usage' | 'voice' | 'integrations' | 'deploy' | 'training' | 'general' | 'chats'>('usage');
   
   // Usage & Billing State
   const [totalTokens, setTotalTokens] = useState(0);
@@ -313,7 +313,7 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({
                                     className="w-full py-3 bg-slate-900 text-white rounded-xl text-xs font-black uppercase tracking-widest hover:bg-slate-800 transition-all flex items-center justify-center gap-2"
                                 >
                                     {isGeneratingInvoice ? <Loader2 size={14} className="animate-spin" /> : <DollarSign size={14} />}
-                                    Generate Monthly Invoice
+                                    Generate Statement
                                 </button>
                             </div>
                         </div>
@@ -347,6 +347,34 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({
                                     ))
                                 )}
                             </div>
+                        </div>
+                    </div>
+
+                    {/* Recent Interactions (CRM Logs) */}
+                    <div className="bg-white rounded-2xl border border-slate-200 shadow-sm p-8">
+                        <h3 className="text-lg font-bold text-slate-800 mb-4">Recent Interactions</h3>
+                        <div className="space-y-3">
+                            {[
+                                { date: '2026-03-13 10:23 AM', user: 'Client A', action: 'Inquired about Cement pricing', status: 'Logged' },
+                                { date: '2026-03-13 09:45 AM', user: 'Client B', action: 'Booked consultation call', status: 'Synced' },
+                                { date: '2026-03-12 04:12 PM', user: 'Client C', action: 'Requested technical sheet for Steel Rebar', status: 'Logged' },
+                                { date: '2026-03-12 01:30 PM', user: 'Client D', action: 'Asked about delivery times to Miami', status: 'Synced' },
+                            ].map((log, i) => (
+                                <div key={i} className="p-4 bg-slate-50 rounded-xl border border-slate-100 flex items-center justify-between">
+                                    <div>
+                                        <p className="text-xs font-bold text-slate-800">{log.user}</p>
+                                        <p className="text-[10px] text-slate-500 mt-0.5">{log.action}</p>
+                                    </div>
+                                    <div className="text-right">
+                                        <p className="text-[10px] text-slate-400">{log.date}</p>
+                                        <span className={`inline-block mt-1 text-[8px] font-black uppercase tracking-widest px-2 py-0.5 rounded-full ${
+                                            log.status === 'Synced' ? 'bg-emerald-100 text-emerald-600' : 'bg-blue-100 text-blue-600'
+                                        }`}>
+                                            {log.status}
+                                        </span>
+                                    </div>
+                                </div>
+                            ))}
                         </div>
                     </div>
                 </div>
@@ -626,6 +654,46 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({
                 </div>
             );
 
+        case 'chats':
+            const savedChats = localStorage.getItem('unitec_chat_history');
+            let parsedChats = [];
+            try {
+                if (savedChats) parsedChats = JSON.parse(savedChats);
+            } catch (e) {}
+
+            return (
+                <div className="space-y-8 animate-in slide-in-from-bottom-2 duration-500 pb-20">
+                    <div className="bg-white rounded-2xl border border-slate-200 shadow-sm p-8">
+                        <div className="flex items-center justify-between mb-8">
+                            <div>
+                                <h3 className="text-lg font-bold text-slate-800">Training Opportunities</h3>
+                                <p className="text-xs text-slate-500">Review recent chat logs to improve AI responses and update the knowledge base.</p>
+                            </div>
+                        </div>
+                        
+                        {parsedChats.length === 0 ? (
+                            <div className="text-center py-12 text-slate-400 text-sm">No chat history found.</div>
+                        ) : (
+                            <div className="space-y-4">
+                                {parsedChats.map((msg: any, i: number) => (
+                                    <div key={i} className={`p-4 rounded-xl border ${msg.role === 'user' ? 'bg-brand-50 border-brand-100 ml-8' : 'bg-slate-50 border-slate-100 mr-8'}`}>
+                                        <div className="flex items-center gap-2 mb-2">
+                                            <span className={`text-[10px] font-black uppercase tracking-widest ${msg.role === 'user' ? 'text-brand-600' : 'text-slate-500'}`}>
+                                                {msg.role === 'user' ? 'User' : 'AI Assistant'}
+                                            </span>
+                                            <span className="text-[10px] text-slate-400">
+                                                {new Date(msg.timestamp).toLocaleString()}
+                                            </span>
+                                        </div>
+                                        <p className="text-sm text-slate-700 whitespace-pre-wrap">{msg.text}</p>
+                                    </div>
+                                ))}
+                            </div>
+                        )}
+                    </div>
+                </div>
+            );
+
         case 'integrations':
             return (
                 <div className="space-y-8 animate-in slide-in-from-bottom-2 duration-500 pb-20">
@@ -741,9 +809,10 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({
         <div className="bg-white border-b border-slate-200 px-6 pt-2 overflow-x-auto no-scrollbar shrink-0">
              <div className="flex gap-8">
                  {[
-                    { id: 'usage', label: 'Usage & Power', icon: <DollarSign size={14} /> },
+                    { id: 'usage', label: 'Usage & Billing', icon: <DollarSign size={14} /> },
                     { id: 'voice', label: 'Voice', icon: <Mic2 size={14} /> },
                     { id: 'training', label: 'Training', icon: <Brain size={14} /> },
+                    { id: 'chats', label: 'Chats', icon: <MessageSquare size={14} /> },
                     { id: 'deploy', label: 'Deploy', icon: <Rocket size={14} /> },
                     { id: 'integrations', label: 'CRM', icon: <Database size={14} /> },
                     { id: 'general', label: 'Settings', icon: <ShieldCheck size={14} /> }

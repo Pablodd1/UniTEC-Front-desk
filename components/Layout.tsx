@@ -1,7 +1,7 @@
 
 import React from 'react';
 import { Tab, BusinessConfig, Language } from '../types';
-import { MessageSquare, Phone, Grid, Info, ShieldCheck, LayoutDashboard, ChevronDown } from 'lucide-react';
+import { MessageSquare, Phone, ShieldCheck, LayoutDashboard, ChevronDown } from 'lucide-react';
 import { UI_TRANSLATIONS } from '../constants';
 
 interface LayoutProps {
@@ -44,7 +44,7 @@ const Layout: React.FC<LayoutProps> = ({ children, activeTab, onTabChange, confi
   // Dynamic Styles based on Embed Mode
   const layoutClasses = isEmbedMode 
     ? "h-screen w-screen flex flex-col bg-white overflow-hidden" 
-    : "fixed inset-0 z-[9999] flex flex-col bg-white overflow-hidden animate-in slide-in-from-bottom-8 fade-in duration-500 md:inset-auto md:bottom-24 md:right-6 md:w-[400px] md:h-[700px] md:max-h-[90vh] md:rounded-[32px] md:shadow-2xl md:border md:border-slate-200";
+    : "fixed inset-0 z-[9999] flex flex-col bg-white overflow-hidden animate-in slide-in-from-bottom-8 fade-in duration-500 md:inset-auto md:bottom-24 md:right-6 md:w-[800px] md:max-w-[90vw] md:h-[800px] md:max-h-[90vh] md:rounded-[32px] md:shadow-2xl md:border md:border-slate-200";
 
   return (
     <div className={layoutClasses}>
@@ -97,8 +97,6 @@ const Layout: React.FC<LayoutProps> = ({ children, activeTab, onTabChange, confi
       <nav className={`h-20 bg-white border-t border-slate-100 flex items-center justify-around px-2 shrink-0 pb-safe shadow-[0_-4px_12px_rgba(0,0,0,0.03)] ${!isEmbedMode ? 'md:rounded-b-[32px]' : ''}`}>
           <NavItem tab={Tab.CHAT} icon={<MessageSquare />} label={t.navChat} />
           <NavItem tab={Tab.CALL} icon={<Phone />} label={t.navCall} />
-          <NavItem tab={Tab.SERVICES} icon={<Grid />} label={t.navServices} />
-          <NavItem tab={Tab.INFO} icon={<Info />} label={t.navInfo} />
           <NavItem tab={Tab.ADMIN_SETTINGS} icon={<LayoutDashboard />} label="Admin" />
       </nav>
     </div>

@@ -16,7 +16,8 @@ export const resetChatSession = () => {
  * Explicitly exported to fix the AdminDashboard error.
  */
 export async function playGeminiTTS(text: string, voiceName: string = 'Kore') {
-  const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
+  const apiKey = process.env.GEMINI_API_KEY || process.env.API_KEY;
+  const ai = new GoogleGenAI({ apiKey: apiKey as string });
   const response = await ai.models.generateContent({
     model: "gemini-2.5-flash-preview-tts",
     contents: [{ parts: [{ text: text }] }],
@@ -63,7 +64,8 @@ export async function* sendMessageToGemini(
   onToolSuccess?: (toolName: string, result: any) => void,
   customGreeting?: string
 ) {
-  const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
+  const apiKey = process.env.GEMINI_API_KEY || process.env.API_KEY;
+  const ai = new GoogleGenAI({ apiKey: apiKey as string });
   let instructions = getSystemInstruction(language, customGreeting);
   if (emergencyMode) {
     instructions += "\n\n[SYSTEM OVERRIDE: EMERGENCY MODE ACTIVE]. Respond concisely. Prioritize safety protocols immediately.";
@@ -104,7 +106,8 @@ export async function* sendMessageToGemini(
  */
 export async function generateEmbedding(text: string): Promise<number[] | null> {
   try {
-    const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
+    const apiKey = process.env.GEMINI_API_KEY || process.env.API_KEY;
+    const ai = new GoogleGenAI({ apiKey: apiKey as string });
     const result = await ai.models.embedContent({
       model: 'gemini-embedding-2-preview',
       contents: [text],
@@ -141,7 +144,8 @@ export const connectLiveSession = async (
     voiceName: VoiceName = 'Kore',
     customGreeting?: string
 ) => {
-  const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
+  const apiKey = process.env.GEMINI_API_KEY || process.env.API_KEY;
+  const ai = new GoogleGenAI({ apiKey: apiKey as string });
   const startTime = Date.now();
 
   const inputAudioContext = new (window.AudioContext || (window as any).webkitAudioContext)({ sampleRate: 16000 });

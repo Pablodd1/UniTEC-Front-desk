@@ -1,8 +1,10 @@
 
-import { BusinessConfig, QuickAction, ServiceOffering } from './types';
+import { BusinessConfig, QuickAction, Product } from './types';
 import { FunctionDeclaration, Type } from "@google/genai";
 import { Language } from './types';
-import PRODUCTS from './products.json';
+import PRODUCTS_DATA from './products.json';
+
+export const PRODUCTS = PRODUCTS_DATA as Product[];
 
 export const UNITEC_CONFIG: BusinessConfig = {
   name: "UNITEC USA DESIGN",
@@ -37,54 +39,15 @@ export const BUILDING_INNOVATION_CONFIG: BusinessConfig = {
 // Default export for initial load
 export const BUSINESS_CONFIG = BUILDING_INNOVATION_CONFIG;
 
-export const SERVICES: ServiceOffering[] = [
-  {
-    id: 'walls',
-    name: 'Wall Panels & Facades',
-    category: 'Interior/Exterior',
-    description: 'Extensive collection including WPC, Polifachada, Muroflex, and PU Stone textures.',
-    features: ['100% Waterproof', 'Stone & Wood Finishes', 'Easy Install', 'Zero Maintenance'],
-    pricing: 'Starting from $20,299 COP'
-  },
-  {
-    id: 'sheets',
-    name: 'Decorative Laminates (Sheets)',
-    category: 'Interior Design',
-    description: 'Foam Board, Marble Sheets, and PVC Boards in high gloss and matte finishes.',
-    features: ['Marble Look', 'Mirror Finishes', 'Pastel Tones', 'Aurora Boreal Line'],
-    pricing: 'Sheets from $58,299 COP'
-  },
-  {
-    id: 'roofing',
-    name: 'UPVC Roofing (Cubiertas)',
-    category: 'Structural',
-    description: 'Thermo-acoustic roofing solutions, colonial tile styles, and zinc-type sheets.',
-    features: ['Termoacustica', 'Corrosion Resistant', 'White/Terracotta/Blue', '15-Year Warranty'],
-    pricing: 'Call for volume pricing'
-  },
-  {
-    id: 'flooring',
-    name: 'SPC Flooring & Decking',
-    category: 'Flooring',
-    description: 'Rigid core SPC for interiors and WPC Decking for exteriors.',
-    features: ['Click-Lock SPC', 'Integrated iXPE', 'Exterior WPC Deck', 'Anti-slip'],
-    pricing: 'SPC from $13,399 COP'
-  },
-  {
-    id: 'gardens',
-    name: 'Artificial Gardens',
-    category: 'Decor',
-    description: 'Vertical gardens for interior and exterior walls. Styles: Eden, Paris, Mossy.',
-    features: ['UV Resistant', 'Realistic Foliage', 'Easy Mounting', 'Indoor/Outdoor'],
-    pricing: 'From $25,799 COP'
-  }
-];
-
 export const QUICK_ACTIONS: QuickAction[] = [
   { id: 'stock', title: 'Check Stock', message: 'Do you have the WPC Panels in stock in Florida?', iconName: 'Box' },
   { id: 'quote', title: 'Get a Quote', message: 'I need a price for 50 square meters of SPC Flooring.', iconName: 'DollarSign' },
   { id: 'install', title: 'Installation', message: 'How do I install the wall panels using adhesive?', iconName: 'Hammer' },
   { id: 'contact', title: 'Contact Sales', message: 'Can you connect me with a sales representative?', iconName: 'BookOpen' },
+  { id: 'shipping', title: 'Shipping Info', message: 'What are your shipping options and delivery times?', iconName: 'Truck' },
+  { id: 'specs', title: 'Product Specs', message: 'Can I get the technical specifications for your products?', iconName: 'FileText' },
+  { id: 'returns', title: 'Return Policy', message: 'What is your return and exchange policy?', iconName: 'RefreshCcw' },
+  { id: 'discount', title: 'Bulk Discount', message: 'Do you offer discounts for bulk orders?', iconName: 'Percent' },
 ];
 
 // --- Tools Definition ---
@@ -179,6 +142,10 @@ FAQS & UNIT CONVERSIONS
 - 1 meter = 3.28 ft | 1 cm = 0.39 in | 1 m² = 10.76 ft².
 - Showroom visit: Call +1 (786) 968-5783 for an appointment in Doral, Miami.
 - Orders: Contact Johana Mesa (+1 786 968-5783) or Alexander Gomez (+57 311 3017763).
+- Discounts: Both bulk discounts and regular discounts are available.
+- Returns/Exchanges: There are NO returns or exchanges. All sales are final.
+- Shipping: We deliver anywhere. Shipping price depends on the country.
+- Database: We can process your Excel CSV database when you provide it.
 
 ================================================================================
 RESPONSE STYLE & GUIDELINES
@@ -270,6 +237,13 @@ export const UI_TRANSLATIONS = {
       "I need a wholesale quote"
     ],
     bookingConfirmed: "Appointment booked! A confirmation has been sent via email/SMS.",
+    category: "Category",
+    price: "Price",
+    description: "Description",
+    stockStatus: "Stock Status",
+    techSheet: "Technical Sheet",
+    styleTags: "Style Tags",
+    back: "Back",
   },
   es: {
     chatPlaceholder: "Escribe tu mensaje...",
@@ -306,5 +280,12 @@ export const UI_TRANSLATIONS = {
       "Necesito cotización mayorista"
     ],
     bookingConfirmed: "¡Cita agendada! Se ha enviado una confirmación por correo/SMS.",
+    category: "Categoría",
+    price: "Precio",
+    description: "Descripción",
+    stockStatus: "Estado de Stock",
+    techSheet: "Ficha Técnica",
+    styleTags: "Etiquetas de Estilo",
+    back: "Volver",
   }
 };

@@ -2,7 +2,7 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { Message, QuickAction, Language } from '../types';
 import { sendMessageToGemini } from '../services/geminiService';
-import { Send, Bot, User, Box, DollarSign, Hammer, BookOpen, CheckCircle2 } from 'lucide-react';
+import { Send, Bot, User, Box, DollarSign, Hammer, BookOpen, CheckCircle2, Truck, FileText, RefreshCcw, Percent } from 'lucide-react';
 import { GenerateContentResponse } from '@google/genai';
 import { UI_TRANSLATIONS } from '../constants';
 
@@ -17,14 +17,27 @@ interface ChatTabProps {
 const ChatTab: React.FC<ChatTabProps> = ({ quickActions, initialMessage, emergencyMode, language, customGreeting }) => {
   const t = UI_TRANSLATIONS[language];
   
-  const [messages, setMessages] = useState<Message[]>([
-    {
-      id: 'welcome',
-      role: 'model',
-      text: customGreeting || t.chatWelcome,
-      timestamp: new Date()
+  const [messages, setMessages] = useState<Message[]>(() => {
+    try {
+      const saved = localStorage.getItem('unitec_chat_history');
+      if (saved) {
+        const parsed = JSON.parse(saved);
+        if (parsed && parsed.length > 0) {
+          return parsed.map((m: any) => ({ ...m, timestamp: new Date(m.timestamp) }));
+        }
+      }
+    } catch (e) {
+      console.error("Failed to load chat history", e);
     }
-  ]);
+    return [
+      {
+        id: 'welcome',
+        role: 'model',
+        text: customGreeting || t.chatWelcome,
+        timestamp: new Date()
+      }
+    ];
+  });
   const [inputText, setInputText] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -35,6 +48,15 @@ const ChatTab: React.FC<ChatTabProps> = ({ quickActions, initialMessage, emergen
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const scrollContainerRef = useRef<HTMLDivElement>(null);
   const hasProcessedInitial = useRef(false);
+
+  // Memorize chats for training opportunities
+  useEffect(() => {
+    try {
+      localStorage.setItem('unitec_chat_history', JSON.stringify(messages));
+    } catch (e) {
+      console.error("Failed to save chat history", e);
+    }
+  }, [messages]);
 
   // Update welcome message when language or customGreeting changes, but only if it's the only message
   useEffect(() => {
@@ -50,7 +72,7 @@ const ChatTab: React.FC<ChatTabProps> = ({ quickActions, initialMessage, emergen
 
   // Check for API Key on mount
   useEffect(() => {
-    if (!process.env.API_KEY) {
+    if (!process.env.GEMINI_API_KEY && !process.env.API_KEY) {
       setError("System Error: API Key is missing. Please contact support.");
     }
   }, []);
@@ -160,6 +182,10 @@ const ChatTab: React.FC<ChatTabProps> = ({ quickActions, initialMessage, emergen
       case 'DollarSign': return <DollarSign size={16} />;
       case 'Hammer': return <Hammer size={16} />;
       case 'BookOpen': return <BookOpen size={16} />;
+      case 'Truck': return <Truck size={16} />;
+      case 'FileText': return <FileText size={16} />;
+      case 'RefreshCcw': return <RefreshCcw size={16} />;
+      case 'Percent': return <Percent size={16} />;
       default: return <Box size={16} />;
     }
   };
@@ -202,7 +228,7 @@ const ChatTab: React.FC<ChatTabProps> = ({ quickActions, initialMessage, emergen
         {/* Welcome Hero Image */}
         <div className="mb-8 rounded-3xl overflow-hidden shadow-lg border border-slate-100">
             <img 
-                src="https://picsum.photos/seed/unitec-collage/800/400" 
+                src="https://picsum.photos/seed/garden-decoration/800/400" 
                 alt="Welcome" 
                 className="w-full h-40 object-cover"
                 referrerPolicy="no-referrer"

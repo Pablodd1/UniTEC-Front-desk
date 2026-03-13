@@ -1,4 +1,16 @@
 
+export interface Product {
+  id: string;
+  category: string;
+  name: string;
+  style_tags: string[];
+  price_per_m2: number | null;
+  description: string;
+  image_url: string;
+  pdf_tech_sheet: string;
+  stock_status: string;
+}
+
 export interface ServiceOffering {
   id: string;
   name: string;

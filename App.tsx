@@ -3,13 +3,11 @@ import React, { useState, useEffect } from 'react';
 import Layout from './components/Layout';
 import ChatTab from './components/ChatTab';
 import CallTab from './components/CallTab';
-import ServicesTab from './components/ServicesTab';
-import InfoTab from './components/InfoTab';
 import AdminDashboard from './components/AdminDashboard';
 import CalendarTab from './components/CalendarTab';
 import LoginScreen from './components/LoginScreen';
 import { Tab, Language, VoiceName, VoiceProvider } from './types';
-import { UNITEC_CONFIG, BUILDING_INNOVATION_CONFIG, QUICK_ACTIONS, SERVICES } from './constants';
+import { UNITEC_CONFIG, BUILDING_INNOVATION_CONFIG, QUICK_ACTIONS } from './constants';
 import { resetChatSession } from './services/geminiService';
 import { MessageSquare, X } from 'lucide-react';
 
@@ -36,19 +34,11 @@ const App: React.FC = () => {
   const [voiceName, setVoiceName] = useState<VoiceName>('Kore');
   const [deepgramKey, setDeepgramKey] = useState<string>('');
   
-  const [initialMessage, setInitialMessage] = useState<string | undefined>(undefined);
+  const [initialMessage] = useState<string | undefined>(undefined);
 
   useEffect(() => {
     resetChatSession();
   }, [emergencyMode, language, currentBrandId]);
-
-  const handleConsultProduct = (productName: string) => {
-    const msg = language === 'en' 
-        ? `Tell me more about ${productName}` 
-        : `Cuéntame más sobre ${productName}`;
-    setInitialMessage(msg);
-    setActiveTab(Tab.CHAT);
-  };
 
   const renderContent = () => {
     if ((activeTab === Tab.ADMIN_SETTINGS || activeTab === Tab.CALENDAR) && !isLoggedIn) {
@@ -73,12 +63,6 @@ const App: React.FC = () => {
             deepgramKey={deepgramKey}
             customGreeting={activeConfig.customGreeting}
         />;
-      case Tab.SERVICES:
-        return <ServicesTab 
-            services={SERVICES} 
-            language={language} 
-            onConsultProduct={handleConsultProduct}
-        />;
       case Tab.CALENDAR:
         return <CalendarTab />;
       case Tab.ADMIN_SETTINGS:
@@ -93,11 +77,6 @@ const App: React.FC = () => {
             setDeepgramKey={setDeepgramKey}
             currentBrandId={currentBrandId}
             onToggleBrand={setCurrentBrandId}
-        />;
-      case Tab.INFO:
-        return <InfoTab 
-            config={activeConfig} 
-            language={language}
         />;
       default:
         return <ChatTab 
