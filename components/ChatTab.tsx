@@ -12,9 +12,10 @@ interface ChatTabProps {
   emergencyMode?: boolean;
   language: Language;
   customGreeting?: string;
+  bgImage?: string;
 }
 
-const ChatTab: React.FC<ChatTabProps> = ({ quickActions, initialMessage, emergencyMode, language, customGreeting }) => {
+const ChatTab: React.FC<ChatTabProps> = ({ quickActions, initialMessage, emergencyMode, language, customGreeting, bgImage }) => {
   const t = UI_TRANSLATIONS[language];
   
   const [messages, setMessages] = useState<Message[]>(() => {
@@ -228,7 +229,7 @@ const ChatTab: React.FC<ChatTabProps> = ({ quickActions, initialMessage, emergen
         {/* Welcome Hero Image */}
         <div className="mb-8 rounded-3xl overflow-hidden shadow-lg border border-slate-100">
             <img 
-                src="https://picsum.photos/seed/garden-decoration/800/400" 
+                src={bgImage || "https://picsum.photos/seed/garden-decoration/800/400"} 
                 alt="Welcome" 
                 className="w-full h-40 object-cover"
                 referrerPolicy="no-referrer"

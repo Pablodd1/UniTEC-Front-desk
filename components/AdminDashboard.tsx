@@ -9,9 +9,10 @@ import {
 import { EscalaConfig, VoiceName, VoiceProvider, BillingInvoice } from '../types';
 import { playGeminiTTS } from '../services/geminiService';
 import { playDeepgramTTS } from '../services/deepgramService';
-import { playElevenLabsTTS } from '../services/elevenLabsService';
+import { playElevenLabsTTS, cloneVoice } from '../services/elevenLabsService';
 import { getEscalaConfig, saveEscalaConfig, testEscalaConnection } from '../services/escalaService';
-import { getUsageStats, getProfitEstimate, generateInvoice } from '../services/usageService';
+import { getUsageStats, getProfitEstimate, generateInvoice, trackUsage } from '../services/usageService';
+import { generateImage, editImage } from '../services/imageService';
 import { DEFAULT_TRAINING_DATA } from '../constants';
 
 interface AdminDashboardProps {
@@ -25,6 +26,7 @@ interface AdminDashboardProps {
   setDeepgramKey: (key: string) => void;
   currentBrandId?: 'unitec' | 'building';
   onToggleBrand?: (brand: 'unitec' | 'building') => void;
+  onUpdateBackground?: (url: string) => void;
 }
 
 const GEMINI_VOICE_DESCRIPTIONS: Record<string, { gender: 'Male' | 'Female', style: string }> = {
@@ -41,9 +43,10 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({
     voiceProvider, setVoiceProvider,
     deepgramKey,
     currentBrandId = 'unitec',
-    onToggleBrand
+    onToggleBrand,
+    onUpdateBackground
 }) => {
-  const [activeSubTab, setActiveSubTab] = useState<'usage' | 'voice' | 'integrations' | 'deploy' | 'training' | 'general' | 'chats'>('usage');
+  const [activeSubTab, setActiveSubTab] = useState<'usage' | 'voice' | 'integrations' | 'deploy' | 'training' | 'general' | 'chats' | 'visuals'>('usage');
   
   // Usage & Billing State
   const [totalTokens, setTotalTokens] = useState(0);
@@ -72,20 +75,29 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({
   // ElevenLabs State
   const [elevenLabsKey, setElevenLabsKey] = useState('');
   const [elevenLabsVoiceId, setElevenLabsVoiceId] = useState('');
+  const [isCloning, setIsCloning] = useState(false);
+  const [cloneName, setCloneName] = useState('');
+  const [cloneFiles, setCloneFiles] = useState<File[]>([]);
+  const [cloningError, setCloningError] = useState<string | null>(null);
 
   // Model Training State
   const [trainingData, setTrainingData] = useState<string>('');
   const [isSavingTraining, setIsSavingTraining] = useState(false);
 
+  // Visuals State
+  const [imagePrompt, setImagePrompt] = useState('');
+  const [isGeneratingImage, setIsGeneratingImage] = useState(false);
+  const [generatedImageUrl, setGeneratedImageUrl] = useState<string | null>(null);
+  const [imageToEdit, setImageToEdit] = useState<string | null>(null);
+  const [aspectRatio, setAspectRatio] = useState<"1:1" | "3:4" | "4:3" | "9:16" | "16:9">("1:1");
+  const [imageError, setImageError] = useState<string | null>(null);
+
   // Copy State
   const [copyStatus, setCopyStatus] = useState<string | null>(null);
 
   const geminiVoices: VoiceName[] = ['Aoede', 'Kore', 'Zephyr', 'Puck', 'Fenrir', 'Charon'];
-  const [customClones, setCustomClones] = useState<string[]>([]);
   
   useEffect(() => {
-    const savedClones = localStorage.getItem('unitec_voice_clones');
-    if (savedClones) setCustomClones(JSON.parse(savedClones));
     const storedLib = localStorage.getItem('unitec_call_library');
     if (storedLib) {
         // Recordings loaded but not used in this view currently
@@ -209,7 +221,82 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({
     setTimeout(() => setIsSavingTraining(false), 1000);
   };
 
-  const currentVoiceList = [...geminiVoices, ...customClones];
+  const handleGenerateImage = async () => {
+    if (!imagePrompt) return;
+    setIsGeneratingImage(true);
+    setImageError(null);
+    try {
+        const url = await generateImage(imagePrompt, aspectRatio);
+        if (url) {
+            setGeneratedImageUrl(url);
+            trackUsage({ totalTokens: 0, chatTokens: 0, imageTokens: 1, apiCalls: 1 }); // Record 1 image unit
+        } else {
+            setImageError("No image was returned from the API.");
+        }
+    } catch (e: any) {
+        setImageError(e.message || "Failed to generate image. Ensure your API key is valid.");
+    } finally {
+        setIsGeneratingImage(false);
+    }
+  };
+
+  const handleEditImage = async () => {
+    if (!imagePrompt || !imageToEdit) return;
+    setIsGeneratingImage(true);
+    setImageError(null);
+    try {
+        const url = await editImage(imagePrompt, imageToEdit);
+        if (url) {
+            setGeneratedImageUrl(url);
+            trackUsage({ totalTokens: 0, chatTokens: 0, imageTokens: 1, apiCalls: 1 });
+        } else {
+            setImageError("No image was returned from the API.");
+        }
+    } catch (e: any) {
+        setImageError(e.message || "Failed to edit image.");
+    } finally {
+        setIsGeneratingImage(false);
+    }
+  };
+
+  const handleCloneVoice = async () => {
+    if (!elevenLabsKey || !cloneName || cloneFiles.length === 0) {
+        setCloningError("Please provide an API Key, Name, and at least one audio sample.");
+        return;
+    }
+
+    setIsCloning(true);
+    setCloningError(null);
+    try {
+        const voiceId = await cloneVoice(elevenLabsKey, cloneName, cloneFiles);
+        const newClone = { name: cloneName, id: voiceId };
+        const updatedClones = [...customClonesData, newClone];
+        setCustomClonesData(updatedClones);
+        localStorage.setItem('unitec_voice_clones_data', JSON.stringify(updatedClones));
+        
+        // Reset form
+        setCloneName('');
+        setCloneFiles([]);
+        setElevenLabsVoiceId(voiceId);
+        setVoiceName(voiceId as any);
+        setVoiceProvider('elevenlabs');
+        
+        alert("Voice cloned successfully! ID: " + voiceId);
+    } catch (e: any) {
+        setCloningError(e.message || "Failed to clone voice");
+    } finally {
+        setIsCloning(false);
+    }
+  };
+
+  const [customClonesData, setCustomClonesData] = useState<{name: string, id: string}[]>([]);
+  
+  useEffect(() => {
+    const savedClonesData = localStorage.getItem('unitec_voice_clones_data');
+    if (savedClonesData) setCustomClonesData(JSON.parse(savedClonesData));
+  }, []);
+
+  const currentVoiceList = [...geminiVoices];
 
   const renderTabContent = () => {
     switch(activeSubTab) {
@@ -403,36 +490,111 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({
                         </div>
 
                         {voiceProvider === 'elevenlabs' && (
-                             <div className="mb-8 p-6 bg-indigo-50 rounded-xl border border-indigo-100 space-y-4">
-                                <div className="flex items-center gap-2 mb-2">
-                                    <Globe size={16} className="text-indigo-600" />
-                                    <h4 className="font-bold text-indigo-900 text-sm">Voice Cloning Setup</h4>
-                                </div>
-                                <div>
-                                    <label className="text-[10px] font-bold text-indigo-400 uppercase tracking-widest">ElevenLabs API Key</label>
-                                    <input 
-                                        type="password" 
-                                        value={elevenLabsKey}
-                                        onChange={(e) => setElevenLabsKey(e.target.value)}
-                                        className="w-full mt-1 px-4 py-2 rounded-lg border border-indigo-200 focus:ring-2 focus:ring-indigo-500 outline-none text-sm"
-                                        placeholder="xi-..."
-                                    />
-                                </div>
-                                <div>
-                                    <label className="text-[10px] font-bold text-indigo-400 uppercase tracking-widest">Voice ID</label>
-                                    <div className="flex gap-2">
+                             <div className="space-y-6">
+                                <div className="p-6 bg-indigo-50 rounded-xl border border-indigo-100 space-y-4">
+                                    <div className="flex items-center gap-2 mb-2">
+                                        <Globe size={16} className="text-indigo-600" />
+                                        <h4 className="font-bold text-indigo-900 text-sm">ElevenLabs Configuration</h4>
+                                    </div>
+                                    <div>
+                                        <label className="text-[10px] font-bold text-indigo-400 uppercase tracking-widest">ElevenLabs API Key</label>
                                         <input 
-                                            type="text" 
-                                            value={elevenLabsVoiceId}
-                                            onChange={(e) => setElevenLabsVoiceId(e.target.value)}
-                                            className="flex-1 mt-1 px-4 py-2 rounded-lg border border-indigo-200 focus:ring-2 focus:ring-indigo-500 outline-none text-sm"
-                                            placeholder="e.g. 21m00Tcm4TlvDq8ikWAM"
+                                            type="password" 
+                                            value={elevenLabsKey}
+                                            onChange={(e) => setElevenLabsKey(e.target.value)}
+                                            className="w-full mt-1 px-4 py-2 rounded-lg border border-indigo-200 focus:ring-2 focus:ring-indigo-500 outline-none text-sm"
+                                            placeholder="xi-..."
                                         />
-                                        <button onClick={saveElevenLabsConfig} className="mt-1 px-4 bg-indigo-600 text-white rounded-lg text-xs font-bold hover:bg-indigo-700">
-                                            Save
-                                        </button>
+                                    </div>
+                                    <div>
+                                        <label className="text-[10px] font-bold text-indigo-400 uppercase tracking-widest">Active Voice ID</label>
+                                        <div className="flex gap-2">
+                                            <input 
+                                                type="text" 
+                                                value={elevenLabsVoiceId}
+                                                onChange={(e) => setElevenLabsVoiceId(e.target.value)}
+                                                className="flex-1 mt-1 px-4 py-2 rounded-lg border border-indigo-200 focus:ring-2 focus:ring-indigo-500 outline-none text-sm"
+                                                placeholder="e.g. 21m00Tcm4TlvDq8ikWAM"
+                                            />
+                                            <button onClick={saveElevenLabsConfig} className="mt-1 px-4 bg-indigo-600 text-white rounded-lg text-xs font-bold hover:bg-indigo-700">
+                                                Save
+                                            </button>
+                                        </div>
                                     </div>
                                 </div>
+
+                                <div className="p-6 bg-white rounded-xl border border-slate-200 shadow-sm space-y-4">
+                                    <div className="flex items-center gap-2 mb-2">
+                                        <Mic2 size={16} className="text-brand-600" />
+                                        <h4 className="font-bold text-slate-800 text-sm">Voice Cloning Lab</h4>
+                                    </div>
+                                    <p className="text-xs text-slate-500">Clone a new voice by providing a name and audio samples (MP3/WAV).</p>
+                                    
+                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                        <div>
+                                            <label className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Clone Name</label>
+                                            <input 
+                                                type="text" 
+                                                value={cloneName}
+                                                onChange={(e) => setCloneName(e.target.value)}
+                                                className="w-full mt-1 px-4 py-2 rounded-lg border border-slate-200 focus:ring-2 focus:ring-brand-500 outline-none text-sm"
+                                                placeholder="e.g. CEO Voice"
+                                            />
+                                        </div>
+                                        <div>
+                                            <label className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Audio Samples</label>
+                                            <input 
+                                                type="file" 
+                                                multiple
+                                                accept="audio/*"
+                                                onChange={(e) => setCloneFiles(Array.from(e.target.files || []))}
+                                                className="w-full mt-1 text-xs text-slate-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-xs file:font-semibold file:bg-brand-50 file:text-brand-700 hover:file:bg-brand-100"
+                                            />
+                                        </div>
+                                    </div>
+
+                                    {cloningError && (
+                                        <p className="text-[10px] text-red-500 font-bold">{cloningError}</p>
+                                    )}
+
+                                    <button 
+                                        onClick={handleCloneVoice}
+                                        disabled={isCloning || !cloneName || cloneFiles.length === 0}
+                                        className="w-full py-3 bg-brand-600 text-white rounded-xl text-xs font-black uppercase tracking-widest hover:bg-brand-700 transition-all flex items-center justify-center gap-2 disabled:opacity-50"
+                                    >
+                                        {isCloning ? <Loader2 size={14} className="animate-spin" /> : <Zap size={14} />}
+                                        {isCloning ? 'Cloning Voice...' : 'Start Cloning Process'}
+                                    </button>
+                                </div>
+
+                                {customClonesData.length > 0 && (
+                                    <div className="space-y-3">
+                                        <h4 className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Your Cloned Voices</h4>
+                                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                            {customClonesData.map(clone => (
+                                                <div key={clone.id} className={`flex items-center justify-between p-4 rounded-xl border transition-all ${voiceName === clone.id ? 'bg-indigo-50 border-indigo-200 ring-2 ring-indigo-100' : 'bg-white border-slate-100'}`}>
+                                                    <div className="flex items-center gap-3">
+                                                        <div className={`w-10 h-10 rounded-full flex items-center justify-center text-xs font-bold ${voiceName === clone.id ? 'bg-indigo-600 text-white' : 'bg-slate-100 text-slate-400'}`}>
+                                                            <Mic2 size={16} />
+                                                        </div>
+                                                        <button onClick={() => {
+                                                            setElevenLabsVoiceId(clone.id);
+                                                            setVoiceName(clone.id as any);
+                                                            setVoiceProvider('elevenlabs');
+                                                            saveElevenLabsConfig();
+                                                        }} className="text-left">
+                                                            <p className="text-sm font-bold text-slate-800">{clone.name}</p>
+                                                            <p className="text-[9px] text-slate-400 font-mono">{clone.id}</p>
+                                                        </button>
+                                                    </div>
+                                                    <button onClick={() => handleTestVoice(clone.id as any)} className="p-2 bg-white border border-slate-100 rounded-lg shadow-sm hover:shadow-md text-indigo-600 transition-all hover:bg-indigo-50">
+                                                        {isTestingVoice === clone.id ? <Loader2 size={16} className="animate-spin" /> : <Volume2 size={16} />}
+                                                    </button>
+                                                </div>
+                                            ))}
+                                        </div>
+                                    </div>
+                                )}
                              </div>
                         )}
 
@@ -654,6 +816,131 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({
                 </div>
             );
 
+        case 'visuals':
+            return (
+                <div className="space-y-8 animate-in slide-in-from-bottom-2 duration-500 pb-20">
+                    <div className="bg-white p-8 rounded-2xl border border-slate-200 shadow-sm">
+                        <div className="flex items-center gap-4 mb-8">
+                            <div className="w-12 h-12 bg-pink-50 text-pink-600 rounded-2xl flex items-center justify-center shrink-0">
+                                <Zap size={24} />
+                            </div>
+                            <div>
+                                <h3 className="text-lg font-bold text-slate-800">Nano Banana 2: Image Lab</h3>
+                                <p className="text-xs text-slate-500">Generate or edit high-quality images using gemini-3.1-flash-image-preview.</p>
+                            </div>
+                        </div>
+
+                        <div className="space-y-6">
+                            <div>
+                                <label className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-2 block">Prompt</label>
+                                <textarea 
+                                    value={imagePrompt}
+                                    onChange={(e) => setImagePrompt(e.target.value)}
+                                    className="w-full p-4 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:ring-2 focus:ring-brand-500 outline-none h-24 resize-none"
+                                    placeholder="Describe the image you want to create or how to edit the current one..."
+                                />
+                            </div>
+
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                <div>
+                                    <label className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-2 block">Aspect Ratio</label>
+                                    <div className="flex flex-wrap gap-2">
+                                        {(["1:1", "3:4", "4:3", "9:16", "16:9"] as const).map(ratio => (
+                                            <button 
+                                                key={ratio}
+                                                onClick={() => setAspectRatio(ratio)}
+                                                className={`px-3 py-1.5 rounded-lg text-[10px] font-bold border transition-all ${aspectRatio === ratio ? 'bg-brand-600 text-white border-brand-600' : 'bg-white text-slate-600 border-slate-200 hover:border-brand-500'}`}
+                                            >
+                                                {ratio}
+                                            </button>
+                                        ))}
+                                    </div>
+                                </div>
+                                <div>
+                                    <label className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-2 block">Source Image (for editing)</label>
+                                    <input 
+                                        type="file" 
+                                        accept="image/*"
+                                        onChange={(e) => {
+                                            const file = e.target.files?.[0];
+                                            if (file) {
+                                                const reader = new FileReader();
+                                                reader.onloadend = () => {
+                                                    setImageToEdit(reader.result as string);
+                                                };
+                                                reader.readAsDataURL(file);
+                                            }
+                                        }}
+                                        className="w-full text-xs text-slate-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-xs file:font-semibold file:bg-brand-50 file:text-brand-700 hover:file:bg-brand-100"
+                                    />
+                                </div>
+                            </div>
+
+                            {imageError && (
+                                <div className="p-4 bg-red-50 border border-red-100 rounded-xl flex items-center gap-3 text-red-600 text-xs font-medium">
+                                    <ShieldCheck size={16} className="shrink-0" />
+                                    {imageError}
+                                </div>
+                            )}
+
+                            <div className="flex gap-4">
+                                <button 
+                                    onClick={handleGenerateImage}
+                                    disabled={isGeneratingImage || !imagePrompt}
+                                    className="flex-1 py-3 bg-brand-600 text-white rounded-xl text-xs font-black uppercase tracking-widest hover:bg-brand-700 transition-all flex items-center justify-center gap-2 disabled:opacity-50"
+                                >
+                                    {isGeneratingImage && !imageToEdit ? <Loader2 size={14} className="animate-spin" /> : <Zap size={14} />}
+                                    Generate New Image
+                                </button>
+                                {imageToEdit && (
+                                    <button 
+                                        onClick={handleEditImage}
+                                        disabled={isGeneratingImage || !imagePrompt}
+                                        className="flex-1 py-3 bg-pink-600 text-white rounded-xl text-xs font-black uppercase tracking-widest hover:bg-pink-700 transition-all flex items-center justify-center gap-2 disabled:opacity-50"
+                                    >
+                                        {isGeneratingImage && imageToEdit ? <Loader2 size={14} className="animate-spin" /> : <RefreshCw size={14} />}
+                                        Edit Source Image
+                                    </button>
+                                )}
+                            </div>
+
+                            {generatedImageUrl && (
+                                <div className="mt-8 space-y-4">
+                                    <div className="flex items-center justify-between">
+                                        <h4 className="text-xs font-black text-slate-400 uppercase tracking-widest">Result</h4>
+                                        <button 
+                                            onClick={() => {
+                                                const link = document.createElement('a');
+                                                link.href = generatedImageUrl;
+                                                link.download = 'generated-image.png';
+                                                link.click();
+                                            }}
+                                            className="text-brand-600 text-[10px] font-bold uppercase hover:underline"
+                                        >
+                                            Download Image
+                                        </button>
+                                        {onUpdateBackground && (
+                                            <button 
+                                                onClick={() => {
+                                                    onUpdateBackground(generatedImageUrl);
+                                                    localStorage.setItem('unitec_custom_bg', generatedImageUrl);
+                                                }}
+                                                className="text-emerald-600 text-[10px] font-bold uppercase hover:underline ml-4"
+                                            >
+                                                Set as App Background
+                                            </button>
+                                        )}
+                                    </div>
+                                    <div className="bg-slate-100 rounded-2xl overflow-hidden border border-slate-200 flex items-center justify-center p-4">
+                                        <img src={generatedImageUrl} alt="Generated" className="max-w-full max-h-[500px] rounded-xl shadow-lg" />
+                                    </div>
+                                </div>
+                            )}
+                        </div>
+                    </div>
+                </div>
+            );
+
         case 'chats':
             const savedChats = localStorage.getItem('unitec_chat_history');
             let parsedChats = [];
@@ -811,6 +1098,7 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({
                  {[
                     { id: 'usage', label: 'Usage & Billing', icon: <DollarSign size={14} /> },
                     { id: 'voice', label: 'Voice', icon: <Mic2 size={14} /> },
+                    { id: 'visuals', label: 'Visuals', icon: <Zap size={14} /> },
                     { id: 'training', label: 'Training', icon: <Brain size={14} /> },
                     { id: 'chats', label: 'Chats', icon: <MessageSquare size={14} /> },
                     { id: 'deploy', label: 'Deploy', icon: <Rocket size={14} /> },
