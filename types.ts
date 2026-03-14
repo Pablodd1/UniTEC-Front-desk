@@ -2,9 +2,25 @@
 export interface Product {
   id: string;
   category: string;
+  subcategory?: string;
+  collection?: string;
   name: string;
   style_tags: string[];
-  price_per_m2: number | null;
+  price: string;
+  unit?: string;
+  items_per_box?: string;
+  dimensions?: {
+    latam: {
+      width_cm: number;
+      length_cm: number;
+      thickness_mm: number;
+    };
+    usa: {
+      width_in: number;
+      length_ft: number;
+      thickness_in: number;
+    };
+  };
   description: string;
   image_url: string;
   pdf_tech_sheet: string;

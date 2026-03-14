@@ -47,7 +47,7 @@ const ProductDetail: React.FC<ProductDetailProps> = ({ product, language, onBack
               <h1 className="text-2xl font-black text-gray-900 leading-tight mb-2 uppercase tracking-tight">{product.name}</h1>
               <div className="flex items-center gap-2 text-emerald-600 font-bold">
                 <DollarSign size={18} />
-                <span className="text-xl">{product.price_per_m2 ? `$${product.price_per_m2}` : 'Contact for Price'}</span>
+                <span className="text-xl">{product.price || 'Contact for Price'}</span>
               </div>
             </div>
             <div className={`px-3 py-1 rounded-lg text-[10px] font-black uppercase tracking-widest ${
@@ -58,6 +58,26 @@ const ProductDetail: React.FC<ProductDetailProps> = ({ product, language, onBack
               {product.stock_status}
             </div>
           </div>
+
+          {/* Technical Specs Grid */}
+          {product.dimensions && (
+            <div className="grid grid-cols-2 gap-4">
+              <div className="p-4 bg-slate-50 rounded-2xl border border-slate-100">
+                <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1">Dimensions (LATAM)</p>
+                <p className="text-slate-900 font-bold text-sm">
+                  {product.dimensions.latam.width_cm} x {product.dimensions.latam.length_cm} cm
+                </p>
+                <p className="text-[10px] text-slate-500">{product.dimensions.latam.thickness_mm} mm thickness</p>
+              </div>
+              <div className="p-4 bg-slate-50 rounded-2xl border border-slate-100">
+                <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1">Dimensions (USA)</p>
+                <p className="text-slate-900 font-bold text-sm">
+                  {product.dimensions.usa.width_in} in x {product.dimensions.usa.length_ft} ft
+                </p>
+                <p className="text-[10px] text-slate-500">{product.dimensions.usa.thickness_in} in thickness</p>
+              </div>
+            </div>
+          )}
 
           {/* Description */}
           <div className="space-y-3">

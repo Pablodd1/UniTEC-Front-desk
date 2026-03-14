@@ -1,158 +1,363 @@
 [
   {
     "id": "14031001",
-    "category": "CIELO RASO PVC",
     "name": "LAMINA PVC BLANCO BRILLANTE H-01-I",
-    "style_tags": [
-      "CIELO RASO PVC",
-      "INTERIOR"
-    ],
-    "price_per_m2": 31.599,
-    "description": "Lamina Pvc Blanco Brillante H-01-I. Producto de la categoría cielo raso pvc, subcategoría techos, desarrollado para aplicaciones arquitectónicas y de diseño interior. Fabricado con materiales de alto desempeño que garantizan estabilidad, resistencia y durabilidad. Permite una instalación eficiente y un acabado uniforme, ideal para proyectos residenciales, comerciales y corporativos. Especificaciones técnicas: dimensiones de 30 x 595 cm, espesor de 8.5 mm.",
+    "category": "CIELO RASO PVC",
+    "subcategory": "CIELO RASO PVC",
+    "collection": "INTERIOR",
+    "price": "$ 31.599",
+    "unit": "Paquete / Package",
+    "items_per_box": "6, 10",
+    "style_tags": ["CIELO RASO PVC", "INTERIOR"],
+    "dimensions": {
+      "latam": { "width_cm": 30, "length_cm": 595, "thickness_mm": 8.5 },
+      "usa": { "width_in": 11.811, "length_ft": 19.521, "thickness_in": 0.335 }
+    },
     "image_url": "https://drive.google.com/file/d/1oBg_0oiJqFEReUMIG408gJ6IHfI6xltE/view?usp=drive_link",
-    "pdf_tech_sheet": "",
-    "stock_status": "In Stock"
+    "pdf_tech_sheet": "https://drive.google.com/file/d/1ElU9IWk3hEz21EhnWDZTCyEIAb1rQ35n/view?usp=drive_link",
+    "stock_status": "In Stock",
+    "description": "Lamina Pvc Blanco Brillante H-01-I. Producto de la categoría cielo raso pvc, subcategoría techos, desarrollado para aplicaciones arquitectónicas y de diseño interior. Fabricado con materiales de alto desempeño que garantizan estabilidad, resistencia y durabilidad. Permite una instalación eficiente y un acabado uniforme, ideal para proyectos residenciales, comerciales y corporativos. Especificaciones técnicas: dimensiones de 30 x 595 cm, espesor de 8.5 mm."
   },
   {
     "id": "14031002",
-    "category": "CIELO RASO PVC",
     "name": "LAMINA PVC BLANCO MADERA BRILLANTE H-02-I",
-    "style_tags": [
-      "CIELO RASO PVC",
-      "INTERIOR"
-    ],
-    "price_per_m2": 31.599,
-    "description": "Lamina Pvc Blanco Madera Brillante H-02-I. Producto de la categoría cielo raso pvc, subcategoría techos, desarrollado para aplicaciones arquitectónicas y de diseño interior. Fabricado con materiales de alto desempeño que garantizan estabilidad, resistencia y durabilidad. Permite una instalación eficiente y un acabado uniforme, ideal para proyectos residenciales, comerciales y corporativos. Especificaciones técnicas: dimensiones de 30 x 595 cm, espesor de 8.5 mm.",
+    "category": "CIELO RASO PVC",
+    "subcategory": "CIELO RASO PVC",
+    "collection": "INTERIOR",
+    "price": "$ 31.599",
+    "unit": "Paquete / Package",
+    "items_per_box": "6, 10",
+    "style_tags": ["CIELO RASO PVC", "INTERIOR"],
+    "dimensions": {
+      "latam": { "width_cm": 30, "length_cm": 595, "thickness_mm": 8.5 },
+      "usa": { "width_in": 11.811, "length_ft": 19.521, "thickness_in": 0.335 }
+    },
     "image_url": "https://drive.google.com/file/d/16JiUSlckT_1kVFmTkdUedOKdP8QUEotn/view?usp=drive_link",
-    "pdf_tech_sheet": "",
-    "stock_status": "In Stock"
+    "pdf_tech_sheet": "https://drive.google.com/file/d/1ElU9IWk3hEz21EhnWDZTCyEIAb1rQ35n/view?usp=drive_link",
+    "stock_status": "In Stock",
+    "description": "Lamina Pvc Blanco Madera Brillante H-02-I. Producto de la categoría cielo raso pvc, subcategoría techos, desarrollado para aplicaciones arquitectónicas y de diseño interior. Fabricado con materiales de alto desempeño que garantizan estabilidad, resistencia y durabilidad. Permite una instalación eficiente y un acabado uniforme, ideal para proyectos residenciales, comerciales y corporativos. Especificaciones técnicas: dimensiones de 30 x 595 cm, espesor de 8.5 mm."
   },
   {
     "id": "14031005",
-    "category": "CIELO RASO PVC",
     "name": "LAMINA PVC BLANCO MATE H-05-I",
-    "style_tags": [
-      "CIELO RASO PVC",
-      "INTERIOR"
-    ],
-    "price_per_m2": 31.599,
-    "description": "Lamina Pvc Blanco Mate H-05-I. Producto de la categoría cielo raso pvc, subcategoría techos, desarrollado para aplicaciones arquitectónicas y de diseño interior. Fabricado con materiales de alto desempeño que garantizan estabilidad, resistencia y durabilidad. Permite una instalación eficiente y un acabado uniforme, ideal para proyectos residenciales, comerciales y corporativos. Especificaciones técnicas: dimensiones de 30 x 595 cm, espesor de 8.5 mm.",
+    "category": "CIELO RASO PVC",
+    "subcategory": "CIELO RASO PVC",
+    "collection": "INTERIOR",
+    "price": "$ 31.599",
+    "unit": "Paquete / Package",
+    "items_per_box": "6",
+    "style_tags": ["CIELO RASO PVC", "INTERIOR"],
+    "dimensions": {
+      "latam": { "width_cm": 30, "length_cm": 595, "thickness_mm": 8.5 },
+      "usa": { "width_in": 11.811, "length_ft": 19.521, "thickness_in": 0.335 }
+    },
     "image_url": "https://drive.google.com/file/d/1UGCgjuUeimzLOT746C9puwiw9l4uSXF0/view?usp=drive_link",
-    "pdf_tech_sheet": "",
-    "stock_status": "In Stock"
+    "pdf_tech_sheet": "https://drive.google.com/file/d/1ElU9IWk3hEz21EhnWDZTCyEIAb1rQ35n/view?usp=drive_link",
+    "stock_status": "In Stock",
+    "description": "Lamina Pvc Blanco Mate H-05-I. Producto de la categoría cielo raso pvc, subcategoría techos, desarrollado para aplicaciones arquitectónicas y de diseño interior. Fabricado con materiales de alto desempeño que garantizan estabilidad, resistencia y durabilidad. Permite una instalación eficiente y un acabado uniforme, ideal para proyectos residenciales, comerciales y corporativos. Especificaciones técnicas: dimensiones de 30 x 595 cm, espesor de 8.5 mm."
   },
   {
     "id": "14031012",
-    "category": "CIELO RASO PVC",
     "name": "LAMINA PVC JASPEADO BRILLANTE H-12-I",
-    "style_tags": [
-      "CIELO RASO PVC",
-      "INTERIOR"
-    ],
-    "price_per_m2": 31.599,
-    "description": "Lamina Pvc Jaspeado Brillante H-12-I. Producto de la categoría cielo raso pvc, subcategoría techos, desarrollado para aplicaciones arquitectónicas y de diseño interior. Fabricado con materiales de alto desempeño que garantizan estabilidad, resistencia y durabilidad. Permite una instalación eficiente y un acabado uniforme, ideal para proyectos residenciales, comerciales y corporativos. Especificaciones técnicas: dimensiones de 30 x 595 cm, espesor de 8.5 mm.",
+    "category": "CIELO RASO PVC",
+    "subcategory": "CIELO RASO PVC",
+    "collection": "INTERIOR",
+    "price": "$ 31.599",
+    "unit": "Paquete / Package",
+    "items_per_box": "6",
+    "style_tags": ["CIELO RASO PVC", "INTERIOR"],
+    "dimensions": {
+      "latam": { "width_cm": 30, "length_cm": 595, "thickness_mm": 8.5 },
+      "usa": { "width_in": 11.811, "length_ft": 19.521, "thickness_in": 0.335 }
+    },
     "image_url": "https://drive.google.com/file/d/1vQ-sDE9n0cpG9SRlRq9Eld5mQ1ToNTV7/view?usp=drive_link",
-    "pdf_tech_sheet": "",
-    "stock_status": "In Stock"
+    "pdf_tech_sheet": "https://drive.google.com/file/d/1ElU9IWk3hEz21EhnWDZTCyEIAb1rQ35n/view?usp=drive_link",
+    "stock_status": "In Stock",
+    "description": "Lamina Pvc Jaspeado Brillante H-12-I. Producto de la categoría cielo raso pvc, subcategoría techos, desarrollado para aplicaciones arquitectónicas y de diseño interior. Fabricado con materiales de alto desempeño que garantizan estabilidad, resistencia y durabilidad. Permite una instalación eficiente y un acabado uniforme, ideal para proyectos residenciales, comerciales y corporativos. Especificaciones técnicas: dimensiones de 30 x 595 cm, espesor de 8.5 mm."
   },
   {
     "id": "14031028",
-    "category": "CIELO RASO PVC",
     "name": "LAMINA PVC CEDRO 30CM H-28-I",
-    "style_tags": [
-      "CIELO RASO PVC",
-      "INTERIOR"
-    ],
-    "price_per_m2": 31.599,
-    "description": "Lamina Pvc Cedro 30Cm H-28-I. Producto de la categoría cielo raso pvc, subcategoría techos, desarrollado para aplicaciones arquitectónicas y de diseño interior. Fabricado con materiales de alto desempeño que garantizan estabilidad, resistencia y durabilidad. Permite una instalación eficiente y un acabado uniforme, ideal para proyectos residenciales, comerciales y corporativos. Especificaciones técnicas: dimensiones de 30 x 595 cm, espesor de 8.5 mm.",
+    "category": "CIELO RASO PVC",
+    "subcategory": "CIELO RASO PVC",
+    "collection": "INTERIOR",
+    "price": "$ 31.599",
+    "unit": "Paquete / Package",
+    "items_per_box": "6",
+    "style_tags": ["CIELO RASO PVC", "INTERIOR"],
+    "dimensions": {
+      "latam": { "width_cm": 30, "length_cm": 595, "thickness_mm": 8.5 },
+      "usa": { "width_in": 11.811, "length_ft": 19.521, "thickness_in": 0.335 }
+    },
     "image_url": "https://drive.google.com/file/d/1rxhyUN0GePZ7ykNO52qq6vQFbPqMt5lF/view?usp=drive_link",
-    "pdf_tech_sheet": "",
-    "stock_status": "In Stock"
+    "pdf_tech_sheet": "https://drive.google.com/file/d/1ElU9IWk3hEz21EhnWDZTCyEIAb1rQ35n/view?usp=drive_link",
+    "stock_status": "In Stock",
+    "description": "Lamina Pvc Cedro 30Cm H-28-I. Producto de la categoría cielo raso pvc, subcategoría techos, desarrollado para aplicaciones arquitectónicas y de diseño interior. Fabricado con materiales de alto desempeño que garantizan estabilidad, resistencia y durabilidad. Permite una instalación eficiente y un acabado uniforme, ideal para proyectos residenciales, comerciales y corporativos. Especificaciones técnicas: dimensiones de 30 x 595 cm, espesor de 8.5 mm."
   },
   {
     "id": "14032001",
-    "category": "CIELO RASO PVC",
     "name": "CORNISA PVC BLANCA BRILLANTE AM1001",
-    "style_tags": [
-      "CIELO RASO PVC",
-      "INTERIOR"
-    ],
-    "price_per_m2": 14.999,
-    "description": "Cornisa Pvc Blanca Brillante Am1001. Producto de la categoría cielo raso pvc, subcategoría techos, desarrollado para aplicaciones arquitectónicas y de diseño interior. Fabricado con materiales de alto desempeño que garantizan estabilidad, resistencia y durabilidad. Permite una instalación eficiente y un acabado uniforme, ideal para proyectos residenciales, comerciales y corporativos. Especificaciones técnicas: dimensiones de 30 x 595 cm, espesor de 8.5 mm.",
-    "image_url": "",
-    "pdf_tech_sheet": "",
-    "stock_status": "In Stock"
-  },
-  {
-    "id": "14032002",
     "category": "CIELO RASO PVC",
-    "name": "CORNISA PVC BLANCO MADERA BRILLANTE AM1002",
-    "style_tags": [
-      "CIELO RASO PVC",
-      "INTERIOR"
-    ],
-    "price_per_m2": 14.999,
-    "description": "Cornisa Pvc Blanco Madera Brillante Am1002. Producto de la categoría cielo raso pvc, subcategoría techos, desarrollado para aplicaciones arquitectónicas y de diseño interior. Fabricado con materiales de alto desempeño que garantizan estabilidad, resistencia y durabilidad. Permite una instalación eficiente y un acabado uniforme, ideal para proyectos residenciales, comerciales y corporativos. Especificaciones técnicas: dimensiones de 30 x 595 cm, espesor de 8.5 mm.",
+    "subcategory": "CIELO RASO PVC",
+    "collection": "INTERIOR",
+    "price": "$ 14.999",
+    "unit": "Paquete / Package",
+    "items_per_box": "32",
+    "style_tags": ["CIELO RASO PVC", "INTERIOR"],
+    "dimensions": {
+      "latam": { "width_cm": 30, "length_cm": 595, "thickness_mm": 8.5 },
+      "usa": { "width_in": 11.811, "length_ft": 19.521, "thickness_in": 0.335 }
+    },
     "image_url": "",
-    "pdf_tech_sheet": "",
-    "stock_status": "In Stock"
+    "pdf_tech_sheet": "https://drive.google.com/file/d/1ElU9IWk3hEz21EhnWDZTCyEIAb1rQ35n/view?usp=drive_link",
+    "stock_status": "In Stock",
+    "description": "Cornisa Pvc Blanca Brillante Am1001. Producto de la categoría cielo raso pvc, subcategoría techos, desarrollado para aplicaciones arquitectónicas y de diseño interior. Fabricado con materiales de alto desempeño que garantizan estabilidad, resistencia y durabilidad. Permite una instalación eficiente y un acabado uniforme, ideal para proyectos residenciales, comerciales y corporativos. Especificaciones técnicas: dimensiones de 30 x 595 cm, espesor de 8.5 mm."
   },
   {
-    "id": "14032004",
-    "category": "CIELO RASO PVC",
-    "name": "CORNISA PVC BEIGE BRILLANTE AM1004",
-    "style_tags": [
-      "CIELO RASO PVC",
-      "INTERIOR"
-    ],
-    "price_per_m2": 14.999,
-    "description": "Cornisa Pvc Beige Brillante Am1004. Producto de la categoría cielo raso pvc, subcategoría techos, desarrollado para aplicaciones arquitectónicas y de diseño interior. Fabricado con materiales de alto desempeño que garantizan estabilidad, resistencia y durabilidad. Permite una instalación eficiente y un acabado uniforme, ideal para proyectos residenciales, comerciales y corporativos. Especificaciones técnicas: dimensiones de 30 x 595 cm, espesor de 8.5 mm.",
-    "image_url": "",
-    "pdf_tech_sheet": "",
-    "stock_status": "In Stock"
-  },
-  {
-    "id": "14032014",
-    "category": "CIELO RASO PVC",
-    "name": "CORNISA PVC BLANCO EJECUTIVO AM1014",
-    "style_tags": [
-      "CIELO RASO PVC",
-      "INTERIOR"
-    ],
-    "price_per_m2": 14.999,
-    "description": "Cornisa Pvc Blanco Ejecutivo Am1014. Producto de la categoría cielo raso pvc, subcategoría techos, desarrollado para aplicaciones arquitectónicas y de diseño interior. Fabricado con materiales de alto desempeño que garantizan estabilidad, resistencia y durabilidad. Permite una instalación eficiente y un acabado uniforme, ideal para proyectos residenciales, comerciales y corporativos. Especificaciones técnicas: dimensiones de 30 x 595 cm, espesor de 8.5 mm.",
-    "image_url": "",
-    "pdf_tech_sheet": "",
-    "stock_status": "In Stock"
-  },
-  {
-    "id": "14201002",
+    "id": "14201001",
+    "name": "CINTA ADHESIVA DE PAPEL DORADA",
     "category": "CINTAS",
-    "name": "CINTA ADHESIVA DE PAPEL PLATEADA",
-    "style_tags": [
-      "CINTAS",
-      "CINTA ADHESIVA DE PAPEL",
-      "INTERIOR"
-    ],
-    "price_per_m2": 19.99,
-    "description": "Cinta Adhesiva Plateada. Producto de la categoría cintas, desarrollado para aplicaciones arquitectónicas y de diseño interior. Fabricado con materiales de alto desempeño que garantizan estabilidad, resistencia y durabilidad. Permite una instalación eficiente y un acabado uniforme, ideal para proyectos residenciales, comerciales y corporativos. Especificaciones técnicas: dimensiones de 1 x 5000 cm, espesor de 0.0 mm.",
+    "subcategory": "CINTA ADHESIVA DE PAPEL",
+    "collection": "INTERIOR",
+    "price": "$ 19.990",
+    "unit": "Unidad / Unit",
+    "items_per_box": "1",
+    "style_tags": ["CINTAS", "INTERIOR"],
+    "dimensions": {
+      "latam": { "width_cm": 1, "length_cm": 5000, "thickness_mm": 0 },
+      "usa": { "width_in": 0.394, "length_ft": 164.042, "thickness_in": 0 }
+    },
     "image_url": "https://drive.google.com/file/d/12wMP_TSwL2CUYqEl-_RcfoU6mVchIk7m/view?usp=drive_link",
-    "pdf_tech_sheet": "",
-    "stock_status": "In Stock"
+    "pdf_tech_sheet": "https://drive.google.com/file/d/1zY3-sCMHTFUhN6zCIzHWbAl5sXSAzecH/view?usp=drive_link",
+    "stock_status": "In Stock",
+    "description": "Cinta Adhesiva Dorada. Producto de la categoría cintas, desarrollado para aplicaciones arquitectónicas y de diseño interior. Fabricado con materiales de alto desempeño que garantizan estabilidad, resistencia y durabilidad. Permite una instalación eficiente y un acabado uniforme, ideal para proyectos residenciales, comerciales y corporativos. Especificaciones técnicas: dimensiones de 1 x 5000 cm, espesor de 0.0 mm."
   },
   {
-    "id": "14201201",
-    "category": "CINTAS",
-    "name": "CINTA ADHESIVA METALICA DORADA",
-    "style_tags": [
-      "CINTAS",
-      "CINTA ADHESIVA METALICA",
-      "INTERIOR"
-    ],
-    "price_per_m2": 23.399,
-    "description": "Cinta Adhesiva Metalica Dorada. Producto de la categoría cintas, desarrollado para aplicaciones arquitectónicas y de diseño interior. Fabricado con materiales de alto desempeño que garantizan estabilidad, resistencia y durabilidad. Permite una instalación eficiente y un acabado uniforme, ideal para proyectos residenciales, comerciales y corporativos. Especificaciones técnicas: dimensiones de 3 x 500 cm, espesor de 0.0 mm.",
-    "image_url": "https://drive.google.com/file/d/1bqXOa8PvJ0Dd63Yj0dY0VgPIKYlLoxwz/view?usp=drive_link",
-    "pdf_tech_sheet": "",
-    "stock_status": "In Stock"
+    "id": "14081601",
+    "name": "CUBIERTA ACANALADA UPVC BLANCA 11.80",
+    "category": "CUBIERTAS UPVC",
+    "subcategory": "CUBIERTA ACANALADA UPVC BLANCA 11.80",
+    "collection": "EXTERIOR",
+    "price": "$ 465.000",
+    "unit": "Unidad / Unit",
+    "items_per_box": "1",
+    "style_tags": ["CUBIERTAS UPVC", "EXTERIOR"],
+    "dimensions": {
+      "latam": { "width_cm": 83, "length_cm": 1180, "thickness_mm": 10 },
+      "usa": { "width_in": 32.68, "length_ft": 38.71, "thickness_in": 0.394 }
+    },
+    "image_url": "https://drive.google.com/file/d/1oQ59_8ROlkCr8ZT6PyUOpwmzw7IJpqm0/view?usp=drive_link",
+    "pdf_tech_sheet": "https://drive.google.com/file/d/122xZLjPRPRjn5uvR7Qu6acF9lI665vDY/view?usp=drive_link",
+    "stock_status": "In Stock",
+    "description": "Cubierta Acanalada Upvc Blanca 11.80. Producto de la categoría cubiertas upvc, subcategoría tejas, desarrollado para aplicaciones arquitectónicas y de diseño interior. Fabricado con materiales de alto desempeño que garantizan estabilidad, resistencia y durabilidad. Permite una instalación eficiente y un acabado uniforme, ideal para proyectos residenciales, comerciales y corporativos. Especificaciones técnicas: dimensiones de 83 x 1180 cm, espesor de 10.0 mm."
+  },
+  {
+    "id": "14091101",
+    "name": "FACHADA DECK ROBLE",
+    "category": "PAREDES",
+    "subcategory": "FACHADA DECK",
+    "collection": "EXTERIOR",
+    "price": "$ 69.199",
+    "unit": "Estiba / Pallet",
+    "items_per_box": "200",
+    "style_tags": ["PAREDES", "EXTERIOR"],
+    "dimensions": {
+      "latam": { "width_cm": 15, "length_cm": 290, "thickness_mm": 15 },
+      "usa": { "width_in": 5.906, "length_ft": 9.514, "thickness_in": 0.591 }
+    },
+    "image_url": "",
+    "pdf_tech_sheet": "https://drive.google.com/file/d/1SikmL8eeNXX3OXwU1kmmXZvtspAZt_iO/view?usp=drive_link",
+    "stock_status": "In Stock",
+    "description": "Fachada Deck Roble. Producto de la categoría paredes, subcategoría fachada, desarrollado para aplicaciones arquitectónicas y de diseño interior. Fabricado con materiales de alto desempeño que garantizan estabilidad, resistencia y durabilidad. Permite una instalación eficiente y un acabado uniforme, ideal para proyectos residenciales, comerciales y corporativos. Especificaciones técnicas: dimensiones de 15 x 290 cm, espesor de 15.0 mm."
+  },
+  {
+    "id": "14122501",
+    "name": "PANEL PS LUXURY BELICE GRIS OSCURO HH24100",
+    "category": "PAREDES",
+    "subcategory": "PANEL PS",
+    "collection": "INTERIOR",
+    "price": "$ 49.690",
+    "unit": "Caja / Box",
+    "items_per_box": "21",
+    "style_tags": ["PAREDES", "INTERIOR"],
+    "dimensions": {
+      "latam": { "width_cm": 12, "length_cm": 290, "thickness_mm": 12 },
+      "usa": { "width_in": 4.72, "length_ft": 9.51, "thickness_in": 0.472 }
+    },
+    "image_url": "https://drive.google.com/file/d/16DrgWa3plkS0M1s9RlG8EiREyK7HDJoM/view?usp=drive_link",
+    "pdf_tech_sheet": "https://drive.google.com/file/d/1mHy1d-Ssz8gCg1GGub_y3D_y1ilxyXU-/view?usp=drive_link",
+    "stock_status": "In Stock",
+    "description": "Panel Ps Luxury Belice Gris Oscuro Hh24100. Producto de la categoría paredes, subcategoría panel ps, desarrollado para aplicaciones arquitectónicas y de diseño interior. Fabricado con materiales de alto desempeño que garantizan estabilidad, resistencia y durabilidad. Permite una instalación eficiente y un acabado uniforme, ideal para proyectos residenciales, comerciales y corporativos. Especificaciones técnicas: dimensiones de 12 x 290 cm, espesor de 12.0 mm."
+  },
+  {
+    "id": "14126302",
+    "name": "PANEL ACOLCHADO DUOBIG GRIS LUMINOSO (041)",
+    "category": "PAREDES",
+    "subcategory": "PANELES ACOLCHADOS",
+    "collection": "INTERIOR",
+    "price": "$ 229.999",
+    "unit": "Caja / Box",
+    "items_per_box": "6",
+    "style_tags": ["PAREDES", "INTERIOR"],
+    "dimensions": {
+      "latam": { "width_cm": 40, "length_cm": 120, "thickness_mm": 35 },
+      "usa": { "width_in": 15.75, "length_ft": 3.94, "thickness_in": 1.378 }
+    },
+    "image_url": "https://drive.google.com/file/d/1JhIIT7xCxbEN4CDTprNGOXhPRIdwVVmx/view?usp=drive_link",
+    "pdf_tech_sheet": "https://drive.google.com/file/d/1b9r87FAGGFdZhXrjkXJ34ePpU8yTrPMk/view?usp=drive_link",
+    "stock_status": "In Stock",
+    "description": "Panel Acolchado Duobig Gris Luminoso (041). Producto de la categoría paredes, subcategoría acolchado, desarrollado para aplicaciones arquitectónicas y de diseño interior. Fabricado con materiales de alto desempeño que garantizan estabilidad, resistencia y durabilidad. Permite una instalación eficiente y un acabado uniforme, ideal para proyectos residenciales, comerciales y corporativos. Especificaciones técnicas: dimensiones de 40 x 120 cm, espesor de 35.0 mm."
+  },
+  {
+    "id": "14122201",
+    "name": "PANEL WPC EXT ROBLE (01)",
+    "category": "PANELES WPC Y ANGULOS",
+    "subcategory": "PANELES WPC EXTERIOR",
+    "collection": "EXTERIOR",
+    "price": "$ 85.999",
+    "unit": "Estiba / Pallet",
+    "items_per_box": "125",
+    "style_tags": ["PANELES WPC Y ANGULOS", "EXTERIOR"],
+    "dimensions": {
+      "latam": { "width_cm": 21.9, "length_cm": 290, "thickness_mm": 26 },
+      "usa": { "width_in": 8.62, "length_ft": 9.51, "thickness_in": 1.024 }
+    },
+    "image_url": "https://drive.google.com/file/d/13TXIK8qbB19Y2v8zZTtgLkMc-mHKFebx/view?usp=drive_link",
+    "pdf_tech_sheet": "https://drive.google.com/file/d/1KhcXOiZgTHpzM7mizu-al8B6ASMsBFZj/view?usp=drive_link",
+    "stock_status": "In Stock",
+    "description": "Panel Wpc Ext Roble (01). Producto de la categoría paneles wpc y angulos, subcategoría wpc exterior, desarrollado para aplicaciones arquitectónicas y de diseño interior. Fabricado con materiales de alto desempeño que garantizan estabilidad, resistencia y durabilidad. Permite una instalación eficiente y un acabado uniforme, ideal para proyectos residenciales, comerciales y corporativos. Especificaciones técnicas: dimensiones de 21 x 290 cm, espesor de 26.0 mm."
+  },
+  {
+    "id": "14122001",
+    "name": "PANEL WPC STONE GRIS (01)",
+    "category": "PANELES WPC Y ANGULOS",
+    "subcategory": "PANELES WPC INTERIOR",
+    "collection": "INTERIOR",
+    "price": "$ 30.599",
+    "unit": "Caja / Box",
+    "items_per_box": "10",
+    "style_tags": ["PANELES WPC Y ANGULOS", "INTERIOR"],
+    "dimensions": {
+      "latam": { "width_cm": 16, "length_cm": 295, "thickness_mm": 25 },
+      "usa": { "width_in": 6.3, "length_ft": 9.68, "thickness_in": 0.984 }
+    },
+    "image_url": "https://drive.google.com/file/d/11ITStOYawexuWy_IvAwppLDe-1vybJZ7/view?usp=drive_link",
+    "pdf_tech_sheet": "https://drive.google.com/file/d/1gFl9UWUrsH3XXWTqSS-9taupsGPb6D-U/view?usp=drive_link",
+    "stock_status": "In Stock",
+    "description": "Panel Wpc Stone Gris (01). Producto de la categoría paneles wpc y angulos, subcategoría wpc interior, desarrollado para aplicaciones arquitectónicas y de diseño interior. Fabricado con materiales de alto desempeño que garantizan estabilidad, resistencia y durabilidad. Permite una instalación eficiente y un acabado uniforme, ideal para proyectos residenciales, comerciales y corporativos. Especificaciones técnicas: dimensiones de 16 x 295 cm, espesor de 25.0 mm."
+  },
+  {
+    "id": "14124902",
+    "name": "PANEL WPC REDONDO CARRARA BLANCO (02)",
+    "category": "PANELES WPC Y ANGULOS",
+    "subcategory": "PANELES WPC REDONDOS",
+    "collection": "INTERIOR",
+    "price": "$ 35.138",
+    "unit": "Unidad / Unit",
+    "items_per_box": "10",
+    "style_tags": ["PANELES WPC Y ANGULOS", "INTERIOR"],
+    "dimensions": {
+      "latam": { "width_cm": 16, "length_cm": 295, "thickness_mm": 25 },
+      "usa": { "width_in": 6.3, "length_ft": 9.68, "thickness_in": 0.984 }
+    },
+    "image_url": "https://drive.google.com/file/d/11fSMCp_pdC-Rbn9FLsqjEQuCcmaFUtKh/view?usp=drive_link",
+    "pdf_tech_sheet": "https://drive.google.com/file/d/1XL4JDyEgRpRIwjAsLjWlgCCyNxAloIHn/view?usp=drive_link",
+    "stock_status": "In Stock",
+    "description": "Panel Wpc Redondo Carrara Blanco (02). Producto de la categoría paneles wpc y angulos, subcategoría wpc interior, desarrollado para aplicaciones arquitectónicas y de diseño interior. Fabricado con materiales de alto desempeño que garantizan estabilidad, resistencia y durabilidad. Permite una instalación eficiente y un acabado uniforme, ideal para proyectos residenciales, comerciales y corporativos. Especificaciones técnicas: dimensiones de 16 x 295 cm, espesor de 25.0 mm."
+  },
+  {
+    "id": "14113001",
+    "name": "PISO DECK EXTERIOR CEDRO",
+    "category": "PISOS",
+    "subcategory": "PISOS DECK",
+    "collection": "EXTERIOR",
+    "price": "$ 91.099",
+    "unit": "Estiba / Pallet",
+    "items_per_box": "210",
+    "style_tags": ["PISOS", "EXTERIOR"],
+    "dimensions": {
+      "latam": { "width_cm": 14.8, "length_cm": 290, "thickness_mm": 23 },
+      "usa": { "width_in": 5.83, "length_ft": 9.51, "thickness_in": 0.906 }
+    },
+    "image_url": "https://drive.google.com/file/d/1fHm3CZvA2UzTpCvhC4Y1hFMbo59X_vdB/view?usp=drive_link",
+    "pdf_tech_sheet": "https://drive.google.com/file/d/1lCMi2xRoSPgICkiHKhvCX7i218yi_Y2s/view?usp=drive_link",
+    "stock_status": "In Stock",
+    "description": "Piso Deck Exterior Cedro. Producto de la categoría pisos, subcategoría deck, desarrollado para aplicaciones arquitectónicas y de diseño interior. Fabricado con materiales de alto desempeño que garantizan estabilidad, resistencia y durabilidad. Permite una instalación eficiente y un acabado uniforme, ideal para proyectos residenciales, comerciales y corporativos. Especificaciones técnicas: dimensiones de 14 x 290 cm, espesor de 23.0 mm."
+  },
+  {
+    "id": "14112010",
+    "name": "PISO SPC ROBLE CLARO IXPE",
+    "category": "PISOS",
+    "subcategory": "PISOS SPC",
+    "collection": "INTERIOR",
+    "price": "$ 16.099",
+    "unit": "Caja / Box",
+    "items_per_box": "10",
+    "style_tags": ["PISOS", "INTERIOR"],
+    "dimensions": {
+      "latam": { "width_cm": 18.3, "length_cm": 122, "thickness_mm": 4 },
+      "usa": { "width_in": 7.2, "length_ft": 4, "thickness_in": 0.157 }
+    },
+    "image_url": "https://drive.google.com/file/d/1-EtgUywCuY82vVbiiP9yZxi7FcySWl3d/view?usp=drive_link",
+    "pdf_tech_sheet": "https://drive.google.com/file/d/1qZHyzLsyqXc-6xMNlOFmiaGu0YrDSa_j/view?usp=drive_link",
+    "stock_status": "In Stock",
+    "description": "Piso Spc Roble Claro Ixpe. Producto de la categoría pisos, subcategoría spc, desarrollado para aplicaciones arquitectónicas y de diseño interior. Fabricado con materiales de alto desempeño que garantizan estabilidad, resistencia y durabilidad. Permite una instalación eficiente y un acabado uniforme, ideal para proyectos residenciales, comerciales y corporativos. Especificaciones técnicas: dimensiones de 18 x 122 cm, espesor de 4.0 mm."
+  },
+  {
+    "id": "14112410",
+    "name": "ZOCALO SPC ROBLE CLARO IXPE S010",
+    "category": "ZOCALOS",
+    "subcategory": "ZOCALOS SPC",
+    "collection": "INTERIOR",
+    "price": "$ 30.099",
+    "unit": "Caja / Box",
+    "items_per_box": "20",
+    "style_tags": ["ZOCALOS", "INTERIOR"],
+    "dimensions": {
+      "latam": { "width_cm": 6, "length_cm": 240, "thickness_mm": 13 },
+      "usa": { "width_in": 2.36, "length_ft": 7.87, "thickness_in": 0.512 }
+    },
+    "image_url": "https://drive.google.com/file/d/1I-UxXs_NGdpotIhlYP7h8KraZAgz5vLs/view?usp=drive_link",
+    "pdf_tech_sheet": "https://drive.google.com/file/d/16dLCl4M0HGv8tIri0sxhziCX3wpw0ZJb/view?usp=drive_link",
+    "stock_status": "In Stock",
+    "description": "Zocalo Spc Roble Claro Ixpe S010. Producto de la categoría zocalos, subcategoría spc, desarrollado para aplicaciones arquitectónicas y de diseño interior. Fabricado con materiales de alto desempeño que garantizan estabilidad, resistencia y durabilidad. Permite una instalación eficiente y un acabado uniforme, ideal para proyectos residenciales, comerciales y corporativos. Especificaciones técnicas: dimensiones de 6 x 240 cm, espesor de 13.0 mm."
+  },
+  {
+    "id": "14122627",
+    "name": "PARED MUROFLEX METALUM DORADO",
+    "category": "PAREDES",
+    "subcategory": "PAREDES MUROFLEX",
+    "collection": "INTERIOR",
+    "price": "$ 20.299",
+    "unit": "Caja / Box",
+    "items_per_box": "24",
+    "style_tags": ["PAREDES", "INTERIOR", "MUROFLEX"],
+    "dimensions": {
+      "latam": { "width_cm": 50, "length_cm": 290, "thickness_mm": 18 },
+      "usa": { "width_in": 19.69, "length_ft": 9.51, "thickness_in": 0.709 }
+    },
+    "image_url": "https://drive.google.com/file/d/15Fd9DO6q9v10ioicZ35CP8OBa1_riFkY/view?usp=drive_link",
+    "pdf_tech_sheet": "https://drive.google.com/file/d/1asMmDDef6DkiilzWgpRWwKN4zMrLSiw0/view?usp=drive_link",
+    "stock_status": "In Stock",
+    "description": "Pared Muroflex Metalum Dorado. Producto de la categoría paredes, subcategoría muroflex, desarrollado para aplicaciones arquitectónicas y de diseño interior. Fabricado con materiales de alto desempeño que garantizan estabilidad, resistencia y durabilidad. Permite una instalación eficiente y un acabado uniforme, ideal para proyectos residenciales, comerciales y corporativos. Especificaciones técnicas: dimensiones de 50 x 290 cm, espesor de 18.0 mm."
+  },
+  {
+    "id": "14123402",
+    "name": "PARED ARQUNITEC BLANCO MARFIL (02)",
+    "category": "PAREDES",
+    "subcategory": "PAREDES PU ARQUNITEC",
+    "collection": "INTERIOR",
+    "price": "$ 70.890",
+    "unit": "Caja / Box",
+    "items_per_box": "10",
+    "style_tags": ["PAREDES", "INTERIOR", "PU"],
+    "dimensions": {
+      "latam": { "width_cm": 60, "length_cm": 120, "thickness_mm": 30 },
+      "usa": { "width_in": 23.62, "length_ft": 3.94, "thickness_in": 1.181 }
+    },
+    "image_url": "https://drive.google.com/file/d/1q4ZifgApKpJ8FlVlH8jP3G1Wk0XXuMya/view?usp=drive_link",
+    "pdf_tech_sheet": "https://drive.google.com/file/d/1QG18_4a7hO-SocOLjpdG751Z1dfWntZm/view?usp=drive_link",
+    "stock_status": "In Stock",
+    "description": "Pared Arqunitec Blanco Marfil (02). Producto de la categoría paredes, subcategoría pu, desarrollado para aplicaciones arquitectónicas y de diseño interior. Fabricado con materiales de alto desempeño que garantizan estabilidad, resistencia y durabilidad. Permite una instalación eficiente y un acabado uniforme, ideal para proyectos residenciales, comerciales y corporativos. Especificaciones técnicas: dimensiones de 60 x 120 cm, espesor de 30.0 mm."
   }
 ]

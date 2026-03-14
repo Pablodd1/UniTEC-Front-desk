@@ -87,8 +87,51 @@ export const TOOLS = [bookAppointmentTool, logToCrmTool];
 export const DEFAULT_TRAINING_DATA = `
 # BUILDING INNOVATION - COMPLETE AI RECEPTIONIST TRAINING DATA
 # Generated: January 30, 2026
-# Total Products: 291
-# Language: English (Bilingual capability)
+# TOTAL PRODUCTS: 291
+# LANGUAGE: English (Bilingual capability)
+
+================================================================================
+CATALOGS & RESOURCES
+================================================================================
+1. Catálogo 2026 UNITEC USA DESIGN (Español): https://drive.google.com/file/d/1WB_oCvEs3k5uR0R7NHYKCtIn1PeW9UR9/view?usp=drive_link
+2. Product Catalog 2026 - Unitec (English): https://drive.google.com/file/d/14ZZe6FWDNPE34w_z1z6PpiPuUjYYJ_mj/view?usp=drive_link
+3. 001. Catálogo Building LATAM (español): https://drive.google.com/file/d/1NqJSJ2l4jzSLEE_WfL-bA3_gjasLjyTp/view?usp=drive_link
+4. 002. Product Catalog USA (English) Building Innovation: https://drive.google.com/file/d/1_CeSXJdX_uqHcsq6b2aNu_fNco4I8E1G/view?usp=drive_link
+
+================================================================================
+TECHNICAL SHEETS (FICHAS TECNICAS)
+================================================================================
+- PISOS DECK: https://drive.google.com/file/d/1lCMi2xRoSPgICkiHKhvCX7i218yi_Y2s/view?usp=drive_link
+- PISOS SPC: https://drive.google.com/file/d/1qZHyzLsyqXc-6xMNlOFmiaGu0YrDSa_j/view?usp=drive_link
+- LAMINAS MARMOL PVC: https://drive.google.com/file/d/1KRU7WCbh4gUq6VJVgCJnWwzkUc3huxO5/view?usp=drive_link
+- PAREDES PU ARQUNITEC: https://drive.google.com/file/d/1QG18_4a7hO-SocOLjpdG751Z1dfWntZm/view?usp=drive_link
+- PAREDES MUROFLEX: https://drive.google.com/file/d/1asMmDDef6DkiilzWgpRWwKN4zMrLSiw0/view?usp=drive_link
+- PAREDES UNIFLEX: https://drive.google.com/file/d/1Lnp6C5lSwupmlbGXbFZwlQqilTPlHnLD/view?usp=drive_link
+- PAREDES ACOLCHADAS: https://drive.google.com/file/d/1nhFq0-RQB8tV4kd8pYM35rkLfUZMlTpn/view?usp=drive_link
+- PANEL PS: https://drive.google.com/file/d/1mHy1d-Ssz8gCg1GGub_y3D_y1ilxyXU-/view?usp=drive_link
+- FACHADA DECK: https://drive.google.com/file/d/1SikmL8eeNXX3OXwU1kmmXZvtspAZt_iO/view?usp=drive_link
+- POLIFACHADA: https://drive.google.com/file/d/1Y1PhwNffKpSkcsmnBWfLhdFwpvZtNltr/view?usp=drive_link
+- LAMINAS SINTETICAS: https://drive.google.com/file/d/15f7vWN4SBQRBwx0JPJruB2W1vs7NUhx2/view?usp=drive_link
+- FOAM BOARD: https://drive.google.com/file/d/1dggg0rXoKmrH3QT-ya_upyrXqyT87h0s/view?usp=drive_link
+- ROLLOS ADHESIVOS DE MARMOL: https://drive.google.com/file/d/1pIgqKZV_25nYlbGWfxH2lwouBLOMc7GZ/view?usp=drive_link
+- PANELES WPC EXTERIOR: https://drive.google.com/file/d/1KhcXOiZgTHpzM7mizu-al8B6ASMsBFZj/view?usp=drive_link
+- PANELES WPC INTERIOR: https://drive.google.com/file/d/1gFl9UWUrsH3XXWTqSS-9taupsGPb6D-U/view?usp=drive_link
+- PANELES WPC REDONDOS: https://drive.google.com/file/d/1XL4JDyEgRpRIwjAsLjWlgCCyNxAloIHn/view?usp=drive_link
+- PANELES ACOLCHADOS: https://drive.google.com/file/d/1b9r87FAGGFdZhXrjkXJ34ePpU8yTrPMk/view?usp=drive_link
+- PANELES ACUSTICOS: https://drive.google.com/file/d/1zFK2T0Ij4-oHxZwZOc6kxHSZgZtHxHUC/view?usp=drive_link
+- PANELES ACRILICOS MARMOL: https://drive.google.com/file/d/1rZcZ1Z9nJgh28GDDq1RKDA8Wu6dCrFhp/view?usp=drive_link
+- LISTONES WPC EXTERIOR: https://drive.google.com/file/d/1CQkItQJc8YcrrL9_01HispARdvuN8uUC/view?usp=drive_link
+- LISTONES PVC INTERIOR: https://drive.google.com/file/d/1KSdSi8pv8ptevXbI5ZuScGdIqnKRXKLG/view?usp=drive_link
+- LISTONES PVC CIELO RASO: https://drive.google.com/file/d/1ffUyR6EtOQFxuJaFmcvmhWF0Cei9QKIw/view?usp=drive_link
+- CIELO RASO PVC: https://drive.google.com/file/d/1ElU9IWk3hEz21EhnWDZTCyEIAb1rQ35n/view?usp=drive_link
+- ZOCALOS SPC: https://drive.google.com/file/d/16dLCl4M0HGv8tIri0sxhziCX3wpw0ZJb/view?usp=drive_link
+- LAMINAS PVC BOARD: https://drive.google.com/file/d/1fHM_Ak7KMWRnzT6eR1fOWay6SQDwpRd6/view?usp=drive_link
+- CUBIERTAS UPVC: https://drive.google.com/file/d/1SVvVosvOG2boKKEEB5fj1DdN5nHOG5Ik/view?usp=drive_link
+- PEGANTES (PEGATEC): https://drive.google.com/file/d/1HrXrxTQOqxF6_DQl8Lvc2xI-gwWqVnWN/view?usp=drive_link
+- ILUMINACION LED: https://drive.google.com/file/d/1YBd2gsPijzmJdzQkX5NdnBpNAtr3DZkk/view?usp=drive_link
+- JARDINES ARTIFICIALES: https://drive.google.com/file/d/1UjizIbDHB1OvvjOkHmz68d_3Wy1tsV0L/view?usp=drive_link
+- CINTAS ADHESIVAS: https://drive.google.com/file/d/1zY3-sCMHTFUhN6zCIzHWbAl5sXSAzecH/view?usp=drive_link
+- FACHADA EXTERIOR PVC: https://drive.google.com/file/d/1eVQ43yP8jlZ2XtoeojCQ0xMFNlY53tHK/view?usp=drive_link
 
 ================================================================================
 COMPANY INFORMATION
@@ -171,6 +214,9 @@ Your goal is to guide clients toward the perfect wall cladding solution, "hook" 
 
 # KNOWLEDGE BASE & GROUNDING
 - Use the attached JSON database as your ONLY source of truth for prices, stock, and specs.
+- For each product, you can provide technical specifications like dimensions (LATAM and USA units), items per box, and unit of measure.
+- Prices are listed in the 'price' field (e.g., "$ 31.599").
+- Dimensions are available in both metric (LATAM) and imperial (USA) systems.
 - If a user asks for "Natural/Country/Campestre" styles: You MUST recommend warm wood tones (Oak, Teak, Walnut) and matte textures. NEVER recommend gray, marble, or industrial finishes for this specific style.
 - You specialize in WALL products. If a user asks for walls, do not offer floor/decking products unless specifically asked for a full-room combo.
 - Current Language Setting: ${language === 'en' ? 'ENGLISH' : 'SPANISH'}.

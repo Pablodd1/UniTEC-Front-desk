@@ -76,7 +76,7 @@ const ServicesTab: React.FC<ServicesTabProps> = ({ language, onConsultProduct })
               <div className="p-6">
                 <div className="flex justify-between items-start mb-2">
                   <h3 className="text-xl font-black text-slate-900 uppercase tracking-tight leading-tight group-hover:text-brand-600 transition-colors">{product.name}</h3>
-                  <span className="text-brand-600 font-bold text-sm">{product.price_per_m2 ? `$${product.price_per_m2}` : ''}</span>
+                  <span className="text-brand-600 font-bold text-sm">{product.price}</span>
                 </div>
                 
                 <p className="text-sm text-slate-500 leading-relaxed mb-4 line-clamp-2">{product.description}</p>
