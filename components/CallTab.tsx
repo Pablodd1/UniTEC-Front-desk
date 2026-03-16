@@ -2,7 +2,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Mic, Phone, Loader2, CheckCircle2, Download, Headphones, Camera, CameraOff, Video as VideoIcon, Sparkles } from 'lucide-react';
 import { connectLiveSession, sendMessageToGemini } from '../services/geminiService';
-import { playElevenLabsTTS } from '../services/elevenLabsService';
 import AudioVisualizer from './AudioVisualizer';
 import { Language, VoiceName, VoiceProvider, CallRecording } from '../types';
 import { UI_TRANSLATIONS } from '../constants';
@@ -14,7 +13,6 @@ interface CallTabProps {
   language: Language;
   voiceName: VoiceName;
   voiceProvider: VoiceProvider;
-  deepgramKey?: string;
   customGreeting?: string;
 }
 
@@ -39,13 +37,10 @@ const CallTab: React.FC<CallTabProps> = ({ emergencyMode, language, voiceName, v
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const frameIntervalRef = useRef<number | null>(null);
 
-  // Hybrid Mode (ElevenLabs/Cloned Voice) Refs
-  const recognitionRef = useRef<any>(null);
-  const currentAudioRef = useRef<HTMLAudioElement | null>(null);
+  // Audio Context Refs for Visualizer
   const audioContextRef = useRef<AudioContext | null>(null);
   const analyserRef = useRef<AnalyserNode | null>(null);
   const animationFrameRef = useRef<number | null>(null);
-  const elevenLabsKey = localStorage.getItem('unitec_elevenlabs_key') || '';
 
   useEffect(() => {
     const stored = localStorage.getItem('unitec_call_library') || '[]';
@@ -70,16 +65,6 @@ const CallTab: React.FC<CallTabProps> = ({ emergencyMode, language, voiceName, v
     if (sessionControllerRef.current) {
       await sessionControllerRef.current.disconnect();
       sessionControllerRef.current = null;
-    }
-    // Stop Recognition (Hybrid)
-    if (recognitionRef.current) {
-        recognitionRef.current.stop();
-        recognitionRef.current = null;
-    }
-    // Stop Audio Playback (Hybrid)
-    if (currentAudioRef.current) {
-        currentAudioRef.current.pause();
-        currentAudioRef.current = null;
     }
     // Close Audio Context
     if (audioContextRef.current) {
@@ -134,158 +119,49 @@ const CallTab: React.FC<CallTabProps> = ({ emergencyMode, language, voiceName, v
 
     setStatus('connecting');
 
-    // 1. If using Gemini Native Voice -> Use Live API (WebSocket)
-    if (voiceProvider === 'gemini') {
-        try {
-            const session = await connectLiveSession({
-                onOpen: () => {
-                    setStatus('connected');
-                    if (videoRef.current && sessionControllerRef.current?.stream) {
-                    videoRef.current.srcObject = sessionControllerRef.current.stream;
-                    }
-                    startFrameStreaming();
-                },
-                onMessage: (text) => {
-                    if (text) {
-                        setTranscript(prev => {
-                            // Simple logic to avoid duplicate consecutive messages from model if they come in chunks
-                            // Though Live API usually sends full turns or clear markers
-                            const last = prev[prev.length - 1];
-                            if (last && last.role === 'model' && last.text === text) return prev;
-                            return [...prev, { role: 'model', text }];
-                        });
-                    }
-                },
-                onAudioData: (data) => setAudioData(data),
-                onToolCall: () => {},
-                onToolSuccess: (name, res) => {
-                    if (name === 'book_appointment') {
-                        setConfirmedDate(res.date || null);
-                        setShowBookingConfirmation(true);
-                    }
-                },
-                onError: () => {
-                    setErrorMessage(language === 'en' ? "Connection failed." : "Fallo de conexión.");
-                    setStatus('error');
-                },
-                onClose: () => setStatus('idle')
-            }, emergencyMode, language, voiceName, customGreeting);
-            
-            if (session) {
-                sessionControllerRef.current = session;
-                if (videoRef.current && session.stream) {
-                    videoRef.current.srcObject = session.stream;
-                }
-            }
-        } catch (e: any) {
-            setErrorMessage(language === 'en' ? "Initialization error." : "Error de inicio.");
-            setStatus('error');
-        }
-    } 
-    // 2. If using ElevenLabs (Cloned) -> Use Hybrid Loop (STT -> LLM -> TTS)
-    else {
-        startHybridCall();
-    }
-  };
-
-  // Logic for Cloned Voice Hybrid Mode
-  const startHybridCall = async () => {
     try {
-        // Init Camera for visual effect
-        const stream = await navigator.mediaDevices.getUserMedia({ audio: true, video: true });
-        if (videoRef.current) {
-            videoRef.current.srcObject = stream;
-        }
-
-        const SpeechRecognition = (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition;
-        if (!SpeechRecognition) {
-            setErrorMessage("Browser not compatible with Voice Cloning mode.");
-            setStatus('error');
-            return;
-        }
-
-        const recognition = new SpeechRecognition();
-        recognition.continuous = false; // We want turn-taking
-        recognition.lang = language === 'en' ? 'en-US' : 'es-ES';
-        recognition.interimResults = false;
-
-        recognition.onstart = () => {
-            setStatus('listening');
-            startVisualizer(stream); // Visualize mic
-        };
-
-        recognition.onresult = async (event: any) => {
-            const transcriptText = event.results[0][0].transcript;
-            console.log("User said:", transcriptText);
-            setTranscript(prev => [...prev, { role: 'user', text: transcriptText }]);
-            setStatus('processing');
-            
-            // Send to Gemini as Text
-            const responseGen = sendMessageToGemini(transcriptText, emergencyMode, language, (name, res) => {
+        const session = await connectLiveSession({
+            onOpen: () => {
+                setStatus('connected');
+                if (videoRef.current && sessionControllerRef.current?.stream) {
+                videoRef.current.srcObject = sessionControllerRef.current.stream;
+                }
+                startFrameStreaming();
+            },
+            onMessage: (text) => {
+                if (text) {
+                    setTranscript(prev => {
+                        // Simple logic to avoid duplicate consecutive messages from model if they come in chunks
+                        // Though Live API usually sends full turns or clear markers
+                        const last = prev[prev.length - 1];
+                        if (last && last.role === 'model' && last.text === text) return prev;
+                        return [...prev, { role: 'model', text }];
+                    });
+                }
+            },
+            onAudioData: (data) => setAudioData(data),
+            onToolCall: () => {},
+            onToolSuccess: (name, res) => {
                 if (name === 'book_appointment') {
                     setConfirmedDate(res.date || null);
                     setShowBookingConfirmation(true);
                 }
-            }, customGreeting);
-
-            let fullText = "";
-            for await (const chunk of responseGen) {
-                 const c = chunk as GenerateContentResponse;
-                 if (c.text) fullText += c.text;
-            }
-
-            if (fullText) {
-                setTranscript(prev => [...prev, { role: 'model', text: fullText }]);
-                setStatus('speaking');
-                // Send to ElevenLabs
-                const audio = await playElevenLabsTTS(
-                    fullText, 
-                    elevenLabsKey, 
-                    voiceName, 
-                    () => { 
-                        if(currentAudioRef.current) startVisualizer(currentAudioRef.current);
-                    },
-                    () => {
-                        // After speaking, listen again
-                        if (status !== 'idle') {
-                            try { recognition.start(); } catch(e){}
-                        }
-                    }
-                );
-                currentAudioRef.current = audio || null;
-            } else {
-                 try { recognition.start(); } catch(e){}
-            }
-        };
-
-        recognition.onerror = (e: any) => {
-            console.error("STT Error", e);
-            // Restart if no speech detected
-            if (e.error === 'no-speech') {
-                 try { recognition.start(); } catch(e){}
-            }
-        };
-
-        recognitionRef.current = recognition;
-        setStatus('connected');
+            },
+            onError: () => {
+                setErrorMessage(language === 'en' ? "Connection failed." : "Fallo de conexión.");
+                setStatus('error');
+            },
+            onClose: () => setStatus('idle')
+        }, emergencyMode, language, voiceName, customGreeting);
         
-        // Speak Greeting First
-        if (customGreeting) {
-            setStatus('speaking');
-             const audio = await playElevenLabsTTS(
-                customGreeting, 
-                elevenLabsKey, 
-                voiceName,
-                () => { if(currentAudioRef.current) startVisualizer(currentAudioRef.current); },
-                () => { recognition.start(); }
-            );
-            currentAudioRef.current = audio || null;
-        } else {
-            recognition.start();
+        if (session) {
+            sessionControllerRef.current = session;
+            if (videoRef.current && session.stream) {
+                videoRef.current.srcObject = session.stream;
+            }
         }
-
-    } catch (e) {
-        setErrorMessage("Microphone/Camera access required.");
+    } catch (e: any) {
+        setErrorMessage(language === 'en' ? "Initialization error." : "Error de inicio.");
         setStatus('error');
     }
   };
@@ -371,12 +247,6 @@ const CallTab: React.FC<CallTabProps> = ({ emergencyMode, language, voiceName, v
                 <div className="flex items-center gap-1.5 px-2 py-0.5 rounded-full bg-blue-50 border border-blue-100">
                     <Sparkles size={10} className="text-blue-500" />
                     <span className="text-[9px] text-blue-700 font-bold uppercase tracking-tight">AI Vision Active</span>
-                </div>
-             )}
-             {voiceProvider === 'elevenlabs' && (
-                <div className="flex items-center gap-1.5 px-2 py-0.5 rounded-full bg-indigo-50 border border-indigo-100">
-                    <Headphones size={10} className="text-indigo-500" />
-                    <span className="text-[9px] text-indigo-700 font-bold uppercase tracking-tight">Cloned Voice Mode</span>
                 </div>
              )}
         </div>

@@ -1,0 +1,62 @@
+{
+  "entities": {
+    "CrmLog": {
+      "title": "CrmLog",
+      "description": "Log of CRM interactions",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "timestamp": { "type": "string", "format": "date-time" },
+        "customerName": { "type": "string" },
+        "summary": { "type": "string" },
+        "actionTaken": { "type": "string" },
+        "sentiment": { "type": "string", "enum": ["Positive", "Neutral", "Negative"] },
+        "provider": { "type": "string", "enum": ["Internal", "Escala"] },
+        "userId": { "type": "string" }
+      },
+      "required": ["id", "timestamp", "customerName", "summary", "actionTaken", "sentiment", "userId"]
+    },
+    "CallRecording": {
+      "title": "CallRecording",
+      "description": "Log of call recordings",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "name": { "type": "string" },
+        "timestamp": { "type": "string", "format": "date-time" },
+        "duration": { "type": "string" },
+        "blobUrl": { "type": "string" },
+        "transcript": { "type": "string" },
+        "userId": { "type": "string" }
+      },
+      "required": ["id", "name", "timestamp", "duration", "userId"]
+    },
+    "AppConfig": {
+      "title": "AppConfig",
+      "description": "User specific app configuration",
+      "type": "object",
+      "properties": {
+        "escalaApiKey": { "type": "string" },
+        "escalaAccountId": { "type": "string" },
+        "escalaIsActive": { "type": "boolean" },
+        "trainingData": { "type": "string" },
+        "userId": { "type": "string" }
+      },
+      "required": ["userId"]
+    }
+  },
+  "firestore": {
+    "/users/{userId}/crmLogs/{logId}": {
+      "schema": { "$ref": "CrmLog" },
+      "description": "CRM logs for the user"
+    },
+    "/users/{userId}/callRecordings/{recordingId}": {
+      "schema": { "$ref": "CallRecording" },
+      "description": "Call recordings for the user"
+    },
+    "/users/{userId}/config/main": {
+      "schema": { "$ref": "AppConfig" },
+      "description": "App configuration for the user"
+    }
+  }
+}

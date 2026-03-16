@@ -8,11 +8,10 @@ import {
 } from 'lucide-react';
 import { EscalaConfig, VoiceName, VoiceProvider, BillingInvoice } from '../types';
 import { playGeminiTTS } from '../services/geminiService';
-import { playDeepgramTTS } from '../services/deepgramService';
-import { playElevenLabsTTS, cloneVoice } from '../services/elevenLabsService';
 import { getEscalaConfig, saveEscalaConfig, testEscalaConnection } from '../services/escalaService';
 import { getUsageStats, getProfitEstimate, generateInvoice, trackUsage } from '../services/usageService';
 import { generateImage, editImage } from '../services/imageService';
+import { getAppConfig, saveAppConfig, getCrmLogs, CrmLog } from '../services/firestoreService';
 import { DEFAULT_TRAINING_DATA } from '../constants';
 
 interface AdminDashboardProps {
@@ -22,8 +21,6 @@ interface AdminDashboardProps {
   setVoiceName: (voice: VoiceName) => void;
   voiceProvider: VoiceProvider;
   setVoiceProvider: (provider: VoiceProvider) => void;
-  deepgramKey: string;
-  setDeepgramKey: (key: string) => void;
   currentBrandId?: 'unitec' | 'building';
   onToggleBrand?: (brand: 'unitec' | 'building') => void;
   onUpdateBackground?: (url: string) => void;
@@ -41,7 +38,6 @@ const GEMINI_VOICE_DESCRIPTIONS: Record<string, { gender: 'Male' | 'Female', sty
 const AdminDashboard: React.FC<AdminDashboardProps> = ({ 
     voiceName, setVoiceName,
     voiceProvider, setVoiceProvider,
-    deepgramKey,
     currentBrandId = 'unitec',
     onToggleBrand,
     onUpdateBackground
@@ -71,14 +67,6 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({
 
   // Voice Lab States
   const [isTestingVoice, setIsTestingVoice] = useState<string | null>(null);
-  
-  // ElevenLabs State
-  const [elevenLabsKey, setElevenLabsKey] = useState('');
-  const [elevenLabsVoiceId, setElevenLabsVoiceId] = useState('');
-  const [isCloning, setIsCloning] = useState(false);
-  const [cloneName, setCloneName] = useState('');
-  const [cloneFiles, setCloneFiles] = useState<File[]>([]);
-  const [cloningError, setCloningError] = useState<string | null>(null);
 
   // Model Training State
   const [trainingData, setTrainingData] = useState<string>('');
@@ -92,28 +80,30 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({
   const [aspectRatio, setAspectRatio] = useState<"1:1" | "3:4" | "4:3" | "9:16" | "16:9">("1:1");
   const [imageError, setImageError] = useState<string | null>(null);
 
+  // CRM Logs State
+  const [crmLogs, setCrmLogs] = useState<CrmLog[]>([]);
+
   // Copy State
   const [copyStatus, setCopyStatus] = useState<string | null>(null);
 
   const geminiVoices: VoiceName[] = ['Aoede', 'Kore', 'Zephyr', 'Puck', 'Fenrir', 'Charon'];
   
   useEffect(() => {
-    const storedLib = localStorage.getItem('unitec_call_library');
-    if (storedLib) {
-        // Recordings loaded but not used in this view currently
-    }
-    setEscalaConfig(getEscalaConfig());
-    
-    // Load Training Data: Use LocalStorage if available, otherwise default to Building Innovation data
-    const storedTraining = localStorage.getItem('unitec_training_data');
-    if (storedTraining && storedTraining.length > 50) {
-        setTrainingData(storedTraining);
-    } else {
+    const loadData = async () => {
+      const escala = await getEscalaConfig();
+      setEscalaConfig(escala);
+
+      const config = await getAppConfig();
+      if (config?.trainingData && config.trainingData.length > 50) {
+        setTrainingData(config.trainingData);
+      } else {
         setTrainingData(DEFAULT_TRAINING_DATA);
-    }
-    
-    setElevenLabsKey(localStorage.getItem('unitec_elevenlabs_key') || '');
-    setElevenLabsVoiceId(localStorage.getItem('unitec_elevenlabs_voice_id') || '');
+      }
+
+      const logs = await getCrmLogs();
+      setCrmLogs(logs);
+    };
+    loadData();
 
     const interval = setInterval(() => {
       const stats = getUsageStats();
@@ -138,30 +128,12 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({
     setTimeout(() => setCopyStatus(null), 2000);
   };
 
-  const saveElevenLabsConfig = () => {
-    localStorage.setItem('unitec_elevenlabs_key', elevenLabsKey);
-    localStorage.setItem('unitec_elevenlabs_voice_id', elevenLabsVoiceId);
-    if(elevenLabsVoiceId) {
-        setVoiceName(elevenLabsVoiceId);
-        setVoiceProvider('elevenlabs');
-    }
-  };
-
   const handleTestVoice = async (v: VoiceName) => {
     if (isTestingVoice) return;
     setIsTestingVoice(v);
     try {
-        if (voiceProvider === 'gemini') {
-            await playGeminiTTS("Hello! This is a test of my voice responsiveness.", v);
-        } else if (voiceProvider === 'elevenlabs') {
-            await playElevenLabsTTS("Hello! This is my cloned voice.", elevenLabsKey, v || elevenLabsVoiceId);
-        } else {
-            await playDeepgramTTS("Channel test.", deepgramKey, v, () => {}, () => {});
-        }
-        
-        if (voiceProvider === 'gemini') setTimeout(() => setIsTestingVoice(null), 3000);
-        else setTimeout(() => setIsTestingVoice(null), 1000);
-
+        await playGeminiTTS("Hello! This is a test of my voice responsiveness.", v);
+        setTimeout(() => setIsTestingVoice(null), 3000);
     } catch (e) {
         setIsTestingVoice(null);
     }
@@ -209,15 +181,15 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({
     }
   };
 
-  const handleSaveEscala = () => {
+  const handleSaveEscala = async () => {
     setIsSavingEscala(true);
-    saveEscalaConfig(escalaConfig);
+    await saveEscalaConfig(escalaConfig);
     setTimeout(() => setIsSavingEscala(false), 800);
   };
 
-  const handleSaveTraining = () => {
+  const handleSaveTraining = async () => {
     setIsSavingTraining(true);
-    localStorage.setItem('unitec_training_data', trainingData);
+    await saveAppConfig({ trainingData });
     setTimeout(() => setIsSavingTraining(false), 1000);
   };
 
@@ -258,43 +230,6 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({
         setIsGeneratingImage(false);
     }
   };
-
-  const handleCloneVoice = async () => {
-    if (!elevenLabsKey || !cloneName || cloneFiles.length === 0) {
-        setCloningError("Please provide an API Key, Name, and at least one audio sample.");
-        return;
-    }
-
-    setIsCloning(true);
-    setCloningError(null);
-    try {
-        const voiceId = await cloneVoice(elevenLabsKey, cloneName, cloneFiles);
-        const newClone = { name: cloneName, id: voiceId };
-        const updatedClones = [...customClonesData, newClone];
-        setCustomClonesData(updatedClones);
-        localStorage.setItem('unitec_voice_clones_data', JSON.stringify(updatedClones));
-        
-        // Reset form
-        setCloneName('');
-        setCloneFiles([]);
-        setElevenLabsVoiceId(voiceId);
-        setVoiceName(voiceId as any);
-        setVoiceProvider('elevenlabs');
-        
-        alert("Voice cloned successfully! ID: " + voiceId);
-    } catch (e: any) {
-        setCloningError(e.message || "Failed to clone voice");
-    } finally {
-        setIsCloning(false);
-    }
-  };
-
-  const [customClonesData, setCustomClonesData] = useState<{name: string, id: string}[]>([]);
-  
-  useEffect(() => {
-    const savedClonesData = localStorage.getItem('unitec_voice_clones_data');
-    if (savedClonesData) setCustomClonesData(JSON.parse(savedClonesData));
-  }, []);
 
   const currentVoiceList = [...geminiVoices];
 
@@ -441,27 +376,28 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({
                     <div className="bg-white rounded-2xl border border-slate-200 shadow-sm p-8">
                         <h3 className="text-lg font-bold text-slate-800 mb-4">Recent Interactions</h3>
                         <div className="space-y-3">
-                            {[
-                                { date: '2026-03-13 10:23 AM', user: 'Client A', action: 'Inquired about Cement pricing', status: 'Logged' },
-                                { date: '2026-03-13 09:45 AM', user: 'Client B', action: 'Booked consultation call', status: 'Synced' },
-                                { date: '2026-03-12 04:12 PM', user: 'Client C', action: 'Requested technical sheet for Steel Rebar', status: 'Logged' },
-                                { date: '2026-03-12 01:30 PM', user: 'Client D', action: 'Asked about delivery times to Miami', status: 'Synced' },
-                            ].map((log, i) => (
-                                <div key={i} className="p-4 bg-slate-50 rounded-xl border border-slate-100 flex items-center justify-between">
-                                    <div>
-                                        <p className="text-xs font-bold text-slate-800">{log.user}</p>
-                                        <p className="text-[10px] text-slate-500 mt-0.5">{log.action}</p>
-                                    </div>
-                                    <div className="text-right">
-                                        <p className="text-[10px] text-slate-400">{log.date}</p>
-                                        <span className={`inline-block mt-1 text-[8px] font-black uppercase tracking-widest px-2 py-0.5 rounded-full ${
-                                            log.status === 'Synced' ? 'bg-emerald-100 text-emerald-600' : 'bg-blue-100 text-blue-600'
-                                        }`}>
-                                            {log.status}
-                                        </span>
-                                    </div>
+                            {crmLogs.length === 0 ? (
+                                <div className="text-center py-12 text-slate-400">
+                                    <p className="text-xs font-bold uppercase tracking-widest">No interactions yet</p>
                                 </div>
-                            ))}
+                            ) : (
+                                crmLogs.slice(0, 5).map((log) => (
+                                    <div key={log.id} className="p-4 bg-slate-50 rounded-xl border border-slate-100 flex items-center justify-between">
+                                        <div>
+                                            <p className="text-xs font-bold text-slate-800">{log.customerName}</p>
+                                            <p className="text-[10px] text-slate-500 mt-0.5">{log.actionTaken}</p>
+                                        </div>
+                                        <div className="text-right">
+                                            <p className="text-[10px] text-slate-400">{new Date(log.timestamp).toLocaleString()}</p>
+                                            <span className={`inline-block mt-1 text-[8px] font-black uppercase tracking-widest px-2 py-0.5 rounded-full ${
+                                                log.provider === 'Escala' ? 'bg-emerald-100 text-emerald-600' : 'bg-blue-100 text-blue-600'
+                                            }`}>
+                                                {log.provider === 'Escala' ? 'Synced' : 'Logged'}
+                                            </span>
+                                        </div>
+                                    </div>
+                                ))
+                            )}
                         </div>
                     </div>
                 </div>
@@ -480,178 +416,47 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({
                                 >
                                   Google Gemini (Fastest)
                                 </button>
-                                <button 
-                                  onClick={() => setVoiceProvider('elevenlabs')}
-                                  className={`px-4 py-2 rounded-lg text-xs font-bold border ${voiceProvider === 'elevenlabs' ? 'bg-indigo-50 border-indigo-200 text-indigo-700' : 'bg-white border-slate-200 text-slate-500'}`}
-                                >
-                                  ElevenLabs (Cloned)
-                                </button>
                             </div>
                         </div>
-
-                        {voiceProvider === 'elevenlabs' && (
-                             <div className="space-y-6">
-                                <div className="p-6 bg-indigo-50 rounded-xl border border-indigo-100 space-y-4">
-                                    <div className="flex items-center gap-2 mb-2">
-                                        <Globe size={16} className="text-indigo-600" />
-                                        <h4 className="font-bold text-indigo-900 text-sm">ElevenLabs Configuration</h4>
-                                    </div>
-                                    <div>
-                                        <label className="text-[10px] font-bold text-indigo-400 uppercase tracking-widest">ElevenLabs API Key</label>
-                                        <input 
-                                            type="password" 
-                                            value={elevenLabsKey}
-                                            onChange={(e) => setElevenLabsKey(e.target.value)}
-                                            className="w-full mt-1 px-4 py-2 rounded-lg border border-indigo-200 focus:ring-2 focus:ring-indigo-500 outline-none text-sm"
-                                            placeholder="xi-..."
-                                        />
-                                    </div>
-                                    <div>
-                                        <label className="text-[10px] font-bold text-indigo-400 uppercase tracking-widest">Active Voice ID</label>
-                                        <div className="flex gap-2">
-                                            <input 
-                                                type="text" 
-                                                value={elevenLabsVoiceId}
-                                                onChange={(e) => setElevenLabsVoiceId(e.target.value)}
-                                                className="flex-1 mt-1 px-4 py-2 rounded-lg border border-indigo-200 focus:ring-2 focus:ring-indigo-500 outline-none text-sm"
-                                                placeholder="e.g. 21m00Tcm4TlvDq8ikWAM"
-                                            />
-                                            <button onClick={saveElevenLabsConfig} className="mt-1 px-4 bg-indigo-600 text-white rounded-lg text-xs font-bold hover:bg-indigo-700">
-                                                Save
-                                            </button>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <div className="p-6 bg-white rounded-xl border border-slate-200 shadow-sm space-y-4">
-                                    <div className="flex items-center gap-2 mb-2">
-                                        <Mic2 size={16} className="text-brand-600" />
-                                        <h4 className="font-bold text-slate-800 text-sm">Voice Cloning Lab</h4>
-                                    </div>
-                                    <p className="text-xs text-slate-500">Clone a new voice by providing a name and audio samples (MP3/WAV).</p>
-                                    
-                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                                        <div>
-                                            <label className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Clone Name</label>
-                                            <input 
-                                                type="text" 
-                                                value={cloneName}
-                                                onChange={(e) => setCloneName(e.target.value)}
-                                                className="w-full mt-1 px-4 py-2 rounded-lg border border-slate-200 focus:ring-2 focus:ring-brand-500 outline-none text-sm"
-                                                placeholder="e.g. CEO Voice"
-                                            />
-                                        </div>
-                                        <div>
-                                            <label className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Audio Samples</label>
-                                            <input 
-                                                type="file" 
-                                                multiple
-                                                accept="audio/*"
-                                                onChange={(e) => setCloneFiles(Array.from(e.target.files || []))}
-                                                className="w-full mt-1 text-xs text-slate-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-xs file:font-semibold file:bg-brand-50 file:text-brand-700 hover:file:bg-brand-100"
-                                            />
-                                        </div>
-                                    </div>
-
-                                    {cloningError && (
-                                        <p className="text-[10px] text-red-500 font-bold">{cloningError}</p>
-                                    )}
-
-                                    <button 
-                                        onClick={handleCloneVoice}
-                                        disabled={isCloning || !cloneName || cloneFiles.length === 0}
-                                        className="w-full py-3 bg-brand-600 text-white rounded-xl text-xs font-black uppercase tracking-widest hover:bg-brand-700 transition-all flex items-center justify-center gap-2 disabled:opacity-50"
-                                    >
-                                        {isCloning ? <Loader2 size={14} className="animate-spin" /> : <Zap size={14} />}
-                                        {isCloning ? 'Cloning Voice...' : 'Start Cloning Process'}
-                                    </button>
-                                </div>
-
-                                {customClonesData.length > 0 && (
-                                    <div className="space-y-3">
-                                        <h4 className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Your Cloned Voices</h4>
-                                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                                            {customClonesData.map(clone => (
-                                                <div key={clone.id} className={`flex items-center justify-between p-4 rounded-xl border transition-all ${voiceName === clone.id ? 'bg-indigo-50 border-indigo-200 ring-2 ring-indigo-100' : 'bg-white border-slate-100'}`}>
-                                                    <div className="flex items-center gap-3">
-                                                        <div className={`w-10 h-10 rounded-full flex items-center justify-center text-xs font-bold ${voiceName === clone.id ? 'bg-indigo-600 text-white' : 'bg-slate-100 text-slate-400'}`}>
-                                                            <Mic2 size={16} />
-                                                        </div>
-                                                        <button onClick={() => {
-                                                            setElevenLabsVoiceId(clone.id);
-                                                            setVoiceName(clone.id as any);
-                                                            setVoiceProvider('elevenlabs');
-                                                            saveElevenLabsConfig();
-                                                        }} className="text-left">
-                                                            <p className="text-sm font-bold text-slate-800">{clone.name}</p>
-                                                            <p className="text-[9px] text-slate-400 font-mono">{clone.id}</p>
-                                                        </button>
-                                                    </div>
-                                                    <button onClick={() => handleTestVoice(clone.id as any)} className="p-2 bg-white border border-slate-100 rounded-lg shadow-sm hover:shadow-md text-indigo-600 transition-all hover:bg-indigo-50">
-                                                        {isTestingVoice === clone.id ? <Loader2 size={16} className="animate-spin" /> : <Volume2 size={16} />}
-                                                    </button>
-                                                </div>
-                                            ))}
-                                        </div>
-                                    </div>
-                                )}
-                             </div>
-                        )}
 
                         <div className="flex justify-between items-center mb-6">
                             <h3 className="text-xs font-bold text-slate-400 uppercase tracking-widest">Persona Library</h3>
                             <div className="flex items-center gap-1.5 bg-emerald-50 px-2.5 py-1 rounded-md border border-emerald-100">
                                 <Gauge size={12} className="text-emerald-600" />
                                 <span className="text-[10px] font-bold text-emerald-700 uppercase tracking-wide">
-                                    {voiceProvider === 'elevenlabs' ? 'Standard Latency' : 'Flash Native Speed'}
+                                    Flash Native Speed
                                 </span>
                             </div>
                         </div>
                         
-                        {voiceProvider === 'gemini' && (
-                            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                                {currentVoiceList.map(v => {
-                                    const details = GEMINI_VOICE_DESCRIPTIONS[v];
-                                    return (
-                                        <div key={v} className={`flex items-center justify-between p-4 rounded-xl border transition-all ${voiceName === v ? 'bg-brand-50 border-brand-200 ring-2 ring-brand-100' : 'bg-white border-slate-100'}`}>
-                                            <div className="flex items-center gap-3">
-                                                <div className={`w-10 h-10 rounded-full flex items-center justify-center text-xs font-bold ${voiceName === v ? 'bg-brand-600 text-white' : 'bg-slate-100 text-slate-400'}`}>
-                                                    {v.charAt(0)}
-                                                </div>
-                                                <button onClick={() => setVoiceName(v)} className="text-left">
-                                                    <div className="flex items-center gap-2">
-                                                        <p className="text-sm font-bold text-slate-800">{v}</p>
-                                                        {voiceName === v && <div className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></div>}
-                                                    </div>
-                                                    {details && (
-                                                        <p className="text-[10px] text-slate-500 font-medium">
-                                                            {details.style} • {details.gender}
-                                                        </p>
-                                                    )}
-                                                </button>
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            {currentVoiceList.map(v => {
+                                const details = GEMINI_VOICE_DESCRIPTIONS[v];
+                                return (
+                                    <div key={v} className={`flex items-center justify-between p-4 rounded-xl border transition-all ${voiceName === v ? 'bg-brand-50 border-brand-200 ring-2 ring-brand-100' : 'bg-white border-slate-100'}`}>
+                                        <div className="flex items-center gap-3">
+                                            <div className={`w-10 h-10 rounded-full flex items-center justify-center text-xs font-bold ${voiceName === v ? 'bg-brand-600 text-white' : 'bg-slate-100 text-slate-400'}`}>
+                                                {v.charAt(0)}
                                             </div>
-                                            <button onClick={() => handleTestVoice(v)} className="p-2 bg-white border border-slate-100 rounded-lg shadow-sm hover:shadow-md text-brand-600 transition-all hover:bg-brand-50">
-                                                {isTestingVoice === v ? <Loader2 size={16} className="animate-spin" /> : <Volume2 size={16} />}
+                                            <button onClick={() => setVoiceName(v)} className="text-left">
+                                                <div className="flex items-center gap-2">
+                                                    <p className="text-sm font-bold text-slate-800">{v}</p>
+                                                    {voiceName === v && <div className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></div>}
+                                                </div>
+                                                {details && (
+                                                    <p className="text-[10px] text-slate-500 font-medium">
+                                                        {details.style} • {details.gender}
+                                                    </p>
+                                                )}
                                             </button>
                                         </div>
-                                    );
-                                })}
-                            </div>
-                        )}
-                        
-                        {voiceProvider === 'elevenlabs' && (
-                             <div className="p-12 text-center text-slate-400 bg-slate-50 rounded-xl border border-dashed border-slate-300">
-                                <Mic2 size={48} className="mx-auto mb-4 text-indigo-300" />
-                                <p className="font-bold text-slate-600">Using Cloned Voice ID</p>
-                                <p className="text-xs mt-1 font-mono bg-white px-2 py-1 rounded inline-block border border-slate-200">{elevenLabsVoiceId || "No ID Set"}</p>
-                                <div className="mt-4">
-                                    <button onClick={() => handleTestVoice(elevenLabsVoiceId)} className="px-6 py-2 bg-indigo-600 text-white rounded-full text-sm font-bold hover:bg-indigo-700 flex items-center gap-2 mx-auto">
-                                       {isTestingVoice ? <Loader2 size={14} className="animate-spin" /> : <Volume2 size={14} />}
-                                       Test Clone
-                                    </button>
-                                </div>
-                             </div>
-                        )}
+                                        <button onClick={() => handleTestVoice(v)} className="p-2 bg-white border border-slate-100 rounded-lg shadow-sm hover:shadow-md text-brand-600 transition-all hover:bg-brand-50">
+                                            {isTestingVoice === v ? <Loader2 size={16} className="animate-spin" /> : <Volume2 size={16} />}
+                                        </button>
+                                    </div>
+                                );
+                            })}
+                        </div>
                     </div>
                 </div>
             );

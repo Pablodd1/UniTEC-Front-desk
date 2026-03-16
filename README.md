@@ -48,10 +48,18 @@ To push this code to the repository **Pablodd1/UniTEC-Front-desk**, follow these
 
 ## ⚙️ Prerequisites & Setup
 
-### 1. API Key Requirement
-This project requires a **Google Gemini API Key**.
+### 1. API Key Requirements
+This project requires external APIs to function fully.
+
+**A. Google Gemini API Key (Required)**
+*   Powers the core AI chat and real-time voice interactions.
 *   Get your key from [Google AI Studio](https://aistudio.google.com/).
-*   **Crucial**: The `API_KEY` must be available in your environment variables.
+*   **Crucial**: The `VITE_API_KEY` must be available in your environment variables.
+
+**B. ElevenLabs API Key (Optional, but recommended for custom voices)**
+*   Powers the custom voice cloning and high-quality Text-to-Speech (TTS) features in the Admin Dashboard.
+*   Get your key from [ElevenLabs](https://elevenlabs.io/).
+*   Can be set in the `.env` file as `VITE_ELEVENLABS_API_KEY` or configured directly within the app's Admin Dashboard.
 
 ### 2. Local Development (Vite)
 
@@ -64,6 +72,7 @@ This project requires a **Google Gemini API Key**.
     Create a `.env` file in the root directory:
     ```env
     VITE_API_KEY=your_actual_google_api_key_here
+    VITE_ELEVENLABS_API_KEY=your_elevenlabs_api_key_here
     ```
 
 3.  **Run the App**:

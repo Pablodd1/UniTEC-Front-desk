@@ -1,0 +1,90 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // ===============================================================
+    // Helper Functions
+    // ===============================================================
+    function isAuthenticated() {
+      return request.auth != null;
+    }
+    
+    function isOwner(userId) {
+      return isAuthenticated() && request.auth.uid == userId;
+    }
+    
+    function uidUnchanged() {
+      return !('userId' in request.resource.data) || request.resource.data.userId == request.auth.uid;
+    }
+    
+    function uidNotModified() {
+      return !('userId' in request.resource.data) || request.resource.data.userId == resource.data.userId;
+    }
+    
+    function hasRequiredFields(fields) {
+      return request.resource.data.keys().hasAll(fields);
+    }
+    
+    function hasOnlyAllowedFields(fields) {
+      return request.resource.data.keys().hasOnly(fields);
+    }
+
+    // ===============================================================
+    // Domain Validators
+    // ===============================================================
+    function isValidCrmLog() {
+      return hasRequiredFields(['id', 'timestamp', 'customerName', 'summary', 'actionTaken', 'sentiment', 'userId']) &&
+             request.resource.data.id is string && request.resource.data.id.size() < 100 &&
+             request.resource.data.timestamp is string && request.resource.data.timestamp.size() < 50 &&
+             request.resource.data.customerName is string && request.resource.data.customerName.size() < 200 &&
+             request.resource.data.summary is string && request.resource.data.summary.size() < 2000 &&
+             request.resource.data.actionTaken is string && request.resource.data.actionTaken.size() < 1000 &&
+             request.resource.data.sentiment in ['Positive', 'Neutral', 'Negative'] &&
+             (!('provider' in request.resource.data) || request.resource.data.provider in ['Internal', 'Escala']) &&
+             request.resource.data.userId is string && request.resource.data.userId.size() < 100;
+    }
+    
+    function isValidCallRecording() {
+      return hasRequiredFields(['id', 'name', 'timestamp', 'duration', 'userId']) &&
+             request.resource.data.id is string && request.resource.data.id.size() < 100 &&
+             request.resource.data.name is string && request.resource.data.name.size() < 200 &&
+             request.resource.data.timestamp is string && request.resource.data.timestamp.size() < 50 &&
+             request.resource.data.duration is string && request.resource.data.duration.size() < 50 &&
+             (!('blobUrl' in request.resource.data) || (request.resource.data.blobUrl is string && request.resource.data.blobUrl.size() < 2000)) &&
+             (!('transcript' in request.resource.data) || (request.resource.data.transcript is string && request.resource.data.transcript.size() < 100000)) &&
+             request.resource.data.userId is string && request.resource.data.userId.size() < 100;
+    }
+
+    function isValidAppConfig() {
+      return hasRequiredFields(['userId']) &&
+             (!('escalaApiKey' in request.resource.data) || (request.resource.data.escalaApiKey is string && request.resource.data.escalaApiKey.size() < 500)) &&
+             (!('escalaAccountId' in request.resource.data) || (request.resource.data.escalaAccountId is string && request.resource.data.escalaAccountId.size() < 500)) &&
+             (!('escalaIsActive' in request.resource.data) || request.resource.data.escalaIsActive is bool) &&
+             (!('trainingData' in request.resource.data) || (request.resource.data.trainingData is string && request.resource.data.trainingData.size() < 500000)) &&
+             request.resource.data.userId is string && request.resource.data.userId.size() < 100;
+    }
+
+    // ===============================================================
+    // Rules
+    // ===============================================================
+    match /users/{userId}/crmLogs/{logId} {
+      allow read: if isOwner(userId);
+      allow create: if isOwner(userId) && isValidCrmLog() && uidUnchanged();
+      allow update: if isOwner(userId) && isValidCrmLog() && uidNotModified();
+      allow delete: if isOwner(userId);
+    }
+    
+    match /users/{userId}/callRecordings/{recordingId} {
+      allow read: if isOwner(userId);
+      allow create: if isOwner(userId) && isValidCallRecording() && uidUnchanged();
+      allow update: if isOwner(userId) && isValidCallRecording() && uidNotModified();
+      allow delete: if isOwner(userId);
+    }
+    
+    match /users/{userId}/config/main {
+      allow read: if isOwner(userId);
+      allow create: if isOwner(userId) && isValidAppConfig() && uidUnchanged();
+      allow update: if isOwner(userId) && isValidAppConfig() && uidNotModified();
+      allow delete: if isOwner(userId);
+    }
+  }
+}

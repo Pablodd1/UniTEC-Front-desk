@@ -63,7 +63,7 @@ const Layout: React.FC<LayoutProps> = ({ children, activeTab, onTabChange, confi
                </h1>
                <div className="flex items-center gap-1.5 mt-1">
                   <div className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></div>
-                  <span className="text-[9px] text-brand-300 font-bold uppercase tracking-widest">Florida Stock Active</span>
+                  <span className="text-[9px] text-brand-300 font-bold uppercase tracking-widest">{t.stockActive}</span>
                </div>
              </div>
           </div>

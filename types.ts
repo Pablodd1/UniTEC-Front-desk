@@ -136,5 +136,5 @@ export interface UsageStats {
 
 export type VisualizerData = Uint8Array;
 export type Language = 'en' | 'es';
-export type VoiceProvider = 'gemini' | 'deepgram' | 'elevenlabs';
+export type VoiceProvider = 'gemini';
 export type VoiceName = string;

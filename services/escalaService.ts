@@ -1,5 +1,6 @@
 
 import { EscalaConfig } from "../types";
+import { getAppConfig, saveAppConfig } from "./firestoreService";
 
 /**
  * Escala Service
@@ -10,14 +11,24 @@ import { EscalaConfig } from "../types";
 
 const ESCALA_API_BASE = "https://api.escala.com/v1";
 
-export const getEscalaConfig = (): EscalaConfig => {
-  const stored = localStorage.getItem('unitec_escala_config');
-  if (stored) return JSON.parse(stored);
+export const getEscalaConfig = async (): Promise<EscalaConfig> => {
+  const config = await getAppConfig();
+  if (config) {
+    return {
+      apiKey: config.escalaApiKey || '',
+      accountId: config.escalaAccountId || '',
+      isActive: config.escalaIsActive || false
+    };
+  }
   return { apiKey: '', accountId: '', isActive: false };
 };
 
-export const saveEscalaConfig = (config: EscalaConfig) => {
-  localStorage.setItem('unitec_escala_config', JSON.stringify(config));
+export const saveEscalaConfig = async (config: EscalaConfig) => {
+  await saveAppConfig({
+    escalaApiKey: config.apiKey,
+    escalaAccountId: config.accountId,
+    escalaIsActive: config.isActive
+  });
 };
 
 export const syncLeadToEscala = async (data: {
@@ -28,7 +39,7 @@ export const syncLeadToEscala = async (data: {
   tags: string[];
   customFields?: Record<string, string>;
 }) => {
-  const config = getEscalaConfig();
+  const config = await getEscalaConfig();
   if (!config.isActive || !config.apiKey) {
     console.warn("[Escala CRM] Integration inactive. Logging locally only.");
     return { success: false, reason: 'inactive' };

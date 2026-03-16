@@ -5,6 +5,7 @@ import { sendMessageToGemini } from '../services/geminiService';
 import { Send, Bot, User, Box, DollarSign, Hammer, BookOpen, CheckCircle2, Truck, FileText, RefreshCcw, Percent } from 'lucide-react';
 import { GenerateContentResponse } from '@google/genai';
 import { UI_TRANSLATIONS } from '../constants';
+import Markdown from 'react-markdown';
 
 interface ChatTabProps {
   quickActions: QuickAction[];
@@ -201,13 +202,13 @@ const ChatTab: React.FC<ChatTabProps> = ({ quickActions, initialMessage, emergen
                 <div className="w-20 h-20 bg-emerald-100 text-emerald-600 rounded-full flex items-center justify-center mx-auto mb-6 ring-8 ring-emerald-50">
                     <CheckCircle2 size={40} />
                 </div>
-                <h3 className="text-xl font-black text-slate-900 mb-2 uppercase tracking-tight">Confirmed!</h3>
+                <h3 className="text-xl font-black text-slate-900 mb-2 uppercase tracking-tight">{t.confirmed}</h3>
                 <p className="text-slate-500 text-sm mb-6 leading-relaxed">
                     {t.bookingConfirmed}
                 </p>
                 {confirmedDate && (
                     <div className="bg-slate-50 rounded-2xl p-4 mb-8 border border-slate-100">
-                        <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1">Appointment Details</p>
+                        <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1">{t.appointmentDetails}</p>
                         <p className="text-slate-900 font-bold text-sm">{confirmedDate}</p>
                     </div>
                 )}
@@ -215,7 +216,7 @@ const ChatTab: React.FC<ChatTabProps> = ({ quickActions, initialMessage, emergen
                     onClick={() => setShowBookingConfirmation(false)}
                     className="w-full py-4 bg-slate-900 text-white rounded-2xl font-black text-xs uppercase tracking-widest hover:bg-slate-800 transition-all active:scale-95"
                 >
-                    Great, thanks!
+                    {t.greatThanks}
                 </button>
             </div>
         </div>
@@ -235,11 +236,9 @@ const ChatTab: React.FC<ChatTabProps> = ({ quickActions, initialMessage, emergen
                 referrerPolicy="no-referrer"
             />
             <div className="p-4 bg-white">
-                <p className="text-[10px] font-black text-brand-500 uppercase tracking-widest mb-1">Welcome to {language === 'en' ? 'Support' : 'Soporte'}</p>
+                <p className="text-[10px] font-black text-brand-500 uppercase tracking-widest mb-1">{t.welcomeToSupport}</p>
                 <p className="text-xs text-slate-500 leading-relaxed">
-                    {language === 'en' 
-                        ? "How can we assist your construction project today?" 
-                        : "¿Cómo podemos ayudarle con su proyecto de construcción hoy?"}
+                    {t.howCanWeAssist}
                 </p>
             </div>
         </div>
@@ -256,15 +255,27 @@ const ChatTab: React.FC<ChatTabProps> = ({ quickActions, initialMessage, emergen
                 {msg.role === 'user' ? <User size={16} /> : <Bot size={16} />}
               </div>
               <div 
-                className={`p-3.5 rounded-2xl text-sm leading-relaxed shadow-sm ${
+                className={`p-4 rounded-2xl shadow-sm ${
                   msg.role === 'user' 
                     ? 'bg-brand-500 text-white rounded-br-none' 
-                    : 'bg-white text-gray-800 rounded-bl-none border border-gray-100'
+                    : 'bg-white text-slate-800 rounded-bl-none border border-slate-100'
                 }`}
               >
-                 {msg.text.split('\n').map((line, i) => (
-                    <p key={i} className={i > 0 ? 'mt-2' : ''}>{line}</p>
-                 ))}
+                 <Markdown
+                   components={{
+                     h1: ({node, ...props}) => <h1 className="text-xl font-black mt-4 mb-2 tracking-tight" {...props} />,
+                     h2: ({node, ...props}) => <h2 className="text-lg font-bold mt-4 mb-2 tracking-tight" {...props} />,
+                     h3: ({node, ...props}) => <h3 className="text-base font-bold mt-3 mb-2" {...props} />,
+                     p: ({node, ...props}) => <p className="mt-2 first:mt-0 text-[15px] leading-relaxed" {...props} />,
+                     ul: ({node, ...props}) => <ul className="list-disc pl-5 mt-2 space-y-1" {...props} />,
+                     ol: ({node, ...props}) => <ol className="list-decimal pl-5 mt-2 space-y-1" {...props} />,
+                     li: ({node, ...props}) => <li className="text-[15px] leading-relaxed" {...props} />,
+                     strong: ({node, ...props}) => <strong className={`font-bold ${msg.role === 'user' ? 'text-white' : 'text-slate-900'}`} {...props} />,
+                     a: ({node, ...props}) => <a className="text-brand-600 underline hover:text-brand-700" target="_blank" rel="noopener noreferrer" {...props} />,
+                   }}
+                 >
+                   {msg.text}
+                 </Markdown>
               </div>
             </div>
           </div>

@@ -1,7 +1,9 @@
 
-import React, { useState } from 'react';
-import { ShieldCheck, ArrowRight, Lock, FastForward } from 'lucide-react';
+import React, { useState, useEffect } from 'react';
+import { ShieldCheck, ArrowRight, Lock, Loader2 } from 'lucide-react';
 import { BusinessConfig } from '../types';
+import { signInWithGoogle, auth } from '../firebase';
+import { onAuthStateChanged } from 'firebase/auth';
 
 interface LoginScreenProps {
   config: BusinessConfig;
@@ -9,15 +11,27 @@ interface LoginScreenProps {
 }
 
 const LoginScreen: React.FC<LoginScreenProps> = ({ onLogin }) => {
-  const [password, setPassword] = useState('');
   const [error, setError] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
 
-  const handleLogin = (e: React.FormEvent) => {
+  useEffect(() => {
+    const unsubscribe = onAuthStateChanged(auth, (user) => {
+      if (user) {
+        onLogin();
+      }
+    });
+    return () => unsubscribe();
+  }, [onLogin]);
+
+  const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (password === 'admin' || password === '1234') {
-      onLogin();
-    } else {
-      setError('Invalid PIN');
+    setIsLoading(true);
+    setError('');
+    try {
+      await signInWithGoogle();
+    } catch (err: any) {
+      setError(err.message || 'Failed to sign in');
+      setIsLoading(false);
     }
   };
 
@@ -33,18 +47,6 @@ const LoginScreen: React.FC<LoginScreenProps> = ({ onLogin }) => {
             </div>
 
             <form onSubmit={handleLogin} className="space-y-4">
-                <div>
-                    <label className="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1.5 ml-1">Access PIN</label>
-                    <input 
-                        type="password" 
-                        value={password}
-                        onChange={(e) => setPassword(e.target.value)}
-                        autoFocus
-                        className="w-full p-4 bg-slate-50 border border-slate-200 rounded-2xl text-center text-xl tracking-[0.5em] font-black focus:ring-2 focus:ring-brand-500 outline-none transition-all"
-                        placeholder="••••"
-                    />
-                </div>
-                
                 {error && (
                     <div className="p-3 bg-red-50 text-red-600 text-[10px] font-bold uppercase text-center rounded-xl flex items-center justify-center gap-2">
                         <Lock size={12} /> {error}
@@ -53,17 +55,11 @@ const LoginScreen: React.FC<LoginScreenProps> = ({ onLogin }) => {
 
                 <button 
                     type="submit"
-                    className="w-full bg-brand-600 hover:bg-brand-700 text-white font-bold py-4 rounded-2xl flex items-center justify-center gap-2 shadow-lg shadow-brand-500/20 transition-all active:scale-[0.98]"
+                    disabled={isLoading}
+                    className="w-full bg-brand-600 hover:bg-brand-700 text-white font-bold py-4 rounded-2xl flex items-center justify-center gap-2 shadow-lg shadow-brand-500/20 transition-all active:scale-[0.98] disabled:opacity-50"
                 >
-                    Unlock System <ArrowRight size={18} />
-                </button>
-                
-                <button 
-                    type="button"
-                    onClick={onLogin}
-                    className="w-full text-slate-400 font-bold py-2 text-[10px] uppercase tracking-widest hover:text-brand-600 transition-all flex items-center justify-center gap-2"
-                >
-                    <FastForward size={14} /> Quick Bypass (Dev)
+                    {isLoading ? <Loader2 size={18} className="animate-spin" /> : <ArrowRight size={18} />}
+                    {isLoading ? 'Authenticating...' : 'Sign in with Google'}
                 </button>
             </form>
         </div>

@@ -10,6 +10,8 @@ import { Tab, Language, VoiceName, VoiceProvider } from './types';
 import { UNITEC_CONFIG, BUILDING_INNOVATION_CONFIG, QUICK_ACTIONS } from './constants';
 import { resetChatSession } from './services/geminiService';
 import { MessageSquare, X } from 'lucide-react';
+import { auth, logOut } from './firebase';
+import { onAuthStateChanged } from 'firebase/auth';
 
 const App: React.FC = () => {
   // Detection for Embed Mode (when used as a widget in another site)
@@ -20,6 +22,7 @@ const App: React.FC = () => {
   
   // Auth State (Within the widget)
   const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [isAuthReady, setIsAuthReady] = useState(false);
 
   const [activeTab, setActiveTab] = useState<Tab>(Tab.CHAT);
   const [emergencyMode, setEmergencyMode] = useState(false);
@@ -35,9 +38,16 @@ const App: React.FC = () => {
   // Voice Settings
   const [voiceProvider, setVoiceProvider] = useState<VoiceProvider>('gemini');
   const [voiceName, setVoiceName] = useState<VoiceName>('Kore');
-  const [deepgramKey, setDeepgramKey] = useState<string>('');
   
   const [initialMessage] = useState<string | undefined>(undefined);
+
+  useEffect(() => {
+    const unsubscribe = onAuthStateChanged(auth, (user) => {
+      setIsLoggedIn(!!user);
+      setIsAuthReady(true);
+    });
+    return () => unsubscribe();
+  }, []);
 
   useEffect(() => {
     // Populate strong chat history for training if empty
@@ -61,7 +71,16 @@ const App: React.FC = () => {
     resetChatSession();
   }, [emergencyMode, language, currentBrandId]);
 
+  const handleLogout = async () => {
+    await logOut();
+    setIsLoggedIn(false);
+  };
+
   const renderContent = () => {
+    if (!isAuthReady) {
+      return <div className="h-full w-full flex items-center justify-center bg-slate-50"><div className="animate-spin rounded-full h-8 w-8 border-b-2 border-brand-600"></div></div>;
+    }
+
     if ((activeTab === Tab.ADMIN_SETTINGS || activeTab === Tab.CALENDAR) && !isLoggedIn) {
         return <LoginScreen config={activeConfig} onLogin={() => setIsLoggedIn(true)} />;
     }
@@ -82,7 +101,6 @@ const App: React.FC = () => {
             language={language}
             voiceName={voiceName}
             voiceProvider={voiceProvider}
-            deepgramKey={deepgramKey}
             customGreeting={activeConfig.customGreeting}
         />;
       case Tab.CALENDAR:
@@ -95,8 +113,6 @@ const App: React.FC = () => {
             setVoiceName={setVoiceName}
             voiceProvider={voiceProvider}
             setVoiceProvider={setVoiceProvider}
-            deepgramKey={deepgramKey}
-            setDeepgramKey={setDeepgramKey}
             currentBrandId={currentBrandId}
             onToggleBrand={setCurrentBrandId}
             onUpdateBackground={setBgImage}
@@ -183,7 +199,7 @@ const App: React.FC = () => {
             onOpenDashboard={() => setActiveTab(Tab.ADMIN_SETTINGS)}
             language={language}
             setLanguage={setLanguage}
-            onLogout={() => setIsLoggedIn(false)}
+            onLogout={handleLogout}
             onCloseWidget={() => isEmbedMode ? null : setIsWidgetOpen(false)}
             isEmbedMode={isEmbedMode}
           >
