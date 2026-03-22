@@ -26,7 +26,7 @@ const App: React.FC = () => {
 
   const [activeTab, setActiveTab] = useState<Tab>(Tab.CHAT);
   const [emergencyMode, setEmergencyMode] = useState(false);
-  const [language, setLanguage] = useState<Language>('en');
+  const [language, setLanguage] = useState<Language>('es');
   
   // Business Identity State
   const [currentBrandId, setCurrentBrandId] = useState<'unitec' | 'building'>('unitec');

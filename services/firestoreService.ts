@@ -1,5 +1,5 @@
 import { db, auth, handleFirestoreError, OperationType } from '../firebase';
-import { doc, getDoc, setDoc, collection, getDocs, addDoc, query, orderBy, deleteDoc } from 'firebase/firestore';
+import { doc, getDoc, setDoc, collection, getDocs, query, orderBy, deleteDoc } from 'firebase/firestore';
 
 export interface AppConfig {
   escalaApiKey?: string;

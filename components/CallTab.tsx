@@ -1,12 +1,11 @@
 
 import React, { useState, useEffect, useRef } from 'react';
 import { Mic, Phone, Loader2, CheckCircle2, Download, Headphones, Camera, CameraOff, Video as VideoIcon, Sparkles } from 'lucide-react';
-import { connectLiveSession, sendMessageToGemini } from '../services/geminiService';
+import { connectLiveSession } from '../services/geminiService';
 import AudioVisualizer from './AudioVisualizer';
 import { Language, VoiceName, VoiceProvider, CallRecording } from '../types';
 import { UI_TRANSLATIONS } from '../constants';
 import { blobToBase64 } from '../utils/audioUtils';
-import { GenerateContentResponse } from '@google/genai';
 
 interface CallTabProps {
   emergencyMode?: boolean;
@@ -26,6 +25,8 @@ const CallTab: React.FC<CallTabProps> = ({ emergencyMode, language, voiceName, v
   
   const [showBookingConfirmation, setShowBookingConfirmation] = useState(false);
   const [confirmedDate, setConfirmedDate] = useState<string | null>(null);
+  const [showEmailConfirmation, setShowEmailConfirmation] = useState(false);
+  const [emailSentTo, setEmailSentTo] = useState<string | null>(null);
   const [lastRecordingUrl, setLastRecordingUrl] = useState<string | null>(null);
   const [transcript, setTranscript] = useState<{role: 'user' | 'model', text: string}[]>([]);
   const [callLibrary, setCallLibrary] = useState<CallRecording[]>([]);
@@ -39,7 +40,6 @@ const CallTab: React.FC<CallTabProps> = ({ emergencyMode, language, voiceName, v
 
   // Audio Context Refs for Visualizer
   const audioContextRef = useRef<AudioContext | null>(null);
-  const analyserRef = useRef<AnalyserNode | null>(null);
   const animationFrameRef = useRef<number | null>(null);
 
   useEffect(() => {
@@ -50,6 +50,13 @@ const CallTab: React.FC<CallTabProps> = ({ emergencyMode, language, voiceName, v
       stopAll();
     };
   }, []);
+
+  useEffect(() => {
+    if (showEmailConfirmation) {
+        const timer = setTimeout(() => setShowEmailConfirmation(false), 8000);
+        return () => clearTimeout(timer);
+    }
+  }, [showEmailConfirmation]);
 
   const stopAll = async () => {
     // Clear Intervals
@@ -73,41 +80,6 @@ const CallTab: React.FC<CallTabProps> = ({ emergencyMode, language, voiceName, v
     }
   };
 
-  const startVisualizer = (stream: MediaStream | HTMLMediaElement) => {
-    if (!audioContextRef.current) {
-      audioContextRef.current = new (window.AudioContext || (window as any).webkitAudioContext)();
-    }
-    const ctx = audioContextRef.current;
-    if (analyserRef.current) {
-        try { analyserRef.current.disconnect(); } catch(e) {}
-    }
-    
-    const analyser = ctx.createAnalyser();
-    analyser.fftSize = 64;
-    analyserRef.current = analyser;
-
-    let source;
-    try {
-        if (stream instanceof MediaStream) {
-            source = ctx.createMediaStreamSource(stream);
-        } else {
-            source = ctx.createMediaElementSource(stream);
-            source.connect(ctx.destination);
-        }
-        source.connect(analyser);
-    } catch (e) {
-        console.warn("Visualizer connection error", e);
-        return;
-    }
-
-    const dataArray = new Uint8Array(analyser.frequencyBinCount);
-    const update = () => {
-      analyser.getByteFrequencyData(dataArray);
-      setAudioData(new Uint8Array(dataArray));
-      animationFrameRef.current = requestAnimationFrame(update);
-    };
-    update();
-  };
 
   const handleStartCall = async () => {
     setErrorMessage('');
@@ -145,6 +117,9 @@ const CallTab: React.FC<CallTabProps> = ({ emergencyMode, language, voiceName, v
                 if (name === 'book_appointment') {
                     setConfirmedDate(res.date || null);
                     setShowBookingConfirmation(true);
+                } else if (name === 'send_email') {
+                    setEmailSentTo(res.customerEmail || null);
+                    setShowEmailConfirmation(true);
                 }
             },
             onError: () => {
@@ -347,6 +322,33 @@ const CallTab: React.FC<CallTabProps> = ({ emergencyMode, language, voiceName, v
                         className="w-full py-4 bg-slate-900 text-white rounded-2xl font-black text-xs uppercase tracking-widest hover:bg-slate-800 transition-all active:scale-95"
                     >
                         Great, thanks!
+                    </button>
+                </div>
+            </div>
+        )}
+
+        {/* Email Confirmation Modal */}
+        {showEmailConfirmation && (
+            <div className="absolute inset-0 z-50 flex items-center justify-center p-6 bg-slate-900/40 backdrop-blur-sm animate-in fade-in duration-300">
+                <div className="bg-white rounded-[40px] p-8 shadow-2xl border border-slate-100 max-w-xs w-full text-center animate-in zoom-in-95 duration-300">
+                    <div className="w-20 h-20 bg-blue-100 text-blue-600 rounded-full flex items-center justify-center mx-auto mb-6 ring-8 ring-blue-50">
+                        <CheckCircle2 size={40} />
+                    </div>
+                    <h3 className="text-xl font-black text-slate-900 mb-2 uppercase tracking-tight">{language === 'en' ? 'Email Sent!' : '¡Correo Enviado!'}</h3>
+                    <p className="text-slate-500 text-sm mb-6 leading-relaxed">
+                        {language === 'en' ? 'The requested files have been sent.' : 'Los archivos solicitados han sido enviados.'}
+                    </p>
+                    {emailSentTo && (
+                        <div className="bg-slate-50 rounded-2xl p-4 mb-8 border border-slate-100">
+                            <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1">{language === 'en' ? 'Sent to' : 'Enviado a'}</p>
+                            <p className="text-slate-900 font-bold text-sm truncate">{emailSentTo}</p>
+                        </div>
+                    )}
+                    <button 
+                        onClick={() => setShowEmailConfirmation(false)}
+                        className="w-full py-4 bg-slate-900 text-white rounded-2xl font-black text-xs uppercase tracking-widest hover:bg-slate-800 transition-all active:scale-95"
+                    >
+                        {t.greatThanks}
                     </button>
                 </div>
             </div>

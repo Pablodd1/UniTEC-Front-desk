@@ -46,6 +46,9 @@ const ChatTab: React.FC<ChatTabProps> = ({ quickActions, initialMessage, emergen
   
   const [showBookingConfirmation, setShowBookingConfirmation] = useState(false);
   const [confirmedDate, setConfirmedDate] = useState<string | null>(null);
+  
+  const [showEmailConfirmation, setShowEmailConfirmation] = useState(false);
+  const [emailSentTo, setEmailSentTo] = useState<string | null>(null);
 
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const scrollContainerRef = useRef<HTMLDivElement>(null);
@@ -93,6 +96,13 @@ const ChatTab: React.FC<ChatTabProps> = ({ quickActions, initialMessage, emergen
     }
   }, [showBookingConfirmation]);
 
+  useEffect(() => {
+    if (showEmailConfirmation) {
+        const timer = setTimeout(() => setShowEmailConfirmation(false), 8000);
+        return () => clearTimeout(timer);
+    }
+  }, [showEmailConfirmation]);
+
   // Robust Auto-Scroll Implementation
   const scrollToBottom = (behavior: ScrollBehavior = 'smooth') => {
     if (messagesEndRef.current) {
@@ -133,6 +143,9 @@ const ChatTab: React.FC<ChatTabProps> = ({ quickActions, initialMessage, emergen
               if (toolName === 'book_appointment') {
                   setConfirmedDate(result.date || null);
                   setShowBookingConfirmation(true);
+              } else if (toolName === 'send_email') {
+                  setEmailSentTo(result.customerEmail || null);
+                  setShowEmailConfirmation(true);
               }
           },
           customGreeting
@@ -222,6 +235,33 @@ const ChatTab: React.FC<ChatTabProps> = ({ quickActions, initialMessage, emergen
         </div>
       )}
 
+      {/* Email Confirmation Modal Overlay */}
+      {showEmailConfirmation && (
+        <div className="absolute inset-0 z-[100] flex items-center justify-center p-6 bg-slate-900/40 backdrop-blur-sm animate-in fade-in duration-300">
+            <div className="bg-white rounded-[40px] p-8 shadow-2xl border border-slate-100 max-w-xs w-full text-center animate-in zoom-in-95 duration-300">
+                <div className="w-20 h-20 bg-blue-100 text-blue-600 rounded-full flex items-center justify-center mx-auto mb-6 ring-8 ring-blue-50">
+                    <CheckCircle2 size={40} />
+                </div>
+                <h3 className="text-xl font-black text-slate-900 mb-2 uppercase tracking-tight">{language === 'en' ? 'Email Sent!' : '¡Correo Enviado!'}</h3>
+                <p className="text-slate-500 text-sm mb-6 leading-relaxed">
+                    {language === 'en' ? 'The requested files have been sent.' : 'Los archivos solicitados han sido enviados.'}
+                </p>
+                {emailSentTo && (
+                    <div className="bg-slate-50 rounded-2xl p-4 mb-8 border border-slate-100">
+                        <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1">{language === 'en' ? 'Sent to' : 'Enviado a'}</p>
+                        <p className="text-slate-900 font-bold text-sm truncate">{emailSentTo}</p>
+                    </div>
+                )}
+                <button 
+                    onClick={() => setShowEmailConfirmation(false)}
+                    className="w-full py-4 bg-slate-900 text-white rounded-2xl font-black text-xs uppercase tracking-widest hover:bg-slate-800 transition-all active:scale-95"
+                >
+                    {t.greatThanks}
+                </button>
+            </div>
+        </div>
+      )}
+
       {/* Messages Area */}
       <div 
         ref={scrollContainerRef}
@@ -263,15 +303,15 @@ const ChatTab: React.FC<ChatTabProps> = ({ quickActions, initialMessage, emergen
               >
                  <Markdown
                    components={{
-                     h1: ({node, ...props}) => <h1 className="text-xl font-black mt-4 mb-2 tracking-tight" {...props} />,
-                     h2: ({node, ...props}) => <h2 className="text-lg font-bold mt-4 mb-2 tracking-tight" {...props} />,
-                     h3: ({node, ...props}) => <h3 className="text-base font-bold mt-3 mb-2" {...props} />,
-                     p: ({node, ...props}) => <p className="mt-2 first:mt-0 text-[15px] leading-relaxed" {...props} />,
-                     ul: ({node, ...props}) => <ul className="list-disc pl-5 mt-2 space-y-1" {...props} />,
-                     ol: ({node, ...props}) => <ol className="list-decimal pl-5 mt-2 space-y-1" {...props} />,
-                     li: ({node, ...props}) => <li className="text-[15px] leading-relaxed" {...props} />,
-                     strong: ({node, ...props}) => <strong className={`font-bold ${msg.role === 'user' ? 'text-white' : 'text-slate-900'}`} {...props} />,
-                     a: ({node, ...props}) => <a className="text-brand-600 underline hover:text-brand-700" target="_blank" rel="noopener noreferrer" {...props} />,
+                     h1: ({node, ...props}: any) => <h1 className="text-xl font-black mt-4 mb-2 tracking-tight" {...props} />,
+                     h2: ({node, ...props}: any) => <h2 className="text-lg font-bold mt-4 mb-2 tracking-tight" {...props} />,
+                     h3: ({node, ...props}: any) => <h3 className="text-base font-bold mt-3 mb-2" {...props} />,
+                     p: ({node, ...props}: any) => <p className="mt-2 first:mt-0 text-[15px] leading-relaxed" {...props} />,
+                     ul: ({node, ...props}: any) => <ul className="list-disc pl-5 mt-2 space-y-1" {...props} />,
+                     ol: ({node, ...props}: any) => <ol className="list-decimal pl-5 mt-2 space-y-1" {...props} />,
+                     li: ({node, ...props}: any) => <li className="text-[15px] leading-relaxed" {...props} />,
+                     strong: ({node, ...props}: any) => <strong className={`font-bold ${msg.role === 'user' ? 'text-white' : 'text-slate-900'}`} {...props} />,
+                     a: ({node, ...props}: any) => <a className="text-brand-600 underline hover:text-brand-700" target="_blank" rel="noopener noreferrer" {...props} />,
                    }}
                  >
                    {msg.text}

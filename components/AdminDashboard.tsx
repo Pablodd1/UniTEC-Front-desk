@@ -3,7 +3,7 @@ import React, { useState, useEffect } from 'react';
 import { 
   ShieldCheck, Database, Mic2, 
   Save, RefreshCw, Check, Loader2, Volume2, 
-  TrendingUp, Zap, Gauge, Building2, Store, Brain, Code, Copy, ExternalLink, Rocket, Globe, ToggleRight, ToggleLeft,
+  TrendingUp, Zap, Gauge, Building2, Store, Brain, Code, Copy, ExternalLink, Rocket, ToggleRight, ToggleLeft,
   DollarSign, MessageSquare
 } from 'lucide-react';
 import { EscalaConfig, VoiceName, VoiceProvider, BillingInvoice } from '../types';
@@ -42,7 +42,7 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({
     onToggleBrand,
     onUpdateBackground
 }) => {
-  const [activeSubTab, setActiveSubTab] = useState<'usage' | 'voice' | 'integrations' | 'deploy' | 'training' | 'general' | 'chats' | 'visuals'>('usage');
+  const [activeSubTab, setActiveSubTab] = useState<'usage' | 'voice' | 'integrations' | 'deploy' | 'training' | 'general' | 'chats' | 'visuals' | 'catalogs'>('usage');
   
   // Usage & Billing State
   const [totalTokens, setTotalTokens] = useState(0);
@@ -557,6 +557,67 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({
                 </div>
             );
 
+        case 'catalogs':
+            return (
+                <div className="space-y-8 animate-in slide-in-from-bottom-2 duration-500 pb-20">
+                    <div className="bg-white p-8 rounded-2xl border border-slate-200 shadow-sm relative">
+                        <div className="flex items-center justify-between mb-8">
+                            <div className="flex items-center gap-4">
+                                <div className="w-12 h-12 bg-blue-50 text-blue-600 rounded-2xl flex items-center justify-center shrink-0">
+                                    <Copy size={24} />
+                                </div>
+                                <div>
+                                    <h3 className="text-lg font-bold text-slate-800">Gestión de Catálogos y Archivos</h3>
+                                    <p className="text-xs text-slate-500">Controla los archivos que la IA puede enviar por correo electrónico.</p>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div className="space-y-6">
+                            <div className="bg-slate-50 p-6 rounded-xl border border-slate-200">
+                                <h4 className="text-sm font-bold text-slate-800 mb-2">Instrucciones para la IA</h4>
+                                <p className="text-xs text-slate-600 leading-relaxed mb-4">
+                                    La IA está configurada para usar la herramienta <code className="bg-slate-200 px-1 rounded text-brand-700">send_email</code> cuando un cliente solicita un catálogo, PDF o ficha técnica y proporciona su correo electrónico.
+                                </p>
+                                <p className="text-xs text-slate-600 leading-relaxed">
+                                    Para modificar los enlaces de los catálogos que la IA envía, actualiza la sección <strong>"CATALOGS & RESOURCES"</strong> en la pestaña <strong>Base de Conocimiento</strong>. La IA leerá esos enlaces y los incluirá en el correo.
+                                </p>
+                            </div>
+
+                            <div>
+                                <h4 className="text-xs font-black text-slate-400 uppercase tracking-widest mb-4">Catálogos Activos (Ejemplo)</h4>
+                                <div className="space-y-3">
+                                    <div className="flex items-center justify-between p-4 bg-white border border-slate-100 rounded-xl shadow-sm">
+                                        <div className="flex items-center gap-3">
+                                            <div className="w-8 h-8 bg-red-50 text-red-500 rounded-lg flex items-center justify-center">
+                                                <span className="text-[10px] font-bold">PDF</span>
+                                            </div>
+                                            <div>
+                                                <p className="text-sm font-bold text-slate-800">Catálogo 2026 UNITEC USA DESIGN</p>
+                                                <p className="text-[10px] text-slate-400">Español • General</p>
+                                            </div>
+                                        </div>
+                                        <span className="px-2 py-1 bg-emerald-50 text-emerald-600 text-[10px] font-bold uppercase rounded-md">Activo</span>
+                                    </div>
+                                    <div className="flex items-center justify-between p-4 bg-white border border-slate-100 rounded-xl shadow-sm">
+                                        <div className="flex items-center gap-3">
+                                            <div className="w-8 h-8 bg-red-50 text-red-500 rounded-lg flex items-center justify-center">
+                                                <span className="text-[10px] font-bold">PDF</span>
+                                            </div>
+                                            <div>
+                                                <p className="text-sm font-bold text-slate-800">Product Catalog 2026 - Unitec</p>
+                                                <p className="text-[10px] text-slate-400">English • General</p>
+                                            </div>
+                                        </div>
+                                        <span className="px-2 py-1 bg-emerald-50 text-emerald-600 text-[10px] font-bold uppercase rounded-md">Activo</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            );
+
         case 'training':
             return (
                 <div className="space-y-8 animate-in slide-in-from-bottom-2 duration-500 pb-20">
@@ -906,6 +967,7 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({
                     { id: 'visuals', label: 'Visuals', icon: <Zap size={14} /> },
                     { id: 'training', label: 'Training', icon: <Brain size={14} /> },
                     { id: 'chats', label: 'Chats', icon: <MessageSquare size={14} /> },
+                    { id: 'catalogs', label: 'Catálogos', icon: <Copy size={14} /> },
                     { id: 'deploy', label: 'Deploy', icon: <Rocket size={14} /> },
                     { id: 'integrations', label: 'CRM', icon: <Database size={14} /> },
                     { id: 'general', label: 'Settings', icon: <ShieldCheck size={14} /> }

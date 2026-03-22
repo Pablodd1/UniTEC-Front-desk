@@ -17,7 +17,7 @@ interface LayoutProps {
   isEmbedMode?: boolean;
 }
 
-const Layout: React.FC<LayoutProps> = ({ children, activeTab, onTabChange, config, language, setLanguage, onCloseWidget, isEmbedMode }) => {
+const Layout: React.FC<LayoutProps> = ({ children, activeTab, onTabChange, config, language, onCloseWidget, isEmbedMode }) => {
   const t = UI_TRANSLATIONS[language];
 
   const NavItem = ({ tab, icon, label }: { tab: Tab, icon: React.ReactNode, label: string }) => {
@@ -68,12 +68,6 @@ const Layout: React.FC<LayoutProps> = ({ children, activeTab, onTabChange, confi
              </div>
           </div>
           <div className="flex items-center gap-2">
-            <button 
-              onClick={() => setLanguage(language === 'en' ? 'es' : 'en')}
-              className="px-3 py-1.5 rounded-lg bg-white/10 hover:bg-white/20 text-[11px] text-white font-black transition-colors border border-white/10"
-            >
-              {language === 'en' ? 'ESP' : 'ENG'}
-            </button>
             {!isEmbedMode && (
                 <button 
                 onClick={onCloseWidget}
