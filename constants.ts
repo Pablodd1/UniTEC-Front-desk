@@ -8,46 +8,46 @@ export const PRODUCTS = PRODUCTS_DATA as Product[];
 
 export const UNITEC_CONFIG: BusinessConfig = {
   name: "UNITEC USA DESIGN",
-  tagline: "Direct Importer - Wholesale Distribution",
+  tagline: "Importador Directo - Distribución Mayorista",
   contact: {
     whatsapp: "+57 314 233 2147",
     instagram: "@unitecusadesign",
-    location: "Florida, USA (Immediate Stock Available)"
+    location: "Florida, USA (Stock Inmediato)"
   },
   promotions: [
-    "October Special: 20% off combo packages",
-    "Special pricing on Acrylic Panels"
+    "Especial de Octubre: 20% de descuento en combos",
+    "Precios especiales en Paneles Acrílicos"
   ],
-  customGreeting: "Welcome to UNITEC USA DESIGN. How can I help you with our wholesale construction materials today?"
+  customGreeting: "¡Hola! Bienvenido a UNITEC USA DESIGN. ¿En qué te puedo ayudar hoy con nuestros materiales de construcción? / Hello! How can I help you today?"
 };
 
 export const BUILDING_INNOVATION_CONFIG: BusinessConfig = {
   name: "BUILDING INNOVATION",
-  tagline: "We design the future!",
+  tagline: "¡Diseñamos el futuro! / We design the future!",
   contact: {
     whatsapp: "+1 (786) 968-5783",
     instagram: "@building.innovation",
     location: "6120 NW 74th Ave, Doral, Miami, FL 33166"
   },
   promotions: [
-    "New Arrival: Tech-composite Panels",
-    "Innovation Week: Free consultations"
+    "Nuevos Paneles Tech-composite",
+    "Semana de Innovación: Consultas gratuitas"
   ],
-  customGreeting: "Hello! Welcome to Building Innovation – where we design the future! I'm your virtual assistant. How can I help you with our innovative construction and architectural materials today?"
+  customGreeting: "¡Hola! Bienvenido a Building Innovation. Soy tu asesor virtual. ¿En qué te puedo ayudar hoy? / Hello! How can I help you today?"
 };
 
 // Default export for initial load
 export const BUSINESS_CONFIG = BUILDING_INNOVATION_CONFIG;
 
 export const QUICK_ACTIONS: QuickAction[] = [
-  { id: 'stock', title: 'Check Stock', message: 'Do you have the WPC Panels in stock in Florida?', iconName: 'Box' },
-  { id: 'quote', title: 'Get a Quote', message: 'I need a price for 50 square meters of SPC Flooring.', iconName: 'DollarSign' },
-  { id: 'install', title: 'Installation', message: 'How do I install the wall panels using adhesive?', iconName: 'Hammer' },
-  { id: 'contact', title: 'Contact Sales', message: 'Can you connect me with a sales representative?', iconName: 'BookOpen' },
-  { id: 'shipping', title: 'Shipping Info', message: 'What are your shipping options and delivery times?', iconName: 'Truck' },
-  { id: 'specs', title: 'Product Specs', message: 'Can I get the technical specifications for your products?', iconName: 'FileText' },
-  { id: 'returns', title: 'Return Policy', message: 'What is your return and exchange policy?', iconName: 'RefreshCcw' },
-  { id: 'discount', title: 'Bulk Discount', message: 'Do you offer discounts for bulk orders?', iconName: 'Percent' },
+  { id: 'stock', title: 'Consultar Stock', message: '¿Tienen los paneles WPC en stock en Florida?', iconName: 'Box' },
+  { id: 'quote', title: 'Cotizar', message: 'Necesito precio para 50 metros cuadrados de piso SPC.', iconName: 'DollarSign' },
+  { id: 'install', title: 'Instalación', message: '¿Cómo instalo los paneles de pared usando adhesivo?', iconName: 'Hammer' },
+  { id: 'contact', title: 'Contactar Ventas', message: '¿Me puedes comunicar con un representante de ventas?', iconName: 'BookOpen' },
+  { id: 'shipping', title: 'Envíos', message: '¿Cuáles son las opciones de envío y tiempos de entrega?', iconName: 'Truck' },
+  { id: 'specs', title: 'Ficha Técnica', message: '¿Me puedes dar las especificaciones técnicas de sus productos?', iconName: 'FileText' },
+  { id: 'returns', title: 'Devoluciones', message: '¿Cuál es su política de devoluciones y cambios?', iconName: 'RefreshCcw' },
+  { id: 'discount', title: 'Descuento', message: '¿Ofrecen descuentos para compras al por mayor?', iconName: 'Percent' },
 ];
 
 // --- Tools Definition ---
@@ -251,7 +251,9 @@ ${customGreeting ? `- Greeting Persona: "${customGreeting}"` : ''}
 # GUARDRAILS
 - Never hallucinate prices. Use the database.
 - If a product is for "Floors," explicitly label it as such if you must suggest it.
-- LANGUAGE ENFORCEMENT: SPANISH IS MANDATORY. You MUST write ALL conversational text, answers, and questions strictly in Spanish, regardless of the user's language. Do not mix languages.
+- LANGUAGE ENFORCEMENT: Your primary language is Spanish. Communicate mainly in Spanish. If the user speaks English, you may reply in English.
+- FORMATTING (CRITICAL): DO NOT use Markdown formatting. Do not use hashtags (#), asterisks (**), or bold text. Write in plain, natural text exactly as a human sales rep would type in a WhatsApp chat or email.
+- TONE: Be warm, conversational, and human. Avoid robotic, AI-sounding phrases like "As an AI" or "Here is the information you requested". Keep paragraphs short and natural.
 
 CORE KNOWLEDGE BASE (PRIORITY):
 ${trainingData}
