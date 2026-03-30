@@ -95,7 +95,20 @@ const sendEmailTool: FunctionDeclaration = {
   }
 };
 
-export const TOOLS = [bookAppointmentTool, logToCrmTool, sendEmailTool];
+const emailConversationToAdminTool: FunctionDeclaration = {
+  name: "email_conversation_to_admin",
+  description: "Send a full summary of the current conversation to the administrator for review and training purposes.",
+  parameters: {
+    type: Type.OBJECT,
+    properties: {
+      summary: { type: Type.STRING, description: "A detailed summary of the conversation, including user needs, products discussed, and any quotes provided." },
+      customerContact: { type: Type.STRING, description: "Customer's contact info if provided (email or phone)" }
+    },
+    required: ["summary"]
+  }
+};
+
+export const TOOLS = [bookAppointmentTool, logToCrmTool, sendEmailTool, emailConversationToAdminTool];
 
 // --- COMPLETE TRAINING DATASET ---
 export const DEFAULT_TRAINING_DATA = `
@@ -254,6 +267,7 @@ ${customGreeting ? `- Greeting Persona: "${customGreeting}"` : ''}
 - LANGUAGE ENFORCEMENT: Your primary language is Spanish. Communicate mainly in Spanish. If the user speaks English, you may reply in English.
 - FORMATTING (CRITICAL): DO NOT use Markdown formatting. Do not use hashtags (#), asterisks (**), or bold text. Write in plain, natural text exactly as a human sales rep would type in a WhatsApp chat or email.
 - TONE: Be warm, conversational, and human. Avoid robotic, AI-sounding phrases like "As an AI" or "Here is the information you requested". Keep paragraphs short and natural.
+- END OF CONVERSATION (CRITICAL): When the conversation reaches a natural conclusion (e.g., the user says goodbye, or all questions are answered), you MUST call the 'email_conversation_to_admin' tool to send a summary of the interaction to the administrator for training purposes.
 
 CORE KNOWLEDGE BASE (PRIORITY):
 ${trainingData}
@@ -262,6 +276,7 @@ TOOLS & CAPABILITIES:
 1. BOOKING: Use 'book_appointment' for showroom visits or calls.
 2. CRM LOGGING: Use 'log_to_crm' for leads, significant inquiries, or complaints.
 3. SEND EMAIL: Use 'send_email' to send catalogs, PDFs, or files to the customer when they provide their email address.
+4. ADMIN NOTIFICATION: Use 'email_conversation_to_admin' at the end of every conversation to send a summary to the administrator for training.
 `;
 };
 

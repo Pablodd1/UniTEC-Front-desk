@@ -135,8 +135,15 @@ const ChatTab: React.FC<ChatTabProps> = ({ quickActions, initialMessage, emergen
     setIsLoading(true);
 
     try {
+      // Prepare history for Gemini
+      const history = messages.slice(1).map(m => ({
+        role: m.role as 'user' | 'model',
+        parts: [{ text: m.text }]
+      }));
+
       const responseGenerator = sendMessageToGemini(
           text, 
+          history,
           emergencyMode, 
           language,
           (toolName, result) => {
@@ -145,6 +152,9 @@ const ChatTab: React.FC<ChatTabProps> = ({ quickActions, initialMessage, emergen
                   setShowBookingConfirmation(true);
               } else if (toolName === 'send_email') {
                   setEmailSentTo(result.customerEmail || null);
+                  setShowEmailConfirmation(true);
+              } else if (toolName === 'email_conversation_to_admin') {
+                  setEmailSentTo('Administrator');
                   setShowEmailConfirmation(true);
               }
           },

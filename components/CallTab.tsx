@@ -1,11 +1,10 @@
 
 import React, { useState, useEffect, useRef } from 'react';
-import { Mic, Phone, Loader2, CheckCircle2, Download, Headphones, Camera, CameraOff, Video as VideoIcon, Sparkles } from 'lucide-react';
+import { Mic, Phone, Loader2, CheckCircle2, Download, Headphones } from 'lucide-react';
 import { connectLiveSession } from '../services/geminiService';
 import AudioVisualizer from './AudioVisualizer';
 import { Language, VoiceName, VoiceProvider, CallRecording } from '../types';
 import { UI_TRANSLATIONS } from '../constants';
-import { blobToBase64 } from '../utils/audioUtils';
 
 interface CallTabProps {
   emergencyMode?: boolean;
@@ -15,13 +14,12 @@ interface CallTabProps {
   customGreeting?: string;
 }
 
-const CallTab: React.FC<CallTabProps> = ({ emergencyMode, language, voiceName, voiceProvider, customGreeting }) => {
+const CallTab: React.FC<CallTabProps> = ({ emergencyMode, language, voiceName, customGreeting }) => {
   const t = UI_TRANSLATIONS[language];
   
   const [status, setStatus] = useState<'idle' | 'connecting' | 'connected' | 'error' | 'listening' | 'processing' | 'speaking'>('idle');
   const [errorMessage, setErrorMessage] = useState<string>('');
   const [audioData, setAudioData] = useState<Uint8Array>(new Uint8Array(64));
-  const [isCameraActive, setIsCameraActive] = useState(true);
   
   const [showBookingConfirmation, setShowBookingConfirmation] = useState(false);
   const [confirmedDate, setConfirmedDate] = useState<string | null>(null);
@@ -34,9 +32,6 @@ const CallTab: React.FC<CallTabProps> = ({ emergencyMode, language, voiceName, v
 
   // Gemini Live API Refs
   const sessionControllerRef = useRef<any>(null);
-  const videoRef = useRef<HTMLVideoElement>(null);
-  const canvasRef = useRef<HTMLCanvasElement>(null);
-  const frameIntervalRef = useRef<number | null>(null);
 
   // Audio Context Refs for Visualizer
   const audioContextRef = useRef<AudioContext | null>(null);
@@ -59,11 +54,6 @@ const CallTab: React.FC<CallTabProps> = ({ emergencyMode, language, voiceName, v
   }, [showEmailConfirmation]);
 
   const stopAll = async () => {
-    // Clear Intervals
-    if (frameIntervalRef.current) {
-      clearInterval(frameIntervalRef.current);
-      frameIntervalRef.current = null;
-    }
     // Cancel Animations
     if (animationFrameRef.current) {
         cancelAnimationFrame(animationFrameRef.current);
@@ -95,16 +85,10 @@ const CallTab: React.FC<CallTabProps> = ({ emergencyMode, language, voiceName, v
         const session = await connectLiveSession({
             onOpen: () => {
                 setStatus('connected');
-                if (videoRef.current && sessionControllerRef.current?.stream) {
-                videoRef.current.srcObject = sessionControllerRef.current.stream;
-                }
-                startFrameStreaming();
             },
             onMessage: (text) => {
                 if (text) {
                     setTranscript(prev => {
-                        // Simple logic to avoid duplicate consecutive messages from model if they come in chunks
-                        // Though Live API usually sends full turns or clear markers
                         const last = prev[prev.length - 1];
                         if (last && last.role === 'model' && last.text === text) return prev;
                         return [...prev, { role: 'model', text }];
@@ -120,6 +104,9 @@ const CallTab: React.FC<CallTabProps> = ({ emergencyMode, language, voiceName, v
                 } else if (name === 'send_email') {
                     setEmailSentTo(res.customerEmail || null);
                     setShowEmailConfirmation(true);
+                } else if (name === 'email_conversation_to_admin') {
+                    setEmailSentTo('Administrator');
+                    setShowEmailConfirmation(true);
                 }
             },
             onError: () => {
@@ -131,40 +118,11 @@ const CallTab: React.FC<CallTabProps> = ({ emergencyMode, language, voiceName, v
         
         if (session) {
             sessionControllerRef.current = session;
-            if (videoRef.current && session.stream) {
-                videoRef.current.srcObject = session.stream;
-            }
         }
     } catch (e: any) {
         setErrorMessage(language === 'en' ? "Initialization error." : "Error de inicio.");
         setStatus('error');
     }
-  };
-
-  const startFrameStreaming = () => {
-    if (!canvasRef.current || !videoRef.current) return;
-    if (frameIntervalRef.current) clearInterval(frameIntervalRef.current);
-
-    frameIntervalRef.current = window.setInterval(() => {
-      const canvas = canvasRef.current;
-      const video = videoRef.current;
-      if (!canvas || !video || video.paused || video.ended || !isCameraActive) return;
-
-      const ctx = canvas.getContext('2d');
-      if (!ctx) return;
-
-      const scale = 320 / video.videoWidth;
-      canvas.width = 320;
-      canvas.height = video.videoHeight * scale;
-      ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
-
-      canvas.toBlob(async (blob) => {
-        if (blob && sessionControllerRef.current?.sendFrame) {
-          const base64 = await blobToBase64(blob);
-          sessionControllerRef.current.sendFrame(base64);
-        }
-      }, 'image/jpeg', 0.5); 
-    }, 1000); 
   };
 
   const handleEndCall = async () => {
@@ -177,7 +135,6 @@ const CallTab: React.FC<CallTabProps> = ({ emergencyMode, language, voiceName, v
           saveToLibrary(blob, currentTranscript);
       }
     } else if (transcript.length > 0) {
-        // For hybrid mode or if session ended but transcript exists
         saveToLibrary(new Blob(), currentTranscript);
     }
     await stopAll();
@@ -200,14 +157,7 @@ const CallTab: React.FC<CallTabProps> = ({ emergencyMode, language, voiceName, v
     setCallLibrary(library);
   };
 
-  const toggleCamera = () => {
-    const newState = !isCameraActive;
-    setIsCameraActive(newState);
-    if (sessionControllerRef.current?.stream) {
-      const videoTrack = sessionControllerRef.current.stream.getVideoTracks()[0];
-      if (videoTrack) videoTrack.enabled = newState;
-    }
-  };
+
 
   const isActive = status !== 'idle' && status !== 'error' && status !== 'connecting';
 
@@ -218,12 +168,6 @@ const CallTab: React.FC<CallTabProps> = ({ emergencyMode, language, voiceName, v
       <div className="pt-6 pb-2 text-center z-10 px-6">
         <div className="flex justify-center items-center gap-2 mb-1">
              <h2 className="text-[10px] font-black text-slate-400 uppercase tracking-widest">{t.voiceTitle}</h2>
-             {voiceProvider === 'gemini' && (
-                <div className="flex items-center gap-1.5 px-2 py-0.5 rounded-full bg-blue-50 border border-blue-100">
-                    <Sparkles size={10} className="text-blue-500" />
-                    <span className="text-[9px] text-blue-700 font-bold uppercase tracking-tight">AI Vision Active</span>
-                </div>
-             )}
         </div>
         <div className={`text-lg font-bold tracking-tight px-4 transition-colors duration-300 ${
             status === 'error' ? 'text-red-600' : 
@@ -239,43 +183,13 @@ const CallTab: React.FC<CallTabProps> = ({ emergencyMode, language, voiceName, v
         </div>
       </div>
 
-      {/* Main Content (Live Feed + Visualizer + Transcript) */}
+      {/* Main Content (Visualizer + Transcript) */}
       <div className="flex-1 relative flex flex-col items-center justify-center min-h-[300px] p-4 overflow-y-auto no-scrollbar">
         
-        {/* Hidden Canvas for frame processing */}
-        <canvas ref={canvasRef} className="hidden" />
-
-        {/* Live Feed Container */}
+        {/* Visualizer Container */}
         <div className={`relative transition-all duration-700 transform ${isActive ? 'scale-100 opacity-100 mb-6' : 'scale-75 opacity-0 pointer-events-none absolute'}`}>
-             <div className="w-64 h-64 md:w-80 md:h-80 rounded-[48px] overflow-hidden bg-slate-900 shadow-2xl border-4 border-white ring-1 ring-slate-200 relative">
-                
-                {/* LIVE Badge */}
-                {isActive && isCameraActive && (
-                  <div className="absolute top-4 left-4 z-20 flex items-center gap-1.5 bg-red-600 text-white px-2.5 py-1 rounded-full text-[10px] font-black uppercase tracking-widest animate-pulse shadow-lg">
-                    <div className="w-1.5 h-1.5 rounded-full bg-white"></div>
-                    LIVE
-                  </div>
-                )}
-
-                <video 
-                  ref={videoRef} 
-                  autoPlay 
-                  playsInline 
-                  muted 
-                  className={`w-full h-full object-cover transition-opacity duration-500 ${isCameraActive ? 'opacity-100' : 'opacity-0'}`}
-                />
-                
-                {!isCameraActive && (
-                  <div className="absolute inset-0 flex flex-col items-center justify-center bg-slate-800 text-slate-400">
-                    <CameraOff size={48} className="opacity-20 mb-2" />
-                    <span className="text-[10px] font-bold uppercase tracking-widest">Feed Disabled</span>
-                  </div>
-                )}
-
-                {/* Visualizer overlay on bottom of video */}
-                <div className="absolute bottom-0 left-0 right-0 h-20 bg-gradient-to-t from-black/60 to-transparent flex items-center justify-center px-8 pb-4">
-                    <AudioVisualizer audioData={audioData} isActive={isActive} />
-                </div>
+             <div className="w-64 h-64 md:w-80 md:h-80 rounded-[48px] overflow-hidden bg-slate-900 shadow-2xl border-4 border-white ring-1 ring-slate-200 relative flex items-center justify-center">
+                <AudioVisualizer audioData={audioData} isActive={isActive} />
              </div>
         </div>
 
@@ -445,20 +359,13 @@ const CallTab: React.FC<CallTabProps> = ({ emergencyMode, language, voiceName, v
             onClick={handleStartCall}
             className={`btn-grass w-full text-white font-black text-xs tracking-widest uppercase py-4 rounded-2xl shadow-xl transition-all active:scale-[0.97] flex items-center justify-center gap-3`}
           >
-            <VideoIcon size={18} />
+            <Mic size={18} />
             {t.startConversation}
           </button>
         )}
         
         {isActive && (
           <div className="flex justify-center items-center gap-6">
-            <button 
-              onClick={toggleCamera}
-              className={`p-4 rounded-full transition-all shadow-lg active:scale-95 ${isCameraActive ? 'bg-white text-slate-600 hover:bg-slate-50' : 'bg-slate-800 text-white hover:bg-slate-900'}`}
-            >
-              {isCameraActive ? <Camera size={24} /> : <CameraOff size={24} />}
-            </button>
-
             <button 
               onClick={handleEndCall}
               className="group flex items-center gap-3 px-10 py-4 bg-red-600 text-white rounded-full hover:bg-red-700 transition-all shadow-xl active:scale-95 transform scale-110"

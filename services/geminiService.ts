@@ -59,6 +59,7 @@ export async function playGeminiTTS(text: string, voiceName: string = 'Kore') {
  */
 export async function* sendMessageToGemini(
   message: string,
+  history: { role: 'user' | 'model', parts: { text: string }[] }[] = [],
   emergencyMode: boolean = false,
   language: Language = 'en',
   onToolSuccess?: (toolName: string, result: any) => void,
@@ -73,7 +74,7 @@ export async function* sendMessageToGemini(
 
   const responseStream = await ai.models.generateContentStream({
     model: 'gemini-3-flash-preview',
-    contents: [{ role: 'user', parts: [{ text: message }] }],
+    contents: [...history, { role: 'user', parts: [{ text: message }] }],
     config: {
       systemInstruction: instructions,
       tools: [{ functionDeclarations: TOOLS }],
@@ -168,24 +169,17 @@ export const connectLiveSession = async (
   let stream: MediaStream;
   try {
     stream = await navigator.mediaDevices.getUserMedia({ 
-      audio: true,
-      video: { width: { ideal: 640 }, height: { ideal: 480 }, frameRate: { ideal: 15 } }
+      audio: true
     });
   } catch (err) {
-    console.warn("Camera failed, falling back to audio only", err);
-    try {
-      stream = await navigator.mediaDevices.getUserMedia({ audio: true });
-    } catch (innerErr) {
-      callbacks.onError(new Error("MIC_NOT_FOUND"));
-      return null;
-    }
+    callbacks.onError(new Error("MIC_NOT_FOUND"));
+    return null;
   }
 
   await inputAudioContext.resume();
   await outputAudioContext.resume();
 
   let instructions = getSystemInstruction(language, customGreeting);
-  instructions += "\n\nVISION ENABLED: You can see the user and their environment. If they show you a product sample, floorplan, or space, comment on it to assist them. Be descriptive but concise.";
   
   if (emergencyMode) {
     instructions += "\n\n[SYSTEM OVERRIDE: EMERGENCY MODE ACTIVE]. Respond concisely.";
@@ -295,11 +289,6 @@ export const connectLiveSession = async (
       outputAudioContext.close();
     },
     getAudioBlob: () => pcmToWavBlob(audioChunks, 24000),
-    sendFrame: (base64Image: string) => {
-      sessionPromise.then(s => s.sendRealtimeInput({
-        media: { data: base64Image, mimeType: 'image/jpeg' }
-      }));
-    },
     stream
   };
 };
