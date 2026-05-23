@@ -6,6 +6,7 @@ import { Send, Bot, User, Box, DollarSign, Hammer, BookOpen, CheckCircle2, Truck
 import { GenerateContentResponse } from '@google/genai';
 import { UI_TRANSLATIONS } from '../constants';
 import Markdown from 'react-markdown';
+import { motion } from 'motion/react';
 
 interface ChatTabProps {
   quickActions: QuickAction[];
@@ -293,61 +294,85 @@ const ChatTab: React.FC<ChatTabProps> = ({ quickActions, initialMessage, emergen
             </div>
         </div>
 
-        {messages.map((msg) => (
-          <div 
-            key={msg.id} 
-            className={`flex ${msg.role === 'user' ? 'justify-end' : 'justify-start'}`}
-          >
-            <div className={`flex max-w-[85%] ${msg.role === 'user' ? 'flex-row-reverse' : 'flex-row'} items-end gap-2`}>
-              <div className={`w-8 h-8 rounded-full flex items-center justify-center shrink-0 shadow-sm ${
-                msg.role === 'user' ? 'bg-brand-500 text-white' : 'bg-brand-900 text-accent-500'
-              }`}>
-                {msg.role === 'user' ? <User size={16} /> : <Bot size={16} />}
-              </div>
-              <div 
-                className={`p-4 rounded-2xl shadow-sm ${
-                  msg.role === 'user' 
-                    ? 'bg-brand-500 text-white rounded-br-none' 
-                    : 'bg-white text-slate-800 rounded-bl-none border border-slate-100'
-                }`}
-              >
-                 <Markdown
-                   components={{
-                     h1: ({node, ...props}: any) => <h1 className="text-xl font-black mt-4 mb-2 tracking-tight" {...props} />,
-                     h2: ({node, ...props}: any) => <h2 className="text-lg font-bold mt-4 mb-2 tracking-tight" {...props} />,
-                     h3: ({node, ...props}: any) => <h3 className="text-base font-bold mt-3 mb-2" {...props} />,
-                     p: ({node, ...props}: any) => <p className="mt-2 first:mt-0 text-[15px] leading-relaxed" {...props} />,
-                     ul: ({node, ...props}: any) => <ul className="list-disc pl-5 mt-2 space-y-1" {...props} />,
-                     ol: ({node, ...props}: any) => <ol className="list-decimal pl-5 mt-2 space-y-1" {...props} />,
-                     li: ({node, ...props}: any) => <li className="text-[15px] leading-relaxed" {...props} />,
-                     strong: ({node, ...props}: any) => <strong className={`font-bold ${msg.role === 'user' ? 'text-white' : 'text-slate-900'}`} {...props} />,
-                     a: ({node, ...props}: any) => <a className="text-brand-600 underline hover:text-brand-700" target="_blank" rel="noopener noreferrer" {...props} />,
-                   }}
-                 >
-                   {msg.text}
-                 </Markdown>
+        {messages.map((msg, idx) => {
+          // Hide empty model messages while loading (typing indicator will show instead)
+          if (msg.role === 'model' && !msg.text && isLoading && idx === messages.length - 1) {
+            return null;
+          }
+          
+          return (
+            <div 
+              key={msg.id} 
+              className={`flex ${msg.role === 'user' ? 'justify-end' : 'justify-start'}`}
+            >
+              <div className={`flex max-w-[85%] ${msg.role === 'user' ? 'flex-row-reverse' : 'flex-row'} items-end gap-2`}>
+                <div className={`w-8 h-8 rounded-full flex items-center justify-center shrink-0 shadow-sm ${
+                  msg.role === 'user' ? 'bg-brand-500 text-white' : 'bg-brand-900 text-accent-500'
+                }`}>
+                  {msg.role === 'user' ? <User size={16} /> : <Bot size={16} />}
+                </div>
+                <div 
+                  className={`p-4 rounded-2xl shadow-sm ${
+                    msg.role === 'user' 
+                      ? 'bg-brand-500 text-white rounded-br-none' 
+                      : 'bg-white text-slate-800 rounded-bl-none border border-slate-100'
+                  }`}
+                >
+                   <Markdown
+                     components={{
+                       h1: ({node, ...props}: any) => <h1 className="text-xl font-black mt-4 mb-2 tracking-tight" {...props} />,
+                       h2: ({node, ...props}: any) => <h2 className="text-lg font-bold mt-4 mb-2 tracking-tight" {...props} />,
+                       h3: ({node, ...props}: any) => <h3 className="text-base font-bold mt-3 mb-2" {...props} />,
+                       p: ({node, ...props}: any) => <p className="mt-2 first:mt-0 text-[15px] leading-relaxed" {...props} />,
+                       ul: ({node, ...props}: any) => <ul className="list-disc pl-5 mt-2 space-y-1" {...props} />,
+                       ol: ({node, ...props}: any) => <ol className="list-decimal pl-5 mt-2 space-y-1" {...props} />,
+                       li: ({node, ...props}: any) => <li className="text-[15px] leading-relaxed" {...props} />,
+                       strong: ({node, ...props}: any) => <strong className={`font-bold ${msg.role === 'user' ? 'text-white' : 'text-slate-900'}`} {...props} />,
+                       a: ({node, ...props}: any) => <a className="text-brand-600 underline hover:text-brand-700" target="_blank" rel="noopener noreferrer" {...props} />,
+                     }}
+                   >
+                     {msg.text}
+                   </Markdown>
+                </div>
               </div>
             </div>
-          </div>
-        ))}
-        {isLoading && (
-          <div className="flex justify-start">
+          );
+        })}
+        {isLoading && (messages[messages.length - 1]?.role === 'user' || (messages[messages.length - 1]?.role === 'model' && !messages[messages.length - 1]?.text)) && (
+          <motion.div 
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="flex justify-start"
+          >
              <div className="flex max-w-[85%] items-end gap-2">
-                <div className="w-8 h-8 rounded-full bg-brand-900 text-accent-500 flex items-center justify-center shrink-0">
+                <div className="w-8 h-8 rounded-full bg-brand-900 text-accent-500 flex items-center justify-center shrink-0 shadow-sm">
                   <Bot size={16} />
                 </div>
-                <div className="bg-white p-3 rounded-2xl rounded-bl-none border border-gray-100 shadow-sm flex items-center gap-3">
-                  <div className="flex gap-1">
-                    <div className="w-1.5 h-1.5 bg-brand-400 rounded-full animate-bounce [animation-delay:-0.3s]"></div>
-                    <div className="w-1.5 h-1.5 bg-brand-400 rounded-full animate-bounce [animation-delay:-0.15s]"></div>
-                    <div className="w-1.5 h-1.5 bg-brand-400 rounded-full animate-bounce"></div>
+                <div className="bg-white px-4 py-3 rounded-2xl rounded-bl-none border border-slate-100 shadow-sm flex items-center gap-2">
+                  <div className="flex gap-1.5">
+                    {[0, 1, 2].map((i) => (
+                      <motion.div
+                        key={i}
+                        animate={{ 
+                          scale: [1, 1.2, 1],
+                          opacity: [0.4, 1, 0.4]
+                        }}
+                        transition={{
+                          duration: 1,
+                          repeat: Infinity,
+                          delay: i * 0.2,
+                          ease: "easeInOut"
+                        }}
+                        className="w-1.5 h-1.5 bg-brand-400 rounded-full"
+                      />
+                    ))}
                   </div>
-                  <span className="text-xs font-bold text-slate-400 uppercase tracking-widest animate-pulse">
-                    {language === 'en' ? 'typing...' : 'escribiendo...'}
+                  <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">
+                    {language === 'en' ? 'thinking' : 'pensando'}
                   </span>
                 </div>
              </div>
-          </div>
+          </motion.div>
         )}
         <div ref={messagesEndRef} className="h-4 w-full" />
       </div>
