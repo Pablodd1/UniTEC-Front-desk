@@ -2,7 +2,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Mic, Phone, Loader2, CheckCircle2, Download, Headphones } from 'lucide-react';
 import { connectLiveSession } from '../services/geminiService';
-import AudioVisualizer from './AudioVisualizer';
 import { Language, VoiceName, VoiceProvider, CallRecording } from '../types';
 import { UI_TRANSLATIONS } from '../constants';
 
@@ -12,14 +11,14 @@ interface CallTabProps {
   voiceName: VoiceName;
   voiceProvider: VoiceProvider;
   customGreeting?: string;
+  brandId?: 'unitec' | 'building';
 }
 
-const CallTab: React.FC<CallTabProps> = ({ emergencyMode, language, voiceName, customGreeting }) => {
+const CallTab: React.FC<CallTabProps> = ({ emergencyMode, language, voiceName, customGreeting, brandId }) => {
   const t = UI_TRANSLATIONS[language];
   
   const [status, setStatus] = useState<'idle' | 'connecting' | 'connected' | 'error' | 'listening' | 'processing' | 'speaking'>('idle');
   const [errorMessage, setErrorMessage] = useState<string>('');
-  const [audioData, setAudioData] = useState<Uint8Array>(new Uint8Array(64));
   
   const [showBookingConfirmation, setShowBookingConfirmation] = useState(false);
   const [confirmedDate, setConfirmedDate] = useState<string | null>(null);
@@ -95,7 +94,7 @@ const CallTab: React.FC<CallTabProps> = ({ emergencyMode, language, voiceName, c
                     });
                 }
             },
-            onAudioData: (data) => setAudioData(data),
+            onAudioData: () => {},
             onToolCall: () => {},
             onToolSuccess: (name, res) => {
                 if (name === 'book_appointment') {
@@ -114,7 +113,7 @@ const CallTab: React.FC<CallTabProps> = ({ emergencyMode, language, voiceName, c
                 setStatus('error');
             },
             onClose: () => setStatus('idle')
-        }, emergencyMode, language, voiceName, customGreeting);
+        }, emergencyMode, language, voiceName, customGreeting, brandId);
         
         if (session) {
             sessionControllerRef.current = session;
@@ -186,10 +185,22 @@ const CallTab: React.FC<CallTabProps> = ({ emergencyMode, language, voiceName, c
       {/* Main Content (Visualizer + Transcript) */}
       <div className="flex-1 relative flex flex-col items-center justify-center min-h-[300px] p-4 overflow-y-auto no-scrollbar">
         
-        {/* Visualizer Container */}
-        <div className={`relative transition-all duration-700 transform ${isActive ? 'scale-100 opacity-100 mb-6' : 'scale-75 opacity-0 pointer-events-none absolute'}`}>
-             <div className="w-64 h-64 md:w-80 md:h-80 rounded-[48px] overflow-hidden bg-slate-900 shadow-2xl border-4 border-white ring-1 ring-slate-200 relative flex items-center justify-center">
-                <AudioVisualizer audioData={audioData} isActive={isActive} />
+        {/* Sleek Pulsing Microphone Accent */}
+        <div className={`relative transition-all duration-700 transform ${isActive ? 'scale-100 opacity-100 mb-8' : 'scale-75 opacity-0 pointer-events-none absolute'} flex flex-col items-center justify-center`}>
+             <div className="relative w-44 h-44 rounded-full bg-brand-500/10 flex items-center justify-center">
+                <div className="absolute inset-0 bg-brand-500/20 rounded-full animate-ping pointer-events-none scale-150 duration-[2500ms]"></div>
+                <div className="absolute inset-x-[-12px] inset-y-[-12px] bg-brand-500/10 rounded-full animate-pulse pointer-events-none"></div>
+                <div className="w-32 h-32 rounded-full bg-brand-600 flex items-center justify-center shadow-2xl border-4 border-white relative">
+                  <Mic size={48} className="text-white animate-bounce duration-[2000ms]" />
+                </div>
+             </div>
+             
+             <div className="flex items-center gap-1.5 mt-6 px-3 py-1 bg-emerald-100 text-emerald-800 text-[10px] font-black uppercase rounded-full tracking-wider animate-pulse">
+                <span className="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
+                {status === 'speaking' ? (language === 'en' ? 'Speaking...' : 'Hablando...') : 
+                 status === 'listening' ? (language === 'en' ? 'Listening...' : 'Escuchando...') : 
+                 status === 'processing' ? (language === 'en' ? 'Thinking...' : 'Pensando...') : 
+                 (language === 'en' ? 'Receiving Call' : 'Llamada Activa')}
              </div>
         </div>
 
@@ -266,26 +277,25 @@ const CallTab: React.FC<CallTabProps> = ({ emergencyMode, language, voiceName, c
                     </button>
                 </div>
             </div>
-        )}
-
-        {!isActive && !showLibrary && (
-          <div className="relative z-10 w-full flex flex-col items-center justify-center space-y-8">
-              <div className="h-[80px] w-full flex items-center justify-center px-8">
-                  <AudioVisualizer audioData={audioData} isActive={isActive} />
-              </div>
-
-              {/* Main Start Button */}
+        )}        {!isActive && !showLibrary && (
+          <div className="relative z-10 w-full flex flex-col items-center justify-center space-y-6 my-6">
+              {/* Single Beautiful Pulsing Microphone Button to Start Conversation */}
               <button 
                   onClick={handleStartCall}
-                  className="relative w-28 h-28 rounded-full flex items-center justify-center transition-all duration-700 shadow-2xl overflow-hidden btn-grass cursor-pointer hover:scale-105 active:scale-95"
+                  className="relative w-40 h-40 rounded-full flex items-center justify-center transition-all duration-700 shadow-2xl overflow-hidden bg-brand-600 hover:bg-brand-700 cursor-pointer hover:scale-105 active:scale-95 group"
               >
+                  <div className="absolute inset-0 bg-brand-500/20 rounded-full animate-ping pointer-events-none scale-110 duration-[3000ms]"></div>
+                  <div className="absolute inset-x-[-8px] inset-y-[-8px] bg-brand-500/10 rounded-full animate-pulse pointer-events-none"></div>
                   <div className="absolute inset-0 grass-texture opacity-30"></div>
                   {status === 'connecting' ? (
-                       <Loader2 size={36} className="text-white animate-spin" />
+                       <Loader2 size={44} className="text-white animate-spin" />
                   ) : (
-                      <Mic size={36} className="text-white" />
+                       <Mic size={44} className="text-white group-hover:scale-110 transition-transform" />
                   )}
               </button>
+              <div className="text-[10px] font-black text-slate-400 uppercase tracking-widest mt-2 block select-none">
+                  {language === 'en' ? 'Tap Microphone to Speak' : 'Toca el Micrófono para Hablar'}
+              </div>
           </div>
         )}
 
@@ -357,9 +367,8 @@ const CallTab: React.FC<CallTabProps> = ({ emergencyMode, language, voiceName, c
         {status === 'idle' && !showLibrary && (
           <button 
             onClick={handleStartCall}
-            className={`btn-grass w-full text-white font-black text-xs tracking-widest uppercase py-4 rounded-2xl shadow-xl transition-all active:scale-[0.97] flex items-center justify-center gap-3`}
+            className={`btn-grass w-full text-white font-black text-xs tracking-widest uppercase py-4 rounded-2xl shadow-xl transition-all active:scale-[0.97] flex items-center justify-center`}
           >
-            <Mic size={18} />
             {t.startConversation}
           </button>
         )}

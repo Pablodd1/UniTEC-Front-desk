@@ -30,9 +30,13 @@ export interface CallRecording {
   userId: string;
 }
 
+export const getUserId = (): string | null => {
+  return auth.currentUser?.uid || (sessionStorage.getItem('unitec_local_admin') === 'true' ? 'mock_unitec_admin' : null);
+};
+
 // AppConfig
 export const getAppConfig = async (): Promise<AppConfig | null> => {
-  const userId = auth.currentUser?.uid;
+  const userId = getUserId();
   if (!userId) return null;
 
   const path = `users/${userId}/config/main`;
@@ -50,7 +54,7 @@ export const getAppConfig = async (): Promise<AppConfig | null> => {
 };
 
 export const saveAppConfig = async (config: Partial<AppConfig>): Promise<void> => {
-  const userId = auth.currentUser?.uid;
+  const userId = getUserId();
   if (!userId) throw new Error("User not authenticated");
 
   const path = `users/${userId}/config/main`;
@@ -64,7 +68,7 @@ export const saveAppConfig = async (config: Partial<AppConfig>): Promise<void> =
 
 // CrmLog
 export const getCrmLogs = async (): Promise<CrmLog[]> => {
-  const userId = auth.currentUser?.uid;
+  const userId = getUserId();
   if (!userId) return [];
 
   const path = `users/${userId}/crmLogs`;
@@ -79,7 +83,7 @@ export const getCrmLogs = async (): Promise<CrmLog[]> => {
 };
 
 export const addCrmLog = async (log: Omit<CrmLog, 'userId'>): Promise<void> => {
-  const userId = auth.currentUser?.uid;
+  const userId = getUserId();
   if (!userId) throw new Error("User not authenticated");
 
   const path = `users/${userId}/crmLogs/${log.id}`;
@@ -93,7 +97,7 @@ export const addCrmLog = async (log: Omit<CrmLog, 'userId'>): Promise<void> => {
 
 // CallRecording
 export const getCallRecordings = async (): Promise<CallRecording[]> => {
-  const userId = auth.currentUser?.uid;
+  const userId = getUserId();
   if (!userId) return [];
 
   const path = `users/${userId}/callRecordings`;
@@ -108,7 +112,7 @@ export const getCallRecordings = async (): Promise<CallRecording[]> => {
 };
 
 export const addCallRecording = async (recording: Omit<CallRecording, 'userId'>): Promise<void> => {
-  const userId = auth.currentUser?.uid;
+  const userId = getUserId();
   if (!userId) throw new Error("User not authenticated");
 
   const path = `users/${userId}/callRecordings/${recording.id}`;
@@ -121,7 +125,7 @@ export const addCallRecording = async (recording: Omit<CallRecording, 'userId'>)
 };
 
 export const deleteCallRecording = async (recordingId: string): Promise<void> => {
-  const userId = auth.currentUser?.uid;
+  const userId = getUserId();
   if (!userId) throw new Error("User not authenticated");
 
   const path = `users/${userId}/callRecordings/${recordingId}`;

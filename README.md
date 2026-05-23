@@ -92,7 +92,10 @@ This project requires external APIs to function fully.
 
 ## 🔒 Security Notes
 
-*   **Admin PIN**: The default PIN for the dashboard is `1234`.
+*   **Administrator Login Credentials**:
+    *   **Email / Username**: `admin@unitecdesign.com`
+    *   **Password**: `UnitecAdmin2026!`
+*   **Admin PIN**: The default Backup PIN for the dashboard is `1234`.
 *   **API Key**: Never commit your `.env` file to public repositories.
 
 ---

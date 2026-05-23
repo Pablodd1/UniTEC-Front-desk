@@ -63,11 +63,12 @@ export async function* sendMessageToGemini(
   emergencyMode: boolean = false,
   language: Language = 'en',
   onToolSuccess?: (toolName: string, result: any) => void,
-  customGreeting?: string
+  customGreeting?: string,
+  brandId: 'unitec' | 'building' = 'unitec'
 ) {
   const apiKey = process.env.GEMINI_API_KEY || process.env.API_KEY;
   const ai = new GoogleGenAI({ apiKey: apiKey as string });
-  let instructions = getSystemInstruction(language, customGreeting);
+  let instructions = getSystemInstruction(language, customGreeting, brandId);
   if (emergencyMode) {
     instructions += "\n\n[SYSTEM OVERRIDE: EMERGENCY MODE ACTIVE]. Respond concisely. Prioritize safety protocols immediately.";
   }
@@ -143,7 +144,8 @@ export const connectLiveSession = async (
     emergencyMode: boolean = false, 
     language: Language = 'en',
     voiceName: VoiceName = 'Kore',
-    customGreeting?: string
+    customGreeting?: string,
+    brandId: 'unitec' | 'building' = 'unitec'
 ) => {
   const apiKey = process.env.GEMINI_API_KEY || process.env.API_KEY;
   const ai = new GoogleGenAI({ apiKey: apiKey as string });
@@ -179,7 +181,7 @@ export const connectLiveSession = async (
   await inputAudioContext.resume();
   await outputAudioContext.resume();
 
-  let instructions = getSystemInstruction(language, customGreeting);
+  let instructions = getSystemInstruction(language, customGreeting, brandId);
   
   if (emergencyMode) {
     instructions += "\n\n[SYSTEM OVERRIDE: EMERGENCY MODE ACTIVE]. Respond concisely.";
@@ -199,10 +201,27 @@ export const connectLiveSession = async (
             int16[i] = inputData[i] * 32768;
           }
           const pcmData = encode(new Uint8Array(int16.buffer));
-          sessionPromise.then(s => s.sendRealtimeInput({ media: { mimeType: 'audio/pcm;rate=16000', data: pcmData } }));
+          sessionPromise.then(s => s.sendRealtimeInput({ audio: { mimeType: 'audio/pcm;rate=16000', data: pcmData } }));
         };
         source.connect(scriptProcessor);
         scriptProcessor.connect(inputAudioContext.destination);
+
+        // Immediate greeting trigger
+        const greetPrompt = customGreeting 
+          ? `¡Hola! Por favor salúdame inmediatamente con nuestro saludo personalizado de la empresa en español: "${customGreeting}"`
+          : (language === 'en' 
+            ? "Hello! Please greet me now cordially, introduce yourself as the front desk coordinator of UNITEC Design." 
+            : "¡Hola! Por favor salúdame con mucho entusiasmo ahora mismo en español, dándome la bienvenida a UNITEC Design.");
+
+        sessionPromise.then(s => {
+          s.sendClientContent({
+            turns: [{
+              role: 'user',
+              parts: [{ text: greetPrompt }]
+            }],
+            turnComplete: true
+          });
+        });
       },
       onmessage: async (message: LiveServerMessage) => {
         const parts = message.serverContent?.modelTurn?.parts;

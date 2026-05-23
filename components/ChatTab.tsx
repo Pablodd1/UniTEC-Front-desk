@@ -15,9 +15,10 @@ interface ChatTabProps {
   language: Language;
   customGreeting?: string;
   bgImage?: string;
+  brandId?: 'unitec' | 'building';
 }
 
-const ChatTab: React.FC<ChatTabProps> = ({ quickActions, initialMessage, emergencyMode, language, customGreeting, bgImage }) => {
+const ChatTab: React.FC<ChatTabProps> = ({ quickActions, initialMessage, emergencyMode, language, customGreeting, bgImage, brandId }) => {
   const t = UI_TRANSLATIONS[language];
   
   const [messages, setMessages] = useState<Message[]>(() => {
@@ -159,7 +160,8 @@ const ChatTab: React.FC<ChatTabProps> = ({ quickActions, initialMessage, emergen
                   setShowEmailConfirmation(true);
               }
           },
-          customGreeting
+          customGreeting,
+          brandId
       );
       
       const botMsgId = (Date.now() + 1).toString();
@@ -294,15 +296,11 @@ const ChatTab: React.FC<ChatTabProps> = ({ quickActions, initialMessage, emergen
             </div>
         </div>
 
-        {messages.map((msg, idx) => {
-          // Hide empty model messages while loading (typing indicator will show instead)
-          if (msg.role === 'model' && !msg.text && isLoading && idx === messages.length - 1) {
-            return null;
-          }
-          
-          return (
+        {messages
+          .filter((msg, idx) => !(msg.role === 'model' && !msg.text && isLoading && idx === messages.length - 1))
+          .map((msg, idx) => (
             <div 
-              key={msg.id} 
+              key={msg.id || `msg-${idx}`} 
               className={`flex ${msg.role === 'user' ? 'justify-end' : 'justify-start'}`}
             >
               <div className={`flex max-w-[85%] ${msg.role === 'user' ? 'flex-row-reverse' : 'flex-row'} items-end gap-2`}>
@@ -336,8 +334,7 @@ const ChatTab: React.FC<ChatTabProps> = ({ quickActions, initialMessage, emergen
                 </div>
               </div>
             </div>
-          );
-        })}
+          ))}
         {isLoading && (messages[messages.length - 1]?.role === 'user' || (messages[messages.length - 1]?.role === 'model' && !messages[messages.length - 1]?.text)) && (
           <motion.div 
             initial={{ opacity: 0, y: 10 }}
