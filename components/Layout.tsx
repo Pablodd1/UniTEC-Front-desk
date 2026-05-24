@@ -55,7 +55,7 @@ const Layout: React.FC<LayoutProps> = ({
 
   // Dynamic Styles based on Embed Mode
   const layoutClasses = isEmbedMode 
-    ? "h-screen w-screen flex flex-col bg-white overflow-hidden" 
+    ? "h-full w-full flex flex-col bg-white overflow-hidden" 
     : "fixed inset-0 z-[9999] flex flex-col bg-white overflow-hidden animate-in slide-in-from-bottom-8 fade-in duration-500 md:inset-auto md:bottom-24 md:right-6 md:w-[800px] md:max-w-[90vw] md:h-[800px] md:max-h-[90vh] md:rounded-[32px] md:shadow-2xl md:border md:border-slate-200";
 
   return (
