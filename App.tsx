@@ -27,7 +27,9 @@ const App: React.FC = () => {
   // Business Identity State
   const [currentBrandId, setCurrentBrandId] = useState<'unitec' | 'building'>(() => {
     const brand = new URLSearchParams(window.location.search).get('brandId');
-    return (brand === 'building' || brand === 'unitec') ? brand : 'unitec';
+    if (brand === 'building' || brand === 'unitec') return brand;
+    if (window.location.hostname.includes('buildinginnovation')) return 'building';
+    return 'unitec';
   });
   const activeConfig = currentBrandId === 'unitec' ? UNITEC_CONFIG : BUILDING_INNOVATION_CONFIG;
 
