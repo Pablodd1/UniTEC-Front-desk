@@ -150,7 +150,7 @@ export interface ChatSession {
 export const getAllChatSessions = async (): Promise<ChatSession[]> => {
   const userId = getUserId();
   if (!userId) return [];
-  const path = users/$userId/chatSessions;
+  const path = `users/${userId}/chatSessions`;
   try {
     const q = query(collection(db, path), orderBy('lastUpdated', 'desc'));
     const querySnapshot = await getDocs(q);
@@ -164,7 +164,7 @@ export const getAllChatSessions = async (): Promise<ChatSession[]> => {
 export const saveChatSession = async (session: Omit<ChatSession, 'userId'>): Promise<void> => {
   const userId = getUserId();
   if (!userId) throw new Error("User not authenticated");
-  const path = users/$userId/chatSessions/$($session.id);
+  const path = `users/${userId}/chatSessions/${session.id}`;
   try {
     const docRef = doc(db, path);
     await setDoc(docRef, { ...session, userId }, { merge: true });

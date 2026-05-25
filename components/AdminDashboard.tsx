@@ -116,6 +116,8 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({
 
       const logs = await getCrmLogs();
       setCrmLogs(logs);
+      const sessions = await getAllChatSessions();
+      setChatSessions(sessions);
     };
     loadData();
 
@@ -956,12 +958,12 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({
                                             <span className="text-[10px] text-brand-600 bg-brand-50 px-2 py-1 rounded-full font-bold">{session.messages.length} msgs</span>
                                             <button 
                                                 onClick={() => {
-                                                    const text = session.messages.map(m => [] ).join('\n\n');
+                                                    const text = session.messages.map(m => `[${m.role.toUpperCase()}] ${m.text}`).join('\n\n');
                                                     const blob = new Blob([text], { type: 'text/plain' });
                                                     const url = URL.createObjectURL(blob);
                                                     const a = document.createElement('a');
                                                     a.href = url;
-                                                    a.download = chat_.txt;
+                                                    a.download = `chat_${session.id}.txt`;
                                                     a.click();
                                                     URL.revokeObjectURL(url);
                                                 }}
