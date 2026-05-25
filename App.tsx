@@ -49,20 +49,10 @@ const App: React.FC = () => {
   }, []);
 
   useEffect(() => {
-    // Populate strong chat history for training if empty
+    // Chat history is now clean per-user. No pre-populated training data.
     const existingHistory = localStorage.getItem('unitec_chat_history');
-    if (!existingHistory || JSON.parse(existingHistory).length === 0) {
-      const trainingHistory = [
-        { role: 'user', text: 'Hello, do you have WPC panels for exterior use?', timestamp: new Date(Date.now() - 3600000 * 24).toISOString() },
-        { role: 'assistant', text: 'Hello! Yes, we have a wide variety of WPC panels specifically designed for exterior use. They are 100% waterproof and come with a 15-year warranty. Would you like to see some wood-tone options like Oak or Teak?', timestamp: new Date(Date.now() - 3600000 * 23.9).toISOString() },
-        { role: 'user', text: 'Yes, show me the Oak ones. Also, do you ship to Mexico?', timestamp: new Date(Date.now() - 3600000 * 23.8).toISOString() },
-        { role: 'assistant', text: 'Excellent choice. Our "FACHADA DECK ROBLE" (Ref: 14091101) is very popular. Regarding shipping, yes, we deliver anywhere in the world! The shipping price depends on the destination country. For Mexico, I can get you a specific quote. How many square meters do you need?', timestamp: new Date(Date.now() - 3600000 * 23.7).toISOString() },
-        { role: 'user', text: 'I need about 45 square meters. Can I return them if I don\'t like the color?', timestamp: new Date(Date.now() - 3600000 * 2).toISOString() },
-        { role: 'assistant', text: 'For 45m², the total for the Roble panels would be approximately $3,113,955 COP (plus shipping). Please note that we have a strict policy: there are no returns or exchanges, so I recommend reviewing the technical sheet or visiting our showroom in Doral if you are nearby to be 100% sure of the tone!', timestamp: new Date(Date.now() - 3600000 * 1.9).toISOString() },
-        { role: 'user', text: 'Understood. Do you offer any discounts for bulk orders?', timestamp: new Date(Date.now() - 3600000 * 1.8).toISOString() },
-        { role: 'assistant', text: 'Yes! Both regular and bulk discounts are available. For an order of 45m², you qualify for our professional tier discount. Would you like me to send the official quote to your email?', timestamp: new Date(Date.now() - 3600000 * 1.7).toISOString() }
-      ];
-      localStorage.setItem('unitec_chat_history', JSON.stringify(trainingHistory));
+    if (!existingHistory) {
+      localStorage.setItem('unitec_chat_history', JSON.stringify([]));
     }
   }, []);
 
