@@ -57,7 +57,7 @@ const ChatTab: React.FC<ChatTabProps> = ({ quickActions, initialMessage, emergen
   const scrollContainerRef = useRef<HTMLDivElement>(null);
   const hasProcessedInitial = useRef(false);
 
-  const sessionId = useRef(session_${Date.now()}`);
+  const sessionId = useRef(`session_${Date.now()}`);
 
   // Memorize chats for training opportunities
   useEffect(() => {
