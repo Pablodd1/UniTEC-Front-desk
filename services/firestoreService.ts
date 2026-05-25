@@ -136,3 +136,39 @@ export const deleteCallRecording = async (recordingId: string): Promise<void> =>
     handleFirestoreError(error, OperationType.DELETE, path);
   }
 };
+
+
+export interface ChatSession {
+  id: string;
+  timestamp: string;
+  lastUpdated: string;
+  messages: any[];
+  userId: string;
+  customerName?: string;
+}
+
+export const getAllChatSessions = async (): Promise<ChatSession[]> => {
+  const userId = getUserId();
+  if (!userId) return [];
+  const path = users/$userId/chatSessions;
+  try {
+    const q = query(collection(db, path), orderBy('lastUpdated', 'desc'));
+    const querySnapshot = await getDocs(q);
+    return querySnapshot.docs.map(doc => doc.data() as ChatSession);
+  } catch (error) {
+    handleFirestoreError(error, OperationType.LIST, path);
+    return [];
+  }
+};
+
+export const saveChatSession = async (session: Omit<ChatSession, 'userId'>): Promise<void> => {
+  const userId = getUserId();
+  if (!userId) throw new Error("User not authenticated");
+  const path = users/$userId/chatSessions/$($session.id);
+  try {
+    const docRef = doc(db, path);
+    await setDoc(docRef, { ...session, userId }, { merge: true });
+  } catch (error) {
+    handleFirestoreError(error, OperationType.WRITE, path);
+  }
+};

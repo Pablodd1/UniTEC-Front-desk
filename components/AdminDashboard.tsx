@@ -11,7 +11,7 @@ import { playGeminiTTS } from '../services/geminiService';
 import { getEscalaConfig, saveEscalaConfig, testEscalaConnection } from '../services/escalaService';
 import { getUsageStats, getProfitEstimate, generateInvoice, trackUsage } from '../services/usageService';
 import { generateImage, editImage } from '../services/imageService';
-import { getAppConfig, saveAppConfig, getCrmLogs, CrmLog } from '../services/firestoreService';
+import { getAppConfig, saveAppConfig, getCrmLogs, CrmLog, getAllChatSessions, ChatSession } from '../services/firestoreService';
 import { DEFAULT_TRAINING_DATA } from '../constants';
 
 interface AdminDashboardProps {
@@ -82,6 +82,7 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({
 
   // CRM Logs State
   const [crmLogs, setCrmLogs] = useState<CrmLog[]>([]);
+  const [chatSessions, setChatSessions] = useState<ChatSession[]>([]);
 
   // Copy State
   const [copyStatus, setCopyStatus] = useState<string | null>(null);
@@ -931,37 +932,44 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({
             );
 
         case 'chats':
-            const savedChats = localStorage.getItem('unitec_chat_history');
-            let parsedChats = [];
-            try {
-                if (savedChats) parsedChats = JSON.parse(savedChats);
-            } catch (e) {}
-
             return (
                 <div className="space-y-8 animate-in slide-in-from-bottom-2 duration-500 pb-20">
                     <div className="bg-white rounded-2xl border border-slate-200 shadow-sm p-8">
                         <div className="flex items-center justify-between mb-8">
                             <div>
-                                <h3 className="text-lg font-bold text-slate-800">Training Opportunities</h3>
-                                <p className="text-xs text-slate-500">Review recent chat logs to improve AI responses and update the knowledge base.</p>
+                                <h3 className="text-lg font-bold text-slate-800">Saved Customer Chats</h3>
+                                <p className="text-xs text-slate-500">Full transcripts of customer interactions across your websites.</p>
                             </div>
                         </div>
                         
-                        {parsedChats.length === 0 ? (
+                        {chatSessions.length === 0 ? (
                             <div className="text-center py-12 text-slate-400 text-sm">No chat history found.</div>
                         ) : (
-                            <div className="space-y-4">
-                                {parsedChats.map((msg: any, i: number) => (
-                                    <div key={i} className={`p-4 rounded-xl border ${msg.role === 'user' ? 'bg-brand-50 border-brand-100 ml-8' : 'bg-slate-50 border-slate-100 mr-8'}`}>
-                                        <div className="flex items-center gap-2 mb-2">
-                                            <span className={`text-[10px] font-black uppercase tracking-widest ${msg.role === 'user' ? 'text-brand-600' : 'text-slate-500'}`}>
-                                                {msg.role === 'user' ? 'User' : 'AI Assistant'}
-                                            </span>
-                                            <span className="text-[10px] text-slate-400">
-                                                {new Date(msg.timestamp).toLocaleString()}
-                                            </span>
+                            <div className="space-y-4 max-h-[600px] overflow-y-auto pr-2 no-scrollbar">
+                                {chatSessions.map((session, i) => (
+                                    <div key={session.id || i} className="p-4 bg-slate-50 rounded-xl border border-slate-100 flex items-center justify-between">
+                                        <div>
+                                            <p className="text-xs font-bold text-slate-800">{session.id}</p>
+                                            <p className="text-[10px] text-slate-500 mt-0.5">{new Date(session.lastUpdated).toLocaleString()}</p>
                                         </div>
-                                        <p className="text-sm text-slate-700 whitespace-pre-wrap">{msg.text}</p>
+                                        <div className="flex items-center gap-2">
+                                            <span className="text-[10px] text-brand-600 bg-brand-50 px-2 py-1 rounded-full font-bold">{session.messages.length} msgs</span>
+                                            <button 
+                                                onClick={() => {
+                                                    const text = session.messages.map(m => [] ).join('\n\n');
+                                                    const blob = new Blob([text], { type: 'text/plain' });
+                                                    const url = URL.createObjectURL(blob);
+                                                    const a = document.createElement('a');
+                                                    a.href = url;
+                                                    a.download = chat_.txt;
+                                                    a.click();
+                                                    URL.revokeObjectURL(url);
+                                                }}
+                                                className="px-3 py-1.5 bg-slate-200 text-slate-700 hover:bg-slate-300 rounded-lg text-[10px] font-bold uppercase transition-all"
+                                            >
+                                                Download
+                                            </button>
+                                        </div>
                                     </div>
                                 ))}
                             </div>

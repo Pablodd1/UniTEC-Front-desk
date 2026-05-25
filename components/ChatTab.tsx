@@ -1,6 +1,7 @@
 
 import React, { useState, useRef, useEffect } from 'react';
 import { Message, QuickAction, Language } from '../types';
+import { saveChatSession } from '../services/firestoreService';
 import { sendMessageToGemini } from '../services/geminiService';
 import { Send, Bot, User, Box, DollarSign, Hammer, BookOpen, CheckCircle2, Truck, FileText, RefreshCcw, Percent } from 'lucide-react';
 import { GenerateContentResponse } from '@google/genai';
@@ -56,10 +57,22 @@ const ChatTab: React.FC<ChatTabProps> = ({ quickActions, initialMessage, emergen
   const scrollContainerRef = useRef<HTMLDivElement>(null);
   const hasProcessedInitial = useRef(false);
 
+  const sessionId = useRef(session_${Date.now()}`);
+
   // Memorize chats for training opportunities
   useEffect(() => {
     try {
       localStorage.setItem('unitec_chat_history', JSON.stringify(messages));
+      // Sync to Firebase
+      if (messages.length > 1) {
+        saveChatSession({
+          id: sessionId.current,
+          timestamp: new Date().toISOString(),
+          lastUpdated: new Date().toISOString(),
+          messages: messages,
+          customerName: 'Anonymous Visitor'
+        }).catch(e => console.warn('Sync warning', e));
+      }
     } catch (e) {
       console.error("Failed to save chat history", e);
     }
