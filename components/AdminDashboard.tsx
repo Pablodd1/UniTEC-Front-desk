@@ -1,3 +1,4 @@
+import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, PieChart, Pie, Cell, Legend } from 'recharts';
 
 import React, { useState, useEffect } from 'react';
 import { 
