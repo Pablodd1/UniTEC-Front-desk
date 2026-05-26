@@ -1,5 +1,3 @@
-import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, PieChart, Pie, Cell, Legend } from 'recharts';
-
 import React, { useState, useEffect } from 'react';
 import { 
   ShieldCheck, Database, Mic2, 
@@ -12,7 +10,7 @@ import { playGeminiTTS } from '../services/geminiService';
 import { getEscalaConfig, saveEscalaConfig, testEscalaConnection } from '../services/escalaService';
 import { getUsageStats, getProfitEstimate, generateInvoice, trackUsage } from '../services/usageService';
 import { generateImage, editImage } from '../services/imageService';
-import { getAppConfig, saveAppConfig, getCrmLogs, CrmLog, getAllChatSessions, ChatSession, subscribeToAllChatSessions, subscribeToChatSession, saveChatSession } from '../services/firestoreService';
+import { getAppConfig, saveAppConfig, getCrmLogs, CrmLog, getAllChatSessions, ChatSession, saveChatSession } from '../services/firestoreService';
 import { DEFAULT_TRAINING_DATA } from '../constants';
 
 interface AdminDashboardProps {
@@ -284,6 +282,59 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({
     } finally {
         setIsGeneratingImage(false);
     }
+  };
+
+  // Executive Handoff Center State
+  const [selectedSessionId, setSelectedSessionId] = React.useState<string | null>(null);
+  const [adminResponseText, setAdminResponseText] = React.useState('');
+
+  // Derived: currently selected session object
+  const selectedSession = selectedSessionId
+    ? chatSessions.find(s => s.id === selectedSessionId) ?? null
+    : null;
+
+  /** Admin takes over a chat session from the AI */
+  const handleTakeOver = async (sessionId: string, session: ChatSession) => {
+    const updated: ChatSession = {
+      ...session,
+      status: 'human_assigned',
+      assignedTo: 'admin',
+      lastUpdated: new Date().toISOString(),
+    };
+    await saveChatSession(updated);
+    setChatSessions(prev => prev.map(s => s.id === sessionId ? updated : s));
+  };
+
+  /** Admin releases the session back to the AI (or marks it completed) */
+  const handleReleaseToAI = async (sessionId: string, session: ChatSession, resolve = false) => {
+    const updated: ChatSession = {
+      ...session,
+      status: resolve ? 'completed' : 'active',
+      assignedTo: null,
+      lastUpdated: new Date().toISOString(),
+    };
+    await saveChatSession(updated);
+    setChatSessions(prev => prev.map(s => s.id === sessionId ? updated : s));
+    if (resolve) setSelectedSessionId(null);
+  };
+
+  /** Admin sends a direct message into the chat stream */
+  const handleSendAdminMessage = async () => {
+    if (!adminResponseText.trim() || !selectedSession) return;
+    const staffMessage = {
+      role: 'assistant',
+      text: adminResponseText.trim(),
+      isStaff: true,
+      timestamp: new Date().toISOString(),
+    };
+    const updated: ChatSession = {
+      ...selectedSession,
+      messages: [...selectedSession.messages, staffMessage],
+      lastUpdated: new Date().toISOString(),
+    };
+    await saveChatSession(updated);
+    setChatSessions(prev => prev.map(s => s.id === selectedSession.id ? updated : s));
+    setAdminResponseText('');
   };
 
   const currentVoiceList = [...geminiVoices];
@@ -1015,7 +1066,7 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({
 
                                         {/* Dialogue Stream */}
                                         <div className="flex-1 overflow-y-auto p-4 space-y-4 no-scrollbar">
-                                            {selectedSession.messages.map((m, idx) => {
+                                            {selectedSession.messages.map((m: any, idx: number) => {
                                                 const isStaff = m.isStaff || false;
                                                 const isUser = m.role === 'user';
                                                 return (
