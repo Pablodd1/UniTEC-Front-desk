@@ -11,7 +11,7 @@ import { playGeminiTTS } from '../services/geminiService';
 import { getEscalaConfig, saveEscalaConfig, testEscalaConnection } from '../services/escalaService';
 import { getUsageStats, getProfitEstimate, generateInvoice, trackUsage } from '../services/usageService';
 import { generateImage, editImage } from '../services/imageService';
-import { getAppConfig, saveAppConfig, getCrmLogs, CrmLog, getAllChatSessions, ChatSession } from '../services/firestoreService';
+import { getAppConfig, saveAppConfig, getCrmLogs, CrmLog, getAllChatSessions, ChatSession, subscribeToAllChatSessions, subscribeToChatSession, saveChatSession } from '../services/firestoreService';
 import { DEFAULT_TRAINING_DATA } from '../constants';
 
 interface AdminDashboardProps {
@@ -936,46 +936,135 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({
         case 'chats':
             return (
                 <div className="space-y-8 animate-in slide-in-from-bottom-2 duration-500 pb-20">
-                    <div className="bg-white rounded-2xl border border-slate-200 shadow-sm p-8">
-                        <div className="flex items-center justify-between mb-8">
-                            <div>
-                                <h3 className="text-lg font-bold text-slate-800">Saved Customer Chats</h3>
-                                <p className="text-xs text-slate-500">Full transcripts of customer interactions across your websites.</p>
-                            </div>
+                    <div className="bg-white rounded-2xl border border-slate-200 shadow-sm p-8 h-[75vh] flex flex-col">
+                        <div className="border-b border-slate-100 pb-4 mb-6">
+                            <h3 className="text-lg font-bold text-slate-800">Executive Handoff Center</h3>
+                            <p className="text-xs text-slate-500">Monitor and intervene in active chatbot interactions in real-time.</p>
                         </div>
                         
-                        {chatSessions.length === 0 ? (
-                            <div className="text-center py-12 text-slate-400 text-sm">No chat history found.</div>
-                        ) : (
-                            <div className="space-y-4 max-h-[600px] overflow-y-auto pr-2 no-scrollbar">
-                                {chatSessions.map((session, i) => (
-                                    <div key={session.id || i} className="p-4 bg-slate-50 rounded-xl border border-slate-100 flex items-center justify-between">
-                                        <div>
-                                            <p className="text-xs font-bold text-slate-800">{session.id}</p>
-                                            <p className="text-[10px] text-slate-500 mt-0.5">{new Date(session.lastUpdated).toLocaleString()}</p>
-                                        </div>
-                                        <div className="flex items-center gap-2">
-                                            <span className="text-[10px] text-brand-600 bg-brand-50 px-2 py-1 rounded-full font-bold">{session.messages.length} msgs</span>
-                                            <button 
-                                                onClick={() => {
-                                                    const text = session.messages.map(m => `[${m.role.toUpperCase()}] ${m.text}`).join('\n\n');
-                                                    const blob = new Blob([text], { type: 'text/plain' });
-                                                    const url = URL.createObjectURL(blob);
-                                                    const a = document.createElement('a');
-                                                    a.href = url;
-                                                    a.download = `chat_${session.id}.txt`;
-                                                    a.click();
-                                                    URL.revokeObjectURL(url);
-                                                }}
-                                                className="px-3 py-1.5 bg-slate-200 text-slate-700 hover:bg-slate-300 rounded-lg text-[10px] font-bold uppercase transition-all"
+                        <div className="flex-1 flex overflow-hidden min-h-0 gap-6">
+                            {/* Left Pane: Sessions List (40%) */}
+                            <div className="w-[40%] flex flex-col border-r border-slate-100 pr-6 overflow-y-auto no-scrollbar gap-3">
+                                {chatSessions.length === 0 ? (
+                                    <div className="text-center py-12 text-slate-400 text-sm">No active sessions.</div>
+                                ) : (
+                                    chatSessions.map((session) => {
+                                        const status = session.status || 'active';
+                                        const isSelected = selectedSessionId === session.id;
+                                        return (
+                                            <button
+                                                key={session.id}
+                                                onClick={() => setSelectedSessionId(session.id)}
+                                                className={`w-full p-4 rounded-xl border text-left transition-all flex flex-col gap-2 ${isSelected ? 'border-brand-500 bg-brand-50/20 shadow-sm' : 'border-slate-100 hover:border-slate-200 bg-white'}`}
                                             >
-                                                Download
+                                                <div className="flex justify-between items-center">
+                                                    <span className="text-[10px] font-black uppercase text-slate-700 font-mono truncate max-w-[70%]">{session.id}</span>
+                                                    <span className={`text-[8px] font-black uppercase px-2 py-0.5 rounded-full border ${
+                                                        status === 'human_assigned' ? 'bg-red-50 text-red-500 border-red-100' :
+                                                        status === 'completed' ? 'bg-slate-100 text-slate-500 border-slate-200' : 'bg-emerald-50 text-emerald-500 border-emerald-100'
+                                                    }`}>
+                                                        {status === 'human_assigned' ? 'Staff' : status === 'completed' ? 'Closed' : 'AI'}
+                                                    </span>
+                                                </div>
+                                                <p className="text-[9px] text-slate-400 font-bold">{new Date(session.lastUpdated).toLocaleTimeString()}</p>
+                                                <span className="text-[9px] font-bold text-slate-500 bg-slate-50 border border-slate-100 self-start px-2 py-0.5 rounded">{session.messages.length} messages</span>
                                             </button>
-                                        </div>
-                                    </div>
-                                ))}
+                                        );
+                                    })
+                                )}
                             </div>
-                        )}
+
+                            {/* Right Pane: Conversation & Action Center (60%) */}
+                            <div className="w-[60%] flex flex-col h-full bg-slate-50/50 rounded-2xl border border-slate-100 overflow-hidden">
+                                {selectedSession ? (
+                                    <div className="flex-1 flex flex-col overflow-hidden h-full">
+                                        {/* Status Header */}
+                                        <div className="bg-white border-b border-slate-100 p-4 flex justify-between items-center shrink-0">
+                                            <div>
+                                                <p className="text-[10px] font-black text-slate-700 uppercase font-mono">{selectedSession.id}</p>
+                                                <p className="text-[8px] text-slate-400 font-bold mt-0.5">Status: {selectedSession.status || 'active'}</p>
+                                            </div>
+                                            <div className="flex gap-2">
+                                                {(selectedSession.status || 'active') === 'active' && (
+                                                    <button
+                                                        onClick={() => handleTakeOver(selectedSession.id, selectedSession)}
+                                                        className="bg-red-500 text-white hover:bg-red-600 px-4 py-2 rounded-xl text-[10px] font-black uppercase tracking-wider shadow transition-all"
+                                                    >
+                                                        Take Over
+                                                    </button>
+                                                )}
+                                                {selectedSession.status === 'human_assigned' && (
+                                                    <>
+                                                        <button
+                                                            onClick={() => handleReleaseToAI(selectedSession.id, selectedSession)}
+                                                            className="bg-brand-500 text-white hover:bg-brand-600 px-3 py-2 rounded-xl text-[10px] font-black uppercase tracking-wider shadow transition-all"
+                                                        >
+                                                            Hand back to AI
+                                                        </button>
+                                                        <button
+                                                            onClick={() => handleReleaseToAI(selectedSession.id, selectedSession, true)}
+                                                            className="bg-slate-800 text-white hover:bg-slate-900 px-3 py-2 rounded-xl text-[10px] font-black uppercase tracking-wider shadow transition-all"
+                                                        >
+                                                            Resolve
+                                                        </button>
+                                                    </>
+                                                )}
+                                            </div>
+                                        </div>
+
+                                        {/* Dialogue Stream */}
+                                        <div className="flex-1 overflow-y-auto p-4 space-y-4 no-scrollbar">
+                                            {selectedSession.messages.map((m, idx) => {
+                                                const isStaff = m.isStaff || false;
+                                                const isUser = m.role === 'user';
+                                                return (
+                                                    <div key={idx} className={`flex ${isUser ? 'justify-end' : 'justify-start'}`}>
+                                                        <div className={`max-w-[80%] p-3 rounded-xl shadow-sm text-xs leading-relaxed ${
+                                                            isUser ? 'bg-brand-500 text-white rounded-br-none' : 
+                                                            isStaff ? 'bg-red-500 text-white rounded-bl-none' : 'bg-white text-slate-800 rounded-bl-none border border-slate-200'
+                                                        }`}>
+                                                            <p className="font-bold text-[9px] uppercase tracking-wider mb-1 opacity-60">
+                                                                {isUser ? 'Customer' : isStaff ? 'Staff Intervene' : 'AI receptionist'}
+                                                            </p>
+                                                            <p>{m.text}</p>
+                                                        </div>
+                                                    </div>
+                                                );
+                                            })}
+                                        </div>
+
+                                        {/* Admin Input Area */}
+                                        {selectedSession.status === 'human_assigned' ? (
+                                            <div className="p-4 bg-white border-t border-slate-100 flex gap-2 shrink-0">
+                                                <input
+                                                    type="text"
+                                                    value={adminResponseText}
+                                                    onChange={e => setAdminResponseText(e.target.value)}
+                                                    onKeyDown={e => e.key === 'Enter' && handleSendAdminMessage()}
+                                                    placeholder="Type message directly to customer..."
+                                                    className="flex-1 bg-slate-50 border border-slate-200 rounded-xl px-4 py-2.5 text-xs focus:ring-1 focus:ring-red-500 outline-none text-slate-800"
+                                                />
+                                                <button
+                                                    onClick={handleSendAdminMessage}
+                                                    disabled={!adminResponseText.trim()}
+                                                    className="bg-red-500 hover:bg-red-600 text-white px-5 py-2.5 rounded-xl text-xs font-bold uppercase transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+                                                >
+                                                    Send
+                                                </button>
+                                            </div>
+                                        ) : (
+                                            <div className="p-4 bg-slate-100 border-t border-slate-200 text-center text-[10px] font-black text-slate-400 uppercase tracking-widest shrink-0">
+                                                AI is actively responding. Take over to intervene.
+                                            </div>
+                                        )}
+                                    </div>
+                                ) : (
+                                    <div className="flex-1 flex flex-col items-center justify-center text-slate-400 text-xs font-bold uppercase tracking-widest">
+                                        Select a chat session to view
+                                    </div>
+                                )}
+                            </div>
+                        </div>
                     </div>
                 </div>
             );

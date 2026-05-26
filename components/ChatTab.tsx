@@ -1,7 +1,7 @@
 
 import React, { useState, useRef, useEffect } from 'react';
 import { Message, QuickAction, Language } from '../types';
-import { saveChatSession } from '../services/firestoreService';
+import { saveChatSession, subscribeToChatSession } from '../services/firestoreService';
 import { sendMessageToGemini } from '../services/geminiService';
 import { Send, Bot, User, Box, DollarSign, Hammer, BookOpen, CheckCircle2, Truck, FileText, RefreshCcw, Percent } from 'lucide-react';
 import { GenerateContentResponse } from '@google/genai';
@@ -47,11 +47,42 @@ const ChatTab: React.FC<ChatTabProps> = ({ quickActions, initialMessage, emergen
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   
+  const [sessionStatus, setSessionStatus] = useState<'active' | 'human_assigned' | 'completed'>('active');
   const [showBookingConfirmation, setShowBookingConfirmation] = useState(false);
   const [confirmedDate, setConfirmedDate] = useState<string | null>(null);
   
   const [showEmailConfirmation, setShowEmailConfirmation] = useState(false);
   const [emailSentTo, setEmailSentTo] = useState<string | null>(null);
+
+
+  // Real-time listener for human-takeover intervention
+  useEffect(() => {
+    const unsub = subscribeToChatSession(sessionId.current, (session) => {
+      if (!session) return;
+      
+      const newStatus = session.status || 'active';
+      setSessionStatus(newStatus);
+      
+      // If staff has taken over, Firestore messages are the absolute source of truth
+      if (newStatus === 'human_assigned' && session.messages) {
+        // Parse dates in the synced messages
+        const parsedMsgs = session.messages.map((m: any) => ({
+          ...m,
+          timestamp: new Date(m.timestamp)
+        }));
+        
+        // Prevent update loop if arrays match
+        const localTexts = messages.map(m => m.text).join('|');
+        const remoteTexts = parsedMsgs.map((m: any) => m.text).join('|');
+        
+        if (localTexts !== remoteTexts) {
+          setMessages(parsedMsgs);
+        }
+      }
+    });
+    
+    return () => unsub();
+  }, [messages, sessionStatus]);
 
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const scrollContainerRef = useRef<HTMLDivElement>(null);
@@ -63,20 +94,21 @@ const ChatTab: React.FC<ChatTabProps> = ({ quickActions, initialMessage, emergen
   useEffect(() => {
     try {
       localStorage.setItem('unitec_chat_history', JSON.stringify(messages));
-      // Sync to Firebase
-      if (messages.length > 1) {
+      // Sync to Firebase (Only when AI is actively responding to avoid race-loops)
+      if (messages.length > 1 && sessionStatus === 'active') {
         saveChatSession({
           id: sessionId.current,
           timestamp: new Date().toISOString(),
           lastUpdated: new Date().toISOString(),
           messages: messages,
-          customerName: 'Anonymous Visitor'
+          customerName: 'Anonymous Visitor',
+          status: 'active'
         }).catch(e => console.warn('Sync warning', e));
       }
     } catch (e) {
       console.error("Failed to save chat history", e);
     }
-  }, [messages]);
+  }, [messages, sessionStatus]);
 
   // Update welcome message when language or customGreeting changes, but only if it's the only message
   useEffect(() => {

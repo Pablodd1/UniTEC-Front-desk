@@ -1,5 +1,5 @@
 import { db, auth, handleFirestoreError, OperationType } from '../firebase';
-import { doc, getDoc, setDoc, collection, getDocs, query, orderBy, deleteDoc } from 'firebase/firestore';
+import { doc, getDoc, setDoc, collection, getDocs, query, orderBy, deleteDoc, onSnapshot } from 'firebase/firestore';
 
 export interface AppConfig {
   escalaApiKey?: string;
@@ -145,6 +145,8 @@ export interface ChatSession {
   messages: any[];
   userId: string;
   customerName?: string;
+  status?: 'active' | 'human_assigned' | 'completed';
+  assignedTo?: string | null;
 }
 
 export const getAllChatSessions = async (): Promise<ChatSession[]> => {
@@ -171,4 +173,33 @@ export const saveChatSession = async (session: Omit<ChatSession, 'userId'>): Pro
   } catch (error) {
     handleFirestoreError(error, OperationType.WRITE, path);
   }
+};
+
+export const subscribeToAllChatSessions = (callback: (sessions: ChatSession[]) => void): (() => void) => {
+  const userId = getUserId();
+  if (!userId) return () => {};
+  const path = `users/${userId}/chatSessions`;
+  const q = query(collection(db, path), orderBy('lastUpdated', 'desc'));
+  return onSnapshot(q, (snapshot) => {
+    const sessions = snapshot.docs.map(doc => doc.data() as ChatSession);
+    callback(sessions);
+  }, (error) => {
+    console.error("Failed to subscribe to chat sessions", error);
+  });
+};
+
+export const subscribeToChatSession = (sessionId: string, callback: (session: ChatSession | null) => void): (() => void) => {
+  const userId = getUserId();
+  if (!userId) return () => {};
+  const path = `users/${userId}/chatSessions/${sessionId}`;
+  const docRef = doc(db, path);
+  return onSnapshot(docRef, (snapshot) => {
+    if (snapshot.exists()) {
+      callback(snapshot.data() as ChatSession);
+    } else {
+      callback(null);
+    }
+  }, (error) => {
+    console.error(`Failed to subscribe to session ${sessionId}`, error);
+  });
 };
