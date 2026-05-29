@@ -1228,6 +1228,59 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({
                             </button>
                         </div>
                     </div>
+                      <div className="bg-white p-8 rounded-2xl border border-slate-200 shadow-sm relative mt-8">
+                          <div className="flex items-center justify-between mb-8">
+                              <div className="flex items-center gap-4">
+                                  <div className="w-12 h-12 bg-blue-50 text-blue-600 rounded-2xl flex items-center justify-center shrink-0">
+                                      <Mic2 size={24} />
+                                  </div>
+                                  <div>
+                                      <h3 className="text-lg font-bold text-slate-800">Twilio Voice & SMS Integration</h3>
+                                      <p className="text-xs text-slate-500">Enable phone calls and SMS automation.</p>
+                                  </div>
+                              </div>
+                              <button 
+                                  onClick={() => setTwilioConfig(p => ({ ...p, isActive: !p.isActive }))}
+                                  className={`flex items-center gap-2 px-4 py-1.5 rounded-full text-[10px] font-bold uppercase transition-all ${twilioConfig.isActive ? 'bg-blue-500 text-white shadow-lg' : 'bg-slate-100 text-slate-400'}`}
+                              >
+                                  {twilioConfig.isActive ? <ToggleRight size={20} /> : <ToggleLeft size={20} />}
+                                  {twilioConfig.isActive ? 'Active' : 'Inactive'}
+                              </button>
+                          </div>
+                          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+                              <div className="space-y-2">
+                                  <label className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Account SID</label>
+                                  <input 
+                                      type="text" 
+                                      value={twilioConfig.accountSid}
+                                      onChange={e => setTwilioConfig(p => ({ ...p, accountSid: e.target.value }))}
+                                      className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-sm focus:ring-2 focus:ring-brand-500 outline-none"
+                                      placeholder="AC..."
+                                  />
+                              </div>
+                              <div className="space-y-2">
+                                  <label className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Auth Token</label>
+                                  <input 
+                                      type="password" 
+                                      value={twilioConfig.authToken}
+                                      onChange={e => setTwilioConfig(p => ({ ...p, authToken: e.target.value }))}
+                                      className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-sm focus:ring-2 focus:ring-brand-500 outline-none"
+                                      placeholder="••••••••••••"
+                                  />
+                              </div>
+                              <div className="space-y-2">
+                                  <label className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Twilio Number</label>
+                                  <input 
+                                      type="text" 
+                                      value={twilioConfig.phoneNumber}
+                                      onChange={e => setTwilioConfig(p => ({ ...p, phoneNumber: e.target.value }))}
+                                      className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-sm focus:ring-2 focus:ring-brand-500 outline-none"
+                                      placeholder="+1 (555) 000-0000"
+                                  />
+                              </div>
+                          </div>
+                      </div>
+
                 </div>
             );
 
