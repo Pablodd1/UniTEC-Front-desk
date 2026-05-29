@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { ShieldCheck, ArrowRight, Lock, Loader2, Mail } from 'lucide-react';
 import { BusinessConfig } from '../types';
-import { signInWithGoogle, auth } from '../firebase';
+import { auth } from '../firebase';
 import { onAuthStateChanged } from 'firebase/auth';
 
 interface LoginScreenProps {
@@ -44,17 +44,7 @@ const LoginScreen: React.FC<LoginScreenProps> = ({ onLogin }) => {
     }
   };
 
-  const handleGoogleLogin = async () => {
-    setIsLoading(true);
-    setError('');
-    try {
-      await signInWithGoogle();
-    } catch (err: any) {
-      setError(err.message || 'Failed to sign in with Google');
-      setIsLoading(false);
-    }
-  };
-
+  
   return (
     <div className="h-full w-full bg-slate-50 flex flex-col items-center justify-center p-6 animate-in fade-in duration-300">
         <div className="w-full max-w-sm bg-white p-8 rounded-[36px] shadow-xl border border-slate-200 text-left">
@@ -113,19 +103,7 @@ const LoginScreen: React.FC<LoginScreenProps> = ({ onLogin }) => {
                 </button>
             </form>
 
-            <div className="relative my-6 flex items-center justify-center text-center">
-                <div className="absolute inset-x-0 h-px bg-slate-100"></div>
-                <span className="relative px-3 bg-white text-[9px] font-bold text-slate-400 uppercase">Or</span>
-            </div>
-
-            <button 
-                type="button"
-                onClick={handleGoogleLogin}
-                disabled={isLoading}
-                className="w-full py-3 border border-slate-200 hover:bg-slate-50 text-slate-600 font-bold rounded-xl flex items-center justify-center gap-2 text-xs transition-all disabled:opacity-50"
-            >
-                Google Authentication
-            </button>
+            
         </div>
         <p className="mt-6 text-[8px] text-slate-400 font-black uppercase tracking-widest text-center">© UNITEC USA DESIGN • SECURE GATEWAY</p>
     </div>
