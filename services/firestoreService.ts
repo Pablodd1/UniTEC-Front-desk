@@ -147,6 +147,14 @@ export interface ChatSession {
   customerName?: string;
   status?: 'active' | 'human_assigned' | 'completed';
   assignedTo?: string | null;
+  type?: 'chat' | 'call';
+  duration?: string;
+  extracted_pii?: {
+    name?: string;
+    phone?: string;
+    email?: string;
+  };
+  intent_category?: string;
 }
 
 export const getAllChatSessions = async (): Promise<ChatSession[]> => {

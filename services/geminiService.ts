@@ -1,6 +1,5 @@
-
-// geminiService.ts handles interactions with the Google GenAI SDK
-import { GoogleGenAI, LiveServerMessage, Modality, GenerateContentResponse } from "@google/genai";
+// geminiService.ts handles interactions with the Google GenAI SDK and the secure Server-side Proxy
+import { GoogleGenAI, LiveServerMessage, Modality } from "@google/genai";
 import { getSystemInstruction, TOOLS } from "../constants";
 import { decodeAudioData, decode, encode, pcmToWavBlob } from "../utils/audioUtils";
 import { Language, VoiceName } from "../types";
@@ -11,51 +10,73 @@ export const resetChatSession = () => {
   // Stateless implementation doesn't require reset, but keeping for compatibility
 };
 
+const getApiBaseUrl = () => {
+  if (typeof window !== 'undefined') {
+    if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
+      return 'http://localhost:3000';
+    }
+  }
+  return 'https://unitecusadesign.com';
+};
+
 /**
- * Text-to-speech using Gemini 2.5 Flash TTS model.
- * Explicitly exported to fix the AdminDashboard error.
+ * Text-to-speech using Gemini 2.5 Flash TTS model via Secure Server-side Proxy.
  */
 export async function playGeminiTTS(text: string, voiceName: string = 'Kore') {
-  const apiKey = process.env.GEMINI_API_KEY || process.env.API_KEY;
-  const ai = new GoogleGenAI({ apiKey: apiKey as string });
-  const response = await ai.models.generateContent({
-    model: "gemini-2.5-flash-preview-tts",
-    contents: [{ parts: [{ text: text }] }],
-    config: {
-      responseModalities: [Modality.AUDIO],
-      speechConfig: {
-        voiceConfig: {
-          prebuiltVoiceConfig: { voiceName: voiceName as any },
-        },
-      },
-    },
-  });
-
-  const base64Audio = response.candidates?.[0]?.content?.parts?.[0]?.inlineData?.data;
-  if (base64Audio) {
-    const audioContext = new (window.AudioContext || (window as any).webkitAudioContext)({ sampleRate: 24000 });
-    const audioBuffer = await decodeAudioData(
-      decode(base64Audio),
-      audioContext,
-      24000,
-      1
-    );
-    const source = audioContext.createBufferSource();
-    source.buffer = audioBuffer;
-    source.connect(audioContext.destination);
-    source.start();
-    
-    return new Promise<void>((resolve) => {
-      source.onended = () => {
-        audioContext.close();
-        resolve();
-      };
+  try {
+    const apiBaseUrl = getApiBaseUrl();
+    const response = await fetch(`${apiBaseUrl}/API/ai/chat`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        model: "gemini-2.5-flash-preview-tts",
+        contents: [{ parts: [{ text: text }] }],
+        config: {
+          generationConfig: {
+            responseModalities: [Modality.AUDIO],
+            speechConfig: {
+              voiceConfig: {
+                prebuiltVoiceConfig: { voiceName: voiceName as any },
+              },
+            },
+          }
+        }
+      })
     });
+
+    if (!response.ok) {
+      throw new Error(`TTS Proxy Error: ${response.statusText}`);
+    }
+
+    const data = await response.json();
+    const base64Audio = data.candidates?.[0]?.content?.parts?.[0]?.inlineData?.data;
+    if (base64Audio) {
+      const audioContext = new (window.AudioContext || (window as any).webkitAudioContext)({ sampleRate: 24000 });
+      const audioBuffer = await decodeAudioData(
+        decode(base64Audio),
+        audioContext,
+        24000,
+        1
+      );
+      const source = audioContext.createBufferSource();
+      source.buffer = audioBuffer;
+      source.connect(audioContext.destination);
+      source.start();
+      
+      return new Promise<void>((resolve) => {
+        source.onended = () => {
+          audioContext.close();
+          resolve();
+        };
+      });
+    }
+  } catch (error) {
+    console.error("TTS generation failed:", error);
   }
 }
 
 /**
- * Sends a message to Gemini using the generateContentStream API.
+ * Sends a message to Gemini using the generateContentStream API via Secure Server-side Proxy.
  */
 export async function* sendMessageToGemini(
   message: string,
@@ -66,57 +87,93 @@ export async function* sendMessageToGemini(
   customGreeting?: string,
   brandId: 'unitec' | 'building' = 'unitec'
 ) {
-  const apiKey = process.env.GEMINI_API_KEY || process.env.API_KEY;
-  const ai = new GoogleGenAI({ apiKey: apiKey as string });
   let instructions = getSystemInstruction(language, customGreeting, brandId);
   if (emergencyMode) {
     instructions += "\n\n[SYSTEM OVERRIDE: EMERGENCY MODE ACTIVE]. Respond concisely. Prioritize safety protocols immediately.";
   }
 
-  const responseStream = await ai.models.generateContentStream({
-    model: 'gemini-3-flash-preview',
-    contents: [...history, { role: 'user', parts: [{ text: message }] }],
-    config: {
-      systemInstruction: instructions,
-      tools: [{ functionDeclarations: TOOLS }],
-    },
+  const apiBaseUrl = getApiBaseUrl();
+  const response = await fetch(`${apiBaseUrl}/API/ai/chat`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      model: 'gemini-3-flash-preview',
+      contents: [...history, { role: 'user', parts: [{ text: message }] }],
+      isStream: true,
+      config: {
+        systemInstruction: instructions,
+        tools: [{ functionDeclarations: TOOLS }],
+      }
+    })
   });
 
-  for await (const chunk of responseStream) {
-    const c = chunk as GenerateContentResponse;
-    if (c.usageMetadata) {
-      const totalTokens = c.usageMetadata.totalTokenCount;
-      trackUsage({
-        totalTokens: totalTokens,
-        chatTokens: totalTokens,
-        apiCalls: 1
-      });
-    }
+  if (!response.ok) {
+    throw new Error(`AI Proxy stream error: ${response.statusText}`);
+  }
 
-    const part = c.candidates?.[0]?.content?.parts?.find(p => p.functionCall);
-    if (part && part.functionCall && part.functionCall.name) {
-      if (onToolSuccess) {
-        onToolSuccess(part.functionCall.name, part.functionCall.args);
+  const reader = response.body?.getReader();
+  if (!reader) throw new Error("Stream reader not available");
+
+  const decoder = new TextDecoder();
+  let buffer = '';
+
+  while (true) {
+    const { value, done } = await reader.read();
+    if (done) break;
+
+    buffer += decoder.decode(value, { stream: true });
+    const lines = buffer.split('\n');
+    buffer = lines.pop() || '';
+
+    for (const line of lines) {
+      const cleanLine = line.replace(/^data:\s*/, '').trim();
+      if (!cleanLine) continue;
+
+      try {
+        const chunk = JSON.parse(cleanLine);
+        
+        if (chunk.usageMetadata) {
+          const totalTokens = chunk.usageMetadata.totalTokenCount;
+          trackUsage({
+            totalTokens: totalTokens,
+            chatTokens: totalTokens,
+            apiCalls: 1
+          });
+        }
+
+        const part = chunk.candidates?.[0]?.content?.parts?.find((p: any) => p.functionCall);
+        if (part && part.functionCall && part.functionCall.name) {
+          if (onToolSuccess) {
+            onToolSuccess(part.functionCall.name, part.functionCall.args);
+          }
+        }
+
+        yield chunk;
+      } catch (e) {
+        // Partial chunk, wait for more data
       }
     }
-    yield c;
   }
 }
 
 /**
- * Generates embeddings for the given text using Gemini Embedding 2.
+ * Generates embeddings for the given text using Gemini Embedding 2 via Secure Proxy.
  */
 export async function generateEmbedding(text: string): Promise<number[] | null> {
   try {
-    const apiKey = process.env.GEMINI_API_KEY || process.env.API_KEY;
-    const ai = new GoogleGenAI({ apiKey: apiKey as string });
-    const result = await ai.models.embedContent({
-      model: 'gemini-embedding-2-preview',
-      contents: [text],
+    const apiBaseUrl = getApiBaseUrl();
+    const response = await fetch(`${apiBaseUrl}/API/ai/chat`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        model: 'gemini-embedding-2-preview',
+        contents: [text]
+      })
     });
     
+    if (!response.ok) throw new Error("Embedding fetch failed");
+    const result = await response.json();
     if (result.embeddings && result.embeddings.length > 0 && result.embeddings[0].values) {
-      // Track API call usage
       trackUsage({ apiCalls: 1 });
       return result.embeddings[0].values;
     }
@@ -128,6 +185,7 @@ export async function generateEmbedding(text: string): Promise<number[] | null> 
 }
 
 // --- Live API (Voice & Vision) Service ---
+// Uses direct connection as WebSocket requires client-side handshake
 
 export interface LiveSessionCallbacks {
   onOpen: () => void;
@@ -206,7 +264,6 @@ export const connectLiveSession = async (
         source.connect(scriptProcessor);
         scriptProcessor.connect(inputAudioContext.destination);
 
-        // Immediate greeting trigger
         const greetPrompt = customGreeting 
           ? `¡Hola! Por favor salúdame inmediatamente con nuestro saludo personalizado de la empresa en español: "${customGreeting}"`
           : (language === 'en' 
@@ -227,9 +284,7 @@ export const connectLiveSession = async (
         const parts = message.serverContent?.modelTurn?.parts;
         const base64Audio = parts?.find(p => p.inlineData)?.inlineData?.data;
 
-        // Handle transcriptions
         const modelTranscript = parts?.find(p => p.text)?.text;
-        // User transcript is in serverContent.userContent if enabled
         const userTranscript = (message.serverContent as any)?.userContent?.parts?.find((p: any) => p.text)?.text;
         
         if (modelTranscript || userTranscript) {
@@ -311,3 +366,4 @@ export const connectLiveSession = async (
     stream
   };
 };
+

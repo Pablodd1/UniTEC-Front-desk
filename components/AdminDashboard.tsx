@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { 
+import { Phone,  
   ShieldCheck, Database, Mic2, 
   Save, RefreshCw, Check, Loader2, Volume2, 
   TrendingUp, Zap, Gauge, Building2, Store, Brain, Code, Copy, ExternalLink, Rocket, ToggleRight, ToggleLeft,
@@ -23,6 +23,7 @@ interface AdminDashboardProps {
   currentBrandId?: 'unitec' | 'building';
   onToggleBrand?: (brand: 'unitec' | 'building') => void;
   onUpdateBackground?: (url: string) => void;
+  language?: 'en' | 'es';
 }
 
 const GEMINI_VOICE_DESCRIPTIONS: Record<string, { gender: 'Male' | 'Female', style: string }> = {
@@ -41,7 +42,7 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({
     onToggleBrand,
     onUpdateBackground
 }) => {
-  const [activeSubTab, setActiveSubTab] = useState<'usage' | 'voice' | 'integrations' | 'deploy' | 'training' | 'general' | 'chats' | 'visuals' | 'catalogs'>('usage');
+  const [activeSubTab, setActiveSubTab] = useState<'usage' | 'voice' | 'integrations' | 'deploy' | 'training' | 'general' | 'chats' | 'visuals' | 'catalogs' | 'functionalities'>('usage');
   
   // Usage & Billing State
   const [totalTokens, setTotalTokens] = useState(0);
@@ -60,6 +61,7 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({
 
   // Escala CRM State
   const [escalaConfig, setEscalaConfig] = useState<EscalaConfig>({ apiKey: '', accountId: '', isActive: false });
+  const [twilioConfig, setTwilioConfig] = useState({ accountSid: '', authToken: '', phoneNumber: '', isActive: false });
   const [isTestingEscala, setIsTestingEscala] = useState(false);
   const [escalaTestResult, setEscalaTestResult] = useState<'success' | 'error' | null>(null);
   const [isSavingEscala, setIsSavingEscala] = useState(false);
@@ -988,21 +990,22 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({
         case 'chats':
             return (
                 <div className="space-y-8 animate-in slide-in-from-bottom-2 duration-500 pb-20">
-                    <div className="bg-white rounded-2xl border border-slate-200 shadow-sm p-8 h-[75vh] flex flex-col">
+                    <div className="bg-white rounded-2xl border border-slate-200 shadow-sm p-6 h-[80vh] flex flex-col">
                         <div className="border-b border-slate-100 pb-4 mb-6">
-                            <h3 className="text-lg font-bold text-slate-800">Executive Handoff Center</h3>
-                            <p className="text-xs text-slate-500">Monitor and intervene in active chatbot interactions in real-time.</p>
+                            <h3 className="text-lg font-bold text-slate-800">Universal Agent Inbox</h3>
+                            <p className="text-xs text-slate-500">Monitor chats and calls, extract PII, and intervene.</p>
                         </div>
                         
                         <div className="flex-1 flex overflow-hidden min-h-0 gap-6">
-                            {/* Left Pane: Sessions List (40%) */}
-                            <div className="w-[40%] flex flex-col border-r border-slate-100 pr-6 overflow-y-auto no-scrollbar gap-3">
+                            {/* Pane 1: Sessions List (25%) */}
+                            <div className="w-[25%] flex flex-col border-r border-slate-100 pr-6 overflow-y-auto no-scrollbar gap-3">
                                 {chatSessions.length === 0 ? (
                                     <div className="text-center py-12 text-slate-400 text-sm">No active sessions.</div>
                                 ) : (
                                     chatSessions.map((session) => {
                                         const status = session.status || 'active';
                                         const isSelected = selectedSessionId === session.id;
+                                        const isCall = session.type === 'call';
                                         return (
                                             <button
                                                 key={session.id}
@@ -1010,7 +1013,10 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({
                                                 className={`w-full p-4 rounded-xl border text-left transition-all flex flex-col gap-2 ${isSelected ? 'border-brand-500 bg-brand-50/20 shadow-sm' : 'border-slate-100 hover:border-slate-200 bg-white'}`}
                                             >
                                                 <div className="flex justify-between items-center">
-                                                    <span className="text-[10px] font-black uppercase text-slate-700 font-mono truncate max-w-[70%]">{session.id}</span>
+                                                    <div className="flex items-center gap-2 max-w-[65%]">
+                                                        {isCall ? <Phone size={12} className="text-orange-500" /> : <MessageSquare size={12} className="text-blue-500" />}
+                                                        <span className="text-[10px] font-black uppercase text-slate-700 font-mono truncate">{session.customerName || session.id}</span>
+                                                    </div>
                                                     <span className={`text-[8px] font-black uppercase px-2 py-0.5 rounded-full border ${
                                                         status === 'human_assigned' ? 'bg-red-50 text-red-500 border-red-100' :
                                                         status === 'completed' ? 'bg-slate-100 text-slate-500 border-slate-200' : 'bg-emerald-50 text-emerald-500 border-emerald-100'
@@ -1019,18 +1025,21 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({
                                                     </span>
                                                 </div>
                                                 <p className="text-[9px] text-slate-400 font-bold">{new Date(session.lastUpdated).toLocaleTimeString()}</p>
-                                                <span className="text-[9px] font-bold text-slate-500 bg-slate-50 border border-slate-100 self-start px-2 py-0.5 rounded">{session.messages.length} messages</span>
+                                                {session.intent_category && (
+                                                    <span className="text-[8px] font-bold text-brand-600 bg-brand-50 border border-brand-100 self-start px-2 py-0.5 rounded">
+                                                        Intent: {session.intent_category}
+                                                    </span>
+                                                )}
                                             </button>
                                         );
                                     })
                                 )}
                             </div>
 
-                            {/* Right Pane: Conversation & Action Center (60%) */}
-                            <div className="w-[60%] flex flex-col h-full bg-slate-50/50 rounded-2xl border border-slate-100 overflow-hidden">
+                            {/* Pane 2: Conversation Stream (45%) */}
+                            <div className="w-[45%] flex flex-col h-full bg-slate-50/50 rounded-2xl border border-slate-100 overflow-hidden">
                                 {selectedSession ? (
                                     <div className="flex-1 flex flex-col overflow-hidden h-full">
-                                        {/* Status Header */}
                                         <div className="bg-white border-b border-slate-100 p-4 flex justify-between items-center shrink-0">
                                             <div>
                                                 <p className="text-[10px] font-black text-slate-700 uppercase font-mono">{selectedSession.id}</p>
@@ -1045,26 +1054,9 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({
                                                         Take Over
                                                     </button>
                                                 )}
-                                                {selectedSession.status === 'human_assigned' && (
-                                                    <>
-                                                        <button
-                                                            onClick={() => handleReleaseToAI(selectedSession.id, selectedSession)}
-                                                            className="bg-brand-500 text-white hover:bg-brand-600 px-3 py-2 rounded-xl text-[10px] font-black uppercase tracking-wider shadow transition-all"
-                                                        >
-                                                            Hand back to AI
-                                                        </button>
-                                                        <button
-                                                            onClick={() => handleReleaseToAI(selectedSession.id, selectedSession, true)}
-                                                            className="bg-slate-800 text-white hover:bg-slate-900 px-3 py-2 rounded-xl text-[10px] font-black uppercase tracking-wider shadow transition-all"
-                                                        >
-                                                            Resolve
-                                                        </button>
-                                                    </>
-                                                )}
                                             </div>
                                         </div>
 
-                                        {/* Dialogue Stream */}
                                         <div className="flex-1 overflow-y-auto p-4 space-y-4 no-scrollbar">
                                             {selectedSession.messages.map((m: any, idx: number) => {
                                                 const isStaff = m.isStaff || false;
@@ -1085,7 +1077,6 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({
                                             })}
                                         </div>
 
-                                        {/* Admin Input Area */}
                                         {selectedSession.status === 'human_assigned' ? (
                                             <div className="p-4 bg-white border-t border-slate-100 flex gap-2 shrink-0">
                                                 <input
@@ -1112,7 +1103,65 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({
                                     </div>
                                 ) : (
                                     <div className="flex-1 flex flex-col items-center justify-center text-slate-400 text-xs font-bold uppercase tracking-widest">
-                                        Select a chat session to view
+                                        Select a session to view conversation
+                                    </div>
+                                )}
+                            </div>
+
+                            {/* Pane 3: Admin Controls & Extracted Data (30%) */}
+                            <div className="w-[30%] flex flex-col h-full bg-white rounded-2xl border border-slate-100 p-4 overflow-y-auto no-scrollbar shadow-inner">
+                                {selectedSession ? (
+                                    <div className="space-y-6">
+                                        {/* Extracted PII Box */}
+                                        <div className="bg-blue-50 border border-blue-100 p-4 rounded-xl">
+                                            <h4 className="text-[10px] font-black text-blue-800 uppercase tracking-widest mb-3 flex items-center gap-2">
+                                                <Database size={12} /> Extracted Data
+                                            </h4>
+                                            <div className="space-y-2">
+                                                <div className="flex justify-between items-center text-xs">
+                                                    <span className="text-blue-600/70 font-bold">Name</span>
+                                                    <span className="font-mono text-blue-900">{selectedSession.extracted_pii?.name || '---'}</span>
+                                                </div>
+                                                <div className="flex justify-between items-center text-xs">
+                                                    <span className="text-blue-600/70 font-bold">Phone</span>
+                                                    <span className="font-mono text-blue-900">{selectedSession.extracted_pii?.phone || '---'}</span>
+                                                </div>
+                                                <div className="flex justify-between items-center text-xs">
+                                                    <span className="text-blue-600/70 font-bold">Email</span>
+                                                    <span className="font-mono text-blue-900">{selectedSession.extracted_pii?.email || '---'}</span>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        {/* Intent Box */}
+                                        <div className="bg-purple-50 border border-purple-100 p-4 rounded-xl">
+                                            <h4 className="text-[10px] font-black text-purple-800 uppercase tracking-widest mb-2">Primary Intent</h4>
+                                            <p className="text-xs font-bold text-purple-900">{selectedSession.intent_category || 'Unknown / Uncategorized'}</p>
+                                        </div>
+
+                                        {/* Actions */}
+                                        <div className="space-y-2">
+                                            <h4 className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-3">Admin Actions</h4>
+                                            {selectedSession.status === 'human_assigned' && (
+                                                <button
+                                                    onClick={() => handleReleaseToAI(selectedSession.id, selectedSession)}
+                                                    className="w-full bg-brand-500 text-white hover:bg-brand-600 px-4 py-3 rounded-xl text-[10px] font-black uppercase tracking-wider shadow transition-all"
+                                                >
+                                                    Hand back to AI
+                                                </button>
+                                            )}
+                                            <button
+                                                onClick={() => handleReleaseToAI(selectedSession.id, selectedSession, true)}
+                                                className="w-full bg-slate-800 text-white hover:bg-slate-900 px-4 py-3 rounded-xl text-[10px] font-black uppercase tracking-wider shadow transition-all"
+                                            >
+                                                Mark as Resolved
+                                            </button>
+                                        </div>
+                                    </div>
+                                ) : (
+                                    <div className="flex-1 flex flex-col items-center justify-center text-slate-300">
+                                        <Brain size={32} className="mb-2 opacity-50" />
+                                        <p className="text-[10px] font-bold uppercase tracking-widest">No Selection</p>
                                     </div>
                                 )}
                             </div>
@@ -1120,6 +1169,7 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({
                     </div>
                 </div>
             );
+
 
         case 'integrations':
             return (
@@ -1243,7 +1293,8 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({
                     { id: 'chats', label: 'Chats', icon: <MessageSquare size={14} /> },
                     { id: 'catalogs', label: 'Catálogos', icon: <Copy size={14} /> },
                     { id: 'deploy', label: 'Deploy', icon: <Rocket size={14} /> },
-                    { id: 'integrations', label: 'CRM', icon: <Database size={14} /> },
+                    { id: 'integrations', label: 'Mission Control', icon: <Database size={14} /> },
+                    { id: 'functionalities', label: 'Updates', icon: <Rocket size={14} /> },,
                     { id: 'general', label: 'Settings', icon: <ShieldCheck size={14} /> }
                  ].map(t => (
                     <button 

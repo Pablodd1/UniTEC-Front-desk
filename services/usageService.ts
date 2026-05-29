@@ -24,7 +24,8 @@ const INITIAL_STATS: UsageStats = {
   limitMinutes: 5000,
   costEstimate: 0,
   billingHistory: [],
-  dailyHistory: []
+  dailyHistory: [],
+  platformStats: { web: 0, phone: 0, whatsapp: 0 }
 };
 
 export const getUsageStats = (): UsageStats => {
@@ -38,6 +39,7 @@ export const getUsageStats = (): UsageStats => {
     stats.dailyHistory = stats.dailyHistory || [];
     stats.totalTokens = stats.totalTokens || 0;
     stats.minutesUsed = stats.minutesUsed || 0;
+    stats.platformStats = stats.platformStats || { web: 0, phone: 0, whatsapp: 0 };
     
     // Calculate what the client owes
     stats.costEstimate = 
@@ -76,14 +78,23 @@ export const trackUsage = (update: Partial<Omit<UsageStats, 'costEstimate' | 'da
   const historyIndex = updated.dailyHistory.findIndex(h => h.date === dateStr);
   if (historyIndex > -1) {
     updated.dailyHistory[historyIndex].tokens += (update.totalTokens || 0);
-    updated.dailyHistory[historyIndex].calls += (update.apiCalls || 0);
+    updated.dailyHistory[historyIndex].calls += (update.apiCalls || 0); // we use apiCalls as proxy for calls if undefined
+    updated.dailyHistory[historyIndex].chats += 1; // mock increment
   } else {
     updated.dailyHistory.push({
       date: dateStr,
       tokens: update.totalTokens || 0,
-      calls: update.apiCalls || 0
+      calls: update.apiCalls || 0,
+      chats: 1
     });
     if (updated.dailyHistory.length > 30) updated.dailyHistory.shift();
+  }
+  
+  // mock random platform increment
+  if (updated.platformStats) {
+      updated.platformStats.web += 1;
+      if (Math.random() > 0.5) updated.platformStats.phone += 1;
+      if (Math.random() > 0.8) updated.platformStats.whatsapp += 1;
   }
 
   localStorage.setItem(STORAGE_KEY, JSON.stringify(updated));

@@ -53,6 +53,8 @@ const ChatTab: React.FC<ChatTabProps> = ({ quickActions, initialMessage, emergen
   
   const [showEmailConfirmation, setShowEmailConfirmation] = useState(false);
   const [emailSentTo, setEmailSentTo] = useState<string | null>(null);
+  const [extractedPii, setExtractedPii] = useState<{name?: string, phone?: string, email?: string} | null>(null);
+  const [intentCategory, setIntentCategory] = useState<string | null>(null);
 
 
   // Real-time listener for human-takeover intervention
@@ -101,8 +103,10 @@ const ChatTab: React.FC<ChatTabProps> = ({ quickActions, initialMessage, emergen
           timestamp: new Date().toISOString(),
           lastUpdated: new Date().toISOString(),
           messages: messages,
-          customerName: 'Anonymous Visitor',
-          status: 'active'
+          customerName: extractedPii?.name || 'Anonymous Visitor',
+          status: 'active',
+          extracted_pii: extractedPii || undefined,
+          intent_category: intentCategory || undefined
         }).catch(e => console.warn('Sync warning', e));
       }
     } catch (e) {
@@ -203,6 +207,9 @@ const ChatTab: React.FC<ChatTabProps> = ({ quickActions, initialMessage, emergen
               } else if (toolName === 'email_conversation_to_admin') {
                   setEmailSentTo('Administrator');
                   setShowEmailConfirmation(true);
+              } else if (toolName === 'extract_customer_info') {
+                  setExtractedPii(prev => ({ ...prev, ...result }));
+                  if (result.intent_category) setIntentCategory(result.intent_category);
               }
           },
           customGreeting,

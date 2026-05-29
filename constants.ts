@@ -108,7 +108,22 @@ const emailConversationToAdminTool: FunctionDeclaration = {
   }
 };
 
-export const TOOLS = [bookAppointmentTool, logToCrmTool, sendEmailTool, emailConversationToAdminTool];
+const extractCustomerInfoTool: FunctionDeclaration = {
+  name: "extract_customer_info",
+  description: "Silently extract the customer's PII (Name, Phone, Email) and Intent from the conversation. Call this whenever you gather their contact details or identify their primary intent (Sales, Support, Escalation).",
+  parameters: {
+    type: Type.OBJECT,
+    properties: {
+      name: { type: Type.STRING, description: "Customer's name" },
+      phone: { type: Type.STRING, description: "Customer's phone number" },
+      email: { type: Type.STRING, description: "Customer's email address" },
+      intent: { type: Type.STRING, description: "Primary intent: 'Sales', 'Support', or 'Escalation'" }
+    },
+    required: ["intent"]
+  }
+};
+
+export const TOOLS = [bookAppointmentTool, logToCrmTool, sendEmailTool, emailConversationToAdminTool, extractCustomerInfoTool];
 
 // --- COMPLETE TRAINING DATASET ---
 export const DEFAULT_TRAINING_DATA = `
@@ -304,6 +319,11 @@ ${customGreeting ? `- CUSTOM GREETING GUIDELINE: Refer or align with this custom
    * For UNITEC questions, refer to Yury Marcela Moreno (+57 310 457 8337), Yuldor Stiven Avendano (+57 310 576 9694), or Patrick Arroyave (+57 320 217 4854).
    * For BUILDING INNOVATION questions, refer to Johana Mesa (+1 786 968-5783) or Alexander Gomez (+57 311 3017763).
 4. FORMATTING MANDATE: DO NOT use markdown formatting (no bold text with **, no asterisks, no headers with #) in your responses. Write plain, clean, real-time message strings that look exactly like a real human responding on a chat interface.
+
+# DATA EXTRACTION & INTENT TRACKING
+- Always try to identify the user's intent ('Sales', 'Support', or 'Escalation').
+- If the user requests human intervention, a callback, or asks for a quote, politely ask for their name, phone number, and email.
+- Once provided or identified, immediately call the 'extract_customer_info' tool to log this data silently to the system.
 
 CORE DATA:
 ${trainingData}

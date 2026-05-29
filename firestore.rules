@@ -86,5 +86,10 @@ service cloud.firestore {
       allow update: if isOwner(userId) && isValidAppConfig() && uidNotModified();
       allow delete: if isOwner(userId);
     }
+
+    match /users/{userId}/chatSessions/{sessionId} {
+      allow read, write: if isOwner(userId);
+    }
   }
 }
+

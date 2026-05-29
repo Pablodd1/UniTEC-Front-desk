@@ -131,7 +131,13 @@ export interface UsageStats {
     date: string;
     tokens: number;
     calls: number;
+    chats: number;
   }[];
+  platformStats?: {
+    web: number;
+    phone: number;
+    whatsapp: number;
+  };
 }
 
 export type VisualizerData = Uint8Array;

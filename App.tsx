@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import Layout from './components/Layout';
 import ChatTab from './components/ChatTab';
@@ -43,8 +42,17 @@ const App: React.FC = () => {
   const [initialMessage] = useState<string | undefined>(undefined);
 
   useEffect(() => {
+    const checkLocalAuth = () => sessionStorage.getItem('unitec_local_admin') === 'true';
+    if (checkLocalAuth()) {
+      setIsLoggedIn(true);
+    }
+
     const unsubscribe = onAuthStateChanged(auth, (user) => {
-      setIsLoggedIn(!!user);
+      if (user || checkLocalAuth()) {
+        setIsLoggedIn(true);
+      } else {
+        setIsLoggedIn(false);
+      }
       setIsAuthReady(true);
     });
     return () => unsubscribe();
@@ -63,6 +71,7 @@ const App: React.FC = () => {
   }, [emergencyMode, language, currentBrandId]);
 
   const handleLogout = async () => {
+    sessionStorage.removeItem('unitec_local_admin');
     await logOut();
     setIsLoggedIn(false);
   };
@@ -109,6 +118,7 @@ const App: React.FC = () => {
             currentBrandId={currentBrandId}
             onToggleBrand={setCurrentBrandId}
             onUpdateBackground={setBgImage}
+            language={language}
         />;
       default:
         return <ChatTab 

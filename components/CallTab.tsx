@@ -2,6 +2,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Mic, Phone, Loader2, CheckCircle2, Download, Headphones } from 'lucide-react';
 import { connectLiveSession } from '../services/geminiService';
+import { saveChatSession } from '../services/firestoreService';
 import { Language, VoiceName, VoiceProvider, CallRecording } from '../types';
 import { UI_TRANSLATIONS } from '../constants';
 
@@ -126,6 +127,24 @@ const CallTab: React.FC<CallTabProps> = ({ emergencyMode, language, voiceName, c
 
   const handleEndCall = async () => {
     const currentTranscript = transcript.map(m => `${m.role.toUpperCase()}: ${m.text}`).join('\n');
+    
+    if (transcript.length > 0) {
+        saveChatSession({
+          id: `call_${Date.now()}`,
+          timestamp: new Date().toISOString(),
+          lastUpdated: new Date().toISOString(),
+          messages: transcript.map(m => ({
+            id: Date.now().toString() + Math.random().toString(),
+            role: m.role,
+            text: m.text,
+            timestamp: new Date()
+          })),
+          customerName: 'Anonymous Caller', // No PII extracted in calls yet
+          status: 'completed',
+          type: 'call'
+        }).catch(e => console.warn('Sync warning', e));
+    }
+
     if (sessionControllerRef.current) {
       const blob = sessionControllerRef.current.getAudioBlob();
       if (blob.size > 100) {
