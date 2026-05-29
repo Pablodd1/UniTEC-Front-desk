@@ -1294,9 +1294,9 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({
                     { id: 'catalogs', label: 'Catálogos', icon: <Copy size={14} /> },
                     { id: 'deploy', label: 'Deploy', icon: <Rocket size={14} /> },
                     { id: 'integrations', label: 'Mission Control', icon: <Database size={14} /> },
-                    { id: 'functionalities', label: 'Updates', icon: <Rocket size={14} /> },,
+                    { id: 'functionalities', label: 'Updates', icon: <Rocket size={14} /> },
                     { id: 'general', label: 'Settings', icon: <ShieldCheck size={14} /> }
-                 ].map(t => (
+                 ].map((t: any) => (
                     <button 
                         key={t.id}
                         onClick={() => setActiveSubTab(t.id as any)} 
