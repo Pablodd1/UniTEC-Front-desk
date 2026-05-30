@@ -98,5 +98,60 @@ This project requires external APIs to function fully.
 *   **Admin PIN**: The default Backup PIN for the dashboard is `1234`.
 *   **API Key**: Never commit your `.env` file to public repositories.
 
+
 ---
+
+## 🗺️ Admin Dashboard — Mission Control
+
+> **Access**: Login with the admin credentials in the Security Notes section below.
+> Owner and Staff share the **same login** and see all tabs.
+
+### Tab Layout
+
+The tab bar is split into **two groups** separated by a visual divider:
+
+```
+Mission Control  ●  LIVE
+──────────────────────────────────────────────────────────────────
+[ CRM ] [ Catalogs ]  |  [ Billing ] [ Voice ] [ AI Training ]
+                         [ Visuals ] [ Integrations ] [ Deploy ]
+                         [ Changelog ] [ Settings ]
+   ↑ Emerald accent              ↑ Brand blue accent
+   (daily use)                   (system / owner)
+```
+
+#### 🟢 CRM Group — Daily Use (Emerald Accent)
+
+| Tab | What it does |
+|-----|-------------|
+| **CRM** | All customer chat sessions — review, take over from AI, reply as staff |
+| **Catalogs** | Browse and manage the product catalog |
+
+#### 🔵 System Group — Owner / Admin (Brand Blue Accent)
+
+| Tab | What it does |
+|-----|-------------|
+| **Billing** | Token usage, cost estimates, profit tracking, invoice generation |
+| **Voice** | Select and test the AI voice (Gemini: Kore, Aoede, Zephyr, Puck, Fenrir, Charon) |
+| **AI Training** | Edit the system prompt / training data the AI assistant uses |
+| **Visuals** | AI image generation and editing |
+| **Integrations** | Escala CRM and Twilio API configuration |
+| **Deploy** | Copy embed scripts to install the chat widget on any website |
+| **Changelog** | Feature release notes and update history |
+| **Settings** | Switch active brand identity (UNITEC Design vs Building Innovation) |
+
+### Default Landing Tab
+Opens on **CRM** — the most-used daily view, not the Billing screen.
+
+### Roles & Access
+
+| Role | Login | Access |
+|------|-------|--------|
+| **Owner** | Shared admin credentials | All 10 tabs |
+| **Staff** | Same shared admin credentials | All 10 tabs |
+| **Client** | No dashboard access | N/A |
+
+> 💡 **Future**: A client-facing portal (read-only: appointments + own chat history)
+> can be added as a separate route when needed.
+
 **UNITEC USA DESIGN** - *Direct Importer & Wholesale Distributor*
