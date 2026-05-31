@@ -191,26 +191,57 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({
     setIsSendingEmail(true);
     setEmailSentSuccess(false);
     
-    console.log("Dispatching logs summary packet to jasmelacosta@gmail.com...");
-    
-    setTimeout(() => {
+    try {
+      const response = await fetch('/api/notify-email', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          subject: 'System Logs and Telemetry',
+          html: '<p>Attached are the recent logs and telemetry from the UniTEC AI Front Desk system.</p>'
+        })
+      });
+      
+      if (response.ok) {
+        setEmailSentSuccess(true);
+        setTimeout(() => setEmailSentSuccess(false), 5000);
+      } else {
+        console.error("Failed to send email", await response.text());
+      }
+    } catch (e) {
+      console.error(e);
+    } finally {
       setIsSendingEmail(false);
-      setEmailSentSuccess(true);
-      setTimeout(() => setEmailSentSuccess(false), 5000);
-    }, 1500);
+    }
   };
 
   const handleSendTelegram = async () => {
     setIsSendingTelegram(true);
     setTelegramSentSuccess(false);
     
-    console.log("Syncing active session telemetry and billing indices with Telegram channels...");
-    
-    setTimeout(() => {
+    try {
+      const response = await fetch('/api/notify-telegram', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          message: '<b>System Alert:</b>\nLive CRM telemetry and active sessions synced.'
+        })
+      });
+      
+      if (response.ok) {
+        setTelegramSentSuccess(true);
+        setTimeout(() => setTelegramSentSuccess(false), 5000);
+      } else {
+        console.error("Failed to send telegram", await response.text());
+      }
+    } catch (e) {
+      console.error(e);
+    } finally {
       setIsSendingTelegram(false);
-      setTelegramSentSuccess(true);
-      setTimeout(() => setTelegramSentSuccess(false), 5000);
-    }, 1200);
+    }
   };
 
   const handleGenerateInvoice = () => {
