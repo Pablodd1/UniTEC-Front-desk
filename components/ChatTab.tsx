@@ -22,27 +22,14 @@ interface ChatTabProps {
 const ChatTab: React.FC<ChatTabProps> = ({ quickActions, initialMessage, emergencyMode, language, customGreeting, bgImage, brandId }) => {
   const t = UI_TRANSLATIONS[language];
   
-  const [messages, setMessages] = useState<Message[]>(() => {
-    try {
-      const saved = localStorage.getItem('unitec_chat_history');
-      if (saved) {
-        const parsed = JSON.parse(saved);
-        if (parsed && parsed.length > 0) {
-          return parsed.map((m: any) => ({ ...m, timestamp: new Date(m.timestamp) }));
-        }
-      }
-    } catch (e) {
-      console.error("Failed to load chat history", e);
+  const [messages, setMessages] = useState<Message[]>([
+    {
+      id: 'welcome',
+      role: 'model',
+      text: customGreeting || t.chatWelcome,
+      timestamp: new Date()
     }
-    return [
-      {
-        id: 'welcome',
-        role: 'model',
-        text: customGreeting || t.chatWelcome,
-        timestamp: new Date()
-      }
-    ];
-  });
+  ]);
   const [inputText, setInputText] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -90,27 +77,21 @@ const ChatTab: React.FC<ChatTabProps> = ({ quickActions, initialMessage, emergen
   const scrollContainerRef = useRef<HTMLDivElement>(null);
   const hasProcessedInitial = useRef(false);
 
-  const sessionId = useRef(`session_${Date.now()}`);
+  const sessionId = useRef(`session_${Date.now()}_${Math.random().toString(36).substring(2, 10)}`);
 
-  // Memorize chats for training opportunities
+  // Sync to Firebase (Only when AI is actively responding to avoid race-loops)
   useEffect(() => {
-    try {
-      localStorage.setItem('unitec_chat_history', JSON.stringify(messages));
-      // Sync to Firebase (Only when AI is actively responding to avoid race-loops)
-      if (messages.length > 1 && sessionStatus === 'active') {
-        saveChatSession({
-          id: sessionId.current,
-          timestamp: new Date().toISOString(),
-          lastUpdated: new Date().toISOString(),
-          messages: messages,
-          customerName: extractedPii?.name || 'Anonymous Visitor',
-          status: 'active',
-          extracted_pii: extractedPii || undefined,
-          intent_category: intentCategory || undefined
-        }).catch(e => console.warn('Sync warning', e));
-      }
-    } catch (e) {
-      console.error("Failed to save chat history", e);
+    if (messages.length > 1 && sessionStatus === 'active') {
+      saveChatSession({
+        id: sessionId.current,
+        timestamp: new Date().toISOString(),
+        lastUpdated: new Date().toISOString(),
+        messages: messages,
+        customerName: extractedPii?.name || 'Anonymous Visitor',
+        status: 'active',
+        extracted_pii: extractedPii || undefined,
+        intent_category: intentCategory || undefined
+      }).catch(e => console.warn('Sync warning', e));
     }
   }, [messages, sessionStatus]);
 
@@ -126,12 +107,7 @@ const ChatTab: React.FC<ChatTabProps> = ({ quickActions, initialMessage, emergen
     }
   }, [language, customGreeting, t.chatWelcome]);
 
-  // Check for API Key on mount
-  useEffect(() => {
-    if (!process.env.GEMINI_API_KEY && !process.env.API_KEY) {
-      setError("System Error: API Key is missing. Please contact support.");
-    }
-  }, []);
+
 
   useEffect(() => {
     if (initialMessage && !hasProcessedInitial.current && !isLoading && !error) {
@@ -237,20 +213,22 @@ const ChatTab: React.FC<ChatTabProps> = ({ quickActions, initialMessage, emergen
       }
     } catch (error: any) {
       console.error("Chat error:", error);
-      let errorMsg = language === 'en' ? "I'm having trouble connecting. Please try again." : "Tengo problemas de conexión. Inténtalo de nuevo.";
       
-      if (error.message?.includes("API_KEY_MISSING")) {
-        errorMsg = language === 'en' ? "Configuration Error: API Key is missing." : "Error de Configuración: Falta la API Key.";
+      const isConfigError = error.message?.includes("API_KEY_MISSING") || (!process.env.GEMINI_API_KEY && !process.env.API_KEY);
+      
+      if (isConfigError) {
+        setError(language === 'en' ? "Configuration Error: API Key is missing." : "Error de Configuración: Falta la API Key.");
+      } else {
+        // Show inline warning in chat history, but do not set global error to keep the input enabled for retry
+        setMessages(prev => [...prev, {
+          id: Date.now().toString(),
+          role: 'model',
+          text: language === 'en' ? "⚠️ Connection interrupted. Please check your internet and try again." : "⚠️ Conexión interrumpida. Por favor, revisa tu internet e inténtalo de nuevo.",
+          timestamp: new Date()
+        }]);
       }
-      
-      setError(errorMsg);
-      
-      setMessages(prev => [...prev, {
-        id: Date.now().toString(),
-        role: 'model',
-        text: language === 'en' ? "⚠️ Connection interrupted. Please check your internet." : "⚠️ Conexión interrumpida. Revisa tu internet.",
-        timestamp: new Date()
-      }]);
+      // Remove any empty pending bot messages if they exist
+      setMessages(prev => prev.filter(m => m.text !== ''));
     } finally {
       setIsLoading(false);
     }

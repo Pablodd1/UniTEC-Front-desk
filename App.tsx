@@ -58,13 +58,7 @@ const App: React.FC = () => {
     return () => unsubscribe();
   }, []);
 
-  useEffect(() => {
-    // Chat history is now clean per-user. No pre-populated training data.
-    const existingHistory = localStorage.getItem('unitec_chat_history');
-    if (!existingHistory) {
-      localStorage.setItem('unitec_chat_history', JSON.stringify([]));
-    }
-  }, []);
+
 
   useEffect(() => {
     resetChatSession();
