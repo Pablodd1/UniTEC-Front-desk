@@ -452,3 +452,4 @@ const ChatTab: React.FC<ChatTabProps> = ({ quickActions, initialMessage, emergen
 };
 
 export default ChatTab;
+
