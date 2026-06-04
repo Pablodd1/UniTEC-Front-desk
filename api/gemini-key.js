@@ -15,7 +15,7 @@ export default async function handler(req, res) {
   const apiKey = process.env.GEMINI_API_KEY || process.env.API_KEY || process.env.VITE_GEMINI_API_KEY || process.env.VITE_API_KEY;
 
   if (!apiKey) {
-    console.error(\"Gemini API Key is missing on the server.\");
+    console.error("Gemini API Key is missing on the server.");
     return res.status(404).json({ error: 'API key is missing or not configured on the server.' });
   }
 

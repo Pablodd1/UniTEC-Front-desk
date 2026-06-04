@@ -160,16 +160,21 @@ const ChatTab: React.FC<ChatTabProps> = ({ quickActions, initialMessage, emergen
   // Sync to Firebase (Only when AI is actively responding to avoid race-loops)
   useEffect(() => {
     if (messages.length > 1 && sessionStatus === 'active') {
-      saveChatSession({
+      const sessionPayload: any = {
         id: sessionId.current,
         timestamp: new Date().toISOString(),
         lastUpdated: new Date().toISOString(),
         messages: messages,
         customerName: extractedPii?.name || 'Anonymous Visitor',
         status: 'active',
-        extracted_pii: extractedPii || undefined,
-        intent_category: intentCategory || undefined
-      }).catch(e => console.warn('Sync warning', e));
+      };
+      if (extractedPii) {
+        sessionPayload.extracted_pii = extractedPii;
+      }
+      if (intentCategory) {
+        sessionPayload.intent_category = intentCategory;
+      }
+      saveChatSession(sessionPayload).catch(e => console.warn('Sync warning', e));
     }
   }, [messages, sessionStatus]);
 
