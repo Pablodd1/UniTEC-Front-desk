@@ -1,12 +1,13 @@
+import { getPrivacyMode } from './firestoreService';
 import { db } from '../firebase';
 import { collection, doc, setDoc, getDocs, getDoc, query, orderBy, onSnapshot, updateDoc, where, increment } from 'firebase/firestore';
 
 // PRIVACY MODE: Set to true to disable all Firestore chat saving
 // This ensures user conversations are NOT stored unless explicitly enabled
-const PRIVACY_MODE = true;
+
 
 const logPrivacy = (action: string) => {
-  if (PRIVACY_MODE) {
+  if (getPrivacyMode()) {
     console.log(`[PRIVACY] Blocked: ${action} - Chat data not saved (privacy mode enabled)`);
   }
 };
@@ -116,7 +117,7 @@ export const createConversation = async (
 ): Promise<string> => {
   const sessionId = `session_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
   
-  if (PRIVACY_MODE) {
+  if (getPrivacyMode()) {
     logPrivacy('createConversation');
     return sessionId; // Return ID but don't save to Firestore
   }
@@ -152,7 +153,7 @@ export const addMessage = async (
   sessionId: string,
   message: Omit<ConversationMessage, 'id' | 'timestamp'>
 ): Promise<void> => {
-  if (PRIVACY_MODE) {
+  if (getPrivacyMode()) {
     logPrivacy('addMessage');
     return; // Don't save messages to Firestore
   }
@@ -185,7 +186,7 @@ export const updateSessionStatus = async (
   status: ConversationSession['status'],
   assignedTo?: string
 ): Promise<void> => {
-  if (PRIVACY_MODE) {
+  if (getPrivacyMode()) {
     logPrivacy('updateSessionStatus');
     return;
   }
@@ -209,7 +210,7 @@ export const requestIntervention = async (
 ): Promise<string> => {
   const interventionId = `int_${Date.now()}`;
   
-  if (PRIVACY_MODE) {
+  if (getPrivacyMode()) {
     logPrivacy('requestIntervention');
     return interventionId; // Return ID but don't save
   }
@@ -239,7 +240,7 @@ export const acceptIntervention = async (
   interventionId: string,
   staffId: string
 ): Promise<void> => {
-  if (PRIVACY_MODE) {
+  if (getPrivacyMode()) {
     logPrivacy('acceptIntervention');
     return;
   }
@@ -270,7 +271,7 @@ export const getConversations = async (
     assignedTo?: string;
   }
 ): Promise<ConversationSession[]> => {
-  if (PRIVACY_MODE) {
+  if (getPrivacyMode()) {
     logPrivacy('getConversations');
     return []; // Return empty array when privacy mode is on
   }
@@ -292,7 +293,7 @@ export const getConversations = async (
 export const subscribeToConversations = (
   callback: (sessions: ConversationSession[]) => void
 ): (() => void) => {
-  if (PRIVACY_MODE) {
+  if (getPrivacyMode()) {
     logPrivacy('subscribeToConversations');
     callback([]); // Return empty immediately
     return () => {}; // No-op unsubscribe
@@ -313,7 +314,7 @@ export const subscribeToConversation = (
   sessionId: string,
   callback: (session: ConversationSession | null) => void
 ): (() => void) => {
-  if (PRIVACY_MODE) {
+  if (getPrivacyMode()) {
     logPrivacy('subscribeToConversation');
     callback(null); // Return null immediately
     return () => {}; // No-op unsubscribe
@@ -336,7 +337,7 @@ export const subscribeToConversation = (
 
 // Get messages for a session
 export const getMessages = async (sessionId: string): Promise<ConversationMessage[]> => {
-  if (PRIVACY_MODE) {
+  if (getPrivacyMode()) {
     logPrivacy('getMessages');
     return []; // Return empty when privacy mode is on
   }
@@ -355,7 +356,7 @@ export const subscribeToMessages = (
   sessionId: string,
   callback: (messages: ConversationMessage[]) => void
 ): (() => void) => {
-  if (PRIVACY_MODE) {
+  if (getPrivacyMode()) {
     logPrivacy('subscribeToMessages');
     callback([]); // Return empty immediately
     return () => {}; // No-op unsubscribe
@@ -379,7 +380,7 @@ export const extractCustomerData = async (
   sessionId: string,
   data: ConversationSession['extractedData']
 ): Promise<void> => {
-  if (PRIVACY_MODE) {
+  if (getPrivacyMode()) {
     logPrivacy('extractCustomerData');
     return; // Don't save customer data
   }
@@ -395,7 +396,7 @@ export const updateAnalytics = async (
   sessionId: string,
   analytics: Partial<ConversationSession['analytics']>
 ): Promise<void> => {
-  if (PRIVACY_MODE) {
+  if (getPrivacyMode()) {
     logPrivacy('updateAnalytics');
     return; // Don't save analytics
   }
@@ -409,7 +410,7 @@ export const updateAnalytics = async (
 export const getInterventionRequests = async (
   status?: 'pending' | 'accepted' | 'resolved' | 'timeout'
 ): Promise<InterventionRequest[]> => {
-  if (PRIVACY_MODE) {
+  if (getPrivacyMode()) {
     logPrivacy('getInterventionRequests');
     return []; // Return empty when privacy mode is on
   }
@@ -428,7 +429,7 @@ export const getInterventionRequests = async (
 export const subscribeToInterventions = (
   callback: (interventions: InterventionRequest[]) => void
 ): (() => void) => {
-  if (PRIVACY_MODE) {
+  if (getPrivacyMode()) {
     logPrivacy('subscribeToInterventions');
     callback([]); // Return empty immediately
     return () => {}; // No-op unsubscribe
@@ -446,7 +447,7 @@ export const subscribeToInterventions = (
 
 // Add a tag to a conversation
 export const addConversationTag = async (sessionId: string, tag: string): Promise<void> => {
-  if (PRIVACY_MODE) {
+  if (getPrivacyMode()) {
     logPrivacy('addConversationTag');
     return; // Don't save tags
   }
@@ -468,7 +469,7 @@ export const addConversationTag = async (sessionId: string, tag: string): Promis
 
 // Remove a tag from a conversation
 export const removeConversationTag = async (sessionId: string, tag: string): Promise<void> => {
-  if (PRIVACY_MODE) {
+  if (getPrivacyMode()) {
     logPrivacy('removeConversationTag');
     return; // Don't modify tags
   }
@@ -491,7 +492,7 @@ export const addConversationNote = async (
   sessionId: string,
   note: { text: string; staffId: string; staffName: string }
 ): Promise<void> => {
-  if (PRIVACY_MODE) {
+  if (getPrivacyMode()) {
     logPrivacy('addConversationNote');
     return; // Don't save notes
   }
@@ -526,7 +527,7 @@ export const updateVisitorInfo = async (
     visitCount?: number;
   }
 ): Promise<void> => {
-  if (PRIVACY_MODE) {
+  if (getPrivacyMode()) {
     logPrivacy('updateVisitorInfo');
     return; // Don't save visitor info
   }

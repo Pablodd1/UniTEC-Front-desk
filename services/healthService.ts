@@ -1,3 +1,4 @@
+import { getApiKey } from './geminiService';
 import { db } from '../firebase';
 import { getDoc, doc } from 'firebase/firestore';
 
@@ -69,7 +70,7 @@ export const getSystemStatus = async (): Promise<SystemStatus> => {
 const checkGeminiStatus = async (): Promise<ServiceStatus> => {
   const start = Date.now();
   try {
-    const apiKey = import.meta.env.VITE_GEMINI_API_KEY || import.meta.env.VITE_API_KEY;
+    const apiKey = await getApiKey();
     if (!apiKey) {
       return { status: 'down', latency: 0, lastChecked: new Date().toISOString(), error: 'No API key configured' };
     }

@@ -3,10 +3,13 @@ import { doc, getDoc, setDoc, collection, getDocs, query, orderBy, deleteDoc, on
 
 // PRIVACY MODE: Set to true to disable all Firestore chat saving
 // This ensures user conversations are NOT stored unless explicitly enabled
-const PRIVACY_MODE = true;
+export const getPrivacyMode = (): boolean => {
+  const stored = typeof window !== 'undefined' ? window.localStorage.getItem('unitec_privacy_mode') : null;
+  return stored !== 'false'; // Default to true
+};
 
 const logPrivacy = (action: string) => {
-  if (PRIVACY_MODE) {
+  if (getPrivacyMode()) {
     console.log(`[PRIVACY] Blocked: ${action} - Chat data not saved (privacy mode enabled)`);
   }
 };
@@ -16,6 +19,7 @@ export interface AppConfig {
   escalaAccountId?: string;
   escalaIsActive?: boolean;
   trainingData?: string;
+  geminiApiKey?: string;
   userId: string;
 }
 
@@ -168,7 +172,7 @@ export interface ChatSession {
 }
 
 export const getAllChatSessions = async (): Promise<ChatSession[]> => {
-  if (PRIVACY_MODE) {
+  if (getPrivacyMode()) {
     logPrivacy('getAllChatSessions');
     return []; // Return empty when privacy mode is on
   }
@@ -187,7 +191,7 @@ export const getAllChatSessions = async (): Promise<ChatSession[]> => {
 };
 
 export const saveChatSession = async (session: Omit<ChatSession, 'userId'>): Promise<void> => {
-  if (PRIVACY_MODE) {
+  if (getPrivacyMode()) {
     logPrivacy('saveChatSession');
     return; // Don't save chat sessions
   }
@@ -204,7 +208,7 @@ export const saveChatSession = async (session: Omit<ChatSession, 'userId'>): Pro
 };
 
 export const subscribeToAllChatSessions = (callback: (sessions: ChatSession[]) => void): (() => void) => {
-  if (PRIVACY_MODE) {
+  if (getPrivacyMode()) {
     logPrivacy('subscribeToAllChatSessions');
     callback([]); // Return empty immediately
     return () => {}; // No-op unsubscribe
@@ -223,7 +227,7 @@ export const subscribeToAllChatSessions = (callback: (sessions: ChatSession[]) =
 };
 
 export const subscribeToChatSession = (sessionId: string, callback: (session: ChatSession | null) => void): (() => void) => {
-  if (PRIVACY_MODE) {
+  if (getPrivacyMode()) {
     logPrivacy('subscribeToChatSession');
     callback(null); // Return null immediately
     return () => {}; // No-op unsubscribe

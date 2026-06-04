@@ -6,6 +6,37 @@ import { decodeAudioData, decode, encode, pcmToWavBlob } from "../utils/audioUti
 import { Language, VoiceName } from "../types";
 import { trackUsage } from "./usageService";
 
+
+let cachedApiKey: string | null = null;
+export async function getApiKey(): Promise<string> {
+  if (cachedApiKey) return cachedApiKey;
+  
+  // 1. Try to load from localStorage (admin/local override)
+  const localKey = typeof window !== 'undefined' ? window.localStorage.getItem('unitec_gemini_api_key') : null;
+  if (localKey) {
+    cachedApiKey = localKey;
+    return localKey;
+  }
+  
+  // 2. Fetch from runtime API endpoint
+  try {
+    const res = await fetch('/api/gemini-key');
+    if (res.ok) {
+      const data = await res.json();
+      if (data.apiKey) {
+        cachedApiKey = data.apiKey;
+        return data.apiKey;
+      }
+    }
+  } catch (e) {
+    console.error("Failed to fetch API key from server:", e);
+  }
+  
+  // 3. Fall back to build-time environment variable
+  const buildTimeKey = process.env.GEMINI_API_KEY || process.env.API_KEY || "";
+  return buildTimeKey;
+}
+
 // Helper for stateless reset
 export const resetChatSession = () => {
   // Stateless implementation doesn't require reset, but keeping for compatibility
@@ -16,7 +47,7 @@ export const resetChatSession = () => {
  * Explicitly exported to fix the AdminDashboard error.
  */
 export async function playGeminiTTS(text: string, voiceName: string = 'Kore') {
-  const apiKey = process.env.GEMINI_API_KEY || process.env.API_KEY;
+  const apiKey = await getApiKey();
   const ai = new GoogleGenAI({ apiKey: apiKey as string });
   const response = await ai.models.generateContent({
     model: "gemini-2.5-flash-preview-tts",
@@ -66,7 +97,7 @@ export async function* sendMessageToGemini(
   customGreeting?: string,
   brandId: 'unitec' | 'building' = 'unitec'
 ) {
-  const apiKey = process.env.GEMINI_API_KEY || process.env.API_KEY;
+  const apiKey = await getApiKey();
   const ai = new GoogleGenAI({ apiKey: apiKey as string });
   let instructions = getSystemInstruction(language, customGreeting, brandId);
   if (emergencyMode) {
@@ -108,7 +139,7 @@ export async function* sendMessageToGemini(
  */
 export async function generateEmbedding(text: string): Promise<number[] | null> {
   try {
-    const apiKey = process.env.GEMINI_API_KEY || process.env.API_KEY;
+    const apiKey = await getApiKey();
     const ai = new GoogleGenAI({ apiKey: apiKey as string });
     const result = await ai.models.embedContent({
       model: 'gemini-embedding-2-preview',
@@ -147,7 +178,7 @@ export const connectLiveSession = async (
     customGreeting?: string,
     brandId: 'unitec' | 'building' = 'unitec'
 ) => {
-  const apiKey = process.env.GEMINI_API_KEY || process.env.API_KEY;
+  const apiKey = await getApiKey();
   const ai = new GoogleGenAI({ apiKey: apiKey as string });
   const startTime = Date.now();
 

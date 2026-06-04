@@ -73,6 +73,13 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({
   const [escalaConfig, setEscalaConfig] = useState<EscalaConfig>({ apiKey: '', accountId: '', isActive: false });
   const [twilioConfig, setTwilioConfig] = useState({ accountSid: '', authToken: '', phoneNumber: '', isActive: false });
   const [isTestingEscala, setIsTestingEscala] = useState(false);
+  // Gemini API Key & Privacy Mode State
+  const [geminiApiKey, setGeminiApiKey] = useState('');
+  const [privacyMode, setPrivacyMode] = useState(() => {
+    const stored = typeof window !== 'undefined' ? window.localStorage.getItem('unitec_privacy_mode') : null;
+    return stored !== 'false';
+  });
+  const [isSavingGemini, setIsSavingGemini] = useState(false);
   const [escalaTestResult, setEscalaTestResult] = useState<'success' | 'error' | null>(null);
   const [isSavingEscala, setIsSavingEscala] = useState(false);
 
@@ -119,10 +126,18 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({
       setEscalaConfig(escala);
 
       const config = await getAppConfig();
-      if (config?.trainingData && config.trainingData.length > 50) {
-        setTrainingData(config.trainingData);
-      } else {
-        setTrainingData(DEFAULT_TRAINING_DATA);
+      if (config) {
+        if (config.trainingData && config.trainingData.length > 50) {
+          setTrainingData(config.trainingData);
+        } else {
+          setTrainingData(DEFAULT_TRAINING_DATA);
+        }
+        if (config.geminiApiKey) {
+          setGeminiApiKey(config.geminiApiKey);
+          if (typeof window !== 'undefined' && !window.localStorage.getItem('unitec_gemini_api_key')) {
+            window.localStorage.setItem('unitec_gemini_api_key', config.geminiApiKey);
+          }
+        }
       }
 
       const logs = await getCrmLogs();
@@ -390,6 +405,33 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({
     await saveChatSession(updated);
     setChatSessions(prev => prev.map(s => s.id === selectedSession.id ? updated : s));
     setAdminResponseText('');
+  };
+
+  const handleSaveGemini = async () => {
+    setIsSavingGemini(true);
+    if (typeof window !== 'undefined') {
+      if (geminiApiKey.trim()) {
+        window.localStorage.setItem('unitec_gemini_api_key', geminiApiKey.trim());
+      } else {
+        window.localStorage.removeItem('unitec_gemini_api_key');
+      }
+      window.localStorage.setItem('unitec_privacy_mode', String(privacyMode));
+    }
+
+    try {
+      await saveAppConfig({ 
+        geminiApiKey: geminiApiKey.trim() 
+      });
+    } catch (e) {
+      console.error("Failed to save Gemini key to Firestore:", e);
+    }
+    
+    setTimeout(() => {
+      setIsSavingGemini(false);
+      if (typeof window !== 'undefined') {
+        window.location.reload();
+      }
+    }, 800);
   };
 
   const currentVoiceList = [...geminiVoices];
@@ -1330,6 +1372,61 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({
                                       className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-sm focus:ring-2 focus:ring-brand-500 outline-none"
                                       placeholder="+1 (555) 000-0000"
                                   />
+                              </div>
+                          </div>
+                      </div>
+                      <div className="bg-white p-8 rounded-2xl border border-slate-200 shadow-sm relative mt-8">
+                          <div className="flex items-center justify-between mb-8">
+                              <div className="flex items-center gap-4">
+                                  <div className="w-12 h-12 bg-violet-50 text-violet-600 rounded-2xl flex items-center justify-center shrink-0">
+                                      <Brain size={24} />
+                                  </div>
+                                  <div>
+                                      <h3 className="text-lg font-bold text-slate-800">Google Gemini AI Core</h3>
+                                      <p className="text-xs text-slate-500">Configure your Google Gen AI credentials and compliance mode.</p>
+                                  </div>
+                              </div>
+                              <button 
+                                  onClick={() => setPrivacyMode(p => !p)}
+                                  className={`flex items-center gap-2 px-4 py-1.5 rounded-full text-[10px] font-bold uppercase transition-all ${!privacyMode ? 'bg-emerald-500 text-white shadow-lg' : 'bg-amber-100 text-amber-700'}`}
+                              >
+                                  {!privacyMode ? <ToggleRight size={20} /> : <ToggleLeft size={20} />}
+                                  {privacyMode ? 'Privacy Mode ON' : 'Privacy Mode OFF'}
+                              </button>
+                          </div>
+                          
+                          <div className="space-y-4">
+                              <div className="space-y-2">
+                                  <label className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Gemini API Key</label>
+                                  <input 
+                                      type="password" 
+                                      value={geminiApiKey}
+                                      onChange={e => setGeminiApiKey(e.target.value)}
+                                      className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-sm focus:ring-2 focus:ring-brand-500 outline-none"
+                                      placeholder="AIzaSy..."
+                                  />
+                                  <p className="text-[10px] text-slate-400 italic">
+                                      This key is resolved securely at runtime. Changes will apply immediately across all client widgets upon saving.
+                                  </p>
+                              </div>
+                              
+                              <div className="p-4 rounded-xl border bg-slate-50 border-slate-200 text-xs text-slate-600 space-y-2">
+                                  <p className="font-bold">Compliance Status:</p>
+                                  <ul className="list-disc pl-5 space-y-1">
+                                      <li><strong>Privacy Mode ON (Default)</strong>: Conversations are ephemeral, and no chat sessions or visitor logs are saved to Firestore. Best for strict GDPR compliance.</li>
+                                      <li><strong>Privacy Mode OFF</strong>: Saves complete chat logs, intents, sentiment analysis, and triggers live agent intervention/takeover capabilities.</li>
+                                  </ul>
+                              </div>
+                              
+                              <div className="flex gap-3 pt-2">
+                                  <button 
+                                      onClick={handleSaveGemini} 
+                                      disabled={isSavingGemini}
+                                      className="px-8 py-2.5 bg-brand-600 text-white rounded-xl text-xs font-bold shadow-lg hover:bg-brand-700 flex items-center gap-2"
+                                  >
+                                      {isSavingGemini ? <Loader2 size={14} className="animate-spin" /> : <Save size={14} />}
+                                      Save Gemini Settings
+                                  </button>
                               </div>
                           </div>
                       </div>
