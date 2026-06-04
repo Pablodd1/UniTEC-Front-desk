@@ -144,3 +144,167 @@ export type VisualizerData = Uint8Array;
 export type Language = 'en' | 'es';
 export type VoiceProvider = 'gemini';
 export type VoiceName = string;
+
+// ===== NEW: Conversation Tracking Types =====
+export interface ConversationMessage {
+  id: string;
+  role: 'user' | 'model' | 'staff';
+  text: string;
+  timestamp: string;
+  isStaff?: boolean;
+  staffName?: string;
+  sentiment?: 'positive' | 'neutral' | 'negative';
+  intent?: string;
+  entities?: string[];
+}
+
+export interface ConversationSession {
+  id: string;
+  customerName?: string;
+  customerEmail?: string;
+  customerPhone?: string;
+  status: 'active' | 'human_requested' | 'human_assigned' | 'completed' | 'abandoned';
+  brandId: 'unitec' | 'building';
+  language: 'en' | 'es';
+  messages: ConversationMessage[];
+  createdAt: string;
+  lastUpdated: string;
+  lastMessage?: string;
+  assignedTo?: string;
+  assignedToName?: string;
+  intentCategory?: string;
+  sentimentScore?: number;
+  topics: string[];
+  duration?: number;
+  source: 'web' | 'phone' | 'whatsapp';
+  userAgent?: string;
+  ipAddress?: string;
+  referrer?: string;
+  pageUrl?: string;
+  location?: string;
+  timeOnSite?: number;
+  visitCount?: number;
+  extractedData?: {
+    name?: string;
+    email?: string;
+    phone?: string;
+    company?: string;
+    projectType?: string;
+    budget?: string;
+    timeline?: string;
+  };
+  analytics?: {
+    messageCount: number;
+    avgResponseTime: number;
+    escalationCount: number;
+    productMentions: string[];
+    staffInteractions: number;
+  };
+  tags?: string[];
+  notes?: Array<{
+    text: string;
+    staffId: string;
+    staffName: string;
+    timestamp: string;
+  }>;
+}
+
+export interface InterventionRequest {
+  id: string;
+  sessionId: string;
+  requestedAt: string;
+  resolvedAt?: string;
+  status: 'pending' | 'accepted' | 'resolved' | 'timeout';
+  requestedBy: 'user' | 'system' | 'staff';
+  reason: string;
+  priority: 'low' | 'medium' | 'high' | 'urgent';
+  assignedStaffId?: string;
+  notes?: string;
+}
+
+export interface StaffMember {
+  id: string;
+  name: string;
+  email: string;
+  phone?: string;
+  role: 'admin' | 'sales' | 'support';
+  status: 'online' | 'offline' | 'busy';
+  activeSessions: string[];
+  totalHandled: number;
+  avgRating: number;
+}
+
+export interface SystemStatus {
+  overall: 'healthy' | 'degraded' | 'down';
+  timestamp: string;
+  services: {
+    gemini: ServiceHealth;
+    firebase: ServiceHealth;
+    twilio: ServiceHealth;
+    email: ServiceHealth;
+    telegram: ServiceHealth;
+  };
+  metrics: {
+    totalConversations: number;
+    activeConversations: number;
+    pendingInterventions: number;
+    avgResponseTime: number;
+    errorRate: number;
+    uptime: number;
+  };
+}
+
+export interface ServiceHealth {
+  status: 'up' | 'down' | 'degraded' | 'unknown';
+  latency: number;
+  lastChecked: string;
+  error?: string;
+}
+
+export interface TwilioCallRecord {
+  id: string;
+  sessionId: string;
+  to: string;
+  from: string;
+  status: 'initiated' | 'ringing' | 'in-progress' | 'completed' | 'failed' | 'busy' | 'no-answer';
+  direction: 'outbound' | 'inbound';
+  startedAt: string;
+  endedAt?: string;
+  duration?: number;
+  recordingUrl?: string;
+  price?: string;
+  errorMessage?: string;
+  staffId?: string;
+  staffName?: string;
+  notes?: string;
+}
+
+export interface TwilioConfig {
+  accountSid: string;
+  authToken: string;
+  phoneNumber: string;
+  isActive: boolean;
+}
+
+export interface NotificationPayload {
+  type: 'intervention_request' | 'intervention_accepted' | 'new_message' | 'call_ended' | 'system_alert';
+  sessionId: string;
+  customerName?: string;
+  customerPhone?: string;
+  message?: string;
+  priority: 'low' | 'medium' | 'high' | 'urgent';
+  timestamp: string;
+  metadata?: Record<string, any>;
+}
+
+export interface ChatSession {
+  id: string;
+  timestamp: string;
+  lastUpdated: string;
+  messages: Message[];
+  customerName: string;
+  status: 'active' | 'human_assigned' | 'completed';
+  extracted_pii?: { name?: string; phone?: string; email?: string };
+  intent_category?: string;
+  type?: 'chat' | 'call';
+}

@@ -53,16 +53,16 @@ const Layout: React.FC<LayoutProps> = ({
   const firstName = nameParts[0];
   const restName = nameParts.slice(1).join(' ');
 
-  // Dynamic Styles based on Embed Mode
+  // Full page mode (when visiting directly) - NO popup, full screen
   const layoutClasses = isEmbedMode 
     ? "h-full w-full flex flex-col bg-white overflow-hidden" 
-    : "fixed inset-0 z-[9999] flex flex-col bg-white overflow-hidden animate-in slide-in-from-bottom-8 fade-in duration-500 md:inset-auto md:bottom-24 md:right-6 md:w-[800px] md:max-w-[90vw] md:h-[800px] md:max-h-[90vh] md:rounded-[32px] md:shadow-2xl md:border md:border-slate-200";
+    : "h-screen w-screen flex flex-col bg-white overflow-hidden";
 
   return (
     <div className={layoutClasses}>
       
       {/* Widget Header */}
-      <header className={`bg-brand-900 p-4 shrink-0 relative overflow-hidden ${!isEmbedMode ? 'md:rounded-t-[32px]' : ''}`}>
+      <header className={`bg-brand-900 p-4 shrink-0 relative overflow-hidden ${isEmbedMode ? '' : ''}`}>
         <div className="absolute top-0 left-0 w-full h-full opacity-10 grass-texture pointer-events-none"></div>
         <div className="flex flex-col gap-3 relative z-10">
           <div className="flex items-center justify-between">
@@ -124,7 +124,7 @@ const Layout: React.FC<LayoutProps> = ({
       </main>
 
       {/* Bottom Navigation */}
-      <nav className={`h-20 bg-white border-t border-slate-100 flex items-center justify-around px-2 shrink-0 pb-safe shadow-[0_-4px_12px_rgba(0,0,0,0.03)] ${!isEmbedMode ? 'md:rounded-b-[32px]' : ''}`}>
+      <nav className={`h-20 bg-white border-t border-slate-100 flex items-center justify-around px-2 shrink-0 pb-safe shadow-[0_-4px_12px_rgba(0,0,0,0.03)] ${isEmbedMode ? '' : ''}`}>
           <NavItem tab={Tab.CHAT} icon={<MessageSquare />} label={t.navChat} />
           <NavItem tab={Tab.CALL} icon={<Phone />} label={t.navCall} />
           <NavItem tab={Tab.ADMIN_SETTINGS} icon={<LayoutDashboard />} label="Admin" />

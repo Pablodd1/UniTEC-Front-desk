@@ -146,30 +146,24 @@ const App: React.FC = () => {
     );
   }
 
-  // Standalone mode is a beautiful review card mock, with nothing else on the screen
+  // Standalone mode - NO background, just full page chatbot
   return (
-    <div className="min-h-full w-full bg-slate-950 flex items-center justify-center p-0 md:p-6 overflow-hidden relative">
-      <div className="absolute inset-0 bg-cover bg-center opacity-30 blur-2xl pointer-events-none scale-105" style={{ backgroundImage: `url(${bgImage})` }}></div>
-      <div className="absolute inset-0 bg-gradient-to-tr from-slate-950 via-slate-900 to-slate-950"></div>
-      
-      {/* Premium Widget Card Container */}
-      <div className="w-full max-w-[440px] h-[100vh] md:h-[840px] bg-white rounded-none md:rounded-[40px] shadow-2xl relative flex flex-col overflow-hidden z-10 animate-in zoom-in-95 duration-500">
-        <Layout 
-          activeTab={activeTab} 
-          onTabChange={setActiveTab}
-          config={activeConfig}
-          onOpenDashboard={() => setActiveTab(Tab.ADMIN_SETTINGS)}
-          language={language}
-          setLanguage={setLanguage}
-          onLogout={handleLogout}
-          onCloseWidget={() => {}}
-          isEmbedMode={true}
-          currentBrandId={currentBrandId}
-          onToggleBrand={setCurrentBrandId}
-        >
-          {renderContent()}
-        </Layout>
-      </div>
+    <div className="h-screen w-screen bg-white overflow-hidden">
+      <Layout 
+        activeTab={activeTab} 
+        onTabChange={setActiveTab}
+        config={activeConfig}
+        onOpenDashboard={() => setActiveTab(Tab.ADMIN_SETTINGS)}
+        language={language}
+        setLanguage={setLanguage}
+        onLogout={handleLogout}
+        onCloseWidget={() => {}}
+        isEmbedMode={false}
+        currentBrandId={currentBrandId}
+        onToggleBrand={setCurrentBrandId}
+      >
+        {renderContent()}
+      </Layout>
     </div>
   );
 };

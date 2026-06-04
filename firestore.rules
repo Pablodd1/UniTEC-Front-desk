@@ -63,6 +63,41 @@ service cloud.firestore {
              request.resource.data.userId is string && request.resource.data.userId.size() < 100;
     }
 
+    // NEW: Conversation validators
+    function isValidConversation() {
+      return request.resource.data.keys().hasAll(['id', 'status', 'brandId', 'createdAt', 'lastUpdated']) &&
+             request.resource.data.id is string &&
+             request.resource.data.status in ['active', 'human_requested', 'human_assigned', 'completed', 'abandoned'] &&
+             request.resource.data.brandId in ['unitec', 'building'] &&
+             request.resource.data.createdAt is string &&
+             request.resource.data.lastUpdated is string;
+    }
+    
+    function isValidMessage() {
+      return request.resource.data.keys().hasAll(['id', 'role', 'text', 'timestamp']) &&
+             request.resource.data.id is string &&
+             request.resource.data.role in ['user', 'model', 'staff'] &&
+             request.resource.data.text is string &&
+             request.resource.data.timestamp is string;
+    }
+    
+    function isValidIntervention() {
+      return request.resource.data.keys().hasAll(['id', 'sessionId', 'requestedAt', 'status', 'requestedBy', 'reason', 'priority']) &&
+             request.resource.data.id is string &&
+             request.resource.data.sessionId is string &&
+             request.resource.data.status in ['pending', 'accepted', 'resolved', 'timeout'] &&
+             request.resource.data.requestedBy in ['user', 'system', 'staff'] &&
+             request.resource.data.reason is string &&
+             request.resource.data.priority in ['low', 'medium', 'high', 'urgent'];
+    }
+    
+    function isValidCall() {
+      return request.resource.data.keys().hasAll(['id', 'to', 'from', 'status', 'direction', 'startedAt']) &&
+             request.resource.data.id is string &&
+             request.resource.data.status in ['initiated', 'ringing', 'in-progress', 'completed', 'failed', 'busy', 'no-answer'] &&
+             request.resource.data.direction in ['outbound', 'inbound'];
+    }
+
     // ===============================================================
     // Rules
     // ===============================================================
@@ -90,6 +125,50 @@ service cloud.firestore {
     match /users/{userId}/chatSessions/{sessionId} {
       allow read, write: if isOwner(userId);
     }
+    
+    // NEW: Conversations collection (admin + staff access)
+    match /conversations/{sessionId} {
+      allow read: if isAuthenticated();
+      allow create: if isAuthenticated() && isValidConversation();
+      allow update: if isAuthenticated();
+      allow delete: if isAuthenticated();
+    }
+    
+    // NEW: Messages subcollection
+    match /conversations/{sessionId}/messages/{messageId} {
+      allow read: if isAuthenticated();
+      allow create: if isAuthenticated() && isValidMessage();
+      allow update: if isAuthenticated();
+      allow delete: if isAuthenticated();
+    }
+    
+    // NEW: Interventions collection
+    match /interventions/{interventionId} {
+      allow read: if isAuthenticated();
+      allow create: if isAuthenticated() && isValidIntervention();
+      allow update: if isAuthenticated();
+      allow delete: if isAuthenticated();
+    }
+    
+    // NEW: Calls collection
+    match /calls/{callId} {
+      allow read: if isAuthenticated();
+      allow create: if isAuthenticated() && isValidCall();
+      allow update: if isAuthenticated();
+      allow delete: if isAuthenticated();
+    }
+    
+    // NEW: Staff collection
+    match /staff/{staffId} {
+      allow read: if isAuthenticated();
+      allow write: if isAuthenticated();
+    }
+    
+    // NEW: Notifications collection
+    match /notifications/{notificationId} {
+      allow read: if isAuthenticated();
+      allow create: if isAuthenticated();
+      allow update: if isAuthenticated();
+    }
   }
 }
-

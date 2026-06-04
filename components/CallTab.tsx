@@ -5,6 +5,7 @@ import { connectLiveSession } from '../services/geminiService';
 import { saveChatSession } from '../services/firestoreService';
 import { Language, VoiceName, VoiceProvider, CallRecording } from '../types';
 import { UI_TRANSLATIONS } from '../constants';
+import { createConversation, addMessage } from '../services/conversationService';
 
 interface CallTabProps {
   emergencyMode?: boolean;
@@ -29,6 +30,9 @@ const CallTab: React.FC<CallTabProps> = ({ emergencyMode, language, voiceName, c
   const [transcript, setTranscript] = useState<{role: 'user' | 'model', text: string}[]>([]);
   const [callLibrary, setCallLibrary] = useState<CallRecording[]>([]);
   const [showLibrary, setShowLibrary] = useState(false);
+  
+  // ===== NEW: Conversation Tracking =====
+  const [conversationId, setConversationId] = useState<string | null>(null);
 
   // Gemini Live API Refs
   const sessionControllerRef = useRef<any>(null);
@@ -52,6 +56,19 @@ const CallTab: React.FC<CallTabProps> = ({ emergencyMode, language, voiceName, c
         return () => clearTimeout(timer);
     }
   }, [showEmailConfirmation]);
+
+  // ===== NEW: Save call transcript to conversation tracking =====
+  useEffect(() => {
+    if (!conversationId || transcript.length === 0) return;
+    
+    const lastMsg = transcript[transcript.length - 1];
+    if (lastMsg.text) {
+      addMessage(conversationId, {
+        role: lastMsg.role === 'user' ? 'user' : 'model',
+        text: lastMsg.text,
+      }).catch((e: any) => console.warn('Failed to save call message:', e));
+    }
+  }, [transcript, conversationId]);
 
   const stopAll = async () => {
     // Cancel Animations
@@ -80,6 +97,14 @@ const CallTab: React.FC<CallTabProps> = ({ emergencyMode, language, voiceName, c
     }
 
     setStatus('connecting');
+    
+    // ===== NEW: Initialize conversation session for this call =====
+    try {
+      const convId = await createConversation(brandId || 'unitec', language, 'phone');
+      setConversationId(convId);
+    } catch (e) {
+      console.warn('Failed to create conversation for call:', e);
+    }
 
     try {
         const session = await connectLiveSession({

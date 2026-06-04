@@ -1,6 +1,16 @@
 import { db, auth, handleFirestoreError, OperationType } from '../firebase';
 import { doc, getDoc, setDoc, collection, getDocs, query, orderBy, deleteDoc, onSnapshot } from 'firebase/firestore';
 
+// PRIVACY MODE: Set to true to disable all Firestore chat saving
+// This ensures user conversations are NOT stored unless explicitly enabled
+const PRIVACY_MODE = true;
+
+const logPrivacy = (action: string) => {
+  if (PRIVACY_MODE) {
+    console.log(`[PRIVACY] Blocked: ${action} - Chat data not saved (privacy mode enabled)`);
+  }
+};
+
 export interface AppConfig {
   escalaApiKey?: string;
   escalaAccountId?: string;
@@ -158,6 +168,11 @@ export interface ChatSession {
 }
 
 export const getAllChatSessions = async (): Promise<ChatSession[]> => {
+  if (PRIVACY_MODE) {
+    logPrivacy('getAllChatSessions');
+    return []; // Return empty when privacy mode is on
+  }
+  
   const userId = getUserId();
   if (!userId) return [];
   const path = `users/${userId}/chatSessions`;
@@ -172,6 +187,11 @@ export const getAllChatSessions = async (): Promise<ChatSession[]> => {
 };
 
 export const saveChatSession = async (session: Omit<ChatSession, 'userId'>): Promise<void> => {
+  if (PRIVACY_MODE) {
+    logPrivacy('saveChatSession');
+    return; // Don't save chat sessions
+  }
+  
   const userId = getUserId();
   if (!userId) throw new Error("User not authenticated");
   const path = `users/${userId}/chatSessions/${session.id}`;
@@ -184,6 +204,12 @@ export const saveChatSession = async (session: Omit<ChatSession, 'userId'>): Pro
 };
 
 export const subscribeToAllChatSessions = (callback: (sessions: ChatSession[]) => void): (() => void) => {
+  if (PRIVACY_MODE) {
+    logPrivacy('subscribeToAllChatSessions');
+    callback([]); // Return empty immediately
+    return () => {}; // No-op unsubscribe
+  }
+  
   const userId = getUserId();
   if (!userId) return () => {};
   const path = `users/${userId}/chatSessions`;
@@ -197,6 +223,12 @@ export const subscribeToAllChatSessions = (callback: (sessions: ChatSession[]) =
 };
 
 export const subscribeToChatSession = (sessionId: string, callback: (session: ChatSession | null) => void): (() => void) => {
+  if (PRIVACY_MODE) {
+    logPrivacy('subscribeToChatSession');
+    callback(null); // Return null immediately
+    return () => {}; // No-op unsubscribe
+  }
+  
   const userId = getUserId();
   if (!userId) return () => {};
   const path = `users/${userId}/chatSessions/${sessionId}`;

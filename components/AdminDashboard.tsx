@@ -3,15 +3,20 @@ import { Phone,
   ShieldCheck, Database, Mic2, 
   Save, RefreshCw, Check, Loader2, Volume2, 
   TrendingUp, Zap, Gauge, Building2, Store, Brain, Code, Copy, ExternalLink, Rocket, ToggleRight, ToggleLeft,
-  DollarSign, MessageSquare
+  DollarSign, MessageSquare, Activity, Headphones, BarChart3
 } from 'lucide-react';
-import { EscalaConfig, VoiceName, VoiceProvider, BillingInvoice } from '../types';
+import { EscalaConfig, VoiceName, VoiceProvider, BillingInvoice, ConversationSession, InterventionRequest } from '../types';
 import { playGeminiTTS } from '../services/geminiService';
 import { getEscalaConfig, saveEscalaConfig, testEscalaConnection } from '../services/escalaService';
 import { getUsageStats, getProfitEstimate, generateInvoice, trackUsage } from '../services/usageService';
 import { generateImage, editImage } from '../services/imageService';
 import { getAppConfig, saveAppConfig, getCrmLogs, CrmLog, getAllChatSessions, ChatSession, saveChatSession } from '../services/firestoreService';
 import { DEFAULT_TRAINING_DATA } from '../constants';
+import { subscribeToConversations, subscribeToInterventions } from '../services/conversationService';
+import ConversationMonitor from './ConversationMonitor';
+import StaffIntervention from './StaffIntervention';
+import AnalyticsDashboard from './AnalyticsDashboard';
+import ApiHealthMonitor from './ApiHealthMonitor';
 
 interface AdminDashboardProps {
   emergencyMode: boolean;
@@ -42,7 +47,12 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({
     onToggleBrand,
     onUpdateBackground
 }) => {
-  const [activeSubTab, setActiveSubTab] = useState<'chats' | 'catalogs' | 'usage' | 'voice' | 'visuals' | 'training' | 'integrations' | 'deploy' | 'functionalities' | 'general'>('chats');
+  const [activeSubTab, setActiveSubTab] = useState<'chats' | 'catalogs' | 'usage' | 'voice' | 'visuals' | 'training' | 'integrations' | 'deploy' | 'functionalities' | 'general' | 'conversations' | 'interventions' | 'analytics' | 'health'>('chats');
+  
+  // NEW: Conversation Tracking States
+  const [conversations, setConversations] = useState<ConversationSession[]>([]);
+  const [_interventions, _setInterventions] = useState<InterventionRequest[]>([]);
+  const [_selectedConversation, _setSelectedConversation] = useState<ConversationSession | null>(null);
   
   // Usage & Billing State
   const [totalTokens, setTotalTokens] = useState(0);
@@ -122,6 +132,14 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({
     };
     loadData();
 
+    // NEW: Subscribe to real-time conversations and interventions
+    const unsubConversations = subscribeToConversations((sessions: ConversationSession[]) => {
+      setConversations(sessions);
+    });
+    const unsubInterventions = subscribeToInterventions((ints: InterventionRequest[]) => {
+      _setInterventions(ints);
+    });
+
     const interval = setInterval(() => {
       const stats = getUsageStats();
       setTotalTokens(stats.totalTokens);
@@ -148,7 +166,11 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({
       const randomAction = actions[Math.floor(Math.random() * actions.length)];
       setLiveLogs(prev => [`[${new Date().toLocaleTimeString()}] ${randomAction}`, ...prev.slice(0, 15)]);
     }, 3000);
-    return () => clearInterval(interval);
+    return () => {
+      clearInterval(interval);
+      unsubConversations();
+      unsubInterventions();
+    };
   }, []);
 
   const handleCopy = (text: string, id: string) => {
@@ -1362,6 +1384,51 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({
                      </div>
                 </div>
             );
+            
+        // ===== NEW: Real-time Conversation Monitoring =====
+        case 'conversations':
+            return (
+                <div className="h-[calc(100vh-200px)] animate-in slide-in-from-bottom-2 duration-500">
+                    <ConversationMonitor 
+                        sessions={conversations}
+                        onSelectSession={(session) => {
+                            _setSelectedConversation(session);
+                        }}
+                        onRequestIntervention={(sessionId) => {
+                            console.log('Intervention requested for:', sessionId);
+                        }}
+                    />
+                </div>
+            );
+            
+        // ===== NEW: Staff Intervention Center =====
+        case 'interventions':
+            return (
+                <div className="h-[calc(100vh-200px)] animate-in slide-in-from-bottom-2 duration-500">
+                    <StaffIntervention 
+                        sessions={conversations}
+                        onCallCustomer={(phone) => {
+                            console.log('Calling customer:', phone);
+                        }}
+                    />
+                </div>
+            );
+            
+        // ===== NEW: Analytics Dashboard =====
+        case 'analytics':
+            return (
+                <div className="h-[calc(100vh-200px)] animate-in slide-in-from-bottom-2 duration-500">
+                    <AnalyticsDashboard sessions={conversations} />
+                </div>
+            );
+            
+        // ===== NEW: API Health Monitor =====
+        case 'health':
+            return (
+                <div className="h-[calc(100vh-200px)] animate-in slide-in-from-bottom-2 duration-500">
+                    <ApiHealthMonitor />
+                </div>
+            );
     }
   };
 
@@ -1402,6 +1469,10 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({
                  { id: 'deploy',          label: 'Deploy',       icon: <Rocket size={13} /> },
                  { id: 'functionalities', label: 'Changelog',    icon: <TrendingUp size={13} /> },
                  { id: 'general',         label: 'Settings',     icon: <ShieldCheck size={13} /> },
+                 { id: 'conversations',   label: 'Conversations',icon: <MessageSquare size={13} /> },
+                 { id: 'interventions',   label: 'Interventions',icon: <Headphones size={13} /> },
+                 { id: 'analytics',       label: 'Analytics',    icon: <BarChart3 size={13} /> },
+                 { id: 'health',          label: 'Health',       icon: <Activity size={13} /> },
                ].map((t: any) => (
                  <button
                    key={t.id}
@@ -1413,8 +1484,8 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({
                ))}
              </div>
         </div>
-        <div className="flex-1 overflow-y-auto p-8 no-scrollbar">
-            <div className="max-w-4xl mx-auto">
+        <div className="flex-1 overflow-y-auto p-4 md:p-8 no-scrollbar">
+            <div className="max-w-7xl mx-auto">
                 {renderTabContent()}
             </div>
         </div>

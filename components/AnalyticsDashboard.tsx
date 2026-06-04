@@ -1,0 +1,257 @@
+import React from 'react';
+import { Users, MessageSquare, Clock, Target, BarChart3, Phone } from 'lucide-react';
+import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, PieChart, Pie, Cell } from 'recharts';
+import { ConversationSession } from '../services/conversationService';
+
+interface AnalyticsDashboardProps {
+  sessions: ConversationSession[];
+}
+
+const AnalyticsDashboard: React.FC<AnalyticsDashboardProps> = ({ sessions }) => {
+  // Calculate metrics
+  const totalSessions = sessions.length;
+  const activeSessions = sessions.filter(s => s.status === 'active').length;
+  const humanRequested = sessions.filter(s => s.status === 'human_requested').length;
+  const humanAssigned = sessions.filter(s => s.status === 'human_assigned').length;
+  const completedSessions = sessions.filter(s => s.status === 'completed').length;
+  
+  const brandDistribution = {
+    unitec: sessions.filter(s => s.brandId === 'unitec').length,
+    building: sessions.filter(s => s.brandId === 'building').length,
+  };
+  
+  const sourceDistribution = {
+    web: sessions.filter(s => s.source === 'web').length,
+    phone: sessions.filter(s => s.source === 'phone').length,
+    whatsapp: sessions.filter(s => s.source === 'whatsapp').length,
+  };
+  
+  const intentDistribution = sessions.reduce((acc, s) => {
+    const intent = s.intentCategory || 'unknown';
+    acc[intent] = (acc[intent] || 0) + 1;
+    return acc;
+  }, {} as Record<string, number>);
+  
+  const hourlyDistribution = sessions.reduce((acc, s) => {
+    const hour = new Date(s.createdAt).getHours();
+    acc[hour] = (acc[hour] || 0) + 1;
+    return acc;
+  }, {} as Record<number, number>);
+  
+  const hourlyData = Object.entries(hourlyDistribution)
+    .map(([hour, count]) => ({ hour: `${hour}:00`, count }))
+    .sort((a, b) => parseInt(a.hour) - parseInt(b.hour));
+  
+  const sentimentData = sessions.reduce((acc, s) => {
+    const score = s.sentimentScore || 0;
+    if (score > 0.3) acc.positive++;
+    else if (score < -0.3) acc.negative++;
+    else acc.neutral++;
+    return acc;
+  }, { positive: 0, neutral: 0, negative: 0 });
+  
+  // Unused but defined for future color customization
+  void ['#2563eb', '#16a34a', '#ea580c', '#8b5cf6', '#ec4899'];
+  
+  const topTopics = sessions.reduce((acc: Record<string, number>, s) => {
+    s.topics?.forEach((topic: string) => {
+      acc[topic] = (acc[topic] || 0) + 1;
+    });
+    return acc;
+  }, {} as Record<string, number>);
+  
+  const sortedTopics = Object.entries(topTopics)
+    .sort(([, a]: [string, number], [, b]: [string, number]) => b - a)
+    .slice(0, 10);
+
+  return (
+    <div className="h-full overflow-y-auto p-6 space-y-6">
+      {/* Overview Cards */}
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+        <div className="bg-white p-4 rounded-2xl border border-slate-200">
+          <div className="flex items-center justify-between mb-2">
+            <span className="text-xs font-bold text-slate-400 uppercase tracking-wider">Total Conversations</span>
+            <MessageSquare size={16} className="text-brand-600" />
+          </div>
+          <p className="text-2xl font-black text-slate-800">{totalSessions}</p>
+          <p className="text-xs text-slate-400 mt-1">{activeSessions} active now</p>
+        </div>
+        
+        <div className="bg-white p-4 rounded-2xl border border-slate-200">
+          <div className="flex items-center justify-between mb-2">
+            <span className="text-xs font-bold text-slate-400 uppercase tracking-wider">Human Interventions</span>
+            <Users size={16} className="text-orange-600" />
+          </div>
+          <p className="text-2xl font-black text-slate-800">{humanRequested + humanAssigned}</p>
+          <p className="text-xs text-slate-400 mt-1">{humanRequested} pending</p>
+        </div>
+        
+        <div className="bg-white p-4 rounded-2xl border border-slate-200">
+          <div className="flex items-center justify-between mb-2">
+            <span className="text-xs font-bold text-slate-400 uppercase tracking-wider">Completed</span>
+            <Target size={16} className="text-green-600" />
+          </div>
+          <p className="text-2xl font-black text-slate-800">{completedSessions}</p>
+          <p className="text-xs text-slate-400 mt-1">
+            {totalSessions > 0 ? ((completedSessions / totalSessions) * 100).toFixed(1) : 0}% completion rate
+          </p>
+        </div>
+        
+        <div className="bg-white p-4 rounded-2xl border border-slate-200">
+          <div className="flex items-center justify-between mb-2">
+            <span className="text-xs font-bold text-slate-400 uppercase tracking-wider">Avg Duration</span>
+            <Clock size={16} className="text-blue-600" />
+          </div>
+          <p className="text-2xl font-black text-slate-800">
+            {sessions.length > 0
+              ? (sessions.reduce((acc, s) => acc + (s.duration || 0), 0) / sessions.length / 60).toFixed(1)
+              : 0}m
+          </p>
+          <p className="text-xs text-slate-400 mt-1">Per conversation</p>
+        </div>
+      </div>
+
+      {/* Charts Row */}
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <div className="bg-white p-6 rounded-2xl border border-slate-200">
+          <h3 className="font-bold text-slate-800 mb-4">Hourly Activity</h3>
+          <div className="h-64">
+            <ResponsiveContainer width="100%" height="100%">
+              <BarChart data={hourlyData}>
+                <CartesianGrid strokeDasharray="3 3" />
+                <XAxis dataKey="hour" />
+                <YAxis />
+                <Tooltip />
+                <Bar dataKey="count" fill="#2563eb" />
+              </BarChart>
+            </ResponsiveContainer>
+          </div>
+        </div>
+        
+        <div className="bg-white p-6 rounded-2xl border border-slate-200">
+          <h3 className="font-bold text-slate-800 mb-4">Brand Distribution</h3>
+          <div className="h-64">
+            <ResponsiveContainer width="100%" height="100%">
+              <PieChart>
+                <Pie
+                  data={[
+                    { name: 'UNITEC', value: brandDistribution.unitec },
+                    { name: 'Building Innovation', value: brandDistribution.building },
+                  ]}
+                  cx="50%"
+                  cy="50%"
+                  innerRadius={60}
+                  outerRadius={80}
+                  paddingAngle={5}
+                  dataKey="value"
+                >
+                  <Cell fill="#2563eb" />
+                  <Cell fill="#16a34a" />
+                </Pie>
+                <Tooltip />
+              </PieChart>
+            </ResponsiveContainer>
+          </div>
+          <div className="flex justify-center gap-4 mt-2">
+            <div className="flex items-center gap-2">
+              <div className="w-3 h-3 rounded-full bg-[#2563eb]" />
+              <span className="text-xs text-slate-600">UNITEC ({brandDistribution.unitec})</span>
+            </div>
+            <div className="flex items-center gap-2">
+              <div className="w-3 h-3 rounded-full bg-[#16a34a]" />
+              <span className="text-xs text-slate-600">Building Innovation ({brandDistribution.building})</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Sentiment & Source Distribution */}
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <div className="bg-white p-6 rounded-2xl border border-slate-200">
+          <h3 className="font-bold text-slate-800 mb-4">Sentiment Analysis</h3>
+          <div className="space-y-3">
+            <div className="flex items-center justify-between p-3 bg-emerald-50 rounded-xl">
+              <span className="text-sm font-medium text-emerald-700">Positive</span>
+              <span className="font-bold text-emerald-700">{sentimentData.positive}</span>
+            </div>
+            <div className="flex items-center justify-between p-3 bg-slate-50 rounded-xl">
+              <span className="text-sm font-medium text-slate-700">Neutral</span>
+              <span className="font-bold text-slate-700">{sentimentData.neutral}</span>
+            </div>
+            <div className="flex items-center justify-between p-3 bg-red-50 rounded-xl">
+              <span className="text-sm font-medium text-red-700">Negative</span>
+              <span className="font-bold text-red-700">{sentimentData.negative}</span>
+            </div>
+          </div>
+        </div>
+        
+        <div className="bg-white p-6 rounded-2xl border border-slate-200">
+          <h3 className="font-bold text-slate-800 mb-4">Source Distribution</h3>
+          <div className="space-y-3">
+            <div className="flex items-center justify-between p-3 bg-blue-50 rounded-xl">
+              <span className="text-sm font-medium text-blue-700 flex items-center gap-2">
+                <BarChart3 size={14} /> Web
+              </span>
+              <span className="font-bold text-blue-700">{sourceDistribution.web}</span>
+            </div>
+            <div className="flex items-center justify-between p-3 bg-orange-50 rounded-xl">
+              <span className="text-sm font-medium text-orange-700 flex items-center gap-2">
+                <Phone size={14} /> Phone
+              </span>
+              <span className="font-bold text-orange-700">{sourceDistribution.phone}</span>
+            </div>
+            <div className="flex items-center justify-between p-3 bg-green-50 rounded-xl">
+              <span className="text-sm font-medium text-green-700 flex items-center gap-2">
+                <MessageSquare size={14} /> WhatsApp
+              </span>
+              <span className="font-bold text-green-700">{sourceDistribution.whatsapp}</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Top Topics */}
+      <div className="bg-white p-6 rounded-2xl border border-slate-200">
+        <h3 className="font-bold text-slate-800 mb-4">Top Conversation Topics</h3>
+        {sortedTopics.length === 0 ? (
+          <p className="text-sm text-slate-400">No topic data available yet</p>
+        ) : (
+          <div className="space-y-2">
+            {sortedTopics.map(([topic, count]: [string, number], index: number) => (
+              <div key={topic} className="flex items-center gap-3">
+                <span className="text-xs font-bold text-slate-400 w-6">{index + 1}</span>
+                <div className="flex-1 bg-slate-100 rounded-full h-6 relative overflow-hidden">
+                  <div
+                    className="bg-brand-500 h-full rounded-full transition-all"
+                    style={{ width: `${(count / sortedTopics[0][1]) * 100}%` }}
+                  />
+                  <span className="absolute inset-0 flex items-center px-3 text-xs font-medium text-slate-700">
+                    {topic}
+                  </span>
+                </div>
+                <span className="text-xs font-bold text-slate-600 w-8 text-right">{count}</span>
+              </div>
+            ))}
+          </div>
+        )}
+      </div>
+
+      {/* Intent Distribution */}
+      {Object.keys(intentDistribution).length > 0 && (
+        <div className="bg-white p-6 rounded-2xl border border-slate-200">
+          <h3 className="font-bold text-slate-800 mb-4">Intent Distribution</h3>
+          <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
+            {Object.entries(intentDistribution).map(([intent, count]) => (
+              <div key={intent} className="p-3 bg-slate-50 rounded-xl">
+                <p className="text-xs font-bold text-slate-400 uppercase tracking-wider">{intent}</p>
+                <p className="text-lg font-bold text-slate-800">{count}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+    </div>
+  );
+};
+
+export default AnalyticsDashboard;

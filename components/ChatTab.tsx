@@ -3,7 +3,13 @@ import React, { useState, useRef, useEffect } from 'react';
 import { Message, QuickAction, Language } from '../types';
 import { saveChatSession, subscribeToChatSession } from '../services/firestoreService';
 import { sendMessageToGemini } from '../services/geminiService';
-import { Send, Bot, User, Box, DollarSign, Hammer, BookOpen, CheckCircle2, Truck, FileText, RefreshCcw, Percent } from 'lucide-react';
+import { 
+  createConversation, 
+  addMessage, 
+  requestIntervention,
+} from '../services/conversationService';
+import { notifyStaffIntervention } from '../services/notificationService';
+import { Send, Bot, User, Box, DollarSign, Hammer, BookOpen, CheckCircle2, Truck, FileText, RefreshCcw, Percent, Headphones } from 'lucide-react';
 import { GenerateContentResponse } from '@google/genai';
 import { UI_TRANSLATIONS } from '../constants';
 import Markdown from 'react-markdown';
@@ -42,6 +48,12 @@ const ChatTab: React.FC<ChatTabProps> = ({ quickActions, initialMessage, emergen
   const [emailSentTo, setEmailSentTo] = useState<string | null>(null);
   const [extractedPii, setExtractedPii] = useState<{name?: string, phone?: string, email?: string} | null>(null);
   const [intentCategory, setIntentCategory] = useState<string | null>(null);
+  
+  // ===== NEW: Conversation Tracking =====
+  const [conversationId, setConversationId] = useState<string | null>(null);
+  const [showInterventionRequest, setShowInterventionRequest] = useState(false);
+  const [interventionReason, setInterventionReason] = useState('');
+  const [isRequestingIntervention, setIsRequestingIntervention] = useState(false);
 
 
   // Real-time listener for human-takeover intervention
@@ -78,6 +90,72 @@ const ChatTab: React.FC<ChatTabProps> = ({ quickActions, initialMessage, emergen
   const hasProcessedInitial = useRef(false);
 
   const sessionId = useRef(`session_${Date.now()}_${Math.random().toString(36).substring(2, 10)}`);
+
+  // ===== NEW: Initialize Conversation Session =====
+  useEffect(() => {
+    const initConversation = async () => {
+      try {
+        const id = await createConversation(
+          brandId || 'unitec',
+          language,
+          'web',
+          { userAgent: navigator.userAgent, ipAddress: 'unknown' }
+        );
+        setConversationId(id);
+      } catch (e) {
+        console.warn('Failed to create conversation session:', e);
+      }
+    };
+    initConversation();
+  }, [brandId, language]);
+
+  // ===== NEW: Save messages to Conversation Tracking =====
+  useEffect(() => {
+    if (!conversationId || messages.length <= 1) return;
+    
+    const lastMessage = messages[messages.length - 1];
+    if (lastMessage.role === 'user') {
+      addMessage(conversationId, {
+        role: 'user',
+        text: lastMessage.text,
+      }).catch((e: any) => console.warn('Failed to save user message:', e));
+    } else if (lastMessage.role === 'model' && lastMessage.text) {
+      addMessage(conversationId, {
+        role: 'model',
+        text: lastMessage.text,
+      }).catch((e: any) => console.warn('Failed to save model message:', e));
+    }
+  }, [messages, conversationId]);
+
+  // ===== NEW: Handle Staff Intervention Messages =====
+  useEffect(() => {
+    if (!conversationId) return;
+    
+    const unsubscribe = subscribeToChatSession(conversationId, (session) => {
+      if (!session || session.status !== 'human_assigned') return;
+      
+      // When staff takes over, merge their messages
+      if (session.messages) {
+        const staffMsgs = session.messages.filter((m: any) => m.role === 'staff');
+        if (staffMsgs.length > 0) {
+          setMessages(prev => {
+            const existingTexts = new Set(prev.map(m => m.text));
+            const newMsgs = staffMsgs
+              .filter((m: any) => !existingTexts.has(m.text))
+              .map((m: any) => ({
+                id: m.id || Date.now().toString(),
+                role: 'model' as const,
+                text: `[Staff] ${m.text}`,
+                timestamp: new Date(m.timestamp)
+              }));
+            return [...prev, ...newMsgs];
+          });
+        }
+      }
+    });
+    
+    return () => unsubscribe();
+  }, [conversationId]);
 
   // Sync to Firebase (Only when AI is actively responding to avoid race-loops)
   useEffect(() => {
@@ -245,6 +323,42 @@ const ChatTab: React.FC<ChatTabProps> = ({ quickActions, initialMessage, emergen
       case 'RefreshCcw': return <RefreshCcw size={16} />;
       case 'Percent': return <Percent size={16} />;
       default: return <Box size={16} />;
+    }
+  };
+
+  // ===== NEW: Handle Request Human Intervention =====
+  const handleRequestIntervention = async () => {
+    if (!conversationId || !interventionReason.trim()) return;
+    
+    setIsRequestingIntervention(true);
+    try {
+      await requestIntervention(conversationId, interventionReason.trim(), 'high');
+      await notifyStaffIntervention(conversationId, interventionReason.trim(), 'high');
+      
+      // Add system message to chat
+      setMessages(prev => [...prev, {
+        id: Date.now().toString(),
+        role: 'model',
+        text: language === 'en' 
+          ? 'I have notified our team. A representative will join this conversation shortly.' 
+          : 'He notificado a nuestro equipo. Un representante se unirá a esta conversación en breve.',
+        timestamp: new Date()
+      }]);
+      
+      setShowInterventionRequest(false);
+      setInterventionReason('');
+    } catch (e) {
+      console.error('Failed to request intervention:', e);
+      setMessages(prev => [...prev, {
+        id: Date.now().toString(),
+        role: 'model',
+        text: language === 'en'
+          ? 'Unable to connect to staff. Please try again or call us directly.'
+          : 'No se puede conectar con el personal. Por favor inténtalo de nuevo o llámanos directamente.',
+        timestamp: new Date()
+      }]);
+    } finally {
+      setIsRequestingIntervention(false);
     }
   };
 
@@ -420,6 +534,60 @@ const ChatTab: React.FC<ChatTabProps> = ({ quickActions, initialMessage, emergen
             ))}
          </div>
       </div>
+
+      {/* NEW: Request Human Intervention Button */}
+      {sessionStatus === 'active' && !showInterventionRequest && (
+        <div className="px-4 pb-2 bg-white border-t border-gray-50">
+          <button
+            onClick={() => setShowInterventionRequest(true)}
+            className="flex items-center gap-2 w-full justify-center py-2 bg-amber-50 text-amber-700 rounded-xl text-xs font-medium hover:bg-amber-100 transition-colors border border-amber-200"
+          >
+            <Headphones size={14} />
+            {language === 'en' ? 'Talk to a Human' : 'Hablar con un Humano'}
+          </button>
+        </div>
+      )}
+
+      {/* NEW: Intervention Request Modal */}
+      {showInterventionRequest && (
+        <div className="absolute inset-0 z-[100] flex items-center justify-center p-6 bg-slate-900/40 backdrop-blur-sm animate-in fade-in duration-300">
+          <div className="bg-white rounded-[40px] p-8 shadow-2xl border border-slate-100 max-w-xs w-full text-center animate-in zoom-in-95 duration-300">
+            <div className="w-20 h-20 bg-amber-100 text-amber-600 rounded-full flex items-center justify-center mx-auto mb-6 ring-8 ring-amber-50">
+              <Headphones size={40} />
+            </div>
+            <h3 className="text-xl font-black text-slate-900 mb-2 uppercase tracking-tight">
+              {language === 'en' ? 'Request Human' : 'Solicitar Humano'}
+            </h3>
+            <p className="text-slate-500 text-sm mb-6 leading-relaxed">
+              {language === 'en' ? 'Our team will join this conversation shortly.' : 'Nuestro equipo se unirá a esta conversación en breve.'}
+            </p>
+            <div className="bg-slate-50 rounded-2xl p-4 mb-6 border border-slate-100">
+              <textarea
+                value={interventionReason}
+                onChange={(e) => setInterventionReason(e.target.value)}
+                placeholder={language === 'en' ? 'Briefly describe what you need...' : 'Describe brevemente lo que necesitas...'}
+                className="w-full bg-transparent border-none outline-none text-sm text-slate-800 placeholder-slate-400 resize-none"
+                rows={3}
+              />
+            </div>
+            <div className="flex gap-3">
+              <button 
+                onClick={() => setShowInterventionRequest(false)}
+                className="flex-1 py-3 bg-slate-100 text-slate-700 rounded-2xl font-bold text-xs uppercase tracking-widest hover:bg-slate-200 transition-all"
+              >
+                {language === 'en' ? 'Cancel' : 'Cancelar'}
+              </button>
+              <button 
+                onClick={handleRequestIntervention}
+                disabled={isRequestingIntervention || !interventionReason.trim()}
+                className="flex-1 py-3 bg-amber-600 text-white rounded-2xl font-bold text-xs uppercase tracking-widest hover:bg-amber-700 transition-all disabled:opacity-50"
+              >
+                {isRequestingIntervention ? 'Sending...' : language === 'en' ? 'Request' : 'Solicitar'}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
 
       <div className="p-4 bg-white border-t border-gray-100">
         <div className={`flex items-center gap-2 bg-gray-50 p-2 rounded-xl border transition-all ${
