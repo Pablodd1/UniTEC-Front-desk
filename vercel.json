@@ -1,26 +1,4 @@
 {
   "version": 2,
-  "public": true,
-  "github": {
-    "enabled": false
-  },
-  "builds": [
-    {
-      "src": "package.json",
-      "use": "@vercel/static-build",
-      "config": {
-        "distDir": "dist"
-      }
-    }
-  ],
-  "routes": [
-    {
-      "src": "/building-chatbot.js",
-      "dest": "/building-chatbot.js"
-    },
-    {
-      "src": "/unitec-chatbot.js",
-      "dest": "/unitec-chatbot.js"
-    }
-  ]
+  "public": true
 }
