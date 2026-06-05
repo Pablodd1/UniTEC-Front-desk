@@ -548,7 +548,7 @@ const ChatTab: React.FC<ChatTabProps> = ({ quickActions, initialMessage, emergen
             className="flex items-center gap-2 w-full justify-center py-2 bg-amber-50 text-amber-700 rounded-xl text-xs font-medium hover:bg-amber-100 transition-colors border border-amber-200"
           >
             <Headphones size={14} />
-            {language === 'en' ? 'Talk to a Human' : 'Hablar con un Humano'}
+            Para ayuda aún más personalizada / Talk to a human
           </button>
         </div>
       )}
