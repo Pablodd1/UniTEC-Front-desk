@@ -1,4 +1,4 @@
-﻿// Building Innovation Chatbot Embed Script
+// Building Innovation Chatbot Embed Script
 // Website: https://www.building-innovation.us/
 
 (function() {
@@ -8,7 +8,7 @@
     height: '700px',
     position: 'bottom-right',
     buttonColor: '#0ea5e9',
-    buttonText: 'ðŸ’¬ Chat',
+    buttonText: '💬 Chat',
     language: 'es',
     zIndex: 9999,
   };
@@ -31,7 +31,7 @@
   `;
 
   const iframe = document.createElement('iframe');
-  iframe.src = `https://chat.building-innovation.us/?embed=true&brandId=${config.brandId}&lang=${config.language}`;
+  iframe.src = `https://uni-tec-front-desk.vercel.app/?embed=true&brandId=${config.brandId}&lang=${config.language}`;
   iframe.style.cssText = `
     width: 100%;
     height: 100%;
@@ -94,5 +94,5 @@
     container.style.borderRadius = '0';
   }
 
-  console.log('âœ… Building Innovation Chatbot loaded');
+  console.log('✅ Building Innovation Chatbot loaded');
 })();
