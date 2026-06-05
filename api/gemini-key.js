@@ -1,4 +1,4 @@
-﻿export default async function handler(req, res) {
+export default async function handler(req, res) {
   res.setHeader('Access-Control-Allow-Credentials', true);
   res.setHeader('Access-Control-Allow-Origin', '*');
   res.setHeader('Access-Control-Allow-Methods', 'GET,OPTIONS');
@@ -15,6 +15,7 @@
   const keys = [
     process.env.GEMINI_API_KEY,
     process.env.GEMINI_BACKUP_KEY,
+    process.env.GEMINI_BACKUP_KEY_2,
     process.env.API_KEY,
     process.env.VITE_GEMINI_API_KEY,
     process.env.VITE_API_KEY
