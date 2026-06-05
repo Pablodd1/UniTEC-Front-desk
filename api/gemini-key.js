@@ -30,7 +30,7 @@ export default async function handler(req, res) {
   async function getWorkingKey() {
     for (const key of keys) {
       try {
-        const response = await fetch(https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key= + key, {
+        const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${key}`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ contents: [{ parts: [{ text: "ping" }] }] })
@@ -38,7 +38,7 @@ export default async function handler(req, res) {
         if (response.ok) {
           return key; // Found a working key
         } else {
-          console.error(Key validation failed with status: );
+          console.error(`Key validation failed with status: ${response.status}`);
         }
       } catch (error) {
         console.error('Network error validating key:', error);
