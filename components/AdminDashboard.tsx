@@ -1,10 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Phone,  
-  ShieldCheck, Database, Mic2, 
-  Save, RefreshCw, Check, Loader2, Volume2, 
-  TrendingUp, Zap, Gauge, Building2, Store, Brain, Code, Copy, ExternalLink, Rocket, ToggleRight, ToggleLeft,
-  DollarSign, MessageSquare, Activity, Headphones, BarChart3
-} from 'lucide-react';
+import { Phone, ShieldCheck, Database, Mic2, Save, RefreshCw, Check, Loader2, Volume2, TrendingUp, Zap, Gauge, Building2, Store, Brain, Code, Copy, ExternalLink, Rocket, ToggleRight, ToggleLeft, DollarSign, MessageSquare, Headphones, BarChart3 } from 'lucide-react';
 import { EscalaConfig, VoiceName, VoiceProvider, BillingInvoice, ConversationSession, InterventionRequest } from '../types';
 import { playGeminiTTS } from '../services/geminiService';
 import { getEscalaConfig, saveEscalaConfig, testEscalaConnection } from '../services/escalaService';
@@ -1558,18 +1553,11 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({
                <div className="self-center mx-3 w-px h-5 bg-slate-200 shrink-0" />
                {/* SYSTEM / OWNER GROUP */}
                {[
-                 { id: 'usage',           label: 'Billing',      icon: <DollarSign size={13} /> },
-                 { id: 'voice',           label: 'Voice',        icon: <Mic2 size={13} /> },
                  { id: 'training',        label: 'AI Training',  icon: <Brain size={13} /> },
-                 { id: 'visuals',         label: 'Visuals',      icon: <Zap size={13} /> },
-                 { id: 'integrations',    label: 'Integrations', icon: <Database size={13} /> },
-                 { id: 'deploy',          label: 'Deploy',       icon: <Rocket size={13} /> },
-                 { id: 'functionalities', label: 'Changelog',    icon: <TrendingUp size={13} /> },
                  { id: 'general',         label: 'Settings',     icon: <ShieldCheck size={13} /> },
                  { id: 'conversations',   label: 'Conversations',icon: <MessageSquare size={13} /> },
                  { id: 'interventions',   label: 'Interventions',icon: <Headphones size={13} /> },
                  { id: 'analytics',       label: 'Analytics',    icon: <BarChart3 size={13} /> },
-                 { id: 'health',          label: 'Health',       icon: <Activity size={13} /> },
                ].map((t: any) => (
                  <button
                    key={t.id}
