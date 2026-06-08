@@ -31,7 +31,7 @@
   `;
 
   const iframe = document.createElement('iframe');
-  iframe.src = `https://uni-tec-front-desk.vercel.app/?embed=true&brandId=${config.brandId}&lang=${config.language}`;
+  iframe.src = `https://chat.building-innovation.us/?embed=true&brandId=${config.brandId}&lang=${config.language}`;
   iframe.style.cssText = `
     width: 100%;
     height: 100%;
