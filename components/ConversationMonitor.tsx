@@ -6,7 +6,7 @@ import {
   ArrowUpRight, Eye, UserCheck, Timer, 
   Check
 } from 'lucide-react';
-import { ConversationSession, subscribeToConversation, getMessages, ConversationMessage, addMessage, updateSessionStatus, addConversationTag, addConversationNote } from '../services/conversationService';
+import { ConversationSession, subscribeToConversation, subscribeToMessages, ConversationMessage, addMessage, updateSessionStatus, addConversationTag, addConversationNote } from '../services/conversationService';
 import { playNotificationSound } from '../services/soundService';
 
 interface ConversationMonitorProps {
@@ -144,11 +144,16 @@ const ConversationMonitor: React.FC<ConversationMonitorProps> = ({
       }
     });
     
-    // Load messages
-    getMessages(selectedSessionId).then(setMessages);
+    // Real-time message subscription (live updates without refresh)
+    const unsubMessages = subscribeToMessages(selectedSessionId, (msgs) => {
+      setMessages(msgs);
+    });
     
-    return () => unsubscribe();
-  }, [selectedSessionId, lastMessageCount, messages, playSound]);
+    return () => {
+      unsubscribe();
+      unsubMessages();
+    };
+  }, [selectedSessionId, lastMessageCount, playSound]);
 
   // Conversation timer
   useEffect(() => {

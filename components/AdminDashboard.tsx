@@ -72,7 +72,8 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({
   const [geminiApiKey, setGeminiApiKey] = useState('');
   const [privacyMode, setPrivacyMode] = useState(() => {
     const stored = typeof window !== 'undefined' ? window.localStorage.getItem('unitec_privacy_mode') : null;
-    return stored !== 'false';
+    // Default to FALSE so chats are saved by default
+    return stored === 'true';
   });
   const [isSavingGemini, setIsSavingGemini] = useState(false);
   const [escalaTestResult, setEscalaTestResult] = useState<'success' | 'error' | null>(null);

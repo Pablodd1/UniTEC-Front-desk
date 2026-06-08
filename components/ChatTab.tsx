@@ -7,6 +7,8 @@ import {
   createConversation, 
   addMessage, 
   requestIntervention,
+  extractCustomerData,
+  updateSessionStatus,
 } from '../services/conversationService';
 import { notifyStaffIntervention } from '../services/notificationService';
 import { Send, Bot, User, Box, DollarSign, Hammer, BookOpen, CheckCircle2, Truck, FileText, RefreshCcw, Percent, Headphones } from 'lucide-react';
@@ -55,6 +57,15 @@ const ChatTab: React.FC<ChatTabProps> = ({ quickActions, initialMessage, emergen
   const [interventionReason, setInterventionReason] = useState('');
   const [isRequestingIntervention, setIsRequestingIntervention] = useState(false);
 
+
+  // Mark session completed on unmount
+  useEffect(() => {
+    return () => {
+      if (conversationId) {
+        updateSessionStatus(conversationId, 'completed').catch(() => {});
+      }
+    };
+  }, [conversationId]);
 
   // Real-time listener for human-takeover intervention
   useEffect(() => {
@@ -267,7 +278,16 @@ const ChatTab: React.FC<ChatTabProps> = ({ quickActions, initialMessage, emergen
                   setEmailSentTo('Administrator');
                   setShowEmailConfirmation(true);
               } else if (toolName === 'extract_customer_info') {
-                  setExtractedPii(prev => ({ ...prev, ...result }));
+                  setExtractedPii(prev => {
+                    const merged = { ...prev, ...result };
+                    // Persist PII immediately to Firestore
+                    if (conversationId) {
+                      extractCustomerData(conversationId, merged).catch((e: any) =>
+                        console.warn('Failed to save customer PII:', e)
+                      );
+                    }
+                    return merged;
+                  });
                   if (result.intent_category) setIntentCategory(result.intent_category);
               }
           },

@@ -5,7 +5,8 @@ import { doc, getDoc, setDoc, collection, getDocs, query, orderBy, deleteDoc, on
 // This ensures user conversations are NOT stored unless explicitly enabled
 export const getPrivacyMode = (): boolean => {
   const stored = typeof window !== 'undefined' ? window.localStorage.getItem('unitec_privacy_mode') : null;
-  return stored !== 'false'; // Default to true
+  // Default to FALSE — conversations are saved unless admin explicitly enables privacy mode
+  return stored === 'true';
 };
 
 const logPrivacy = (action: string) => {
