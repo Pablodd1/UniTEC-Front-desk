@@ -123,7 +123,62 @@ const extractCustomerInfoTool: FunctionDeclaration = {
   }
 };
 
-export const TOOLS = [bookAppointmentTool, logToCrmTool, sendEmailTool, emailConversationToAdminTool, extractCustomerInfoTool];
+
+const calculateShippingTool: FunctionDeclaration = {
+  name: "calculate_shipping",
+  description: "Calculate shipping and freight rates for products using the Walio API.",
+  parameters: {
+    type: Type.OBJECT,
+    properties: {
+      destinationZip: { type: Type.STRING, description: "Zip code of the delivery address" },
+      destinationCity: { type: Type.STRING, description: "City name of the delivery address" },
+      destinationState: { type: Type.STRING, description: "State code of the delivery address (e.g. FL, NY)" },
+      cartItems: {
+        type: Type.ARRAY,
+        description: "List of items in the cart to calculate shipping for",
+        items: {
+          type: Type.OBJECT,
+          properties: {
+            productId: { type: Type.STRING, description: "Product ID (e.g., 14031001)" },
+            quantity: { type: Type.INTEGER, description: "Quantity of the product" }
+          },
+          required: ["productId", "quantity"]
+        }
+      }
+    },
+    required: ["destinationZip", "destinationCity", "destinationState", "cartItems"]
+  }
+};
+
+const generateCheckoutPaymentLinkTool: FunctionDeclaration = {
+  name: "generate_checkout_payment_link",
+  description: "Generate a Stripe checkout payment link for the order.",
+  parameters: {
+    type: Type.OBJECT,
+    properties: {
+      subtotal: { type: Type.NUMBER, description: "Subtotal of products (number)" },
+      shippingCost: { type: Type.NUMBER, description: "Shipping cost (number)" },
+      total: { type: Type.NUMBER, description: "Grand total = subtotal + shippingCost (number)" },
+      customerName: { type: Type.STRING, description: "Name of the customer" },
+      customerEmail: { type: Type.STRING, description: "Email address of the customer" },
+      cartItems: {
+        type: Type.ARRAY,
+        description: "List of items in the cart",
+        items: {
+          type: Type.OBJECT,
+          properties: {
+            productId: { type: Type.STRING, description: "Product ID (e.g., 14031001)" },
+            quantity: { type: Type.INTEGER, description: "Quantity of the product" }
+          },
+          required: ["productId", "quantity"]
+        }
+      }
+    },
+    required: ["subtotal", "shippingCost", "total", "customerName", "customerEmail", "cartItems"]
+  }
+};
+
+export const TOOLS = [bookAppointmentTool, logToCrmTool, sendEmailTool, emailConversationToAdminTool, extractCustomerInfoTool, calculateShippingTool, generateCheckoutPaymentLinkTool];
 
 // --- COMPLETE TRAINING DATASET ---
 export const DEFAULT_TRAINING_DATA = `
@@ -253,10 +308,16 @@ CUSTOMER SERVICE FAQS & LEAD QUALIFICATION (BASED ON WHATSAPP/IG)
 ================================================================================
 CHECKOUT & PRICING RULES
 ================================================================================
-- When a user asks for a total, checkout, or shipping quote:
-- ALWAYS ADD THIS DISCLAIMER: "Please note that the total is missing taxes and shipping cost to the closer port."
-- You MUST NOT provide any fake shipping or Stripe/payment links, as we do not have an automated checkout.
-- ALWAYS provide this contact number for checkout and final shipping calculations: +1 7866575441
+- When a user asks to buy products, checkout, or calculate shipping:
+  1. Calculate the subtotal of the requested products based on their prices.
+  2. Ask the user for their delivery location (Zip Code, City, and State).
+  3. Call the 'calculate_shipping' tool to get the real-time shipping rate from the Walio API.
+  4. Present the full checkout breakdown to the user:
+     - Subtotal of products
+     - Shipping cost (and name of carrier)
+     - Grand total (subtotal + shipping)
+  5. Ask the user for their Name and Email address.
+  6. Once provided, call the 'generate_checkout_payment_link' tool to generate a Stripe payment link for the grand total. The chat interface will automatically redirect the user to the Stripe Checkout or simulation modal, but you MUST ALSO provide a clickable markdown link in your response as a fallback: [Haz clic aquí para Pagar Seguro en Stripe]({link_generated_by_tool})
 
 ================================================================================
 RESPONSE STYLE & GUIDELINES

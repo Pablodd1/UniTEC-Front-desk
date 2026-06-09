@@ -1,7 +1,7 @@
 
 // geminiService.ts handles interactions with the Google GenAI SDK
 import { GoogleGenAI, LiveServerMessage, Modality, GenerateContentResponse } from "@google/genai";
-import { getSystemInstruction, TOOLS } from "../constants";
+import { getSystemInstruction, TOOLS, PRODUCTS } from "../constants";
 import { decodeAudioData, decode, encode, pcmToWavBlob } from "../utils/audioUtils";
 import { Language, VoiceName } from "../types";
 import { trackUsage } from "./usageService";
@@ -88,15 +88,102 @@ export async function playGeminiTTS(text: string, voiceName: string = 'Kore') {
 /**
  * Sends a message to Gemini using the generateContentStream API.
  */
+
+async function executeTool(name: string, args: any): Promise<any> {
+  try {
+    if (name === 'calculate_shipping') {
+      const { destinationZip, destinationCity, destinationState, cartItems } = args;
+      
+      let totalWeightKg = 0;
+      let totalVolumeCbm = 0;
+      if (Array.isArray(cartItems)) {
+        for (const item of cartItems) {
+          const { productId, quantity } = item;
+          const prod = PRODUCTS.find((p: any) => p.id === String(productId));
+          let unitWeight = 5.0; // default
+          let unitVolume = 0.02; // default
+          if (prod) {
+            const cat = prod.category.toUpperCase();
+            if (cat.includes("CIELO") || cat.includes("TECHO")) {
+              unitWeight = 3.0;
+              unitVolume = 0.015;
+            } else if (cat.includes("PISO") || cat.includes("DECK")) {
+              unitWeight = 12.0;
+              unitVolume = 0.03;
+            } else if (cat.includes("CUBIERTA") || cat.includes("ROOF")) {
+              unitWeight = 25.0;
+              unitVolume = 0.1;
+            } else if (cat.includes("PARED") || cat.includes("PANEL")) {
+              unitWeight = 8.0;
+              unitVolume = 0.025;
+            } else if (cat.includes("CINTA") || cat.includes("PEGANTE")) {
+              unitWeight = 1.0;
+              unitVolume = 0.002;
+            }
+          }
+          totalWeightKg += unitWeight * Number(quantity);
+          totalVolumeCbm += unitVolume * Number(quantity);
+        }
+      }
+      
+      const res = await fetch('/api/calculate-shipping', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          destinationZip,
+          destinationCity,
+          destinationState,
+          totalWeightKg,
+          totalVolumeCbm
+        })
+      });
+      
+      if (res.ok) {
+        return await res.json();
+      } else {
+        throw new Error(`Shipping API error: ${res.statusText}`);
+      }
+    }
+    
+    if (name === 'generate_checkout_payment_link') {
+      const { subtotal, shippingCost, total, customerName, customerEmail, cartItems } = args;
+      const res = await fetch('/api/create-payment-link', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          subtotal,
+          shippingCost,
+          total,
+          customerName,
+          customerEmail,
+          cartItems
+        })
+      });
+      
+      if (res.ok) {
+        return await res.json();
+      } else {
+        throw new Error(`Stripe Payment API error: ${res.statusText}`);
+      }
+    }
+    
+    return { status: "success", message: `Tool ${name} executed successfully` };
+  } catch (error: any) {
+    console.error(`Error executing tool ${name}:`, error);
+    return { error: error.message || "Failed to execute tool" };
+  }
+}
+
+
 export async function* sendMessageToGemini(
   message: string,
-  history: { role: 'user' | 'model', parts: { text: string }[] }[] = [],
+  history: any[] = [],
   emergencyMode: boolean = false,
   language: Language = 'en',
   onToolSuccess?: (toolName: string, result: any) => void,
   customGreeting?: string,
   brandId: 'unitec' | 'building' = 'unitec'
-) {
+): AsyncGenerator<any, void, unknown> {
   const apiKey = await getApiKey();
   const ai = new GoogleGenAI({ apiKey: apiKey as string });
   let instructions = getSystemInstruction(language, customGreeting, brandId);
@@ -113,6 +200,8 @@ export async function* sendMessageToGemini(
     },
   });
 
+  let toolCallPart: any = null;
+
   for await (const chunk of responseStream) {
     const c = chunk as GenerateContentResponse;
     if (c.usageMetadata) {
@@ -126,11 +215,34 @@ export async function* sendMessageToGemini(
 
     const part = c.candidates?.[0]?.content?.parts?.find(p => p.functionCall);
     if (part && part.functionCall && part.functionCall.name) {
-      if (onToolSuccess) {
-        onToolSuccess(part.functionCall.name, part.functionCall.args);
-      }
+      toolCallPart = part.functionCall;
     }
     yield c;
+  }
+
+  if (toolCallPart && toolCallPart.name) {
+    const toolName = toolCallPart.name;
+    const toolArgs = toolCallPart.args;
+    
+    // Execute the tool
+    const toolResult = await executeTool(toolName, toolArgs);
+    
+    if (onToolSuccess) {
+      onToolSuccess(toolName, { ...toolArgs, ...toolResult });
+    }
+    
+    // Build recursive history and continue the generation
+    const updatedHistory = [
+      ...history,
+      { role: 'user' as const, parts: [{ text: message }] },
+      { role: 'model' as const, parts: [{ functionCall: toolCallPart }] },
+      { role: 'user' as const, parts: [{ functionResponse: { name: toolName, response: toolResult } }] }
+    ];
+    
+    const nextStream = sendMessageToGemini("", updatedHistory, emergencyMode, language, onToolSuccess, customGreeting, brandId);
+    for await (const nextChunk of nextStream) {
+      yield nextChunk;
+    }
   }
 }
 
@@ -293,16 +405,27 @@ export const connectLiveSession = async (
           for (const fc of message.toolCall.functionCalls) {
             if (fc.name) {
                 callbacks.onToolCall(fc.name);
-                if (callbacks.onToolSuccess) {
-                  callbacks.onToolSuccess(fc.name, { status: 'success', ...fc.args });
-                }
-                sessionPromise.then(s => s.sendToolResponse({
-                  functionResponses: [{
-                    id: fc.id || '',
-                    name: fc.name || '',
-                    response: { result: "ok" }
-                  }]
-                }));
+                executeTool(fc.name, fc.args).then(toolResult => {
+                  if (callbacks.onToolSuccess) {
+                    callbacks.onToolSuccess(fc.name || '', { status: 'success', ...fc.args, ...toolResult });
+                  }
+                  sessionPromise.then(s => s.sendToolResponse({
+                    functionResponses: [{
+                      id: fc.id || '',
+                      name: fc.name || '',
+                      response: toolResult
+                    }]
+                  }));
+                }).catch(err => {
+                  console.error("Live tool execution error:", err);
+                  sessionPromise.then(s => s.sendToolResponse({
+                    functionResponses: [{
+                      id: fc.id || '',
+                      name: fc.name || '',
+                      response: { error: err.message || "Failed to execute tool" }
+                    }]
+                  }));
+                });
             }
           }
         }

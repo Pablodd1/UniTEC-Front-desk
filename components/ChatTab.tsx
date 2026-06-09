@@ -5,7 +5,7 @@ import { saveChatSession } from '../services/firestoreService';
 import { sendMessageToGemini } from '../services/geminiService';
 import { createConversation, addMessage, requestIntervention, extractCustomerData, updateSessionStatus, subscribeToConversation, subscribeToMessages } from '../services/conversationService';
 import { notifyStaffIntervention } from '../services/notificationService';
-import { Send, Bot, User, Box, DollarSign, Hammer, BookOpen, CheckCircle2, Truck, FileText, RefreshCcw, Percent, Headphones } from 'lucide-react';
+import { Send, Bot, User, Box, DollarSign, Hammer, BookOpen, CheckCircle2, Truck, FileText, RefreshCcw, Percent, Headphones, CreditCard, Lock } from 'lucide-react';
 import { GenerateContentResponse } from '@google/genai';
 import { UI_TRANSLATIONS } from '../constants';
 import Markdown from 'react-markdown';
@@ -33,6 +33,14 @@ const ChatTab: React.FC<ChatTabProps> = ({ quickActions, initialMessage, emergen
     }
   ]);
   const [inputText, setInputText] = useState('');
+
+  const [showPaymentSimulation, setShowPaymentSimulation] = useState(false);
+  const [paymentAmount, setPaymentAmount] = useState<number>(0);
+  const [paymentName, setPaymentName] = useState('');
+  const [paymentEmail, setPaymentEmail] = useState('');
+  const [isPaying, setIsPaying] = useState(false);
+  const [paymentSuccess, setPaymentSuccess] = useState(false);
+
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   
@@ -60,7 +68,26 @@ const ChatTab: React.FC<ChatTabProps> = ({ quickActions, initialMessage, emergen
       }
     };
   }, [conversationId]);
-const messagesEndRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const handleHashChange = () => {
+      const hash = window.location.hash;
+      if (hash.startsWith('#payment-simulation')) {
+        const params = new URLSearchParams(hash.substring(hash.indexOf('?')));
+        setPaymentAmount(parseFloat(params.get('amount') || '0'));
+        setPaymentName(decodeURIComponent(params.get('name') || ''));
+        setPaymentEmail(decodeURIComponent(params.get('email') || ''));
+        setShowPaymentSimulation(true);
+        // Clear hash
+        window.history.replaceState(null, '', ' ');
+      }
+    };
+    handleHashChange();
+    window.addEventListener('hashchange', handleHashChange);
+    return () => window.removeEventListener('hashchange', handleHashChange);
+  }, []);
+
+  const messagesEndRef = useRef<HTMLDivElement>(null);
   const scrollContainerRef = useRef<HTMLDivElement>(null);
   const hasProcessedInitial = useRef(false);
 
@@ -261,6 +288,11 @@ const messagesEndRef = useRef<HTMLDivElement>(null);
                     return merged;
                   });
                   if (result.intent_category) setIntentCategory(result.intent_category);
+              } else if (toolName === 'generate_checkout_payment_link') {
+                  console.log("Stripe payment link generated successfully:", result.paymentLink);
+                  if (result.paymentLink) {
+                      window.location.href = result.paymentLink;
+                  }
               }
           },
           customGreeting,
@@ -415,6 +447,146 @@ const messagesEndRef = useRef<HTMLDivElement>(null);
             </div>
         </div>
       )}
+
+      {/* Payment Simulation Modal Overlay */}
+      {showPaymentSimulation && (
+        <div className="absolute inset-0 z-[100] flex items-center justify-center p-6 bg-slate-900/60 backdrop-blur-sm animate-in fade-in duration-300">
+          <div className="bg-white rounded-[40px] p-8 shadow-2xl border border-slate-100 max-w-sm w-full animate-in zoom-in-95 duration-300 text-left">
+            {paymentSuccess ? (
+              <div className="text-center py-6 animate-in fade-in duration-500">
+                <div className="w-20 h-20 bg-emerald-100 text-emerald-600 rounded-full flex items-center justify-center mx-auto mb-6 ring-8 ring-emerald-50">
+                  <CheckCircle2 size={40} />
+                </div>
+                <h3 className="text-2xl font-black text-slate-900 mb-2 uppercase tracking-tight">
+                  {language === 'en' ? 'Payment Successful' : 'Pago Exitoso'}
+                </h3>
+                <p className="text-slate-500 text-sm mb-6 leading-relaxed">
+                  {language === 'en' 
+                    ? 'Thank you for your order! Your payment has been processed securely via Stripe.' 
+                    : '¡Gracias por su compra! Su pago ha sido procesado de forma segura a través de Stripe.'}
+                </p>
+                <div className="bg-slate-50 rounded-2xl p-4 mb-8 border border-slate-100 text-left">
+                  <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1">{language === 'en' ? 'Amount Paid' : 'Monto Pagado'}</p>
+                  <p className="text-emerald-600 font-extrabold text-xl">${paymentAmount.toFixed(2)} USD</p>
+                  <p className="text-[10px] text-slate-400 mt-2">{language === 'en' ? 'Receipt sent to:' : 'Recibo enviado a:'} {paymentEmail}</p>
+                </div>
+                <button 
+                  onClick={() => {
+                    setShowPaymentSimulation(false);
+                    setPaymentSuccess(false);
+                    setMessages(prev => [...prev, {
+                      id: Date.now().toString(),
+                      role: 'user',
+                      text: language === 'en' 
+                        ? 'I have completed my payment. Thank you!' 
+                        : 'Ya realicé mi pago. ¡Muchas gracias!',
+                      timestamp: new Date()
+                    }]);
+                  }}
+                  className="w-full py-4 bg-emerald-600 text-white rounded-2xl font-black text-xs uppercase tracking-widest hover:bg-emerald-700 transition-all active:scale-95 shadow-lg shadow-emerald-600/20"
+                >
+                  {language === 'en' ? 'Back to Chat' : 'Volver al Chat'}
+                </button>
+              </div>
+            ) : (
+              <div>
+                <div className="flex items-center justify-between mb-6 border-b border-gray-100 pb-4">
+                  <div className="flex items-center gap-2">
+                    <span className="font-extrabold text-slate-900 tracking-tight text-lg">stripe</span>
+                    <span className="bg-slate-100 text-slate-600 text-[10px] px-2 py-0.5 rounded font-bold uppercase tracking-wider">Test Mode</span>
+                  </div>
+                  <button 
+                    onClick={() => setShowPaymentSimulation(false)}
+                    className="text-slate-400 hover:text-slate-600 text-sm font-bold"
+                  >
+                    {language === 'en' ? 'Cancel' : 'Cancelar'}
+                  </button>
+                </div>
+                
+                <div className="mb-6">
+                  <p className="text-xs text-slate-400 mb-1">{language === 'en' ? 'Pay UNITEC USA DESIGN' : 'Pagar a UNITEC USA DESIGN'}</p>
+                  <p className="text-3xl font-black text-slate-900 tracking-tight">${paymentAmount.toFixed(2)} <span className="text-sm font-bold text-slate-400">USD</span></p>
+                </div>
+
+                <div className="space-y-4">
+                  <div>
+                    <label className="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1.5">{language === 'en' ? 'Email Address' : 'Correo Electrónico'}</label>
+                    <input 
+                      type="email" 
+                      value={paymentEmail} 
+                      onChange={(e) => setPaymentEmail(e.target.value)}
+                      className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl text-sm outline-none focus:border-brand-500" 
+                      placeholder="email@example.com"
+                    />
+                  </div>
+                  
+                  <div>
+                    <label className="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1.5">{language === 'en' ? 'Card Information' : 'Información de Tarjeta'}</label>
+                    <div className="relative">
+                      <input 
+                        type="text" 
+                        value="4242 4242 4242 4242" 
+                        readOnly
+                        className="w-full pl-10 pr-4 py-3 bg-slate-50 border border-slate-200 rounded-xl text-sm outline-none text-slate-600 font-medium" 
+                      />
+                      <div className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400">
+                        <CreditCard size={16} />
+                      </div>
+                    </div>
+                    <div className="grid grid-cols-2 gap-2 mt-2">
+                      <input 
+                        type="text" 
+                        value="12 / 29" 
+                        readOnly
+                        className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl text-sm text-center text-slate-600" 
+                      />
+                      <input 
+                        type="text" 
+                        value="123" 
+                        readOnly
+                        className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl text-sm text-center text-slate-600" 
+                      />
+                    </div>
+                  </div>
+
+                  <div>
+                    <label className="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1.5">{language === 'en' ? 'Cardholder Name' : 'Nombre en Tarjeta'}</label>
+                    <input 
+                      type="text" 
+                      value={paymentName} 
+                      onChange={(e) => setPaymentName(e.target.value)}
+                      className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl text-sm outline-none focus:border-brand-500" 
+                      placeholder="Jane Doe"
+                    />
+                  </div>
+
+                  <button 
+                    disabled={isPaying}
+                    onClick={() => {
+                      setIsPaying(true);
+                      setTimeout(() => {
+                        setIsPaying(false);
+                        setPaymentSuccess(true);
+                      }, 2000);
+                    }}
+                    className="w-full mt-6 py-4 bg-brand-600 text-white rounded-2xl font-black text-xs uppercase tracking-widest hover:bg-brand-700 transition-all active:scale-95 flex items-center justify-center gap-2 shadow-lg shadow-brand-600/20"
+                  >
+                    <Lock size={12} />
+                    {isPaying 
+                      ? (language === 'en' ? 'Processing...' : 'Procesando...') 
+                      : `${language === 'en' ? 'Pay' : 'Pagar'} $${paymentAmount.toFixed(2)}`}
+                  </button>
+
+                  <p className="text-[10px] text-slate-400 text-center mt-4">
+                    🔒 {language === 'en' ? 'Secured by Stripe • Powered by Walio' : 'Seguridad por Stripe • Potenciado por Walio'}
+                  </p>
+                </div>
+              </div>
+            )}
+          </div>
+        </div>
+      )}
+
 
       {/* Messages Area */}
       <div 
