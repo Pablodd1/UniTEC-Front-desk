@@ -126,27 +126,29 @@ service cloud.firestore {
       allow read, write: if isOwner(userId);
     }
     
-    // NEW: Conversations collection (admin + staff access)
+    // NEW: Conversations collection (admin + staff access + public visitor)
     match /conversations/{sessionId} {
-      allow read: if isAuthenticated();
-      allow create: if isAuthenticated() && isValidConversation();
-      allow update: if isAuthenticated();
+      allow get: if true;
+      allow list: if isAuthenticated();
+      allow create: if isValidConversation();
+      allow update: if true;
       allow delete: if isAuthenticated();
     }
     
     // NEW: Messages subcollection
     match /conversations/{sessionId}/messages/{messageId} {
-      allow read: if isAuthenticated();
-      allow create: if isAuthenticated() && isValidMessage();
+      allow read: if true;
+      allow create: if isValidMessage();
       allow update: if isAuthenticated();
       allow delete: if isAuthenticated();
     }
     
     // NEW: Interventions collection
     match /interventions/{interventionId} {
-      allow read: if isAuthenticated();
-      allow create: if isAuthenticated() && isValidIntervention();
-      allow update: if isAuthenticated();
+      allow get: if true;
+      allow list: if isAuthenticated();
+      allow create: if isValidIntervention();
+      allow update: if true;
       allow delete: if isAuthenticated();
     }
     
@@ -166,9 +168,8 @@ service cloud.firestore {
     
     // NEW: Notifications collection
     match /notifications/{notificationId} {
-      allow read: if isAuthenticated();
-      allow create: if isAuthenticated();
-      allow update: if isAuthenticated();
+      allow read, update: if isAuthenticated();
+      allow create: if true;
     }
   }
 }
