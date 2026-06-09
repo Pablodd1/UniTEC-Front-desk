@@ -7,7 +7,7 @@ import { getUsageStats, getProfitEstimate, generateInvoice, trackUsage } from '.
 import { generateImage, editImage } from '../services/imageService';
 import { getAppConfig, saveAppConfig, getCrmLogs, CrmLog, getAllChatSessions, ChatSession, saveChatSession } from '../services/firestoreService';
 import { DEFAULT_TRAINING_DATA } from '../constants';
-import { subscribeToConversations, subscribeToInterventions } from '../services/conversationService';
+import { subscribeToConversations, subscribeToInterventions, updateSessionStatus } from '../services/conversationService';
 import ConversationMonitor from './ConversationMonitor';
 import StaffIntervention from './StaffIntervention';
 import AnalyticsDashboard from './AnalyticsDashboard';
@@ -1487,9 +1487,7 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({
                         onSelectSession={(session) => {
                             _setSelectedConversation(session);
                         }}
-                        onRequestIntervention={(sessionId) => {
-                            console.log('Intervention requested for:', sessionId);
-                        }}
+                        onRequestIntervention={async (sessionId) => { try { await updateSessionStatus(sessionId, 'human_assigned', 'staff_001'); } catch (e) { console.error('Failed to take over session', e); } }}
                     />
                 </div>
             );
@@ -1580,3 +1578,4 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({
 };
 
 export default AdminDashboard;
+

@@ -1,15 +1,9 @@
 
 import React, { useState, useRef, useEffect } from 'react';
 import { Message, QuickAction, Language } from '../types';
-import { saveChatSession, subscribeToChatSession } from '../services/firestoreService';
+import { saveChatSession } from '../services/firestoreService';
 import { sendMessageToGemini } from '../services/geminiService';
-import { 
-  createConversation, 
-  addMessage, 
-  requestIntervention,
-  extractCustomerData,
-  updateSessionStatus,
-} from '../services/conversationService';
+import { createConversation, addMessage, requestIntervention, extractCustomerData, updateSessionStatus, subscribeToConversation, subscribeToMessages } from '../services/conversationService';
 import { notifyStaffIntervention } from '../services/notificationService';
 import { Send, Bot, User, Box, DollarSign, Hammer, BookOpen, CheckCircle2, Truck, FileText, RefreshCcw, Percent, Headphones } from 'lucide-react';
 import { GenerateContentResponse } from '@google/genai';
@@ -42,7 +36,7 @@ const ChatTab: React.FC<ChatTabProps> = ({ quickActions, initialMessage, emergen
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   
-  const [sessionStatus, setSessionStatus] = useState<'active' | 'human_assigned' | 'completed'>('active');
+  const [sessionStatus, setSessionStatus] = useState<'active' | 'human_requested' | 'human_assigned' | 'completed' | 'abandoned'>('active');
   const [showBookingConfirmation, setShowBookingConfirmation] = useState(false);
   const [confirmedDate, setConfirmedDate] = useState<string | null>(null);
   
@@ -66,37 +60,7 @@ const ChatTab: React.FC<ChatTabProps> = ({ quickActions, initialMessage, emergen
       }
     };
   }, [conversationId]);
-
-  // Real-time listener for human-takeover intervention
-  useEffect(() => {
-    const unsub = subscribeToChatSession(sessionId.current, (session) => {
-      if (!session) return;
-      
-      const newStatus = session.status || 'active';
-      setSessionStatus(newStatus);
-      
-      // If staff has taken over, Firestore messages are the absolute source of truth
-      if (newStatus === 'human_assigned' && session.messages) {
-        // Parse dates in the synced messages
-        const parsedMsgs = session.messages.map((m: any) => ({
-          ...m,
-          timestamp: new Date(m.timestamp)
-        }));
-        
-        // Prevent update loop if arrays match
-        const localTexts = messages.map(m => m.text).join('|');
-        const remoteTexts = parsedMsgs.map((m: any) => m.text).join('|');
-        
-        if (localTexts !== remoteTexts) {
-          setMessages(parsedMsgs);
-        }
-      }
-    });
-    
-    return () => unsub();
-  }, [messages, sessionStatus]);
-
-  const messagesEndRef = useRef<HTMLDivElement>(null);
+const messagesEndRef = useRef<HTMLDivElement>(null);
   const scrollContainerRef = useRef<HTMLDivElement>(null);
   const hasProcessedInitial = useRef(false);
 
@@ -137,38 +101,46 @@ const ChatTab: React.FC<ChatTabProps> = ({ quickActions, initialMessage, emergen
       }).catch((e: any) => console.warn('Failed to save model message:', e));
     }
   }, [messages, conversationId]);
-
-  // ===== NEW: Handle Staff Intervention Messages =====
+  // ===== Handle Session Status & Staff Intervention Messages =====
   useEffect(() => {
     if (!conversationId) return;
     
-    const unsubscribe = subscribeToChatSession(conversationId, (session) => {
-      if (!session || session.status !== 'human_assigned') return;
-      
-      // When staff takes over, merge their messages
-      if (session.messages) {
-        const staffMsgs = session.messages.filter((m: any) => m.role === 'staff');
-        if (staffMsgs.length > 0) {
-          setMessages(prev => {
-            const existingTexts = new Set(prev.map(m => m.text));
-            const newMsgs = staffMsgs
-              .filter((m: any) => !existingTexts.has(m.text))
-              .map((m: any) => ({
-                id: m.id || Date.now().toString(),
-                role: 'model' as const,
-                text: `[Staff] ${m.text}`,
-                timestamp: new Date(m.timestamp)
-              }));
-            return [...prev, ...newMsgs];
-          });
-        }
+    const unsubStatus = subscribeToConversation(conversationId, (session) => {
+      if (session && session.status) {
+        setSessionStatus(session.status);
       }
     });
-    
-    return () => unsubscribe();
-  }, [conversationId]);
 
-  // Sync to Firebase (Only when AI is actively responding to avoid race-loops)
+    const unsubMessages = subscribeToMessages(conversationId, (remoteMessages) => {
+      if (!remoteMessages || remoteMessages.length === 0) return;
+      
+      const staffMsgs = remoteMessages.filter((m: any) => m.role === "staff" || m.isStaff);
+      if (staffMsgs.length > 0) {
+        setMessages(prev => {
+          const existingTexts = new Set(prev.map(m => m.text));
+          const newMsgs = staffMsgs
+            .filter((m: any) => !existingTexts.has(m.text) && !existingTexts.has(`[Staff] ${m.text}`))
+            .map((m: any) => ({
+              id: m.id || Date.now().toString(),
+              role: "model" as const,
+              text: `[Staff] ${m.text}`,
+              timestamp: new Date(m.timestamp)
+            }));
+          
+          if (newMsgs.length > 0) {
+            return [...prev, ...newMsgs].sort((a, b) => a.timestamp.getTime() - b.timestamp.getTime());
+          }
+          return prev;
+        });
+      }
+    });
+
+    return () => {
+      unsubStatus();
+      unsubMessages();
+    };
+  }, [conversationId]);
+// Sync to Firebase (Only when AI is actively responding to avoid race-loops)
   useEffect(() => {
     if (messages.length > 1 && sessionStatus === 'active') {
       const sessionPayload: any = {
@@ -645,4 +617,6 @@ const ChatTab: React.FC<ChatTabProps> = ({ quickActions, initialMessage, emergen
 };
 
 export default ChatTab;
+
+
 
