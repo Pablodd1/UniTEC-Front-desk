@@ -151,14 +151,14 @@ export const createConversation = async (
 // Add a message to a conversation
 export const addMessage = async (
   sessionId: string,
-  message: Omit<ConversationMessage, 'id' | 'timestamp'>
+  message: Omit<ConversationMessage, 'id' | 'timestamp'> & { id?: string }
 ): Promise<void> => {
   if (getPrivacyMode()) {
     logPrivacy('addMessage');
     return; // Don't save messages to Firestore
   }
   
-  const messageId = `msg_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
+  const messageId = message.id || `msg_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
   const now = new Date().toISOString();
   
   const fullMessage: ConversationMessage = {
@@ -649,3 +649,5 @@ export const getConversationMetrics = async (
 
 // Export collections for direct access
 export { COLLECTIONS };
+
+

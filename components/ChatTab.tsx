@@ -111,23 +111,30 @@ const ChatTab: React.FC<ChatTabProps> = ({ quickActions, initialMessage, emergen
     initConversation();
   }, [brandId, language]);
 
-  // ===== NEW: Save messages to Conversation Tracking =====
+    // ===== NEW: Save messages to Conversation Tracking =====
   useEffect(() => {
     if (!conversationId || messages.length <= 1) return;
     
     const lastMessage = messages[messages.length - 1];
+    
+    // Throttle the streaming updates by only saving when isLoading is false, 
+    // EXCEPT for user messages which we save immediately.
+    if (isLoading && lastMessage.role === 'model') return;
+
     if (lastMessage.role === 'user') {
       addMessage(conversationId, {
+        id: lastMessage.id,
         role: 'user',
         text: lastMessage.text,
       }).catch((e: any) => console.warn('Failed to save user message:', e));
     } else if (lastMessage.role === 'model' && lastMessage.text) {
       addMessage(conversationId, {
+        id: lastMessage.id,
         role: 'model',
         text: lastMessage.text,
       }).catch((e: any) => console.warn('Failed to save model message:', e));
     }
-  }, [messages, conversationId]);
+  }, [messages, conversationId, isLoading]);
   // ===== Handle Session Status & Staff Intervention Messages =====
   useEffect(() => {
     if (!conversationId) return;
@@ -169,7 +176,7 @@ const ChatTab: React.FC<ChatTabProps> = ({ quickActions, initialMessage, emergen
   }, [conversationId]);
 // Sync to Firebase (Only when AI is actively responding to avoid race-loops)
   useEffect(() => {
-    if (messages.length > 1 && sessionStatus === 'active') {
+    if (messages.length > 1 && sessionStatus === 'active' && !isLoading) {
       const sessionPayload: any = {
         id: sessionId.current,
         timestamp: new Date().toISOString(),
@@ -186,7 +193,7 @@ const ChatTab: React.FC<ChatTabProps> = ({ quickActions, initialMessage, emergen
       }
       saveChatSession(sessionPayload).catch(e => console.warn('Sync warning', e));
     }
-  }, [messages, sessionStatus]);
+  }, [messages, sessionStatus, isLoading]);
 
   // Update welcome message when language or customGreeting changes, but only if it's the only message
   useEffect(() => {
@@ -222,6 +229,26 @@ const ChatTab: React.FC<ChatTabProps> = ({ quickActions, initialMessage, emergen
         return () => clearTimeout(timer);
     }
   }, [showEmailConfirmation]);
+
+  // ===== NEW: 4-Minute Idle Timer =====
+  useEffect(() => {
+    if (sessionStatus !== 'active' || !conversationId || messages.length <= 1) return;
+
+    const timeoutMs = 4 * 60 * 1000; // 4 minutes
+    const timer = setTimeout(() => {
+      console.log('Session idle for 4 minutes. Marking as abandoned.');
+      updateSessionStatus(conversationId, 'abandoned').catch(() => {});
+      
+      setMessages(prev => [...prev, {
+        id: `timeout_${Date.now()}`,
+        role: 'model',
+        text: language === 'en' ? 'Your chat session has timed out due to inactivity.' : 'Su sesión de chat ha expirado por inactividad.',
+        timestamp: new Date()
+      }]);
+    }, timeoutMs);
+
+    return () => clearTimeout(timer);
+  }, [messages, sessionStatus, conversationId, language]);
 
   // Robust Auto-Scroll Implementation
   const scrollToBottom = (behavior: ScrollBehavior = 'smooth') => {

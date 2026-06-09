@@ -11,6 +11,21 @@ const AnalyticsDashboard: React.FC<AnalyticsDashboardProps> = ({ sessions }) => 
   // Calculate metrics
   const totalSessions = sessions.length;
   const activeSessions = sessions.filter(s => s.status === 'active').length;
+
+  const now = new Date();
+  const todayStart = new Date(now.getFullYear(), now.getMonth(), now.getDate()).getTime();
+  const weekStart = todayStart - 7 * 24 * 60 * 60 * 1000;
+
+  const dailySessions = sessions.filter(s => new Date(s.createdAt).getTime() >= todayStart).length;
+  const weeklySessions = sessions.filter(s => new Date(s.createdAt).getTime() >= weekStart).length;
+
+  const dailyMessages = sessions
+    .filter(s => new Date(s.createdAt).getTime() >= todayStart)
+    .reduce((acc, s) => acc + (s.analytics?.messageCount || s.messages?.length || 0), 0);
+  
+  const weeklyMessages = sessions
+    .filter(s => new Date(s.createdAt).getTime() >= weekStart)
+    .reduce((acc, s) => acc + (s.analytics?.messageCount || s.messages?.length || 0), 0);
   const humanRequested = sessions.filter(s => s.status === 'human_requested').length;
   const humanAssigned = sessions.filter(s => s.status === 'human_assigned').length;
   const completedSessions = sessions.filter(s => s.status === 'completed').length;
@@ -67,6 +82,38 @@ const AnalyticsDashboard: React.FC<AnalyticsDashboardProps> = ({ sessions }) => 
   return (
     <div className="h-full overflow-y-auto p-6 space-y-6">
       {/* Overview Cards */}
+      {/* Daily and Weekly Entries */}
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+        <div className="bg-white p-4 rounded-2xl border border-slate-200">
+          <div className="flex items-center justify-between mb-2">
+            <span className="text-xs font-bold text-slate-400 uppercase tracking-wider">Daily Sessions</span>
+            <Target size={16} className="text-brand-600" />
+          </div>
+          <p className="text-2xl font-black text-slate-800">{dailySessions}</p>
+        </div>
+        <div className="bg-white p-4 rounded-2xl border border-slate-200">
+          <div className="flex items-center justify-between mb-2">
+            <span className="text-xs font-bold text-slate-400 uppercase tracking-wider">Weekly Sessions</span>
+            <Target size={16} className="text-brand-600" />
+          </div>
+          <p className="text-2xl font-black text-slate-800">{weeklySessions}</p>
+        </div>
+        <div className="bg-white p-4 rounded-2xl border border-slate-200">
+          <div className="flex items-center justify-between mb-2">
+            <span className="text-xs font-bold text-slate-400 uppercase tracking-wider">Daily Messages</span>
+            <MessageSquare size={16} className="text-green-600" />
+          </div>
+          <p className="text-2xl font-black text-slate-800">{dailyMessages}</p>
+        </div>
+        <div className="bg-white p-4 rounded-2xl border border-slate-200">
+          <div className="flex items-center justify-between mb-2">
+            <span className="text-xs font-bold text-slate-400 uppercase tracking-wider">Weekly Messages</span>
+            <MessageSquare size={16} className="text-green-600" />
+          </div>
+          <p className="text-2xl font-black text-slate-800">{weeklyMessages}</p>
+        </div>
+      </div>
+
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
         <div className="bg-white p-4 rounded-2xl border border-slate-200">
           <div className="flex items-center justify-between mb-2">
@@ -250,6 +297,40 @@ const AnalyticsDashboard: React.FC<AnalyticsDashboardProps> = ({ sessions }) => 
           </div>
         </div>
       )}
+      {/* All Transactions Log Table */}
+      <div className="bg-white p-6 rounded-2xl border border-slate-200">
+        <h3 className="font-bold text-slate-800 mb-4">Transaction History Log</h3>
+        <div className="overflow-x-auto">
+          <table className="w-full text-sm text-left">
+            <thead className="text-xs text-slate-500 uppercase bg-slate-50">
+              <tr>
+                <th className="px-4 py-3">Date</th>
+                <th className="px-4 py-3">Session ID</th>
+                <th className="px-4 py-3">Status</th>
+                <th className="px-4 py-3">Brand</th>
+                <th className="px-4 py-3">Source</th>
+                <th className="px-4 py-3">Messages</th>
+              </tr>
+            </thead>
+            <tbody>
+              {sessions.map((s) => (
+                <tr key={s.id} className="border-b border-slate-100 hover:bg-slate-50">
+                  <td className="px-4 py-3">{new Date(s.createdAt).toLocaleString()}</td>
+                  <td className="px-4 py-3 text-brand-600 font-medium">{s.id.split('_').slice(1).join('_')}</td>
+                  <td className="px-4 py-3">
+                    <span className={`px-2 py-1 rounded-full text-[10px] uppercase font-bold ${s.status === 'completed' ? 'bg-green-100 text-green-700' : s.status === 'abandoned' ? 'bg-red-100 text-red-700' : 'bg-blue-100 text-blue-700'}`}>
+                      {s.status}
+                    </span>
+                  </td>
+                  <td className="px-4 py-3">{s.brandId}</td>
+                  <td className="px-4 py-3">{s.source}</td>
+                  <td className="px-4 py-3">{s.analytics?.messageCount || s.messages?.length || 0}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      </div>
     </div>
   );
 };
