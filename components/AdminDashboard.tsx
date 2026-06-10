@@ -5,9 +5,9 @@ import { playGeminiTTS } from '../services/geminiService';
 import { getEscalaConfig, saveEscalaConfig, testEscalaConnection } from '../services/escalaService';
 import { getUsageStats, getProfitEstimate, generateInvoice, trackUsage } from '../services/usageService';
 import { generateImage, editImage } from '../services/imageService';
-import { getAppConfig, saveAppConfig, getCrmLogs, CrmLog, getAllChatSessions, ChatSession, saveChatSession } from '../services/firestoreService';
+import { getAppConfig, saveAppConfig, getCrmLogs, CrmLog } from '../services/firestoreService';
 import { DEFAULT_TRAINING_DATA } from '../constants';
-import { subscribeToConversations, subscribeToInterventions, updateSessionStatus } from '../services/conversationService';
+import { subscribeToConversations, subscribeToInterventions, updateSessionStatus, addMessage } from '../services/conversationService';
 import ConversationMonitor from './ConversationMonitor';
 import StaffIntervention from './StaffIntervention';
 import AnalyticsDashboard from './AnalyticsDashboard';
@@ -96,8 +96,7 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({
 
   // CRM Logs State
   const [crmLogs, setCrmLogs] = useState<CrmLog[]>([]);
-  const [chatSessions, setChatSessions] = useState<ChatSession[]>([]);
-
+  
   // Copy State
   const [copyStatus, setCopyStatus] = useState<string | null>(null);
 
@@ -138,9 +137,7 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({
 
       const logs = await getCrmLogs();
       setCrmLogs(logs);
-      const sessions = await getAllChatSessions();
-      setChatSessions(sessions);
-    };
+          };
     loadData();
 
     // NEW: Subscribe to real-time conversations and interventions
@@ -351,56 +348,35 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({
   };
 
   // Executive Handoff Center State
-  const [selectedSessionId, setSelectedSessionId] = React.useState<string | null>(null);
+  const [selectedSessionId, setselectedSessionId] = React.useState<string | null>(null);
   const [adminResponseText, setAdminResponseText] = React.useState('');
 
   // Derived: currently selected session object
   const selectedSession = selectedSessionId
-    ? chatSessions.find(s => s.id === selectedSessionId) ?? null
+    ? conversations.find(s => s.id === selectedSessionId) ?? null
     : null;
 
   /** Admin takes over a chat session from the AI */
-  const handleTakeOver = async (sessionId: string, session: ChatSession) => {
-    const updated: ChatSession = {
-      ...session,
-      status: 'human_assigned',
-      assignedTo: 'admin',
-      lastUpdated: new Date().toISOString(),
-    };
-    await saveChatSession(updated);
-    setChatSessions(prev => prev.map(s => s.id === sessionId ? updated : s));
+  const handleTakeOver = async (sessionId: string) => {
+    await updateSessionStatus(sessionId, "human_assigned", "admin");
   };
 
   /** Admin releases the session back to the AI (or marks it completed) */
-  const handleReleaseToAI = async (sessionId: string, session: ChatSession, resolve = false) => {
-    const updated: ChatSession = {
-      ...session,
-      status: resolve ? 'completed' : 'active',
-      assignedTo: null,
-      lastUpdated: new Date().toISOString(),
-    };
-    await saveChatSession(updated);
-    setChatSessions(prev => prev.map(s => s.id === sessionId ? updated : s));
-    if (resolve) setSelectedSessionId(null);
+  const handleReleaseToAI = async (sessionId: string, resolve = false) => {
+    await updateSessionStatus(sessionId, resolve ? "completed" : "active", "");
+    if (resolve) setselectedSessionId(null);
   };
 
   /** Admin sends a direct message into the chat stream */
   const handleSendAdminMessage = async () => {
     if (!adminResponseText.trim() || !selectedSession) return;
     const staffMessage = {
-      role: 'assistant',
+      role: "staff" as const,
       text: adminResponseText.trim(),
-      isStaff: true,
-      timestamp: new Date().toISOString(),
+      isStaff: true
     };
-    const updated: ChatSession = {
-      ...selectedSession,
-      messages: [...selectedSession.messages, staffMessage],
-      lastUpdated: new Date().toISOString(),
-    };
-    await saveChatSession(updated);
-    setChatSessions(prev => prev.map(s => s.id === selectedSession.id ? updated : s));
-    setAdminResponseText('');
+    await addMessage(selectedSession.id, staffMessage);
+    setAdminResponseText("");
   };
 
   const handleSaveGemini = async () => {
@@ -1090,17 +1066,17 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({
                         <div className="flex-1 flex overflow-hidden min-h-0 gap-6">
                             {/* Pane 1: Sessions List (25%) */}
                             <div className="w-[25%] flex flex-col border-r border-slate-100 pr-6 overflow-y-auto no-scrollbar gap-3">
-                                {chatSessions.length === 0 ? (
+                                {conversations.length === 0 ? (
                                     <div className="text-center py-12 text-slate-400 text-sm">No active sessions.</div>
                                 ) : (
-                                    chatSessions.map((session) => {
+                                    conversations.map((session) => {
                                         const status = session.status || 'active';
                                         const isSelected = selectedSessionId === session.id;
-                                        const isCall = session.type === 'call';
+                                        const isCall = session.source === 'phone';
                                         return (
                                             <button
                                                 key={session.id}
-                                                onClick={() => setSelectedSessionId(session.id)}
+                                                onClick={() => setselectedSessionId(session.id)}
                                                 className={`w-full p-4 rounded-xl border text-left transition-all flex flex-col gap-2 ${isSelected ? 'border-brand-500 bg-brand-50/20 shadow-sm' : 'border-slate-100 hover:border-slate-200 bg-white'}`}
                                             >
                                                 <div className="flex justify-between items-center">
@@ -1116,9 +1092,9 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({
                                                     </span>
                                                 </div>
                                                 <p className="text-[9px] text-slate-400 font-bold">{new Date(session.lastUpdated).toLocaleTimeString()}</p>
-                                                {session.intent_category && (
+                                                {session.intentCategory && (
                                                     <span className="text-[8px] font-bold text-brand-600 bg-brand-50 border border-brand-100 self-start px-2 py-0.5 rounded">
-                                                        Intent: {session.intent_category}
+                                                        Intent: {session.intentCategory}
                                                     </span>
                                                 )}
                                             </button>
@@ -1139,7 +1115,7 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({
                                             <div className="flex gap-2">
                                                 {(selectedSession.status || 'active') === 'active' && (
                                                     <button
-                                                        onClick={() => handleTakeOver(selectedSession.id, selectedSession)}
+                                                        onClick={() => handleTakeOver(selectedSession.id)}
                                                         className="bg-red-500 text-white hover:bg-red-600 px-4 py-2 rounded-xl text-[10px] font-black uppercase tracking-wider shadow transition-all"
                                                     >
                                                         Take Over
@@ -1211,15 +1187,15 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({
                                             <div className="space-y-2">
                                                 <div className="flex justify-between items-center text-xs">
                                                     <span className="text-blue-600/70 font-bold">Name</span>
-                                                    <span className="font-mono text-blue-900">{selectedSession.extracted_pii?.name || '---'}</span>
+                                                    <span className="font-mono text-blue-900">{selectedSession.customerName || '---'}</span>
                                                 </div>
                                                 <div className="flex justify-between items-center text-xs">
                                                     <span className="text-blue-600/70 font-bold">Phone</span>
-                                                    <span className="font-mono text-blue-900">{selectedSession.extracted_pii?.phone || '---'}</span>
+                                                    <span className="font-mono text-blue-900">{selectedSession.customerPhone || '---'}</span>
                                                 </div>
                                                 <div className="flex justify-between items-center text-xs">
                                                     <span className="text-blue-600/70 font-bold">Email</span>
-                                                    <span className="font-mono text-blue-900">{selectedSession.extracted_pii?.email || '---'}</span>
+                                                    <span className="font-mono text-blue-900">{selectedSession.customerEmail || '---'}</span>
                                                 </div>
                                             </div>
                                         </div>
@@ -1227,7 +1203,7 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({
                                         {/* Intent Box */}
                                         <div className="bg-purple-50 border border-purple-100 p-4 rounded-xl">
                                             <h4 className="text-[10px] font-black text-purple-800 uppercase tracking-widest mb-2">Primary Intent</h4>
-                                            <p className="text-xs font-bold text-purple-900">{selectedSession.intent_category || 'Unknown / Uncategorized'}</p>
+                                            <p className="text-xs font-bold text-purple-900">{selectedSession.intentCategory || 'Unknown / Uncategorized'}</p>
                                         </div>
 
                                         {/* Actions */}
@@ -1235,14 +1211,14 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({
                                             <h4 className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-3">Admin Actions</h4>
                                             {selectedSession.status === 'human_assigned' && (
                                                 <button
-                                                    onClick={() => handleReleaseToAI(selectedSession.id, selectedSession)}
+                                                    onClick={() => handleReleaseToAI(selectedSession.id)}
                                                     className="w-full bg-brand-500 text-white hover:bg-brand-600 px-4 py-3 rounded-xl text-[10px] font-black uppercase tracking-wider shadow transition-all"
                                                 >
                                                     Hand back to AI
                                                 </button>
                                             )}
                                             <button
-                                                onClick={() => handleReleaseToAI(selectedSession.id, selectedSession, true)}
+                                                onClick={() => handleReleaseToAI(selectedSession.id, true)}
                                                 className="w-full bg-slate-800 text-white hover:bg-slate-900 px-4 py-3 rounded-xl text-[10px] font-black uppercase tracking-wider shadow transition-all"
                                             >
                                                 Mark as Resolved
@@ -1578,4 +1554,8 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({
 };
 
 export default AdminDashboard;
+
+
+
+
 
