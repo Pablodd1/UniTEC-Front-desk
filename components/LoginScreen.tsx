@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { ShieldCheck, ArrowRight, Lock, Loader2, Mail } from 'lucide-react';
 import { BusinessConfig } from '../types';
 import { auth } from '../firebase';
-import { onAuthStateChanged } from 'firebase/auth';
+import { onAuthStateChanged, signInAnonymously } from 'firebase/auth';
 
 interface LoginScreenProps {
   config: BusinessConfig;
@@ -32,10 +32,14 @@ const LoginScreen: React.FC<LoginScreenProps> = ({ onLogin }) => {
     // Normalize email & verify credentials
     if (email.trim().toLowerCase() === 'admin@unitecdesign.com' && password === 'UnitecAdmin2026!') {
       sessionStorage.setItem('unitec_local_admin', 'true');
-      setTimeout(() => {
+      signInAnonymously(auth).then(() => {
         setIsLoading(false);
         onLogin();
-      }, 800);
+      }).catch(err => {
+        console.error(err);
+        setIsLoading(false);
+        onLogin();
+      });
     } else {
       setTimeout(() => {
         setError('Invalid Email or Password credentials.');
@@ -111,3 +115,4 @@ const LoginScreen: React.FC<LoginScreenProps> = ({ onLogin }) => {
 };
 
 export default LoginScreen;
+
