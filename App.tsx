@@ -64,6 +64,68 @@ const App: React.FC = () => {
     resetChatSession();
   }, [emergencyMode, language, currentBrandId]);
 
+  // Dynamically update favicon, title, lang and meta tags per brand
+  useEffect(() => {
+    const isUnitec = currentBrandId === 'unitec';
+
+    // html lang always Spanish
+    document.documentElement.lang = 'es';
+
+    // Title
+    document.title = isUnitec
+      ? 'UNITEC USA Design | Recepcionista Virtual IA | Distribución Mayorista'
+      : 'Building Innovation | Asistente Virtual IA | Miami, Florida';
+
+    // meta description
+    let metaDesc = document.querySelector<HTMLMetaElement>('meta[name="description"]');
+    if (!metaDesc) {
+      metaDesc = document.createElement('meta');
+      metaDesc.setAttribute('name', 'description');
+      document.head.appendChild(metaDesc);
+    }
+    metaDesc.content = isUnitec
+      ? 'Recepcionista virtual IA para distribución mayorista de materiales de construcción. Consulta catálogo, stock en Florida y cotizaciones al instante.'
+      : 'Asistente virtual IA de Building Innovation. Consulta productos, stock en Miami y conecta con ventas. Atención inmediata 24/7.';
+
+    // OG tags helper
+    const setOg = (property: string, val: string) => {
+      let el = document.querySelector<HTMLMetaElement>(`meta[property="${property}"]`);
+      if (!el) { el = document.createElement('meta'); el.setAttribute('property', property); document.head.appendChild(el); }
+      el.content = val;
+    };
+    setOg('og:title', isUnitec ? 'UNITEC USA Design | Asistente Virtual IA' : 'Building Innovation | Asistente Virtual IA');
+    setOg('og:description', isUnitec
+      ? 'Consulta catálogo, stock y cotizaciones en tiempo real. Distribuidor mayorista de materiales de construcción premium.'
+      : 'Paneles WPC, pisos SPC, fachadas y más. Consulta disponibilidad y cotiza ahora mismo.');
+    setOg('og:locale', 'es_ES');
+
+    // SVG favicons - dark blue U for UNITEC, dark green B for Building Innovation
+    const unitecSvg = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64"><rect width="64" height="64" rx="14" fill="#0c4a6e"/><text x="32" y="46" font-family="Arial,sans-serif" font-weight="900" font-size="38" fill="white" text-anchor="middle">U</text></svg>';
+    const buildingSvg = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64"><rect width="64" height="64" rx="14" fill="#065f46"/><text x="32" y="46" font-family="Arial,sans-serif" font-weight="900" font-size="38" fill="white" text-anchor="middle">B</text></svg>';
+    const svgContent = isUnitec ? unitecSvg : buildingSvg;
+    const encoded = `data:image/svg+xml,${encodeURIComponent(svgContent)}`;
+
+    // Set <link rel="icon">
+    let faviconLink = document.querySelector<HTMLLinkElement>('link[rel="icon"]');
+    if (!faviconLink) {
+      faviconLink = document.createElement('link');
+      faviconLink.rel = 'icon';
+      document.head.appendChild(faviconLink);
+    }
+    faviconLink.type = 'image/svg+xml';
+    faviconLink.href = encoded;
+
+    // Legacy shortcut icon
+    let shortcutLink = document.querySelector<HTMLLinkElement>('link[rel="shortcut icon"]');
+    if (!shortcutLink) {
+      shortcutLink = document.createElement('link');
+      shortcutLink.rel = 'shortcut icon';
+      document.head.appendChild(shortcutLink);
+    }
+    shortcutLink.href = encoded;
+  }, [currentBrandId]);
+
+
   const handleLogout = async () => {
     sessionStorage.removeItem('unitec_local_admin');
     await logOut();
@@ -169,3 +231,5 @@ const App: React.FC = () => {
 };
 
 export default App;
+
+

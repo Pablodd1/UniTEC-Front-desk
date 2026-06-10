@@ -179,7 +179,7 @@ export async function* sendMessageToGemini(
   message: string,
   history: any[] = [],
   emergencyMode: boolean = false,
-  language: Language = 'en',
+  language: Language = 'es',
   onToolSuccess?: (toolName: string, result: any) => void,
   customGreeting?: string,
   brandId: 'unitec' | 'building' = 'unitec'
@@ -285,7 +285,7 @@ export interface LiveSessionCallbacks {
 export const connectLiveSession = async (
     callbacks: LiveSessionCallbacks, 
     emergencyMode: boolean = false, 
-    language: Language = 'en',
+    language: Language = 'es',
     voiceName: VoiceName = 'Kore',
     customGreeting?: string,
     brandId: 'unitec' | 'building' = 'unitec'
@@ -465,3 +465,4 @@ export const connectLiveSession = async (
     stream
   };
 };
+
