@@ -466,3 +466,68 @@ export const connectLiveSession = async (
   };
 };
 
+
+
+// ============================================================
+// AI CONVERSATION SUMMARIZATION
+// Generates a structured summary + Q&A pairs for retraining
+// ============================================================
+export async function generateConversationSummary(
+  messages: Array<{ role: string; text: string }>,
+  brandId: 'unitec' | 'building' = 'unitec'
+): Promise<{ summary: string; qaPairs: Array<{ question: string; answer: string; category?: string }> }> {
+  try {
+    const apiKey = await getApiKey();
+    const ai = new GoogleGenAI({ apiKey: apiKey as string });
+
+    const transcript = messages
+      .map(m => `[${m.role === 'user' ? 'CLIENTE' : m.role === 'staff' ? 'STAFF' : 'ASISTENTE'}]: ${m.text}`)
+      .join('\n');
+
+    const brandName = brandId === 'unitec' ? 'UNITEC Design' : 'Building Innovation';
+
+    const prompt = `Analiza esta conversación de atención al cliente de ${brandName} y devuelve un JSON con el siguiente formato exacto:
+{
+  "summary": "Resumen ejecutivo de la conversación en 2-3 oraciones. Incluye: qué quería el cliente, cómo respondió el asistente, resultado final.",
+  "qaPairs": [
+    {
+      "question": "Pregunta exacta o parafraseada que hizo el cliente",
+      "answer": "Respuesta que dio el asistente",
+      "category": "products|pricing|shipping|services|general|complaint|appointment"
+    }
+  ]
+}
+
+CONVERSACIÓN:
+${transcript}
+
+INSTRUCCIONES:
+- Devuelve SOLO el JSON, sin explicaciones adicionales.
+- Extrae todas las preguntas y respuestas importantes.
+- Si el cliente no obtuvo respuesta satisfactoria, incluye igualmente el par con la respuesta real del asistente.
+- El resumen debe ser en español.
+- Máximo 10 pares de Q&A.`;
+
+    const response = await ai.models.generateContent({
+      model: 'gemini-2.5-flash',
+      contents: [{ parts: [{ text: prompt }] }],
+      config: {
+        temperature: 0.2,
+        maxOutputTokens: 2048,
+      },
+    });
+
+    const rawText = response.candidates?.[0]?.content?.parts?.[0]?.text || '{}';
+    // Strip markdown code fences if present
+    const cleaned = rawText.replace(/```json\n?/g, '').replace(/```\n?/g, '').trim();
+    const parsed = JSON.parse(cleaned);
+
+    return {
+      summary: parsed.summary || 'Sin resumen disponible.',
+      qaPairs: Array.isArray(parsed.qaPairs) ? parsed.qaPairs : [],
+    };
+  } catch (error) {
+    console.error('Error generating conversation summary:', error);
+    return { summary: 'Error al generar resumen.', qaPairs: [] };
+  }
+}

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+﻿import React, { useState, useEffect } from 'react';
 import { Phone, ShieldCheck, Database, Mic2, Save, RefreshCw, Check, Loader2, Volume2, TrendingUp, Zap, Gauge, Building2, Store, Brain, Code, Copy, ExternalLink, Rocket, ToggleRight, ToggleLeft, DollarSign, MessageSquare, Headphones, BarChart3 } from 'lucide-react';
 import { EscalaConfig, VoiceName, VoiceProvider, BillingInvoice, ConversationSession, InterventionRequest } from '../types';
 import { playGeminiTTS } from '../services/geminiService';
@@ -11,6 +11,7 @@ import { subscribeToConversations, subscribeToInterventions, updateSessionStatus
 import ConversationMonitor from './ConversationMonitor';
 import StaffIntervention from './StaffIntervention';
 import AnalyticsDashboard from './AnalyticsDashboard';
+import RetrainingAnalytics from './RetrainingAnalytics';
 import ApiHealthMonitor from './ApiHealthMonitor';
 
 interface AdminDashboardProps {
@@ -42,7 +43,7 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({
     onToggleBrand,
     onUpdateBackground
 }) => {
-  const [activeSubTab, setActiveSubTab] = useState<'chats' | 'catalogs' | 'usage' | 'voice' | 'visuals' | 'training' | 'integrations' | 'deploy' | 'functionalities' | 'general' | 'conversations' | 'interventions' | 'analytics' | 'health'>('chats');
+  const [activeSubTab, setActiveSubTab] = useState<'chats' | 'catalogs' | 'usage' | 'voice' | 'visuals' | 'training' | 'integrations' | 'deploy' | 'functionalities' | 'general' | 'conversations' | 'interventions' | 'analytics' | 'health' | 'retraining'>('chats');
   
   // NEW: Conversation Tracking States
   const [conversations, setConversations] = useState<ConversationSession[]>([]);
@@ -549,7 +550,7 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({
 
                     {/* Admin Dispatch Controls + Live Overwatch Grid */}
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                        {/* 📬 ADMIN DISPATCH CONTROLS */}
+                        {/* ðŸ“¬ ADMIN DISPATCH CONTROLS */}
                         <div className="bg-white rounded-2xl border border-slate-200 shadow-sm p-6 flex flex-col justify-between">
                             <div>
                                 <h3 className="text-xs font-black text-slate-800 uppercase tracking-wider mb-2 flex items-center gap-2">
@@ -597,7 +598,7 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({
                             </div>
                         </div>
 
-                        {/* 🔴 LIVE TELEMETRY OVERWATCH TERMINAL */}
+                        {/* ðŸ”´ LIVE TELEMETRY OVERWATCH TERMINAL */}
                         <div className="bg-slate-900 rounded-2xl border border-slate-800 p-6 flex flex-col justify-between">
                             <div className="flex flex-col h-full justify-between w-full">
                                 <div className="mb-3">
@@ -692,7 +693,7 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({
                                                 </div>
                                                 {details && (
                                                     <p className="text-[10px] text-slate-500 font-medium">
-                                                        {details.style} • {details.gender}
+                                                        {details.style} â€¢ {details.gender}
                                                     </p>
                                                 )}
                                             </button>
@@ -747,7 +748,7 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({
                                 <div className="w-6 h-6 rounded-full bg-brand-100 text-brand-600 flex items-center justify-center text-xs font-bold shrink-0 mt-0.5">3</div>
                                 <div className="flex-1">
                                     <p className="text-sm text-slate-700 font-bold">Set Environment Variables:</p>
-                                    <p className="text-xs text-slate-500 mt-1">In Vercel Dashboard → Settings → Environment Variables, add:</p>
+                                    <p className="text-xs text-slate-500 mt-1">In Vercel Dashboard â†’ Settings â†’ Environment Variables, add:</p>
                                     <div className="mt-2 space-y-2">
                                         <div className="p-3 bg-slate-50 rounded-xl border border-slate-200 flex items-center justify-between">
                                             <code className="text-xs font-mono text-brand-700">VITE_API_KEY</code>
@@ -814,8 +815,8 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({
                                     <Copy size={24} />
                                 </div>
                                 <div>
-                                    <h3 className="text-lg font-bold text-slate-800">Gestión de Catálogos y Archivos</h3>
-                                    <p className="text-xs text-slate-500">Controla los archivos que la IA puede enviar por correo electrónico.</p>
+                                    <h3 className="text-lg font-bold text-slate-800">GestiÃ³n de CatÃ¡logos y Archivos</h3>
+                                    <p className="text-xs text-slate-500">Controla los archivos que la IA puede enviar por correo electrÃ³nico.</p>
                                 </div>
                             </div>
                         </div>
@@ -824,15 +825,15 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({
                             <div className="bg-slate-50 p-6 rounded-xl border border-slate-200">
                                 <h4 className="text-sm font-bold text-slate-800 mb-2">Instrucciones para la IA</h4>
                                 <p className="text-xs text-slate-600 leading-relaxed mb-4">
-                                    La IA está configurada para usar la herramienta <code className="bg-slate-200 px-1 rounded text-brand-700">send_email</code> cuando un cliente solicita un catálogo, PDF o ficha técnica y proporciona su correo electrónico.
+                                    La IA estÃ¡ configurada para usar la herramienta <code className="bg-slate-200 px-1 rounded text-brand-700">send_email</code> cuando un cliente solicita un catÃ¡logo, PDF o ficha tÃ©cnica y proporciona su correo electrÃ³nico.
                                 </p>
                                 <p className="text-xs text-slate-600 leading-relaxed">
-                                    Para modificar los enlaces de los catálogos que la IA envía, actualiza la sección <strong>"CATALOGS & RESOURCES"</strong> en la pestaña <strong>Base de Conocimiento</strong>. La IA leerá esos enlaces y los incluirá en el correo.
+                                    Para modificar los enlaces de los catÃ¡logos que la IA envÃ­a, actualiza la secciÃ³n <strong>"CATALOGS & RESOURCES"</strong> en la pestaÃ±a <strong>Base de Conocimiento</strong>. La IA leerÃ¡ esos enlaces y los incluirÃ¡ en el correo.
                                 </p>
                             </div>
 
                             <div>
-                                <h4 className="text-xs font-black text-slate-400 uppercase tracking-widest mb-4">Catálogos Activos (Ejemplo)</h4>
+                                <h4 className="text-xs font-black text-slate-400 uppercase tracking-widest mb-4">CatÃ¡logos Activos (Ejemplo)</h4>
                                 <div className="space-y-3">
                                     <div className="flex items-center justify-between p-4 bg-white border border-slate-100 rounded-xl shadow-sm">
                                         <div className="flex items-center gap-3">
@@ -840,8 +841,8 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({
                                                 <span className="text-[10px] font-bold">PDF</span>
                                             </div>
                                             <div>
-                                                <p className="text-sm font-bold text-slate-800">Catálogo 2026 UNITEC USA DESIGN</p>
-                                                <p className="text-[10px] text-slate-400">Español • General</p>
+                                                <p className="text-sm font-bold text-slate-800">CatÃ¡logo 2026 UNITEC USA DESIGN</p>
+                                                <p className="text-[10px] text-slate-400">EspaÃ±ol â€¢ General</p>
                                             </div>
                                         </div>
                                         <span className="px-2 py-1 bg-emerald-50 text-emerald-600 text-[10px] font-bold uppercase rounded-md">Activo</span>
@@ -853,7 +854,7 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({
                                             </div>
                                             <div>
                                                 <p className="text-sm font-bold text-slate-800">Product Catalog 2026 - Unitec</p>
-                                                <p className="text-[10px] text-slate-400">English • General</p>
+                                                <p className="text-[10px] text-slate-400">English â€¢ General</p>
                                             </div>
                                         </div>
                                         <span className="px-2 py-1 bg-emerald-50 text-emerald-600 text-[10px] font-bold uppercase rounded-md">Activo</span>
@@ -1279,7 +1280,7 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({
                                     value={escalaConfig.apiKey}
                                     onChange={e => setEscalaConfig(p => ({ ...p, apiKey: e.target.value }))}
                                     className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-sm focus:ring-2 focus:ring-brand-500 outline-none"
-                                    placeholder="••••••••••••••••"
+                                    placeholder="â€¢â€¢â€¢â€¢â€¢â€¢â€¢â€¢â€¢â€¢â€¢â€¢â€¢â€¢â€¢â€¢"
                                 />
                             </div>
                         </div>
@@ -1332,7 +1333,7 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({
                                       value={twilioConfig.authToken}
                                       onChange={e => setTwilioConfig(p => ({ ...p, authToken: e.target.value }))}
                                       className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-sm focus:ring-2 focus:ring-brand-500 outline-none"
-                                      placeholder="••••••••••••"
+                                      placeholder="â€¢â€¢â€¢â€¢â€¢â€¢â€¢â€¢â€¢â€¢â€¢â€¢"
                                   />
                               </div>
                               <div className="space-y-2">
@@ -1496,6 +1497,13 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({
                     <ApiHealthMonitor />
                 </div>
             );
+        // ===== PERMANENT MEMORY: Retraining & Chat Memory =====
+        case 'retraining':
+            return (
+                <div className="h-[calc(100vh-200px)] animate-in slide-in-from-bottom-2 duration-500">
+                    <RetrainingAnalytics liveSessions={conversations} />
+                </div>
+            );
     }
   };
 
@@ -1533,6 +1541,7 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({
                  { id: 'conversations',   label: 'Conversations',icon: <MessageSquare size={13} /> },
                  { id: 'interventions',   label: 'Interventions',icon: <Headphones size={13} /> },
                  { id: 'analytics',       label: 'Analytics',    icon: <BarChart3 size={13} /> },
+                  { id: 'retraining',      label: 'Memoria IA',   icon: <Brain size={13} /> },
                ].map((t: any) => (
                  <button
                    key={t.id}
@@ -1554,6 +1563,8 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({
 };
 
 export default AdminDashboard;
+
+
 
 
 

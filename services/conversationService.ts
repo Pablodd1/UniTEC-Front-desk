@@ -651,3 +651,56 @@ export const getConversationMetrics = async (
 export { COLLECTIONS };
 
 
+
+
+// Save AI-generated summary and Q&A pairs to a conversation
+export const saveConversationSummary = async (
+  sessionId: string,
+  summary: string,
+  qaPairs: Array<{ question: string; answer: string; category?: string }>
+): Promise<void> => {
+  if (getPrivacyMode()) {
+    logPrivacy('saveConversationSummary');
+    return;
+  }
+  await updateDoc(doc(db, COLLECTIONS.sessions, sessionId), {
+    summary,
+    qaPairs,
+    summaryGeneratedAt: new Date().toISOString(),
+    lastUpdated: new Date().toISOString(),
+  });
+};
+
+// Get all completed sessions with summaries (for retraining analytics)
+export const getSessionsWithSummaries = async (
+  dateFrom?: string
+): Promise<ConversationSession[]> => {
+  if (getPrivacyMode()) {
+    logPrivacy('getSessionsWithSummaries');
+    return [];
+  }
+  let q = query(
+    collection(db, COLLECTIONS.sessions),
+    where('status', '==', 'completed'),
+    orderBy('lastUpdated', 'desc')
+  );
+  if (dateFrom) {
+    q = query(q, where('createdAt', '>=', dateFrom));
+  }
+  const snapshot = await getDocs(q);
+  return snapshot.docs.map(doc => doc.data() as ConversationSession);
+};
+
+// Fetch ALL sessions (any status) for backfill — no date filter, large limit
+export const getAllSessionsForBackfill = async (): Promise<ConversationSession[]> => {
+  if (getPrivacyMode()) {
+    logPrivacy('getAllSessionsForBackfill');
+    return [];
+  }
+  const q = query(
+    collection(db, COLLECTIONS.sessions),
+    orderBy('createdAt', 'desc')
+  );
+  const snapshot = await getDocs(q);
+  return snapshot.docs.map(d => d.data() as ConversationSession);
+};
