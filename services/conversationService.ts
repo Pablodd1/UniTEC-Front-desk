@@ -1,4 +1,4 @@
-import { getPrivacyMode } from './firestoreService';
+﻿import { getPrivacyMode } from './firestoreService';
 import { db } from '../firebase';
 import { collection, doc, setDoc, getDocs, getDoc, query, orderBy, onSnapshot, updateDoc, where, increment } from 'firebase/firestore';
 
@@ -691,7 +691,7 @@ export const getSessionsWithSummaries = async (
   return snapshot.docs.map(doc => doc.data() as ConversationSession);
 };
 
-// Fetch ALL sessions (any status) for backfill � no date filter, large limit
+// Fetch ALL sessions (any status) for backfill — no date filter, large limit
 export const getAllSessionsForBackfill = async (): Promise<ConversationSession[]> => {
   if (getPrivacyMode()) {
     logPrivacy('getAllSessionsForBackfill');
@@ -704,3 +704,4 @@ export const getAllSessionsForBackfill = async (): Promise<ConversationSession[]
   const snapshot = await getDocs(q);
   return snapshot.docs.map(d => d.data() as ConversationSession);
 };
+

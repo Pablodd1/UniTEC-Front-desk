@@ -1,5 +1,4 @@
-
-export interface Product {
+﻿export interface Product {
   id: string;
   category: string;
   subcategory?: string;
@@ -207,6 +206,13 @@ export interface ConversationSession {
     staffName: string;
     timestamp: string;
   }>;
+  summary?: string;
+  qaPairs?: Array<{
+    question: string;
+    answer: string;
+    category?: string;
+  }>;
+  summaryGeneratedAt?: string;
 }
 
 export interface InterventionRequest {
@@ -307,4 +313,15 @@ export interface ChatSession {
   extracted_pii?: { name?: string; phone?: string; email?: string };
   intent_category?: string;
   type?: 'chat' | 'call';
+}
+
+export interface DailyReport {
+  date: string;
+  totalConversations: number;
+  totalMessages: number;
+  humanHandoffs: number;
+  aiCovered: number;
+  topCategories: Record<string, number>;
+  avgSentiment: number;
+  generatedSummaries: string[];
 }

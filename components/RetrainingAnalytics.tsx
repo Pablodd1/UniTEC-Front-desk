@@ -7,9 +7,9 @@ import React, { useState, useEffect, useCallback, useRef } from "react";
 import {
   Brain, RefreshCw, Download, ChevronDown, ChevronUp,
   MessageSquare, Tag, Calendar, Sparkles, AlertCircle,
-  CheckCircle2, Clock, Filter, Database, Zap, Users
+  CheckCircle2, Clock, Filter, Database, Zap
 } from "lucide-react";
-import { ConversationSession } from "../services/conversationService";
+import { ConversationSession } from "../types";
 import { generateConversationSummary } from "../services/geminiService";
 import {
   saveConversationSummary,
@@ -192,7 +192,7 @@ const RetrainingAnalytics: React.FC<RetrainingAnalyticsProps> = ({ liveSessions 
 
   const days = Object.keys(groupedByDay);
   const allQAPairs = allSessions.flatMap(s =>
-    (s.qaPairs || []).map(qa => ({ ...qa, sessionId: s.id, sessionDate: s.createdAt, brandId: s.brandId }))
+    (s.qaPairs || []).map((qa: any) => ({ ...qa, sessionId: s.id, sessionDate: s.createdAt, brandId: s.brandId }))
   );
   const filteredQA = filterCategory === "all" ? allQAPairs : allQAPairs.filter(qa => qa.category === filterCategory);
   const unsummarizedCount = allSessions.filter(s => !s.summary && s.messages && s.messages.length > 0).length;
@@ -426,7 +426,7 @@ const RetrainingAnalytics: React.FC<RetrainingAnalyticsProps> = ({ liveSessions 
                                 {session.qaPairs && session.qaPairs.length > 0 && (
                                   <div className="space-y-2">
                                     <p className="text-[10px] font-black text-slate-400 uppercase tracking-wider">Pares Q&A ({session.qaPairs.length})</p>
-                                    {session.qaPairs.map((qa, i) => (
+                                    {session.qaPairs.map((qa: any, i: number) => (
                                       <div key={i} className="bg-slate-50 rounded-xl p-3 border border-slate-100">
                                         <div className="flex items-start justify-between gap-2 mb-1">
                                           <p className="text-xs font-bold text-slate-800">❓ {qa.question}</p>
@@ -581,3 +581,5 @@ const RetrainingAnalytics: React.FC<RetrainingAnalyticsProps> = ({ liveSessions 
 };
 
 export default RetrainingAnalytics;
+
+
