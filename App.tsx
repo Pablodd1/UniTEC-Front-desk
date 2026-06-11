@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+﻿import React, { useState, useEffect } from 'react';
 import Layout from './components/Layout';
 import ChatTab from './components/ChatTab';
 import CallTab from './components/CallTab';
@@ -73,7 +73,7 @@ const App: React.FC = () => {
 
     // Title
     document.title = isUnitec
-      ? 'UNITEC USA Design | Recepcionista Virtual IA | Distribución Mayorista'
+      ? 'UNITEC USA Design | Recepcionista Virtual IA | DistribuciÃ³n Mayorista'
       : 'Building Innovation | Asistente Virtual IA | Miami, Florida';
 
     // meta description
@@ -84,8 +84,8 @@ const App: React.FC = () => {
       document.head.appendChild(metaDesc);
     }
     metaDesc.content = isUnitec
-      ? 'Recepcionista virtual IA para distribución mayorista de materiales de construcción. Consulta catálogo, stock en Florida y cotizaciones al instante.'
-      : 'Asistente virtual IA de Building Innovation. Consulta productos, stock en Miami y conecta con ventas. Atención inmediata 24/7.';
+      ? 'Recepcionista virtual IA para distribuciÃ³n mayorista de materiales de construcciÃ³n. Consulta catÃ¡logo, stock en Florida y cotizaciones al instante.'
+      : 'Asistente virtual IA de Building Innovation. Consulta productos, stock en Miami y conecta con ventas. AtenciÃ³n inmediata 24/7.';
 
     // OG tags helper
     const setOg = (property: string, val: string) => {
@@ -95,8 +95,8 @@ const App: React.FC = () => {
     };
     setOg('og:title', isUnitec ? 'UNITEC USA Design | Asistente Virtual IA' : 'Building Innovation | Asistente Virtual IA');
     setOg('og:description', isUnitec
-      ? 'Consulta catálogo, stock y cotizaciones en tiempo real. Distribuidor mayorista de materiales de construcción premium.'
-      : 'Paneles WPC, pisos SPC, fachadas y más. Consulta disponibilidad y cotiza ahora mismo.');
+      ? 'Consulta catÃ¡logo, stock y cotizaciones en tiempo real. Distribuidor mayorista de materiales de construcciÃ³n premium.'
+      : 'Paneles WPC, pisos SPC, fachadas y mÃ¡s. Consulta disponibilidad y cotiza ahora mismo.');
     setOg('og:locale', 'es_ES');
 
     // SVG favicons - dark blue U for UNITEC, dark green B for Building Innovation
@@ -187,20 +187,30 @@ const App: React.FC = () => {
   };
 
   if (isEmbedMode) {
+    // EMBED MODE: Chat + Call only. Admin lives on standalone domain (uni-tec-front-desk.vercel.app)
+    const embedTab = (activeTab === Tab.ADMIN_SETTINGS) ? Tab.CHAT : activeTab;
+    const handleEmbedTabChange = (tab: Tab) => {
+      if (tab === Tab.ADMIN_SETTINGS) {
+        // Open full Mission Control in new tab instead of inside widget
+        window.open(`https://uni-tec-front-desk.vercel.app/?brandId=${currentBrandId}`, '_blank');
+        return;
+      }
+      setActiveTab(tab);
+    };
     return (
       <div className="h-full w-full bg-transparent overflow-hidden">
         <Layout 
-          activeTab={activeTab} 
-          onTabChange={setActiveTab}
+          activeTab={embedTab} 
+          onTabChange={handleEmbedTabChange}
           config={activeConfig}
-          onOpenDashboard={() => setActiveTab(Tab.ADMIN_SETTINGS)}
+          onOpenDashboard={() => window.open(`https://uni-tec-front-desk.vercel.app/?brandId=${currentBrandId}`, "_blank")}
           language={language}
           setLanguage={setLanguage}
           onLogout={handleLogout}
-          onCloseWidget={() => {}}
+          onCloseWidget={() => window.parent.postMessage("close-chatbot", "*")}
           isEmbedMode={true}
           currentBrandId={currentBrandId}
-          onToggleBrand={setCurrentBrandId}
+          onToggleBrand={undefined}
         >
           {renderContent()}
         </Layout>
@@ -231,5 +241,6 @@ const App: React.FC = () => {
 };
 
 export default App;
+
 
 

@@ -1,4 +1,4 @@
-
+﻿
 import React from 'react';
 import { Tab, BusinessConfig, Language } from '../types';
 import { MessageSquare, Phone, ShieldCheck, LayoutDashboard, ChevronDown } from 'lucide-react';
@@ -123,14 +123,15 @@ const Layout: React.FC<LayoutProps> = ({
           </div>
       </main>
 
-      {/* Bottom Navigation */}
-      <nav className={`h-20 bg-white border-t border-slate-100 flex items-center justify-around px-2 shrink-0 pb-safe shadow-[0_-4px_12px_rgba(0,0,0,0.03)] ${isEmbedMode ? '' : ''}`}>
+      {/* Bottom Navigation - Admin tab hidden in embed mode; lives at standalone domain */}
+      <nav className="h-20 bg-white border-t border-slate-100 flex items-center justify-around px-2 shrink-0 pb-safe shadow-[0_-4px_12px_rgba(0,0,0,0.03)]">
           <NavItem tab={Tab.CHAT} icon={<MessageSquare />} label={t.navChat} />
           <NavItem tab={Tab.CALL} icon={<Phone />} label={t.navCall} />
-          <NavItem tab={Tab.ADMIN_SETTINGS} icon={<LayoutDashboard />} label="Admin" />
+          {!isEmbedMode && <NavItem tab={Tab.ADMIN_SETTINGS} icon={<LayoutDashboard />} label="Admin" />}
       </nav>
     </div>
   );
 };
 
 export default Layout;
+
