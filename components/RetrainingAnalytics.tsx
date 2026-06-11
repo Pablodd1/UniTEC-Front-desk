@@ -82,7 +82,7 @@ const RetrainingAnalytics: React.FC<RetrainingAnalyticsProps> = ({ liveSessions 
       .filter(s => s.status === "completed" && !s.summary && s.messages && s.messages.length > 0)
       .forEach(async (session) => {
         try {
-          const msgs = session.messages.map(m => ({ role: m.role, text: m.text }));
+          const msgs = (session.messages || []).map(m => ({ role: m.role, text: m.text }));
           const result = await generateConversationSummary(msgs, session.brandId);
           await saveConversationSummary(session.id, result.summary, result.qaPairs);
           setAllSessions(prev => prev.map(s =>
@@ -152,7 +152,7 @@ const RetrainingAnalytics: React.FC<RetrainingAnalyticsProps> = ({ liveSessions 
       setBackfill(p => ({ ...p, processed: i, currentName: displayName }));
 
       try {
-        const msgs = session.messages.map((m: any) => ({ role: m.role, text: m.text }));
+        const msgs = (session.messages || []).map((m: any) => ({ role: m.role, text: m.text }));
         const result = await generateConversationSummary(msgs, session.brandId);
         await saveConversationSummary(session.id, result.summary, result.qaPairs);
         succeeded++;
@@ -437,11 +437,11 @@ const RetrainingAnalytics: React.FC<RetrainingAnalyticsProps> = ({ liveSessions 
                                     ))}
                                   </div>
                                 )}
-                                {session.messages && session.messages.length > 0 && (
+                                {session.messages && (session.messages?.length || 0) > 0 && (
                                   <div className="space-y-2">
                                     <p className="text-[10px] font-black text-slate-400 uppercase tracking-wider">Transcripción ({msgCount} mensajes)</p>
                                     <div className="max-h-52 overflow-y-auto space-y-2 bg-slate-50 rounded-xl p-3">
-                                      {session.messages.map((msg: any, i: number) => (
+                                      {(session.messages || []).map((msg: any, i: number) => (
                                         <div key={i} className={`flex ${msg.role === "user" ? "justify-end" : "justify-start"}`}>
                                           <div className={`max-w-[80%] px-3 py-2 rounded-xl text-xs ${msg.role === "user" ? "bg-brand-600 text-white" : msg.role === "staff" ? "bg-orange-100 text-orange-800 border border-orange-200" : "bg-white text-slate-700 border border-slate-200"}`}>
                                             {msg.isStaff && <span className="text-[9px] font-black block mb-1 opacity-70">STAFF: {msg.staffName}</span>}
@@ -581,5 +581,6 @@ const RetrainingAnalytics: React.FC<RetrainingAnalyticsProps> = ({ liveSessions 
 };
 
 export default RetrainingAnalytics;
+
 
 

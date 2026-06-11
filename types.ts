@@ -165,7 +165,7 @@ export interface ConversationSession {
   status: 'active' | 'human_requested' | 'human_assigned' | 'completed' | 'abandoned';
   brandId: 'unitec' | 'building';
   language: 'en' | 'es';
-  messages: ConversationMessage[];
+  messages?: ConversationMessage[];
   createdAt: string;
   lastUpdated: string;
   lastMessage?: string;
@@ -325,3 +325,4 @@ export interface DailyReport {
   avgSentiment: number;
   generatedSummaries: string[];
 }
+

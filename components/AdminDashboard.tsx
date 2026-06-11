@@ -1,13 +1,13 @@
 ﻿import React, { useState, useEffect } from 'react';
 import { Phone, ShieldCheck, Database, Mic2, Save, RefreshCw, Check, Loader2, Volume2, TrendingUp, Zap, Gauge, Building2, Store, Brain, Code, Copy, ExternalLink, Rocket, ToggleRight, ToggleLeft, DollarSign, MessageSquare, Headphones, BarChart3 } from 'lucide-react';
-import { EscalaConfig, VoiceName, VoiceProvider, BillingInvoice, ConversationSession, InterventionRequest } from '../types';
+import { EscalaConfig, VoiceName, VoiceProvider, BillingInvoice, ConversationSession, InterventionRequest, ConversationMessage } from '../types';
 import { playGeminiTTS } from '../services/geminiService';
 import { getEscalaConfig, saveEscalaConfig, testEscalaConnection } from '../services/escalaService';
 import { getUsageStats, getProfitEstimate, generateInvoice, trackUsage } from '../services/usageService';
 import { generateImage, editImage } from '../services/imageService';
 import { getAppConfig, saveAppConfig, getCrmLogs, CrmLog } from '../services/firestoreService';
 import { DEFAULT_TRAINING_DATA } from '../constants';
-import { subscribeToConversations, subscribeToInterventions, updateSessionStatus, addMessage } from '../services/conversationService';
+import { subscribeToConversations, subscribeToInterventions, updateSessionStatus, addMessage, subscribeToMessages } from '../services/conversationService';
 import ConversationMonitor from './ConversationMonitor';
 import StaffIntervention from './StaffIntervention';
 import AnalyticsDashboard from './AnalyticsDashboard';
@@ -350,6 +350,19 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({
 
   // Executive Handoff Center State
   const [selectedSessionId, setselectedSessionId] = React.useState<string | null>(null);
+  const [sessionMessages, setSessionMessages] = useState<ConversationMessage[]>([]);
+
+  // Subscribe to messages when a session is selected
+  useEffect(() => {
+    if (!selectedSessionId) {
+      setSessionMessages([]);
+      return;
+    }
+    const unsub = subscribeToMessages(selectedSessionId, (messages) => {
+      setSessionMessages(messages);
+    });
+    return () => unsub();
+  }, [selectedSessionId]);
   const [adminResponseText, setAdminResponseText] = React.useState('');
 
   // Derived: currently selected session object
@@ -1129,7 +1142,7 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({
                                         </div>
 
                                         <div className="flex-1 overflow-y-auto p-4 space-y-4 no-scrollbar">
-                                            {selectedSession.messages.map((m: any, idx: number) => {
+                                            {sessionMessages.map((m: any, idx: number) => {
                                                 const isStaff = m.isStaff || false;
                                                 const isUser = m.role === 'user';
                                                 return (
@@ -1566,6 +1579,7 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({
 };
 
 export default AdminDashboard;
+
 
 
 

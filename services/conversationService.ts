@@ -1,6 +1,6 @@
 ﻿import { getPrivacyMode } from './firestoreService';
 import { db } from '../firebase';
-import { collection, doc, setDoc, getDocs, getDoc, query, orderBy, onSnapshot, updateDoc, where, increment } from 'firebase/firestore';
+import { collection, doc, setDoc, getDocs, getDoc, query, orderBy, onSnapshot, updateDoc, where, increment, limit } from 'firebase/firestore';
 
 // PRIVACY MODE: Set to true to disable all Firestore chat saving
 // This ensures user conversations are NOT stored unless explicitly enabled
@@ -32,7 +32,7 @@ export interface ConversationSession {
   status: 'active' | 'human_requested' | 'human_assigned' | 'completed' | 'abandoned';
   brandId: 'unitec' | 'building';
   language: 'en' | 'es';
-  messages: ConversationMessage[];
+  messages?: ConversationMessage[];
   createdAt: string;
   lastUpdated: string;
   lastMessage?: string;
@@ -129,7 +129,6 @@ export const createConversation = async (
     status: 'active',
     brandId,
     language,
-    messages: [],
     createdAt: now,
     lastUpdated: now,
     source,
@@ -274,7 +273,7 @@ export const getConversations = async (
     return []; // Return empty array when privacy mode is on
   }
   
-  let q = query(collection(db, COLLECTIONS.sessions), orderBy('lastUpdated', 'desc'));
+  let q = query(collection(db, COLLECTIONS.sessions), orderBy('lastUpdated', 'desc'), limit(50));
   
   if (filters?.status) {
     q = query(q, where('status', '==', filters.status));
@@ -297,7 +296,7 @@ export const subscribeToConversations = (
     return () => {}; // No-op unsubscribe
   }
   
-  const q = query(collection(db, COLLECTIONS.sessions), orderBy('lastUpdated', 'desc'));
+  const q = query(collection(db, COLLECTIONS.sessions), orderBy('lastUpdated', 'desc'), limit(50));
   
   return onSnapshot(q, (snapshot) => {
     const sessions = snapshot.docs.map(doc => doc.data() as ConversationSession);
@@ -702,4 +701,6 @@ export const getAllSessionsForBackfill = async (): Promise<ConversationSession[]
   const snapshot = await getDocs(q);
   return snapshot.docs.map(d => d.data() as ConversationSession);
 };
+
+
 
