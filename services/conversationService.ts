@@ -250,13 +250,11 @@ export const acceptIntervention = async (
     assignedStaffId: staffId,
   });
   
-  // Get session ID from intervention
-  const interventionDoc = await getDocs(
-    query(collection(db, COLLECTIONS.interventions), where('id', '==', interventionId))
-  );
+  // Get session ID from intervention — direct doc lookup (avoid full collection scan)
+  const intSnap = await getDoc(doc(db, COLLECTIONS.interventions, interventionId));
   
-  if (!interventionDoc.empty) {
-    const data = interventionDoc.docs[0].data() as InterventionRequest;
+  if (intSnap.exists()) {
+    const data = intSnap.data() as InterventionRequest;
     await updateSessionStatus(data.sessionId, 'human_assigned', staffId);
   }
 };

@@ -12,6 +12,16 @@ service cloud.firestore {
       return isAuthenticated() && request.auth.uid == userId;
     }
     
+    function isAdmin() {
+      return isAuthenticated() && 
+        (request.auth.token.admin == true || request.auth.token.role == 'admin');
+    }
+    
+    function isStaff() {
+      return isAuthenticated() && 
+        (request.auth.token.role in ['admin', 'sales', 'support']);
+    }
+    
     function uidUnchanged() {
       return !('userId' in request.resource.data) || request.resource.data.userId == request.auth.uid;
     }
@@ -22,10 +32,6 @@ service cloud.firestore {
     
     function hasRequiredFields(fields) {
       return request.resource.data.keys().hasAll(fields);
-    }
-    
-    function hasOnlyAllowedFields(fields) {
-      return request.resource.data.keys().hasOnly(fields);
     }
 
     // ===============================================================
@@ -60,10 +66,11 @@ service cloud.firestore {
              (!('escalaAccountId' in request.resource.data) || (request.resource.data.escalaAccountId is string && request.resource.data.escalaAccountId.size() < 500)) &&
              (!('escalaIsActive' in request.resource.data) || request.resource.data.escalaIsActive is bool) &&
              (!('trainingData' in request.resource.data) || (request.resource.data.trainingData is string && request.resource.data.trainingData.size() < 500000)) &&
+             // Block geminiApiKey from being saved to Firestore (security)
+             (!('geminiApiKey' in request.resource.data)) &&
              request.resource.data.userId is string && request.resource.data.userId.size() < 100;
     }
 
-    // NEW: Conversation validators
     function isValidConversation() {
       return request.resource.data.keys().hasAll(['id', 'status', 'brandId', 'createdAt', 'lastUpdated']) &&
              request.resource.data.id is string &&
@@ -78,6 +85,7 @@ service cloud.firestore {
              request.resource.data.id is string &&
              request.resource.data.role in ['user', 'model', 'staff'] &&
              request.resource.data.text is string &&
+             request.resource.data.text.size() < 10000 &&
              request.resource.data.timestamp is string;
     }
     
@@ -101,6 +109,8 @@ service cloud.firestore {
     // ===============================================================
     // Rules
     // ===============================================================
+    
+    // -- User-scoped data (requires auth + ownership) --
     match /users/{userId}/crmLogs/{logId} {
       allow read: if isOwner(userId);
       allow create: if isOwner(userId) && isValidCrmLog() && uidUnchanged();
@@ -116,7 +126,7 @@ service cloud.firestore {
     }
     
     match /users/{userId}/config/main {
-      allow read: if isOwner(userId) || userId == 'mock_unitec_admin';
+      allow read: if isOwner(userId);
       allow create: if isOwner(userId) && isValidAppConfig() && uidUnchanged();
       allow update: if isOwner(userId) && isValidAppConfig() && uidNotModified();
       allow delete: if isOwner(userId);
@@ -126,33 +136,33 @@ service cloud.firestore {
       allow read, write: if isOwner(userId);
     }
     
-    // NEW: Conversations collection (admin + staff access + public visitor)
+    // -- Conversations: public create, staff/admin read/write --
     match /conversations/{sessionId} {
-      allow get: if true;
-      allow list: if isAuthenticated();
+      allow get: if isStaff();
+      allow list: if isStaff();
       allow create: if isValidConversation();
-      allow update: if true;
-      allow delete: if isAuthenticated();
+      allow update: if isStaff();
+      allow delete: if isAdmin();
     }
     
-    // NEW: Messages subcollection
+    // -- Messages subcollection: staff/admin read, public create --
     match /conversations/{sessionId}/messages/{messageId} {
-      allow read: if true;
+      allow read: if isStaff();
       allow create: if isValidMessage();
-      allow update: if isAuthenticated();
-      allow delete: if isAuthenticated();
+      allow update: if isStaff();
+      allow delete: if isAdmin();
     }
     
-    // NEW: Interventions collection
+    // -- Interventions: staff/admin access, public create --
     match /interventions/{interventionId} {
-      allow get: if true;
-      allow list: if true;
+      allow get: if isStaff();
+      allow list: if isStaff();
       allow create: if isValidIntervention();
-      allow update: if true;
-      allow delete: if isAuthenticated();
+      allow update: if isStaff();
+      allow delete: if isAdmin();
     }
     
-    // NEW: Calls collection
+    // -- Calls: authenticated only --
     match /calls/{callId} {
       allow read: if isAuthenticated();
       allow create: if isAuthenticated() && isValidCall();
@@ -160,15 +170,17 @@ service cloud.firestore {
       allow delete: if isAuthenticated();
     }
     
-    // NEW: Staff collection
+    // -- Staff: authenticated read, admin write --
     match /staff/{staffId} {
       allow read: if isAuthenticated();
-      allow write: if isAuthenticated();
+      allow create: if isAdmin();
+      allow update: if isStaff();
+      allow delete: if isAdmin();
     }
     
-    // NEW: Notifications collection
+    // -- Notifications: authenticated read/update, public create --
     match /notifications/{notificationId} {
-      allow read, update: if isAuthenticated();
+      allow read, update: if isStaff();
       allow create: if true;
     }
   }

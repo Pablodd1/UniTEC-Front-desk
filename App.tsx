@@ -42,13 +42,8 @@ const App: React.FC = () => {
   const [initialMessage] = useState<string | undefined>(undefined);
 
   useEffect(() => {
-    const checkLocalAuth = () => sessionStorage.getItem('unitec_local_admin') === 'true';
-    if (checkLocalAuth()) {
-      setIsLoggedIn(true);
-    }
-
     const unsubscribe = onAuthStateChanged(auth, (user) => {
-      if (user || checkLocalAuth()) {
+      if (user) {
         setIsLoggedIn(true);
       } else {
         setIsLoggedIn(false);

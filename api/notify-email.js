@@ -12,12 +12,14 @@ export default async function handler(req, res) {
     return res.status(405).json({ error: 'Method Not Allowed' });
   }
 
-  const { subject, html } = req.body;
+  const { subject, html, to } = req.body;
   if (!subject || !html) {
     return res.status(400).json({ error: 'Missing subject or html parameter' });
   }
 
   const RESEND_API_KEY = process.env.RESEND_API_KEY;
+  const ADMIN_EMAIL = process.env.ADMIN_EMAIL || 'jasmelacosta@gmail.com';
+  const recipient = to || ADMIN_EMAIL;
 
   if (!RESEND_API_KEY) {
     console.error("Missing Resend API Key.");
@@ -32,8 +34,8 @@ export default async function handler(req, res) {
         'Authorization': `Bearer ${RESEND_API_KEY}`
       },
       body: JSON.stringify({
-        from: 'UniTEC AI Desk <onboarding@resend.dev>', // Needs verified domain in production
-        to: ['jasmelacosta@gmail.com'],
+        from: 'UniTEC AI Desk <onboarding@resend.dev>',
+        to: [recipient],
         subject: subject,
         html: html
       }),

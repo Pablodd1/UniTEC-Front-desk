@@ -46,7 +46,7 @@ export interface CallRecording {
 }
 
 export const getUserId = (): string | null => {
-  return auth.currentUser?.uid || (sessionStorage.getItem('unitec_local_admin') === 'true' ? 'mock_unitec_admin' : null);
+  return auth.currentUser?.uid || null;
 };
 
 // AppConfig

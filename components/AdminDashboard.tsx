@@ -391,12 +391,15 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({
       window.localStorage.setItem('unitec_privacy_mode', String(privacyMode));
     }
 
+    // NOTE: API key is NEVER saved to Firestore for security.
+    // It lives only in localStorage and the server-side env vars.
+    // Save only non-sensitive config (privacy mode).
     try {
       await saveAppConfig({ 
-        geminiApiKey: geminiApiKey.trim() 
+        // geminiApiKey deliberately NOT included — keys stay client+server only
       });
     } catch (e) {
-      console.error("Failed to save Gemini key to Firestore:", e);
+      console.error("Failed to save config to Firestore:", e);
     }
     
     setTimeout(() => {

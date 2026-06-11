@@ -91,8 +91,6 @@ const ChatTab: React.FC<ChatTabProps> = ({ quickActions, initialMessage, emergen
   const scrollContainerRef = useRef<HTMLDivElement>(null);
   const hasProcessedInitial = useRef(false);
 
-  const sessionId = useRef(`session_${Date.now()}_${Math.random().toString(36).substring(2, 10)}`);
-
   // ===== NEW: Initialize Conversation Session =====
   useEffect(() => {
     const initConversation = async () => {
@@ -176,9 +174,9 @@ const ChatTab: React.FC<ChatTabProps> = ({ quickActions, initialMessage, emergen
   }, [conversationId]);
 // Sync to Firebase (Only when AI is actively responding to avoid race-loops)
   useEffect(() => {
-    if (messages.length > 1 && sessionStatus === 'active' && !isLoading) {
+    if (messages.length > 1 && sessionStatus === 'active' && !isLoading && conversationId) {
       const sessionPayload: any = {
-        id: sessionId.current,
+        id: conversationId,
         timestamp: new Date().toISOString(),
         lastUpdated: new Date().toISOString(),
         messages: messages,
