@@ -1,4 +1,4 @@
-// UniTEC USA Design Chatbot Embed Script
+﻿// UniTEC USA Design Chatbot Embed Script
 // Website: https://www.unitecusadesign.com/
 
 (function() {
@@ -8,7 +8,7 @@
     height: '700px',
     position: 'bottom-right',
     buttonColor: '#0ea5e9',
-    buttonText: '💬 Chat',
+    buttonText: 'ðŸ’¬ Chat',
     language: 'es',
     zIndex: 9999,
   };
@@ -31,7 +31,7 @@
   `;
 
   const iframe = document.createElement('iframe');
-  iframe.src = `https://uni-tec-front-desk.vercel.app/?embed=true&brandId=${config.brandId}&lang=${config.language}`;
+  iframe.src = `https://chatbuildinginnovation.us/?embed=true&brandId=${config.brandId}&lang=${config.language}`;
   iframe.style.cssText = `
     width: 100%;
     height: 100%;
@@ -94,5 +94,6 @@
     container.style.borderRadius = '0';
   }
 
-  console.log('✅ UniTEC USA Design Chatbot loaded');
+  console.log('âœ… UniTEC USA Design Chatbot loaded');
 })();
+

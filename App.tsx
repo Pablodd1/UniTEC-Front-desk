@@ -187,12 +187,12 @@ const App: React.FC = () => {
   };
 
   if (isEmbedMode) {
-    // EMBED MODE: Chat + Call only. Admin lives on standalone domain (uni-tec-front-desk.vercel.app)
+    // EMBED MODE: Chat + Call only. Admin lives on standalone domain (chatbuildinginnovation.us)
     const embedTab = (activeTab === Tab.ADMIN_SETTINGS) ? Tab.CHAT : activeTab;
     const handleEmbedTabChange = (tab: Tab) => {
       if (tab === Tab.ADMIN_SETTINGS) {
         // Open full Mission Control in new tab instead of inside widget
-        window.open(`https://uni-tec-front-desk.vercel.app/?brandId=${currentBrandId}`, '_blank');
+        window.open(`https://chatbuildinginnovation.us/?brandId=${currentBrandId}`, '_blank');
         return;
       }
       setActiveTab(tab);
@@ -203,7 +203,7 @@ const App: React.FC = () => {
           activeTab={embedTab} 
           onTabChange={handleEmbedTabChange}
           config={activeConfig}
-          onOpenDashboard={() => window.open(`https://uni-tec-front-desk.vercel.app/?brandId=${currentBrandId}`, "_blank")}
+          onOpenDashboard={() => window.open(`https://chatbuildinginnovation.us/?brandId=${currentBrandId}`, "_blank")}
           language={language}
           setLanguage={setLanguage}
           onLogout={handleLogout}
@@ -241,6 +241,7 @@ const App: React.FC = () => {
 };
 
 export default App;
+
 
 
 
