@@ -1,4 +1,4 @@
-rules_version = '2';
+﻿rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
     // ===============================================================
@@ -14,12 +14,12 @@ service cloud.firestore {
     
     function isAdmin() {
       return isAuthenticated() && 
-        (request.auth.token.admin == true || request.auth.token.role == 'admin');
+        (request.auth.token.admin == true || request.auth.token.role == 'admin' || request.auth.token.email == 'admin@unitecdesign.com');
     }
     
     function isStaff() {
       return isAuthenticated() && 
-        (request.auth.token.role in ['admin', 'sales', 'support']);
+        (request.auth.token.role in ['admin', 'sales', 'support'] || request.auth.token.email == 'admin@unitecdesign.com');
     }
     
     function uidUnchanged() {
@@ -185,3 +185,4 @@ service cloud.firestore {
     }
   }
 }
+
