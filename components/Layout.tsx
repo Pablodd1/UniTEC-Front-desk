@@ -143,7 +143,8 @@ const Layout: React.FC<LayoutProps> = ({
       {/* Bottom Navigation - Admin tab hidden in embed mode; lives at standalone domain */}
       <nav className="h-20 bg-white border-t border-slate-100 flex items-center justify-around px-2 shrink-0 pb-safe shadow-[0_-4px_12px_rgba(0,0,0,0.03)]">
           <NavItem tab={Tab.CHAT} icon={<MessageSquare />} label={t.navChat} />
-          <NavItem tab={Tab.CALL} icon={<Phone />} label={t.navCall} />`r`n            <NavItem tab={Tab.PRIVACY} icon={<ShieldCheck />} label={language === 'en' ? 'Privacy' : 'Privacidad'} />
+          <NavItem tab={Tab.CALL} icon={<Phone />} label={t.navCall} />
+          <NavItem tab={Tab.PRIVACY} icon={<ShieldCheck />} label={language === 'en' ? 'Privacy' : 'Privacidad'} />
           {!isEmbedMode && <NavItem tab={Tab.ADMIN_SETTINGS} icon={<LayoutDashboard />} label="Admin" />}
       </nav>
     </div>
@@ -151,6 +152,7 @@ const Layout: React.FC<LayoutProps> = ({
 };
 
 export default Layout;
+
 
 
 
