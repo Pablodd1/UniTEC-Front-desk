@@ -1,7 +1,7 @@
 ﻿
 import React from 'react';
-import { Tab, BusinessConfig, Language } from '../types';
-import { MessageSquare, Phone, ShieldCheck, LayoutDashboard, ChevronDown } from 'lucide-react';
+import { Tab, BusinessConfig, Language, CartItem } from '../types';
+import { MessageSquare, Phone, ShieldCheck, LayoutDashboard, ChevronDown, ShoppingCart } from 'lucide-react';
 import { UI_TRANSLATIONS } from '../constants';
 
 interface LayoutProps {
@@ -17,6 +17,8 @@ interface LayoutProps {
   isEmbedMode?: boolean;
   currentBrandId?: 'unitec' | 'building';
   onToggleBrand?: (brand: 'unitec' | 'building') => void;
+  cart?: CartItem[];
+  onOpenCart?: () => void;
 }
 
 const Layout: React.FC<LayoutProps> = ({ 
@@ -28,6 +30,8 @@ const Layout: React.FC<LayoutProps> = ({
   onCloseWidget, 
   isEmbedMode,
   currentBrandId,
+  cart = [],
+  onOpenCart,
   onToggleBrand
 }) => {
   const t = UI_TRANSLATIONS[language];
@@ -80,7 +84,20 @@ const Layout: React.FC<LayoutProps> = ({
                  </div>
                </div>
             </div>
-            <div className="flex items-center gap-2">
+                        <div className="flex items-center gap-2">
+              {onOpenCart && (
+                <button 
+                  onClick={onOpenCart}
+                  className="relative p-2 text-white/80 hover:text-white transition-colors"
+                >
+                  <ShoppingCart size={20} />
+                  {cart && cart.length > 0 && (
+                    <span className="absolute top-0 right-0 h-4 w-4 bg-brand-500 text-white text-[10px] font-bold rounded-full flex items-center justify-center border border-brand-900">
+                      {cart.reduce((total, item) => total + item.quantity, 0)}
+                    </span>
+                  )}
+                </button>
+              )}
               {!isEmbedMode && (
                   <button 
                   onClick={onCloseWidget}
@@ -126,7 +143,7 @@ const Layout: React.FC<LayoutProps> = ({
       {/* Bottom Navigation - Admin tab hidden in embed mode; lives at standalone domain */}
       <nav className="h-20 bg-white border-t border-slate-100 flex items-center justify-around px-2 shrink-0 pb-safe shadow-[0_-4px_12px_rgba(0,0,0,0.03)]">
           <NavItem tab={Tab.CHAT} icon={<MessageSquare />} label={t.navChat} />
-          <NavItem tab={Tab.CALL} icon={<Phone />} label={t.navCall} />
+          <NavItem tab={Tab.CALL} icon={<Phone />} label={t.navCall} />`r`n            <NavItem tab={Tab.PRIVACY} icon={<ShieldCheck />} label={language === 'en' ? 'Privacy' : 'Privacidad'} />
           {!isEmbedMode && <NavItem tab={Tab.ADMIN_SETTINGS} icon={<LayoutDashboard />} label="Admin" />}
       </nav>
     </div>
@@ -134,4 +151,10 @@ const Layout: React.FC<LayoutProps> = ({
 };
 
 export default Layout;
+
+
+
+
+
+
 

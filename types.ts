@@ -57,7 +57,8 @@ export enum Tab {
   CALENDAR = 'calendar',
   SERVICES = 'services',
   INFO = 'info',
-  ADMIN_SETTINGS = 'admin_settings'
+  ADMIN_SETTINGS = 'admin_settings',
+  PRIVACY = 'privacy'
 }
 
 export interface EscalaConfig {
@@ -325,4 +326,13 @@ export interface DailyReport {
   avgSentiment: number;
   generatedSummaries: string[];
 }
+
+
+
+export interface CartItem {
+  product: Product;
+  quantity: number;
+}
+
+
 

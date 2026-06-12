@@ -5,25 +5,28 @@ import CallTab from './components/CallTab';
 import AdminDashboard from './components/AdminDashboard';
 import CalendarTab from './components/CalendarTab';
 import LoginScreen from './components/LoginScreen';
-import { Tab, Language, VoiceName, VoiceProvider } from './types';
+import ServicesTab from './components/ServicesTab';
+import InfoTab from './components/InfoTab';
+import CartSidebar from './components/CartSidebar';
+import { Tab, Language, VoiceName, VoiceProvider, CartItem } from './types';
 import { UNITEC_CONFIG, BUILDING_INNOVATION_CONFIG, QUICK_ACTIONS } from './constants';
 import { resetChatSession } from './services/geminiService';
 import { auth, logOut } from './firebase';
 import { onAuthStateChanged } from 'firebase/auth';
 
 const App: React.FC = () => {
-  // Detection for Embed Mode (when used as a widget in another site)
   const isEmbedMode = new URLSearchParams(window.location.search).get('embed') === 'true';
 
-  // Auth State (Within the widget)
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [isAuthReady, setIsAuthReady] = useState(false);
 
   const [activeTab, setActiveTab] = useState<Tab>(Tab.CHAT);
+  const [cart, setCart] = useState<CartItem[]>([]);
+  const [isCartOpen, setIsCartOpen] = useState(false);
+  
   const [emergencyMode, setEmergencyMode] = useState(false);
   const [language, setLanguage] = useState<Language>('es');
   
-  // Business Identity State
   const [currentBrandId, setCurrentBrandId] = useState<'unitec' | 'building'>(() => {
     const brand = new URLSearchParams(window.location.search).get('brandId');
     if (brand === 'building' || brand === 'unitec') return brand;
@@ -32,10 +35,8 @@ const App: React.FC = () => {
   });
   const activeConfig = currentBrandId === 'unitec' ? UNITEC_CONFIG : BUILDING_INNOVATION_CONFIG;
 
-  // Background State
   const [bgImage, setBgImage] = useState<string>(localStorage.getItem('unitec_custom_bg') || "https://images.unsplash.com/photo-1494412519320-aa613dfb7738?auto=format&fit=crop&q=80&w=1920");
 
-  // Voice Settings
   const [voiceProvider, setVoiceProvider] = useState<VoiceProvider>('gemini');
   const [voiceName, setVoiceName] = useState<VoiceName>('Kore');
   
@@ -43,35 +44,23 @@ const App: React.FC = () => {
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (user) => {
-      if (user) {
-        setIsLoggedIn(true);
-      } else {
-        setIsLoggedIn(false);
-      }
+      setIsLoggedIn(!!user);
       setIsAuthReady(true);
     });
     return () => unsubscribe();
   }, []);
 
-
-
   useEffect(() => {
     resetChatSession();
   }, [emergencyMode, language, currentBrandId]);
 
-  // Dynamically update favicon, title, lang and meta tags per brand
   useEffect(() => {
     const isUnitec = currentBrandId === 'unitec';
-
-    // html lang always Spanish
     document.documentElement.lang = 'es';
-
-    // Title
     document.title = isUnitec
-      ? 'UNITEC USA Design | Recepcionista Virtual IA | DistribuciÃ³n Mayorista'
+      ? 'UNITEC USA Design | Recepcionista Virtual IA | Distribución Mayorista'
       : 'Building Innovation | Asistente Virtual IA | Miami, Florida';
 
-    // meta description
     let metaDesc = document.querySelector<HTMLMetaElement>('meta[name="description"]');
     if (!metaDesc) {
       metaDesc = document.createElement('meta');
@@ -79,10 +68,9 @@ const App: React.FC = () => {
       document.head.appendChild(metaDesc);
     }
     metaDesc.content = isUnitec
-      ? 'Recepcionista virtual IA para distribuciÃ³n mayorista de materiales de construcciÃ³n. Consulta catÃ¡logo, stock en Florida y cotizaciones al instante.'
-      : 'Asistente virtual IA de Building Innovation. Consulta productos, stock en Miami y conecta con ventas. AtenciÃ³n inmediata 24/7.';
+      ? 'Recepcionista virtual IA para distribución mayorista de materiales de construcción. Consulta catálogo, stock en Florida y cotizaciones al instante.'
+      : 'Asistente virtual IA de Building Innovation. Consulta productos, stock en Miami y conecta con ventas. Atención inmediata 24/7.';
 
-    // OG tags helper
     const setOg = (property: string, val: string) => {
       let el = document.querySelector<HTMLMetaElement>(`meta[property="${property}"]`);
       if (!el) { el = document.createElement('meta'); el.setAttribute('property', property); document.head.appendChild(el); }
@@ -90,17 +78,15 @@ const App: React.FC = () => {
     };
     setOg('og:title', isUnitec ? 'UNITEC USA Design | Asistente Virtual IA' : 'Building Innovation | Asistente Virtual IA');
     setOg('og:description', isUnitec
-      ? 'Consulta catÃ¡logo, stock y cotizaciones en tiempo real. Distribuidor mayorista de materiales de construcciÃ³n premium.'
-      : 'Paneles WPC, pisos SPC, fachadas y mÃ¡s. Consulta disponibilidad y cotiza ahora mismo.');
+      ? 'Consulta catálogo, stock y cotizaciones en tiempo real. Distribuidor mayorista de materiales de construcción premium.'
+      : 'Paneles WPC, pisos SPC, fachadas y más. Consulta disponibilidad y cotiza ahora mismo.');
     setOg('og:locale', 'es_ES');
 
-    // SVG favicons - dark blue U for UNITEC, dark green B for Building Innovation
     const unitecSvg = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64"><rect width="64" height="64" rx="14" fill="#0c4a6e"/><text x="32" y="46" font-family="Arial,sans-serif" font-weight="900" font-size="38" fill="white" text-anchor="middle">U</text></svg>';
     const buildingSvg = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64"><rect width="64" height="64" rx="14" fill="#065f46"/><text x="32" y="46" font-family="Arial,sans-serif" font-weight="900" font-size="38" fill="white" text-anchor="middle">B</text></svg>';
     const svgContent = isUnitec ? unitecSvg : buildingSvg;
     const encoded = `data:image/svg+xml,${encodeURIComponent(svgContent)}`;
 
-    // Set <link rel="icon">
     let faviconLink = document.querySelector<HTMLLinkElement>('link[rel="icon"]');
     if (!faviconLink) {
       faviconLink = document.createElement('link');
@@ -110,7 +96,6 @@ const App: React.FC = () => {
     faviconLink.type = 'image/svg+xml';
     faviconLink.href = encoded;
 
-    // Legacy shortcut icon
     let shortcutLink = document.querySelector<HTMLLinkElement>('link[rel="shortcut icon"]');
     if (!shortcutLink) {
       shortcutLink = document.createElement('link');
@@ -119,7 +104,6 @@ const App: React.FC = () => {
     }
     shortcutLink.href = encoded;
   }, [currentBrandId]);
-
 
   const handleLogout = async () => {
     sessionStorage.removeItem('unitec_local_admin');
@@ -156,6 +140,29 @@ const App: React.FC = () => {
             customGreeting={activeConfig.customGreeting}
             brandId={currentBrandId}
         />;
+      case Tab.SERVICES:
+        return <ServicesTab 
+            language={language}
+            onConsultProduct={(productName) => {
+              const initMsg = language === 'en' 
+                ? "I would like to know more about " + productName 
+                : "Me gustaría saber más sobre " + productName;
+              window.history.pushState({}, '', '?initialMessage=' + encodeURIComponent(initMsg));
+              setActiveTab(Tab.CHAT);
+            }}
+            onAddToCart={(product, quantity) => {
+              setCart(prev => {
+                const existing = prev.find(item => item.product.id === product.id);
+                if (existing) {
+                  return prev.map(item => item.product.id === product.id ? { ...item, quantity: item.quantity + quantity } : item);
+                }
+                return [...prev, { product, quantity }];
+              });
+              setIsCartOpen(true);
+            }}
+        />;
+      case Tab.INFO:
+        return <InfoTab language={language} config={activeConfig} />;
       case Tab.CALENDAR:
         return <CalendarTab />;
       case Tab.ADMIN_SETTINGS:
@@ -182,11 +189,9 @@ const App: React.FC = () => {
   };
 
   if (isEmbedMode) {
-    // EMBED MODE: Chat + Call only. Admin lives on standalone domain (chatbuildinginnovation.us)
     const embedTab = (activeTab === Tab.ADMIN_SETTINGS) ? Tab.CHAT : activeTab;
     const handleEmbedTabChange = (tab: Tab) => {
       if (tab === Tab.ADMIN_SETTINGS) {
-        // Open full Mission Control in new tab instead of inside widget
         window.open(`https://chatbuildinginnovation.us/?brandId=${currentBrandId}`, '_blank');
         return;
       }
@@ -206,14 +211,22 @@ const App: React.FC = () => {
           isEmbedMode={true}
           currentBrandId={currentBrandId}
           onToggleBrand={undefined}
+          cart={cart}
+          onOpenCart={() => setIsCartOpen(true)}
         >
           {renderContent()}
         </Layout>
+        <CartSidebar 
+          isOpen={isCartOpen}
+          onClose={() => setIsCartOpen(false)}
+          cart={cart}
+          setCart={setCart}
+          language={language}
+        />
       </div>
     );
   }
 
-  // Standalone mode - NO background, just full page chatbot
   return (
     <div className="h-screen w-screen bg-white overflow-hidden">
       <Layout 
@@ -228,15 +241,22 @@ const App: React.FC = () => {
         isEmbedMode={false}
         currentBrandId={currentBrandId}
         onToggleBrand={setCurrentBrandId}
+        cart={cart}
+        onOpenCart={() => setIsCartOpen(true)}
       >
         {renderContent()}
       </Layout>
+      <CartSidebar 
+        isOpen={isCartOpen}
+        onClose={() => setIsCartOpen(false)}
+        cart={cart}
+        setCart={setCart}
+        language={language}
+      />
     </div>
   );
 };
 
 export default App;
-
-
 
 
