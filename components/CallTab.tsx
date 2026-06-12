@@ -134,8 +134,14 @@ const CallTab: React.FC<CallTabProps> = ({ emergencyMode, language, voiceName, c
                     setShowEmailConfirmation(true);
                 }
             },
-            onError: () => {
-                setErrorMessage(language === 'en' ? "Connection failed." : "Fallo de conexión.");
+                        onError: (err: any) => {
+                const isLocalKeyUsed = typeof window !== 'undefined' && !!window.localStorage.getItem('unitec_gemini_api_key');
+                const errMsg = err?.message || String(err);
+                let msg = language === 'en' ? `Connection failed (${errMsg}).` : `Fallo de conexión (${errMsg}).`;
+                if (isLocalKeyUsed) {
+                    msg += language === 'en' ? " (Using local Admin key override)" : " (Usando clave local de Administrador)";
+                }
+                setErrorMessage(msg);
                 setStatus('error');
             },
             onClose: () => setStatus('idle')
@@ -145,7 +151,13 @@ const CallTab: React.FC<CallTabProps> = ({ emergencyMode, language, voiceName, c
             sessionControllerRef.current = session;
         }
     } catch (e: any) {
-        setErrorMessage(language === 'en' ? "Initialization error." : "Error de inicio.");
+        const isLocalKeyUsed = typeof window !== 'undefined' && !!window.localStorage.getItem('unitec_gemini_api_key');
+        const errMsg = e?.message || String(e);
+        let msg = language === 'en' ? `Initialization error (${errMsg}).` : `Error de inicio (${errMsg}).`;
+        if (isLocalKeyUsed) {
+            msg += language === 'en' ? " (Using local Admin key override)" : " (Usando clave local de Administrador)";
+        }
+        setErrorMessage(msg);
         setStatus('error');
     }
   };

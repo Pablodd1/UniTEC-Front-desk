@@ -343,7 +343,7 @@ const ChatTab: React.FC<ChatTabProps> = ({ quickActions, initialMessage, emergen
           msg.id === botMsgId ? { ...msg, text: fullText } : msg
         ));
       }
-    } catch (error: any) {
+        } catch (error: any) {
       console.error("Chat error:", error);
       
       const isConfigError = error.message?.includes("API_KEY_MISSING") || (!process.env.GEMINI_API_KEY && !process.env.API_KEY);
@@ -351,11 +351,23 @@ const ChatTab: React.FC<ChatTabProps> = ({ quickActions, initialMessage, emergen
       if (isConfigError) {
         setError(language === 'en' ? "Configuration Error: API Key is missing." : "Error de Configuración: Falta la API Key.");
       } else {
+        const isLocalKeyUsed = typeof window !== 'undefined' && !!window.localStorage.getItem('unitec_gemini_api_key');
+        const errorDetail = error.message || String(error);
+        let errorText = language === 'en'
+          ? `⚠️ Connection error (${errorDetail}). Please check your internet or API key and try again.`
+          : `⚠️ Error de conexión (${errorDetail}). Por favor, revisa tu internet o la clave de API e inténtalo de nuevo.`;
+        
+        if (isLocalKeyUsed) {
+          errorText += language === 'en'
+            ? "\n\n*(Note: You have a local API key saved in this browser via the Admin Panel. If this key is invalid or expired, please clear or update it in Admin Settings.)*"
+            : "\n\n*(Nota: Tienes una clave de API local guardada en este navegador a través del Panel de Administración. Si esta clave es inválida o expiró, por favor bórrala o actualízala en los ajustes del Administrador.)*";
+        }
+
         // Show inline warning in chat history, but do not set global error to keep the input enabled for retry
         setMessages(prev => [...prev, {
           id: Date.now().toString(),
           role: 'model',
-          text: language === 'en' ? "⚠️ Connection interrupted. Please check your internet and try again." : "⚠️ Conexión interrumpida. Por favor, revisa tu internet e inténtalo de nuevo.",
+          text: errorText,
           timestamp: new Date()
         }]);
       }

@@ -9,14 +9,36 @@ export default async function handler(req, res) {
     .map(s => s.trim())
     .filter(Boolean);
 
-  const origin = req.headers.origin || '';
+  let origin = req.headers.origin || '';
 
-  if (ALLOWED_ORIGINS.length > 0 && !ALLOWED_ORIGINS.includes(origin)) {
-    return res.status(403).json({ error: 'Origin not allowed' });
+  // Fallback: Check Referer header if Origin header is missing (common for same-origin GET requests)
+  if (!origin && req.headers.referer) {
+    try {
+      const refererUrl = new URL(req.headers.referer);
+      origin = refererUrl.origin;
+    } catch (e) {
+      // ignore
+    }
+  }
+
+  if (ALLOWED_ORIGINS.length > 0) {
+    const isAllowed = ALLOWED_ORIGINS.some(allowed => {
+      if (!origin) return false;
+      const allowedClean = allowed.replace(/^https?:\/\//, '').toLowerCase();
+      const originClean = origin.replace(/^https?:\/\//, '').toLowerCase();
+      return originClean === allowedClean || originClean.endsWith('.' + allowedClean);
+    });
+
+    if (!isAllowed) {
+      console.warn(`Origin block: "${origin || 'unknown'}" is not in ALLOWED_ORIGINS`);
+      return res.status(403).json({ error: `Origin "${origin || 'unknown'}" not allowed` });
+    }
   }
 
   if (origin) {
     res.setHeader('Access-Control-Allow-Origin', origin);
+  } else if (ALLOWED_ORIGINS.length === 0) {
+    res.setHeader('Access-Control-Allow-Origin', '*');
   }
   res.setHeader('Access-Control-Allow-Credentials', 'true');
   res.setHeader('Access-Control-Allow-Methods', 'GET,OPTIONS');
@@ -75,4 +97,3 @@ export default async function handler(req, res) {
     keyHint: validKey.slice(-4),
   });
 }
-
