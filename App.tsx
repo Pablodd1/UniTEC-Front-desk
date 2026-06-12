@@ -7,6 +7,7 @@ import CalendarTab from './components/CalendarTab';
 import LoginScreen from './components/LoginScreen';
 import ServicesTab from './components/ServicesTab';
 import InfoTab from './components/InfoTab';
+import PrivacyTab from './components/PrivacyTab';
 import CartSidebar from './components/CartSidebar';
 import { Tab, Language, VoiceName, VoiceProvider, CartItem } from './types';
 import { UNITEC_CONFIG, BUILDING_INNOVATION_CONFIG, QUICK_ACTIONS } from './constants';
@@ -163,6 +164,8 @@ const App: React.FC = () => {
         />;
       case Tab.INFO:
         return <InfoTab language={language} config={activeConfig} />;
+      case Tab.PRIVACY:
+        return <PrivacyTab language={language} config={activeConfig} />;
       case Tab.CALENDAR:
         return <CalendarTab />;
       case Tab.ADMIN_SETTINGS:
