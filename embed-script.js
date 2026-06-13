@@ -8,7 +8,7 @@
     // Change this to match your brand
     // 'unitec' for unitecusadesign.com
     // 'building' for building-innovation.us
-    brandId: window.location.hostname.includes('building-innovation') ? 'building' : 'unitec',
+    brandId: (window.location.hostname.includes('building-innovation') || window.location.hostname.includes('buildingapp')) ? 'building' : 'unitec',
     
     // Widget dimensions - BIGGER for better visibility
     width: '480px',        // Increased from 400px

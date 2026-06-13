@@ -31,7 +31,7 @@ const App: React.FC = () => {
   const [currentBrandId, setCurrentBrandId] = useState<'unitec' | 'building'>(() => {
     const brand = new URLSearchParams(window.location.search).get('brandId');
     if (brand === 'building' || brand === 'unitec') return brand;
-    if (window.location.hostname.includes('buildinginnovation')) return 'building';
+    if (window.location.hostname.includes('buildinginnovation') || window.location.hostname.includes('buildingapp')) return 'building';
     return 'unitec';
   });
   const activeConfig = currentBrandId === 'unitec' ? UNITEC_CONFIG : BUILDING_INNOVATION_CONFIG;
@@ -195,7 +195,7 @@ const App: React.FC = () => {
     const embedTab = (activeTab === Tab.ADMIN_SETTINGS) ? Tab.CHAT : activeTab;
     const handleEmbedTabChange = (tab: Tab) => {
       if (tab === Tab.ADMIN_SETTINGS) {
-        window.open(`https://chatbuildinginnovation.us/?brandId=${currentBrandId}`, '_blank');
+        window.open(`${window.location.origin}/?brandId=${currentBrandId}`, '_blank');
         return;
       }
       setActiveTab(tab);
@@ -206,7 +206,7 @@ const App: React.FC = () => {
           activeTab={embedTab} 
           onTabChange={handleEmbedTabChange}
           config={activeConfig}
-          onOpenDashboard={() => window.open(`https://chatbuildinginnovation.us/?brandId=${currentBrandId}`, "_blank")}
+          onOpenDashboard={() => window.open(`${window.location.origin}/?brandId=${currentBrandId}`, "_blank")}
           language={language}
           setLanguage={setLanguage}
           onLogout={handleLogout}
