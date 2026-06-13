@@ -40,9 +40,10 @@ export const BUILDING_INNOVATION_CONFIG: BusinessConfig = {
 export const BUSINESS_CONFIG = BUILDING_INNOVATION_CONFIG;
 
 export const QUICK_ACTIONS: QuickAction[] = [
-  { id: 'stock', title: 'Consultar Stock', message: 'Cuéntame qué producto deseas consultar si tenemos en stock.', iconName: 'Box' },
-  { id: 'quote', title: 'Cotizar', message: 'Dime, ¿qué producto deseas cotizar?', iconName: 'DollarSign' },
-  { id: 'install', title: 'Instalación', message: 'Cuéntame de qué producto deseas saber la instalación.', iconName: 'Hammer' },
+  { id: 'stock', title: 'Consultar Stock', message: 'Quiero consultar el stock y disponibilidad de un producto.', iconName: 'Box' },
+  { id: 'quote', title: 'Cotizar', message: 'Quiero solicitar una cotización para un producto.', iconName: 'DollarSign' },
+  { id: 'install', title: 'Instalación', message: 'Necesito información sobre cómo instalar un producto.', iconName: 'Hammer' },
+  { id: 'general', title: 'Consulta General', message: 'Tengo una consulta general sobre sus productos y servicios.', iconName: 'MessageCircle' },
   { id: 'contact', title: 'Contactar Ventas', message: 'Por favor, comunícame con un representante de ventas.', iconName: 'BookOpen' },
   { id: 'shipping', title: 'Envíos', message: 'Me gustaría saber cuáles son las opciones de envío y tiempos de entrega.', iconName: 'Truck' },
   { id: 'specs', title: 'Ficha Técnica', message: 'Necesito las especificaciones técnicas de un producto.', iconName: 'FileText' },
@@ -5495,8 +5496,8 @@ ${customGreeting ? `- CUSTOM GREETING GUIDELINE: Refer or align with this custom
 3. ROUTE / CALL TO ACTION: Direct the conversation to the specific, designated contact details. ALWAYS include direct clickable WhatsApp links exactly in this format: https://wa.me/57XXXXXXXXX
    * For UNITEC questions, refer to Yury Marcela Moreno (https://wa.me/573104578337), Yuldor Stiven Avendano (https://wa.me/573105769694), or Henderson Patrick Arroyave (https://wa.me/573202174854).
    * For BUILDING INNOVATION questions, refer to Johana Mesa (https://wa.me/17869685783) or Alexander Gomez (https://wa.me/573113017763).
-4. STRICT BRAND SEPARATION: You represent ONLY ${brandName}. You MUST NEVER mix, mention, or cross-reference products, details, or staff from ${brandId === 'unitec' ? 'Building Innovation' : 'Unitec USA'}.
-5. FORMATTING MANDATE: DO NOT use markdown formatting (no bold text with **, no asterisks, no headers with #) in your responses. Write plain, clean, real-time message strings that look exactly like a real human responding on a chat interface.
+4. STRICT BRAND SEPARATION: You represent ONLY ${brandName}. You MUST NEVER mix, mention, or cross-reference products, details, or staff from ${brandId === 'unitec' ? 'Building Innovation' : 'Unitec USA'}. Ensure you only provide details and contact information for the current brand.
+5. FORMATTING MANDATE: You MUST use Markdown links [Name](URL) to create clickable links for WhatsApp or Catalogs (e.g., [Yuldor Stiven Avendaño](https://wa.me/573105769694)). However, DO NOT use markdown formatting for styling text (no bold text with **, no asterisks, no headers with #). Write plain, clean message strings.
 6. TOOL EXECUTION & SYSTEM ERRORS: When calling ANY tool (extract_customer_info, book_appointment, etc.), the tools execute silently on the frontend. NEVER mention "backend endpoints", "sales pages", "APIs", or technical issues. Assume the tool executed perfectly and respond naturally to the customer.
 
 # DATA EXTRACTION & INTENT TRACKING
@@ -5559,14 +5560,15 @@ export const UI_TRANSLATIONS = {
     welcomeToSupport: "Welcome to Support",
     howCanWeAssist: "How can we assist your construction project today?",
     quickActions: [
-      { id: 'stock', title: 'Check Stock', message: 'Do you have the WPC Panels in stock in Florida?', iconName: 'Box' },
-      { id: 'quote', title: 'Get a Quote', message: 'I need a price for 50 square meters of SPC Flooring.', iconName: 'DollarSign' },
-      { id: 'install', title: 'Installation', message: 'How do I install the wall panels using adhesive?', iconName: 'Hammer' },
+      { id: 'stock', title: 'Check Stock', message: 'I would like to check the stock and availability of a product.', iconName: 'Box' },
+      { id: 'quote', title: 'Get a Quote', message: 'I would like to request a quote for a product.', iconName: 'DollarSign' },
+      { id: 'install', title: 'Installation', message: 'I need information on how to install a product.', iconName: 'Hammer' },
+      { id: 'general', title: 'General Inquiry', message: 'I have a general inquiry about your products and services.', iconName: 'MessageCircle' },
       { id: 'contact', title: 'Contact Sales', message: 'Can you connect me with a sales representative?', iconName: 'BookOpen' },
-      { id: 'shipping', title: 'Shipping Info', message: 'What are your shipping options and delivery times?', iconName: 'Truck' },
-      { id: 'specs', title: 'Product Specs', message: 'Can I get the technical specifications for your products?', iconName: 'FileText' },
-      { id: 'returns', title: 'Return Policy', message: 'What is your return and exchange policy?', iconName: 'RefreshCcw' },
-      { id: 'discount', title: 'Bulk Discount', message: 'Do you offer discounts for bulk orders?', iconName: 'Percent' },
+      { id: 'shipping', title: 'Shipping Options', message: 'What are your delivery options?', iconName: 'Truck' },
+      { id: 'specs', title: 'Technical Specs', message: 'Where can I find technical data sheets?', iconName: 'FileText' },
+      { id: 'returns', title: 'Returns Policy', message: 'What is your return policy?', iconName: 'RefreshCcw' },
+      { id: 'discount', title: 'Wholesale Discount', message: 'Do you offer bulk discounts?', iconName: 'Percent' },
     ],
   },
   es: {
@@ -5618,9 +5620,10 @@ export const UI_TRANSLATIONS = {
     welcomeToSupport: "Bienvenido a Soporte",
     howCanWeAssist: "¿Cómo podemos ayudarle con su proyecto de construcción hoy?",
     quickActions: [
-  { id: 'stock', title: 'Consultar Stock', message: 'Cuéntame qué producto deseas consultar si tenemos en stock.', iconName: 'Box' },
-  { id: 'quote', title: 'Cotizar', message: 'Dime, ¿qué producto deseas cotizar?', iconName: 'DollarSign' },
-  { id: 'install', title: 'Instalación', message: 'Cuéntame de qué producto deseas saber la instalación.', iconName: 'Hammer' },
+  { id: 'stock', title: 'Consultar Stock', message: 'Quiero consultar el stock y disponibilidad de un producto.', iconName: 'Box' },
+  { id: 'quote', title: 'Cotizar', message: 'Quiero solicitar una cotización para un producto.', iconName: 'DollarSign' },
+  { id: 'install', title: 'Instalación', message: 'Necesito información sobre cómo instalar un producto.', iconName: 'Hammer' },
+  { id: 'general', title: 'Consulta General', message: 'Tengo una consulta general sobre sus productos y servicios.', iconName: 'MessageCircle' },
   { id: 'contact', title: 'Contactar Ventas', message: 'Por favor, comunícame con un representante de ventas.', iconName: 'BookOpen' },
   { id: 'shipping', title: 'Envíos', message: 'Me gustaría saber cuáles son las opciones de envío y tiempos de entrega.', iconName: 'Truck' },
   { id: 'specs', title: 'Ficha Técnica', message: 'Necesito las especificaciones técnicas de un producto.', iconName: 'FileText' },
