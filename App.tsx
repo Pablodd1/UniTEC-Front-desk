@@ -1,4 +1,4 @@
-﻿import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import Layout from './components/Layout';
 import ChatTab from './components/ChatTab';
 import CallTab from './components/CallTab';
@@ -31,7 +31,7 @@ const App: React.FC = () => {
   const [currentBrandId, setCurrentBrandId] = useState<'unitec' | 'building'>(() => {
     const brand = new URLSearchParams(window.location.search).get('brandId');
     if (brand === 'building' || brand === 'unitec') return brand;
-    if (window.location.hostname.includes('buildinginnovation') || window.location.hostname.includes('buildingapp')) return 'building';
+    if (window.location.hostname.includes('buildinginnovation')) return 'building';
     return 'unitec';
   });
   const activeConfig = currentBrandId === 'unitec' ? UNITEC_CONFIG : BUILDING_INNOVATION_CONFIG;
@@ -59,7 +59,7 @@ const App: React.FC = () => {
     const isUnitec = currentBrandId === 'unitec';
     document.documentElement.lang = 'es';
     document.title = isUnitec
-      ? 'UNITEC USA Design | Recepcionista Virtual IA | Distribución Mayorista'
+      ? 'UNITEC USA Design | Recepcionista Virtual IA | Distribuci�n Mayorista'
       : 'Building Innovation | Asistente Virtual IA | Miami, Florida';
 
     let metaDesc = document.querySelector<HTMLMetaElement>('meta[name="description"]');
@@ -69,8 +69,8 @@ const App: React.FC = () => {
       document.head.appendChild(metaDesc);
     }
     metaDesc.content = isUnitec
-      ? 'Recepcionista virtual IA para distribución mayorista de materiales de construcción. Consulta catálogo, stock en Florida y cotizaciones al instante.'
-      : 'Asistente virtual IA de Building Innovation. Consulta productos, stock en Miami y conecta con ventas. Atención inmediata 24/7.';
+      ? 'Recepcionista virtual IA para distribuci�n mayorista de materiales de construcci�n. Consulta cat�logo, stock en Florida y cotizaciones al instante.'
+      : 'Asistente virtual IA de Building Innovation. Consulta productos, stock en Miami y conecta con ventas. Atenci�n inmediata 24/7.';
 
     const setOg = (property: string, val: string) => {
       let el = document.querySelector<HTMLMetaElement>(`meta[property="${property}"]`);
@@ -79,8 +79,8 @@ const App: React.FC = () => {
     };
     setOg('og:title', isUnitec ? 'UNITEC USA Design | Asistente Virtual IA' : 'Building Innovation | Asistente Virtual IA');
     setOg('og:description', isUnitec
-      ? 'Consulta catálogo, stock y cotizaciones en tiempo real. Distribuidor mayorista de materiales de construcción premium.'
-      : 'Paneles WPC, pisos SPC, fachadas y más. Consulta disponibilidad y cotiza ahora mismo.');
+      ? 'Consulta cat�logo, stock y cotizaciones en tiempo real. Distribuidor mayorista de materiales de construcci�n premium.'
+      : 'Paneles WPC, pisos SPC, fachadas y m�s. Consulta disponibilidad y cotiza ahora mismo.');
     setOg('og:locale', 'es_ES');
 
     const unitecSvg = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64"><rect width="64" height="64" rx="14" fill="#0c4a6e"/><text x="32" y="46" font-family="Arial,sans-serif" font-weight="900" font-size="38" fill="white" text-anchor="middle">U</text></svg>';
@@ -147,7 +147,7 @@ const App: React.FC = () => {
             onConsultProduct={(productName) => {
               const initMsg = language === 'en' 
                 ? "I would like to know more about " + productName 
-                : "Me gustaría saber más sobre " + productName;
+                : "Me gustar�a saber m�s sobre " + productName;
               window.history.pushState({}, '', '?initialMessage=' + encodeURIComponent(initMsg));
               setActiveTab(Tab.CHAT);
             }}
@@ -261,6 +261,7 @@ const App: React.FC = () => {
 };
 
 export default App;
+
 
 
 
