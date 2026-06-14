@@ -21,7 +21,7 @@ export default async function handler(req, res) {
     // Decide endpoint: Courier for light packages (< 70kg), Land LTL for heavy packages
     const isCourier = (totalWeightKg || 5) < 70;
     const endpoint = isCourier ? 'courier' : 'land';
-    const url = `https://api.walio.ai/v1/rates/${endpoint}`;
+    const url = `https://walio.ai/api/v1/rates/${endpoint}`;
     
     let shippingCost = 0;
     let carrier = isCourier ? "Walio Courier Service" : "Walio Land Freight";
@@ -106,3 +106,4 @@ export default async function handler(req, res) {
     return res.status(500).json({ error: "Failed to calculate shipping" });
   }
 }
+
