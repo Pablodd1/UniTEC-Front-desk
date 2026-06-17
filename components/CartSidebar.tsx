@@ -23,13 +23,23 @@ const CartSidebar: React.FC<CartSidebarProps> = ({ isOpen, onClose, cart, setCar
   const [isCheckingOut, setIsCheckingOut] = useState(false);
   const [error, setError] = useState('');
 
+  const brandId = useMemo(() => {
+    const brand = new URLSearchParams(window.location.search).get('brandId');
+    if (brand === 'building' || brand === 'unitec') return brand;
+    if (window.location.hostname.includes('buildinginnovation')) return 'building';
+    return 'unitec';
+  }, []);
+
   const subtotal = useMemo(() => {
     return cart.reduce((total, item) => {
-      const priceStr = item.product.price.replace(/[^0-9.]/g, '');
+      const isCOP = brandId === 'unitec';
+      const priceStr = isCOP 
+        ? item.product.price.replace(/[^0-9]/g, '') 
+        : item.product.price.replace(/[^0-9.]/g, '');
       const price = parseFloat(priceStr) || 0;
       return total + (price * item.quantity);
     }, 0);
-  }, [cart]);
+  }, [cart, brandId]);
 
   const updateQuantity = (productId: string, delta: number) => {
     setCart(prev => prev.map(item => {

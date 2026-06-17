@@ -4,7 +4,20 @@ import { FunctionDeclaration, Type } from "@google/genai";
 import { Language } from './types';
 import PRODUCTS_DATA from './products.json';
 
-export const PRODUCTS = PRODUCTS_DATA as Product[];
+const getBrandId = () => {
+  if (typeof window === 'undefined') return 'unitec';
+  const brand = new URLSearchParams(window.location.search).get('brandId');
+  if (brand === 'building' || brand === 'unitec') return brand;
+  if (window.location.hostname.includes('buildinginnovation')) return 'building';
+  return 'unitec';
+};
+
+const brandIdForPricing = getBrandId();
+
+export const PRODUCTS = (PRODUCTS_DATA as any[]).map(p => ({
+  ...p,
+  price: brandIdForPricing === 'unitec' ? (p.price_cop || p.price) : (p.price_usd || p.price)
+})) as Product[];
 
 export const UNITEC_CONFIG: BusinessConfig = {
   name: "UNITEC USA DESIGN",
@@ -5446,7 +5459,10 @@ export const getSystemInstruction = (language: Language = 'es', customGreeting?:
   // Generate a compact list of product prices from PRODUCTS (exclude 'Consultar precio' to save tokens)
   const productPricesText = PRODUCTS
     .filter(p => p.price && p.price !== 'Consultar precio')
-    .map(p => 'RefCode: ' + p.id + ' | ' + p.name + ' | Precio: ' + p.price + ' por ' + (p.unit || 'unidad'))
+    .map(p => {
+      const priceVal = brandId === 'unitec' ? (p.price_cop || p.price) : (p.price_usd || p.price);
+      return 'RefCode: ' + p.id + ' | ' + p.name + ' | Precio: ' + priceVal + ' por ' + (p.unit || 'unidad');
+    })
     .join('\n');
 
   // Set brand-specific identity and staff details based on brandId
@@ -5532,8 +5548,8 @@ Señor/a para ciudades diferentes donde no tenemos punto físico realizamos env�
 CORE DATA:
 ${trainingData}
 
-# PRODUCT CATALOG & PRICES (COP)
-Here is the official price database. Use these EXACT prices when asked. If a product is not listed here, tell the client its price is "Consultar precio" (advise them to contact sales for a custom quote). All prices are in Colombian Pesos (COP).
+# PRODUCT CATALOG & PRICES (${brandId === 'unitec' ? 'COP' : 'USD'})
+Here is the official price database. Use these EXACT prices when asked. If a product is not listed here, tell the client its price is "Consultar precio" (advise them to contact sales for a custom quote). All prices are in ${brandId === 'unitec' ? 'Colombian Pesos (COP)' : 'US Dollars (USD)'}.
 ${productPricesText}
 `;
 };

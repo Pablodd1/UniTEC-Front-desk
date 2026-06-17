@@ -6,6 +6,8 @@
   name: string;
   style_tags: string[];
   price: string;
+  price_cop?: string;
+  price_usd?: string;
   unit?: string;
   items_per_box?: string;
   dimensions?: {
