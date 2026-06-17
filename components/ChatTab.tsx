@@ -24,14 +24,19 @@ interface ChatTabProps {
 const ChatTab: React.FC<ChatTabProps> = ({ quickActions, initialMessage, emergencyMode, language, customGreeting, bgImage, brandId }) => {
   const t = UI_TRANSLATIONS[language];
   
-  const [messages, setMessages] = useState<Message[]>([
-    {
-      id: 'welcome',
-      role: 'model',
-      text: customGreeting || t.chatWelcome,
-      timestamp: new Date()
-    }
-  ]);
+  const [messages, setMessages] = useState<Message[]>(() => {
+    const welcomeText = initialMessage 
+      ? (brandId === 'unitec' ? "¡Hola! Bienvenido a UNITEC USA DESIGN" : "¡Hola! Bienvenido a Building Innovation")
+      : (customGreeting || t.chatWelcome);
+    return [
+      {
+        id: 'welcome',
+        role: 'model',
+        text: welcomeText,
+        timestamp: new Date()
+      }
+    ];
+  });
   const [inputText, setInputText] = useState('');
 
   const [showPaymentSimulation, setShowPaymentSimulation] = useState(false);
@@ -196,14 +201,17 @@ const ChatTab: React.FC<ChatTabProps> = ({ quickActions, initialMessage, emergen
   // Update welcome message when language or customGreeting changes, but only if it's the only message
   useEffect(() => {
     if (messages.length === 1 && messages[0].id === 'welcome') {
+        const welcomeText = initialMessage 
+          ? (brandId === 'unitec' ? "¡Hola! Bienvenido a UNITEC USA DESIGN" : "¡Hola! Bienvenido a Building Innovation")
+          : (customGreeting || t.chatWelcome);
         setMessages([{
             id: 'welcome',
             role: 'model',
-            text: customGreeting || t.chatWelcome,
+            text: welcomeText,
             timestamp: new Date()
         }]);
     }
-  }, [language, customGreeting, t.chatWelcome]);
+  }, [language, customGreeting, t.chatWelcome, initialMessage, brandId]);
 
 
 
@@ -228,25 +236,54 @@ const ChatTab: React.FC<ChatTabProps> = ({ quickActions, initialMessage, emergen
     }
   }, [showEmailConfirmation]);
 
-  // ===== NEW: 4-Minute Idle Timer =====
+  // ===== double-stage idle timer (5-minute follow-up, 10-minute abandon) =====
   useEffect(() => {
     if (sessionStatus !== 'active' || !conversationId || messages.length <= 1) return;
 
-    const timeoutMs = 4 * 60 * 1000; // 4 minutes
-    const timer = setTimeout(() => {
-      console.log('Session idle for 4 minutes. Marking as abandoned.');
-      updateSessionStatus(conversationId, 'abandoned').catch(() => {});
-      
-      setMessages(prev => [...prev, {
-        id: `timeout_${Date.now()}`,
-        role: 'model',
-        text: language === 'en' ? 'Your chat session has timed out due to inactivity.' : 'Su sesión de chat ha expirado por inactividad.',
-        timestamp: new Date()
-      }]);
-    }, timeoutMs);
+    const lastMessage = messages[messages.length - 1];
+    const isLastMessageFollowUp = lastMessage.id?.startsWith('idle_followup_');
 
-    return () => clearTimeout(timer);
-  }, [messages, sessionStatus, conversationId, language]);
+    if (isLastMessageFollowUp) {
+      // We already sent the warning, now set the 5-minute countdown to close the chat (10m total)
+      const abandonTimeoutMs = 5 * 60 * 1000; // 5 more minutes
+      const timer = setTimeout(() => {
+        console.log('Session idle for 10 minutes. Closing as abandoned.');
+        updateSessionStatus(conversationId, 'abandoned').catch(() => {});
+        
+        const closingText = language === 'en'
+          ? "It looks like you aren't able to respond right now. I'll close the chat for now to keep things clean. Feel free to message again whenever you're ready! 😊"
+          : "Veo que en este momento no has podido responder.\nPor ahora cerraré la conversación para no saturarte 😊\nCuando quieras retomar, solo escríbenos y con gusto continuamos desde donde quedamos 🙌\n¡Que tengas un excelente día!";
+
+        setMessages(prev => [...prev, {
+          id: `idle_abandon_${Date.now()}`,
+          role: 'model',
+          text: closingText,
+          timestamp: new Date()
+        }]);
+      }, abandonTimeoutMs);
+
+      return () => clearTimeout(timer);
+    } else {
+      // Set the 5-minute countdown to send the follow-up warning
+      const warningTimeoutMs = 5 * 60 * 1000; // 5 minutes
+      const timer = setTimeout(() => {
+        console.log('Session idle for 5 minutes. Sending follow-up warning.');
+        const name = extractedPii?.name ? `, ${extractedPii.name}` : '';
+        const warningText = language === 'en'
+          ? `Are you still online${name}?`
+          : `¿Continúa en línea${name}?`;
+
+        setMessages(prev => [...prev, {
+          id: `idle_followup_${Date.now()}`,
+          role: 'model',
+          text: warningText,
+          timestamp: new Date()
+        }]);
+      }, warningTimeoutMs);
+
+      return () => clearTimeout(timer);
+    }
+  }, [messages, sessionStatus, conversationId, language, extractedPii, brandId]);
 
   // Robust Auto-Scroll Implementation
   const scrollToBottom = (behavior: ScrollBehavior = 'smooth') => {
