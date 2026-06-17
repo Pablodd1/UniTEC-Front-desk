@@ -5443,6 +5443,12 @@ export const getSystemInstruction = (language: Language = 'es', customGreeting?:
   const storedTraining = localStorage.getItem('unitec_training_data');
   const trainingData = (storedTraining && storedTraining.length > 50) ? storedTraining : DEFAULT_TRAINING_DATA;
 
+  // Generate a compact list of product prices from PRODUCTS (exclude 'Consultar precio' to save tokens)
+  const productPricesText = PRODUCTS
+    .filter(p => p.price && p.price !== 'Consultar precio')
+    .map(p => 'RefCode: ' + p.id + ' | ' + p.name + ' | Precio: ' + p.price + ' por ' + (p.unit || 'unidad'))
+    .join('\n');
+
   // Set brand-specific identity and staff details based on brandId
   const brandName = brandId === 'unitec' ? "UNITEC USA DESIGN" : "BUILDING INNOVATION";
   const brandTagline = brandId === 'unitec' ? "Importador Directo - Distribución Mayorista" : "¡Diseñamos el futuro! / We design the future!";
@@ -5525,6 +5531,10 @@ Señor/a para ciudades diferentes donde no tenemos punto físico realizamos env�
 
 CORE DATA:
 ${trainingData}
+
+# PRODUCT CATALOG & PRICES (COP)
+Here is the official price database. Use these EXACT prices when asked. If a product is not listed here, tell the client its price is "Consultar precio" (advise them to contact sales for a custom quote). All prices are in Colombian Pesos (COP).
+${productPricesText}
 `;
 };
 
