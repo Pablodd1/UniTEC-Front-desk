@@ -5,7 +5,7 @@
     "category": "CIELO RASO PVC",
     "subcategory": "CIELO RASO PVC",
     "collection": "INTERIOR",
-    "price": "$ 3.288",
+    "price": "$ 29.000",
     "unit": "Paquete / Package",
     "items_per_box": "6, 10",
     "style_tags": [
@@ -35,7 +35,7 @@
     "category": "CIELO RASO PVC",
     "subcategory": "CIELO RASO PVC",
     "collection": "INTERIOR",
-    "price": "$ 3.288",
+    "price": "$ 29.000",
     "unit": "Paquete / Package",
     "items_per_box": "6, 10",
     "style_tags": [
@@ -65,7 +65,7 @@
     "category": "CIELO RASO PVC",
     "subcategory": "CIELO RASO PVC",
     "collection": "INTERIOR",
-    "price": "$ 3.288",
+    "price": "$ 31.000",
     "unit": "Paquete / Package",
     "items_per_box": "6",
     "style_tags": [
@@ -95,7 +95,7 @@
     "category": "CIELO RASO PVC",
     "subcategory": "CIELO RASO PVC",
     "collection": "INTERIOR",
-    "price": "$ 3.288",
+    "price": "$ 31.000",
     "unit": "Paquete / Package",
     "items_per_box": "6",
     "style_tags": [
@@ -125,7 +125,7 @@
     "category": "CIELO RASO PVC",
     "subcategory": "CIELO RASO PVC",
     "collection": "INTERIOR",
-    "price": "$ 3.288",
+    "price": "$ 29.000",
     "unit": "Paquete / Package",
     "items_per_box": "6",
     "style_tags": [
@@ -155,7 +155,7 @@
     "category": "CIELO RASO PVC",
     "subcategory": "CIELO RASO PVC",
     "collection": "INTERIOR",
-    "price": "$ 0.774",
+    "price": "Consultar precio",
     "unit": "Paquete / Package",
     "items_per_box": "32",
     "style_tags": [
@@ -185,7 +185,7 @@
     "category": "CINTAS",
     "subcategory": "CINTA ADHESIVA DE PAPEL",
     "collection": "INTERIOR",
-    "price": "$ 0.861",
+    "price": "$ 16.000",
     "unit": "Unidad / Unit",
     "items_per_box": "1",
     "style_tags": [
@@ -215,7 +215,7 @@
     "category": "CUBIERTAS UPVC",
     "subcategory": "CUBIERTA ACANALADA UPVC BLANCA 11.80",
     "collection": "EXTERIOR",
-    "price": "$ 0.000",
+    "price": "Consultar precio",
     "unit": "Unidad / Unit",
     "items_per_box": "1",
     "style_tags": [
@@ -245,7 +245,7 @@
     "category": "PAREDES",
     "subcategory": "FACHADA DECK",
     "collection": "EXTERIOR",
-    "price": "$ 5.261",
+    "price": "$ 60.000",
     "unit": "Estiba / Pallet",
     "items_per_box": "200",
     "style_tags": [
@@ -275,7 +275,7 @@
     "category": "PAREDES",
     "subcategory": "PANEL PS",
     "collection": "INTERIOR",
-    "price": "$ 2.571",
+    "price": "Consultar precio",
     "unit": "Caja / Box",
     "items_per_box": "21",
     "style_tags": [
@@ -305,7 +305,7 @@
     "category": "PAREDES",
     "subcategory": "PANELES ACOLCHADOS",
     "collection": "INTERIOR",
-    "price": "$ 22.663",
+    "price": "Consultar precio",
     "unit": "Caja / Box",
     "items_per_box": "6",
     "style_tags": [
@@ -335,7 +335,7 @@
     "category": "PANELES WPC Y ANGULOS",
     "subcategory": "PANELES WPC EXTERIOR",
     "collection": "EXTERIOR",
-    "price": "$ 7.753",
+    "price": "$ 65.000",
     "unit": "Estiba / Pallet",
     "items_per_box": "125",
     "style_tags": [
@@ -365,7 +365,7 @@
     "category": "PANELES WPC Y ANGULOS",
     "subcategory": "PANELES WPC INTERIOR",
     "collection": "INTERIOR",
-    "price": "$ 1.916",
+    "price": "$ 23.000",
     "unit": "Caja / Box",
     "items_per_box": "10",
     "style_tags": [
@@ -395,7 +395,7 @@
     "category": "PANELES WPC Y ANGULOS",
     "subcategory": "PANELES WPC REDONDOS",
     "collection": "INTERIOR",
-    "price": "$ 2.619",
+    "price": "Consultar precio",
     "unit": "Unidad / Unit",
     "items_per_box": "10",
     "style_tags": [
@@ -425,7 +425,7 @@
     "category": "PISOS",
     "subcategory": "PISOS DECK",
     "collection": "EXTERIOR",
-    "price": "$ 7.475",
+    "price": "$ 75.000",
     "unit": "Estiba / Pallet",
     "items_per_box": "210",
     "style_tags": [
@@ -455,7 +455,7 @@
     "category": "PISOS",
     "subcategory": "PISOS SPC",
     "collection": "INTERIOR",
-    "price": "$ 1.568",
+    "price": "$ 18.000",
     "unit": "Caja / Box",
     "items_per_box": "10",
     "style_tags": [
@@ -485,7 +485,7 @@
     "category": "ZOCALOS",
     "subcategory": "ZOCALOS SPC",
     "collection": "INTERIOR",
-    "price": "$ 2.386",
+    "price": "$ 21.500",
     "unit": "Caja / Box",
     "items_per_box": "20",
     "style_tags": [
@@ -515,7 +515,7 @@
     "category": "PAREDES",
     "subcategory": "PAREDES MUROFLEX",
     "collection": "INTERIOR",
-    "price": "$ 2.571",
+    "price": "$ 20.000",
     "unit": "Caja / Box",
     "items_per_box": "24",
     "style_tags": [
@@ -546,7 +546,7 @@
     "category": "PAREDES",
     "subcategory": "PAREDES PU ARQUNITEC",
     "collection": "INTERIOR",
-    "price": "$ 6.083",
+    "price": "$ 60.000",
     "unit": "Caja / Box",
     "items_per_box": "10",
     "style_tags": [
@@ -577,7 +577,7 @@
     "category": "NUEVOS",
     "subcategory": "NUEVOS",
     "collection": "NUEVOS",
-    "price": "$ 0.000",
+    "price": "$ 8.500",
     "unit": "Piece",
     "items_per_box": "1",
     "style_tags": [
@@ -595,7 +595,7 @@
     "category": "NUEVOS",
     "subcategory": "NUEVOS",
     "collection": "NUEVOS",
-    "price": "$ 0.946",
+    "price": "$ 8.500",
     "unit": "Piece",
     "items_per_box": "1",
     "style_tags": [
@@ -613,7 +613,7 @@
     "category": "NUEVOS",
     "subcategory": "NUEVOS",
     "collection": "NUEVOS",
-    "price": "$ 0.000",
+    "price": "$ 9.500",
     "unit": "Piece",
     "items_per_box": "1",
     "style_tags": [
@@ -631,7 +631,7 @@
     "category": "NUEVOS",
     "subcategory": "NUEVOS",
     "collection": "NUEVOS",
-    "price": "$ 0.000",
+    "price": "Consultar precio",
     "unit": "Piece",
     "items_per_box": "1",
     "style_tags": [
@@ -649,7 +649,7 @@
     "category": "NUEVOS",
     "subcategory": "NUEVOS",
     "collection": "NUEVOS",
-    "price": "$ 0.000",
+    "price": "Consultar precio",
     "unit": "Piece",
     "items_per_box": "1",
     "style_tags": [
@@ -667,7 +667,7 @@
     "category": "NUEVOS",
     "subcategory": "NUEVOS",
     "collection": "NUEVOS",
-    "price": "$ 0.000",
+    "price": "Consultar precio",
     "unit": "Piece",
     "items_per_box": "1",
     "style_tags": [
@@ -685,7 +685,7 @@
     "category": "NUEVOS",
     "subcategory": "NUEVOS",
     "collection": "NUEVOS",
-    "price": "$ 0.000",
+    "price": "Consultar precio",
     "unit": "Piece",
     "items_per_box": "1",
     "style_tags": [
@@ -703,7 +703,7 @@
     "category": "NUEVOS",
     "subcategory": "NUEVOS",
     "collection": "NUEVOS",
-    "price": "$ 51.590",
+    "price": "Consultar precio",
     "unit": "Piece",
     "items_per_box": "1",
     "style_tags": [
@@ -721,7 +721,7 @@
     "category": "NUEVOS",
     "subcategory": "NUEVOS",
     "collection": "NUEVOS",
-    "price": "$ 5.023",
+    "price": "$ 44.000",
     "unit": "Piece",
     "items_per_box": "1",
     "style_tags": [
@@ -739,7 +739,7 @@
     "category": "NUEVOS",
     "subcategory": "NUEVOS",
     "collection": "NUEVOS",
-    "price": "$ 0.000",
+    "price": "Consultar precio",
     "unit": "Piece",
     "items_per_box": "1",
     "style_tags": [
@@ -757,7 +757,7 @@
     "category": "NUEVOS",
     "subcategory": "NUEVOS",
     "collection": "NUEVOS",
-    "price": "$ 36.757",
+    "price": "$ 300.000",
     "unit": "Piece",
     "items_per_box": "1",
     "style_tags": [
@@ -775,7 +775,7 @@
     "category": "NUEVOS",
     "subcategory": "NUEVOS",
     "collection": "NUEVOS",
-    "price": "$ 2.425",
+    "price": "$ 56.489",
     "unit": "Piece",
     "items_per_box": "1",
     "style_tags": [
@@ -793,7 +793,7 @@
     "category": "NUEVOS",
     "subcategory": "NUEVOS",
     "collection": "NUEVOS",
-    "price": "$ 0.060",
+    "price": "$ 800",
     "unit": "Piece",
     "items_per_box": "1",
     "style_tags": [
@@ -811,7 +811,7 @@
     "category": "NUEVOS",
     "subcategory": "NUEVOS",
     "collection": "NUEVOS",
-    "price": "$ 46.184",
+    "price": "$ 390.000",
     "unit": "Piece",
     "items_per_box": "1",
     "style_tags": [
@@ -829,7 +829,7 @@
     "category": "NUEVOS",
     "subcategory": "NUEVOS",
     "collection": "NUEVOS",
-    "price": "$ 39.825",
+    "price": "Consultar precio",
     "unit": "Piece",
     "items_per_box": "1",
     "style_tags": [
@@ -847,7 +847,7 @@
     "category": "NUEVOS",
     "subcategory": "NUEVOS",
     "collection": "NUEVOS",
-    "price": "$ 2.969",
+    "price": "$ 44.000",
     "unit": "Piece",
     "items_per_box": "1",
     "style_tags": [
@@ -865,7 +865,7 @@
     "category": "NUEVOS",
     "subcategory": "NUEVOS",
     "collection": "NUEVOS",
-    "price": "$ 0.060",
+    "price": "$ 800",
     "unit": "Piece",
     "items_per_box": "1",
     "style_tags": [
@@ -883,7 +883,7 @@
     "category": "NUEVOS",
     "subcategory": "NUEVOS",
     "collection": "NUEVOS",
-    "price": "$ 71.116",
+    "price": "$ 550.000",
     "unit": "Piece",
     "items_per_box": "1",
     "style_tags": [
@@ -901,7 +901,7 @@
     "category": "NUEVOS",
     "subcategory": "NUEVOS",
     "collection": "NUEVOS",
-    "price": "$ 78.638",
+    "price": "Consultar precio",
     "unit": "Piece",
     "items_per_box": "1",
     "style_tags": [
@@ -919,7 +919,7 @@
     "category": "NUEVOS",
     "subcategory": "NUEVOS",
     "collection": "NUEVOS",
-    "price": "$ 47.724",
+    "price": "$ 390.000",
     "unit": "Piece",
     "items_per_box": "1",
     "style_tags": [
@@ -937,7 +937,7 @@
     "category": "NUEVOS",
     "subcategory": "NUEVOS",
     "collection": "NUEVOS",
-    "price": "$ 0.069",
+    "price": "$ 900",
     "unit": "Piece",
     "items_per_box": "1",
     "style_tags": [
@@ -955,7 +955,7 @@
     "category": "NUEVOS",
     "subcategory": "NUEVOS",
     "collection": "NUEVOS",
-    "price": "$ 3.963",
+    "price": "Consultar precio",
     "unit": "Piece",
     "items_per_box": "1",
     "style_tags": [
@@ -973,7 +973,7 @@
     "category": "NUEVOS",
     "subcategory": "NUEVOS",
     "collection": "NUEVOS",
-    "price": "$ 3.313",
+    "price": "$ 44.000",
     "unit": "Piece",
     "items_per_box": "1",
     "style_tags": [
@@ -991,7 +991,7 @@
     "category": "NUEVOS",
     "subcategory": "NUEVOS",
     "collection": "NUEVOS",
-    "price": "$ 4.161",
+    "price": "$ 36.000",
     "unit": "Piece",
     "items_per_box": "1",
     "style_tags": [
@@ -1009,7 +1009,7 @@
     "category": "NUEVOS",
     "subcategory": "NUEVOS",
     "collection": "NUEVOS",
-    "price": "$ 5.434",
+    "price": "$ 37.000",
     "unit": "Piece",
     "items_per_box": "1",
     "style_tags": [
@@ -1027,7 +1027,7 @@
     "category": "NUEVOS",
     "subcategory": "NUEVOS",
     "collection": "NUEVOS",
-    "price": "$ 4.161",
+    "price": "$ 44.000",
     "unit": "Piece",
     "items_per_box": "1",
     "style_tags": [
@@ -1045,7 +1045,7 @@
     "category": "NUEVOS",
     "subcategory": "NUEVOS",
     "collection": "NUEVOS",
-    "price": "$ 1.988",
+    "price": "Consultar precio",
     "unit": "Piece",
     "items_per_box": "1",
     "style_tags": [
@@ -1063,7 +1063,7 @@
     "category": "NUEVOS",
     "subcategory": "NUEVOS",
     "collection": "NUEVOS",
-    "price": "$ 3.646",
+    "price": "Consultar precio",
     "unit": "Piece",
     "items_per_box": "1",
     "style_tags": [
@@ -1081,7 +1081,7 @@
     "category": "NUEVOS",
     "subcategory": "NUEVOS",
     "collection": "NUEVOS",
-    "price": "$ 3.646",
+    "price": "Consultar precio",
     "unit": "Piece",
     "items_per_box": "1",
     "style_tags": [
@@ -1099,7 +1099,7 @@
     "category": "NUEVOS",
     "subcategory": "NUEVOS",
     "collection": "NUEVOS",
-    "price": "$ 3.646",
+    "price": "Consultar precio",
     "unit": "Piece",
     "items_per_box": "1",
     "style_tags": [
@@ -1117,7 +1117,7 @@
     "category": "NUEVOS",
     "subcategory": "NUEVOS",
     "collection": "NUEVOS",
-    "price": "$ 0.000",
+    "price": "Consultar precio",
     "unit": "Piece",
     "items_per_box": "1",
     "style_tags": [
@@ -1135,7 +1135,7 @@
     "category": "NUEVOS",
     "subcategory": "NUEVOS",
     "collection": "NUEVOS",
-    "price": "$ 0.000",
+    "price": "Consultar precio",
     "unit": "Piece",
     "items_per_box": "1",
     "style_tags": [
@@ -1153,7 +1153,7 @@
     "category": "NUEVOS",
     "subcategory": "NUEVOS",
     "collection": "NUEVOS",
-    "price": "$ 0.000",
+    "price": "$ 400.000",
     "unit": "Piece",
     "items_per_box": "1",
     "style_tags": [
@@ -1171,7 +1171,7 @@
     "category": "NUEVOS",
     "subcategory": "NUEVOS",
     "collection": "NUEVOS",
-    "price": "$ 0.000",
+    "price": "$ 400.000",
     "unit": "Piece",
     "items_per_box": "1",
     "style_tags": [
@@ -1189,7 +1189,7 @@
     "category": "NUEVOS",
     "subcategory": "NUEVOS",
     "collection": "NUEVOS",
-    "price": "$ 0.000",
+    "price": "$ 400.000",
     "unit": "Piece",
     "items_per_box": "1",
     "style_tags": [
@@ -1207,7 +1207,7 @@
     "category": "NUEVOS",
     "subcategory": "NUEVOS",
     "collection": "NUEVOS",
-    "price": "$ 0.000",
+    "price": "Consultar precio",
     "unit": "Piece",
     "items_per_box": "1",
     "style_tags": [
@@ -1225,7 +1225,7 @@
     "category": "NUEVOS",
     "subcategory": "NUEVOS",
     "collection": "NUEVOS",
-    "price": "$ 3.949",
+    "price": "$ 35.000",
     "unit": "Piece",
     "items_per_box": "1",
     "style_tags": [
@@ -1243,7 +1243,7 @@
     "category": "NUEVOS",
     "subcategory": "NUEVOS",
     "collection": "NUEVOS",
-    "price": "$ 2.757",
+    "price": "$ 25.000",
     "unit": "Piece",
     "items_per_box": "1",
     "style_tags": [
@@ -1261,7 +1261,7 @@
     "category": "NUEVOS",
     "subcategory": "NUEVOS",
     "collection": "NUEVOS",
-    "price": "$ 2.240",
+    "price": "$ 19.500",
     "unit": "Piece",
     "items_per_box": "1",
     "style_tags": [
@@ -1279,7 +1279,7 @@
     "category": "NUEVOS",
     "subcategory": "NUEVOS",
     "collection": "NUEVOS",
-    "price": "$ 8.455",
+    "price": "$ 73.000",
     "unit": "Piece",
     "items_per_box": "1",
     "style_tags": [
@@ -1297,7 +1297,7 @@
     "category": "NUEVOS",
     "subcategory": "NUEVOS",
     "collection": "NUEVOS",
-    "price": "$ 4.599",
+    "price": "$ 38.000",
     "unit": "Piece",
     "items_per_box": "1",
     "style_tags": [
@@ -1315,7 +1315,7 @@
     "category": "NUEVOS",
     "subcategory": "NUEVOS",
     "collection": "NUEVOS",
-    "price": "$ 0.000",
+    "price": "Consultar precio",
     "unit": "Piece",
     "items_per_box": "1",
     "style_tags": [
@@ -1333,7 +1333,7 @@
     "category": "NUEVOS",
     "subcategory": "NUEVOS",
     "collection": "NUEVOS",
-    "price": "$ 3.101",
+    "price": "$ 31.000",
     "unit": "Piece",
     "items_per_box": "1",
     "style_tags": [
@@ -1351,7 +1351,7 @@
     "category": "NUEVOS",
     "subcategory": "NUEVOS",
     "collection": "NUEVOS",
-    "price": "$ 3.817",
+    "price": "$ 31.000",
     "unit": "Piece",
     "items_per_box": "1",
     "style_tags": [
@@ -1369,7 +1369,7 @@
     "category": "NUEVOS",
     "subcategory": "NUEVOS",
     "collection": "NUEVOS",
-    "price": "$ 4.016",
+    "price": "$ 31.000",
     "unit": "Piece",
     "items_per_box": "1",
     "style_tags": [
@@ -1387,7 +1387,7 @@
     "category": "NUEVOS",
     "subcategory": "NUEVOS",
     "collection": "NUEVOS",
-    "price": "$ 3.313",
+    "price": "$ 31.000",
     "unit": "Piece",
     "items_per_box": "1",
     "style_tags": [
@@ -1405,7 +1405,7 @@
     "category": "NUEVOS",
     "subcategory": "NUEVOS",
     "collection": "NUEVOS",
-    "price": "$ 2.306",
+    "price": "$ 26.000",
     "unit": "Piece",
     "items_per_box": "1",
     "style_tags": [
@@ -1423,7 +1423,7 @@
     "category": "NUEVOS",
     "subcategory": "NUEVOS",
     "collection": "NUEVOS",
-    "price": "$ 2.306",
+    "price": "$ 26.000",
     "unit": "Piece",
     "items_per_box": "1",
     "style_tags": [
@@ -1441,7 +1441,7 @@
     "category": "NUEVOS",
     "subcategory": "NUEVOS",
     "collection": "NUEVOS",
-    "price": "$ 2.306",
+    "price": "$ 26.000",
     "unit": "Piece",
     "items_per_box": "1",
     "style_tags": [
@@ -1459,7 +1459,7 @@
     "category": "NUEVOS",
     "subcategory": "NUEVOS",
     "collection": "NUEVOS",
-    "price": "$ 0.000",
+    "price": "Consultar precio",
     "unit": "Piece",
     "items_per_box": "1",
     "style_tags": [
@@ -1477,7 +1477,7 @@
     "category": "NUEVOS",
     "subcategory": "NUEVOS",
     "collection": "NUEVOS",
-    "price": "$ 0.000",
+    "price": "Consultar precio",
     "unit": "Piece",
     "items_per_box": "1",
     "style_tags": [
@@ -1495,7 +1495,7 @@
     "category": "NUEVOS",
     "subcategory": "NUEVOS",
     "collection": "NUEVOS",
-    "price": "$ 0.000",
+    "price": "Consultar precio",
     "unit": "Piece",
     "items_per_box": "1",
     "style_tags": [
@@ -1513,7 +1513,7 @@
     "category": "NUEVOS",
     "subcategory": "NUEVOS",
     "collection": "NUEVOS",
-    "price": "$ 0.000",
+    "price": "Consultar precio",
     "unit": "Piece",
     "items_per_box": "1",
     "style_tags": [
@@ -1531,7 +1531,7 @@
     "category": "NUEVOS",
     "subcategory": "NUEVOS",
     "collection": "NUEVOS",
-    "price": "$ 11.901",
+    "price": "$ 98.000",
     "unit": "Piece",
     "items_per_box": "1",
     "style_tags": [
@@ -1549,7 +1549,7 @@
     "category": "NUEVOS",
     "subcategory": "NUEVOS",
     "collection": "NUEVOS",
-    "price": "$ 12.445",
+    "price": "Consultar precio",
     "unit": "Piece",
     "items_per_box": "1",
     "style_tags": [
@@ -1567,7 +1567,7 @@
     "category": "NUEVOS",
     "subcategory": "NUEVOS",
     "collection": "NUEVOS",
-    "price": "$ 12.445",
+    "price": "$ 98.000",
     "unit": "Piece",
     "items_per_box": "1",
     "style_tags": [
@@ -1585,7 +1585,7 @@
     "category": "NUEVOS",
     "subcategory": "NUEVOS",
     "collection": "NUEVOS",
-    "price": "$ 12.445",
+    "price": "$ 98.000",
     "unit": "Piece",
     "items_per_box": "1",
     "style_tags": [
@@ -1603,7 +1603,7 @@
     "category": "NUEVOS",
     "subcategory": "NUEVOS",
     "collection": "NUEVOS",
-    "price": "$ 12.445",
+    "price": "$ 98.000",
     "unit": "Piece",
     "items_per_box": "1",
     "style_tags": [
@@ -1621,7 +1621,7 @@
     "category": "NUEVOS",
     "subcategory": "NUEVOS",
     "collection": "NUEVOS",
-    "price": "$ 12.445",
+    "price": "$ 98.000",
     "unit": "Piece",
     "items_per_box": "1",
     "style_tags": [
@@ -1639,7 +1639,7 @@
     "category": "NUEVOS",
     "subcategory": "NUEVOS",
     "collection": "NUEVOS",
-    "price": "$ 12.445",
+    "price": "Consultar precio",
     "unit": "Piece",
     "items_per_box": "1",
     "style_tags": [
@@ -1657,7 +1657,7 @@
     "category": "NUEVOS",
     "subcategory": "NUEVOS",
     "collection": "NUEVOS",
-    "price": "$ 22.490",
+    "price": "$ 180.000",
     "unit": "Piece",
     "items_per_box": "1",
     "style_tags": [
@@ -1675,7 +1675,7 @@
     "category": "NUEVOS",
     "subcategory": "NUEVOS",
     "collection": "NUEVOS",
-    "price": "$ 22.490",
+    "price": "$ 180.000",
     "unit": "Piece",
     "items_per_box": "1",
     "style_tags": [
@@ -1693,7 +1693,7 @@
     "category": "NUEVOS",
     "subcategory": "NUEVOS",
     "collection": "NUEVOS",
-    "price": "$ 22.490",
+    "price": "$ 180.000",
     "unit": "Piece",
     "items_per_box": "1",
     "style_tags": [
@@ -1711,7 +1711,7 @@
     "category": "NUEVOS",
     "subcategory": "NUEVOS",
     "collection": "NUEVOS",
-    "price": "$ 22.490",
+    "price": "Consultar precio",
     "unit": "Piece",
     "items_per_box": "1",
     "style_tags": [
@@ -1729,7 +1729,7 @@
     "category": "NUEVOS",
     "subcategory": "NUEVOS",
     "collection": "NUEVOS",
-    "price": "$ 14.393",
+    "price": "Consultar precio",
     "unit": "Piece",
     "items_per_box": "1",
     "style_tags": [
@@ -1747,7 +1747,7 @@
     "category": "NUEVOS",
     "subcategory": "NUEVOS",
     "collection": "NUEVOS",
-    "price": "$ 14.393",
+    "price": "Consultar precio",
     "unit": "Piece",
     "items_per_box": "1",
     "style_tags": [
@@ -1765,7 +1765,7 @@
     "category": "NUEVOS",
     "subcategory": "NUEVOS",
     "collection": "NUEVOS",
-    "price": "$ 12.590",
+    "price": "$ 98.000",
     "unit": "Piece",
     "items_per_box": "1",
     "style_tags": [
@@ -1783,7 +1783,7 @@
     "category": "NUEVOS",
     "subcategory": "NUEVOS",
     "collection": "NUEVOS",
-    "price": "$ 12.590",
+    "price": "Consultar precio",
     "unit": "Piece",
     "items_per_box": "1",
     "style_tags": [
@@ -1801,7 +1801,7 @@
     "category": "NUEVOS",
     "subcategory": "NUEVOS",
     "collection": "NUEVOS",
-    "price": "$ 12.590",
+    "price": "$ 98.000",
     "unit": "Piece",
     "items_per_box": "1",
     "style_tags": [
@@ -1819,7 +1819,7 @@
     "category": "NUEVOS",
     "subcategory": "NUEVOS",
     "collection": "NUEVOS",
-    "price": "$ 12.590",
+    "price": "$ 98.000",
     "unit": "Piece",
     "items_per_box": "1",
     "style_tags": [
@@ -1837,7 +1837,7 @@
     "category": "NUEVOS",
     "subcategory": "NUEVOS",
     "collection": "NUEVOS",
-    "price": "$ 12.590",
+    "price": "$ 98.000",
     "unit": "Piece",
     "items_per_box": "1",
     "style_tags": [
@@ -1855,7 +1855,7 @@
     "category": "NUEVOS",
     "subcategory": "NUEVOS",
     "collection": "NUEVOS",
-    "price": "$ 18.422",
+    "price": "Consultar precio",
     "unit": "Piece",
     "items_per_box": "1",
     "style_tags": [
@@ -1873,7 +1873,7 @@
     "category": "NUEVOS",
     "subcategory": "NUEVOS",
     "collection": "NUEVOS",
-    "price": "$ 18.422",
+    "price": "Consultar precio",
     "unit": "Piece",
     "items_per_box": "1",
     "style_tags": [
@@ -1891,7 +1891,7 @@
     "category": "NUEVOS",
     "subcategory": "NUEVOS",
     "collection": "NUEVOS",
-    "price": "$ 18.422",
+    "price": "Consultar precio",
     "unit": "Piece",
     "items_per_box": "1",
     "style_tags": [
@@ -1909,7 +1909,7 @@
     "category": "NUEVOS",
     "subcategory": "NUEVOS",
     "collection": "NUEVOS",
-    "price": "$ 18.422",
+    "price": "$ 170.000",
     "unit": "Piece",
     "items_per_box": "1",
     "style_tags": [
@@ -1927,7 +1927,7 @@
     "category": "NUEVOS",
     "subcategory": "NUEVOS",
     "collection": "NUEVOS",
-    "price": "$ 18.422",
+    "price": "$ 170.000",
     "unit": "Piece",
     "items_per_box": "1",
     "style_tags": [
@@ -1945,7 +1945,7 @@
     "category": "NUEVOS",
     "subcategory": "NUEVOS",
     "collection": "NUEVOS",
-    "price": "$ 18.422",
+    "price": "$ 170.000",
     "unit": "Piece",
     "items_per_box": "1",
     "style_tags": [
@@ -1963,7 +1963,7 @@
     "category": "NUEVOS",
     "subcategory": "NUEVOS",
     "collection": "NUEVOS",
-    "price": "$ 18.422",
+    "price": "Consultar precio",
     "unit": "Piece",
     "items_per_box": "1",
     "style_tags": [
@@ -1981,7 +1981,7 @@
     "category": "NUEVOS",
     "subcategory": "NUEVOS",
     "collection": "NUEVOS",
-    "price": "$ 19.529",
+    "price": "$ 180.000",
     "unit": "Piece",
     "items_per_box": "1",
     "style_tags": [
@@ -1999,7 +1999,7 @@
     "category": "NUEVOS",
     "subcategory": "NUEVOS",
     "collection": "NUEVOS",
-    "price": "$ 12.445",
+    "price": "$ 98.000",
     "unit": "Piece",
     "items_per_box": "1",
     "style_tags": [
@@ -2017,7 +2017,7 @@
     "category": "NUEVOS",
     "subcategory": "NUEVOS",
     "collection": "NUEVOS",
-    "price": "$ 12.445",
+    "price": "$ 98.000",
     "unit": "Piece",
     "items_per_box": "1",
     "style_tags": [
@@ -2035,7 +2035,7 @@
     "category": "NUEVOS",
     "subcategory": "NUEVOS",
     "collection": "NUEVOS",
-    "price": "$ 12.445",
+    "price": "Consultar precio",
     "unit": "Piece",
     "items_per_box": "1",
     "style_tags": [
@@ -2053,7 +2053,7 @@
     "category": "NUEVOS",
     "subcategory": "NUEVOS",
     "collection": "NUEVOS",
-    "price": "$ 12.445",
+    "price": "$ 98.000",
     "unit": "Piece",
     "items_per_box": "1",
     "style_tags": [
@@ -2071,7 +2071,7 @@
     "category": "NUEVOS",
     "subcategory": "NUEVOS",
     "collection": "NUEVOS",
-    "price": "$ 12.445",
+    "price": "$ 98.000",
     "unit": "Piece",
     "items_per_box": "1",
     "style_tags": [
@@ -2089,7 +2089,7 @@
     "category": "NUEVOS",
     "subcategory": "NUEVOS",
     "collection": "NUEVOS",
-    "price": "$ 0.000",
+    "price": "Consultar precio",
     "unit": "Piece",
     "items_per_box": "1",
     "style_tags": [
@@ -2107,7 +2107,7 @@
     "category": "NUEVOS",
     "subcategory": "NUEVOS",
     "collection": "NUEVOS",
-    "price": "$ 8.614",
+    "price": "$ 95.000",
     "unit": "Piece",
     "items_per_box": "1",
     "style_tags": [
@@ -2125,7 +2125,7 @@
     "category": "NUEVOS",
     "subcategory": "NUEVOS",
     "collection": "NUEVOS",
-    "price": "$ 8.614",
+    "price": "Consultar precio",
     "unit": "Piece",
     "items_per_box": "1",
     "style_tags": [
@@ -2143,7 +2143,7 @@
     "category": "NUEVOS",
     "subcategory": "NUEVOS",
     "collection": "NUEVOS",
-    "price": "$ 8.614",
+    "price": "$ 95.000",
     "unit": "Piece",
     "items_per_box": "1",
     "style_tags": [
@@ -2161,7 +2161,7 @@
     "category": "NUEVOS",
     "subcategory": "NUEVOS",
     "collection": "NUEVOS",
-    "price": "$ 8.614",
+    "price": "Consultar precio",
     "unit": "Piece",
     "items_per_box": "1",
     "style_tags": [
@@ -2179,7 +2179,7 @@
     "category": "NUEVOS",
     "subcategory": "NUEVOS",
     "collection": "NUEVOS",
-    "price": "$ 8.614",
+    "price": "$ 99.000",
     "unit": "Piece",
     "items_per_box": "1",
     "style_tags": [
@@ -2197,7 +2197,7 @@
     "category": "NUEVOS",
     "subcategory": "NUEVOS",
     "collection": "NUEVOS",
-    "price": "$ 8.614",
+    "price": "$ 99.000",
     "unit": "Piece",
     "items_per_box": "1",
     "style_tags": [
@@ -2215,7 +2215,7 @@
     "category": "NUEVOS",
     "subcategory": "NUEVOS",
     "collection": "NUEVOS",
-    "price": "$ 8.614",
+    "price": "$ 99.000",
     "unit": "Piece",
     "items_per_box": "1",
     "style_tags": [
@@ -2233,7 +2233,7 @@
     "category": "NUEVOS",
     "subcategory": "NUEVOS",
     "collection": "NUEVOS",
-    "price": "$ 8.614",
+    "price": "Consultar precio",
     "unit": "Piece",
     "items_per_box": "1",
     "style_tags": [
@@ -2251,7 +2251,7 @@
     "category": "NUEVOS",
     "subcategory": "NUEVOS",
     "collection": "NUEVOS",
-    "price": "$ 8.614",
+    "price": "$ 99.000",
     "unit": "Piece",
     "items_per_box": "1",
     "style_tags": [
@@ -2269,7 +2269,7 @@
     "category": "NUEVOS",
     "subcategory": "NUEVOS",
     "collection": "NUEVOS",
-    "price": "$ 8.614",
+    "price": "$ 99.000",
     "unit": "Piece",
     "items_per_box": "1",
     "style_tags": [
@@ -2287,7 +2287,7 @@
     "category": "NUEVOS",
     "subcategory": "NUEVOS",
     "collection": "NUEVOS",
-    "price": "$ 8.614",
+    "price": "$ 99.000",
     "unit": "Piece",
     "items_per_box": "1",
     "style_tags": [
@@ -2305,7 +2305,7 @@
     "category": "NUEVOS",
     "subcategory": "NUEVOS",
     "collection": "NUEVOS",
-    "price": "$ 0.000",
+    "price": "$ 105.000",
     "unit": "Piece",
     "items_per_box": "1",
     "style_tags": [
@@ -2323,7 +2323,7 @@
     "category": "NUEVOS",
     "subcategory": "NUEVOS",
     "collection": "NUEVOS",
-    "price": "$ 0.000",
+    "price": "$ 105.000",
     "unit": "Piece",
     "items_per_box": "1",
     "style_tags": [
@@ -2341,7 +2341,7 @@
     "category": "NUEVOS",
     "subcategory": "NUEVOS",
     "collection": "NUEVOS",
-    "price": "$ 0.000",
+    "price": "$ 105.000",
     "unit": "Piece",
     "items_per_box": "1",
     "style_tags": [
@@ -2359,7 +2359,7 @@
     "category": "NUEVOS",
     "subcategory": "NUEVOS",
     "collection": "NUEVOS",
-    "price": "$ 0.000",
+    "price": "$ 105.000",
     "unit": "Piece",
     "items_per_box": "1",
     "style_tags": [
@@ -2377,7 +2377,7 @@
     "category": "NUEVOS",
     "subcategory": "NUEVOS",
     "collection": "NUEVOS",
-    "price": "$ 0.000",
+    "price": "$ 100.000",
     "unit": "Piece",
     "items_per_box": "1",
     "style_tags": [
@@ -2395,7 +2395,7 @@
     "category": "NUEVOS",
     "subcategory": "NUEVOS",
     "collection": "NUEVOS",
-    "price": "$ 0.000",
+    "price": "Consultar precio",
     "unit": "Piece",
     "items_per_box": "1",
     "style_tags": [
@@ -2413,7 +2413,7 @@
     "category": "NUEVOS",
     "subcategory": "NUEVOS",
     "collection": "NUEVOS",
-    "price": "$ 0.000",
+    "price": "Consultar precio",
     "unit": "Piece",
     "items_per_box": "1",
     "style_tags": [
@@ -2431,7 +2431,7 @@
     "category": "NUEVOS",
     "subcategory": "NUEVOS",
     "collection": "NUEVOS",
-    "price": "$ 9.940",
+    "price": "$ 105.000",
     "unit": "Piece",
     "items_per_box": "1",
     "style_tags": [
@@ -2449,7 +2449,7 @@
     "category": "NUEVOS",
     "subcategory": "NUEVOS",
     "collection": "NUEVOS",
-    "price": "$ 9.940",
+    "price": "$ 105.000",
     "unit": "Piece",
     "items_per_box": "1",
     "style_tags": [
@@ -2467,7 +2467,7 @@
     "category": "NUEVOS",
     "subcategory": "NUEVOS",
     "collection": "NUEVOS",
-    "price": "$ 8.614",
+    "price": "$ 105.000",
     "unit": "Piece",
     "items_per_box": "1",
     "style_tags": [
@@ -2485,7 +2485,7 @@
     "category": "NUEVOS",
     "subcategory": "NUEVOS",
     "collection": "NUEVOS",
-    "price": "$ 8.614",
+    "price": "$ 105.000",
     "unit": "Piece",
     "items_per_box": "1",
     "style_tags": [
@@ -2503,7 +2503,7 @@
     "category": "NUEVOS",
     "subcategory": "NUEVOS",
     "collection": "NUEVOS",
-    "price": "$ 8.614",
+    "price": "$ 105.000",
     "unit": "Piece",
     "items_per_box": "1",
     "style_tags": [
@@ -2521,7 +2521,7 @@
     "category": "NUEVOS",
     "subcategory": "NUEVOS",
     "collection": "NUEVOS",
-    "price": "$ 12.657",
+    "price": "$ 105.000",
     "unit": "Piece",
     "items_per_box": "1",
     "style_tags": [
@@ -2539,7 +2539,7 @@
     "category": "NUEVOS",
     "subcategory": "NUEVOS",
     "collection": "NUEVOS",
-    "price": "$ 12.657",
+    "price": "$ 105.000",
     "unit": "Piece",
     "items_per_box": "1",
     "style_tags": [
@@ -2557,7 +2557,7 @@
     "category": "NUEVOS",
     "subcategory": "NUEVOS",
     "collection": "NUEVOS",
-    "price": "$ 0.000",
+    "price": "$ 105.000",
     "unit": "Piece",
     "items_per_box": "1",
     "style_tags": [
@@ -2575,7 +2575,7 @@
     "category": "NUEVOS",
     "subcategory": "NUEVOS",
     "collection": "NUEVOS",
-    "price": "$ 12.657",
+    "price": "$ 105.000",
     "unit": "Piece",
     "items_per_box": "1",
     "style_tags": [
@@ -2593,7 +2593,7 @@
     "category": "NUEVOS",
     "subcategory": "NUEVOS",
     "collection": "NUEVOS",
-    "price": "$ 0.000",
+    "price": "$ 105.000",
     "unit": "Piece",
     "items_per_box": "1",
     "style_tags": [
@@ -2611,7 +2611,7 @@
     "category": "NUEVOS",
     "subcategory": "NUEVOS",
     "collection": "NUEVOS",
-    "price": "$ 0.000",
+    "price": "$ 105.000",
     "unit": "Piece",
     "items_per_box": "1",
     "style_tags": [
@@ -2629,7 +2629,7 @@
     "category": "NUEVOS",
     "subcategory": "NUEVOS",
     "collection": "NUEVOS",
-    "price": "$ 9.940",
+    "price": "$ 105.000",
     "unit": "Piece",
     "items_per_box": "1",
     "style_tags": [
@@ -2647,7 +2647,7 @@
     "category": "NUEVOS",
     "subcategory": "NUEVOS",
     "collection": "NUEVOS",
-    "price": "$ 0.000",
+    "price": "Consultar precio",
     "unit": "Piece",
     "items_per_box": "1",
     "style_tags": [
@@ -2665,7 +2665,7 @@
     "category": "NUEVOS",
     "subcategory": "NUEVOS",
     "collection": "NUEVOS",
-    "price": "$ 2.213",
+    "price": "Consultar precio",
     "unit": "Piece",
     "items_per_box": "1",
     "style_tags": [
@@ -2683,7 +2683,7 @@
     "category": "NUEVOS",
     "subcategory": "NUEVOS",
     "collection": "NUEVOS",
-    "price": "$ 2.213",
+    "price": "Consultar precio",
     "unit": "Piece",
     "items_per_box": "1",
     "style_tags": [
@@ -2701,7 +2701,7 @@
     "category": "NUEVOS",
     "subcategory": "NUEVOS",
     "collection": "NUEVOS",
-    "price": "$ 2.213",
+    "price": "Consultar precio",
     "unit": "Piece",
     "items_per_box": "1",
     "style_tags": [
@@ -2719,7 +2719,7 @@
     "category": "NUEVOS",
     "subcategory": "NUEVOS",
     "collection": "NUEVOS",
-    "price": "$ 2.213",
+    "price": "Consultar precio",
     "unit": "Piece",
     "items_per_box": "1",
     "style_tags": [
@@ -2737,7 +2737,7 @@
     "category": "NUEVOS",
     "subcategory": "NUEVOS",
     "collection": "NUEVOS",
-    "price": "$ 0.861",
+    "price": "$ 16.000",
     "unit": "Piece",
     "items_per_box": "1",
     "style_tags": [
@@ -2755,7 +2755,7 @@
     "category": "NUEVOS",
     "subcategory": "NUEVOS",
     "collection": "NUEVOS",
-    "price": "$ 0.000",
+    "price": "Consultar precio",
     "unit": "Piece",
     "items_per_box": "1",
     "style_tags": [
@@ -2773,7 +2773,7 @@
     "category": "NUEVOS",
     "subcategory": "NUEVOS",
     "collection": "NUEVOS",
-    "price": "$ 0.000",
+    "price": "Consultar precio",
     "unit": "Piece",
     "items_per_box": "1",
     "style_tags": [
@@ -2791,7 +2791,7 @@
     "category": "NUEVOS",
     "subcategory": "NUEVOS",
     "collection": "NUEVOS",
-    "price": "$ 0.000",
+    "price": "Consultar precio",
     "unit": "Piece",
     "items_per_box": "1",
     "style_tags": [
@@ -2809,7 +2809,7 @@
     "category": "NUEVOS",
     "subcategory": "NUEVOS",
     "collection": "NUEVOS",
-    "price": "$ 0.000",
+    "price": "$ 6.000",
     "unit": "Piece",
     "items_per_box": "1",
     "style_tags": [
@@ -2827,7 +2827,7 @@
     "category": "NUEVOS",
     "subcategory": "NUEVOS",
     "collection": "NUEVOS",
-    "price": "$ 0.000",
+    "price": "$ 6.000",
     "unit": "Piece",
     "items_per_box": "1",
     "style_tags": [
@@ -2845,7 +2845,7 @@
     "category": "NUEVOS",
     "subcategory": "NUEVOS",
     "collection": "NUEVOS",
-    "price": "$ 0.000",
+    "price": "$ 20.000",
     "unit": "Piece",
     "items_per_box": "1",
     "style_tags": [
@@ -2863,7 +2863,7 @@
     "category": "NUEVOS",
     "subcategory": "NUEVOS",
     "collection": "NUEVOS",
-    "price": "$ 0.000",
+    "price": "$ 20.000",
     "unit": "Piece",
     "items_per_box": "1",
     "style_tags": [
@@ -2881,7 +2881,7 @@
     "category": "NUEVOS",
     "subcategory": "NUEVOS",
     "collection": "NUEVOS",
-    "price": "$ 0.000",
+    "price": "Consultar precio",
     "unit": "Piece",
     "items_per_box": "1",
     "style_tags": [
@@ -2899,7 +2899,7 @@
     "category": "NUEVOS",
     "subcategory": "NUEVOS",
     "collection": "NUEVOS",
-    "price": "$ 0.000",
+    "price": "Consultar precio",
     "unit": "Piece",
     "items_per_box": "1",
     "style_tags": [
@@ -2917,7 +2917,7 @@
     "category": "NUEVOS",
     "subcategory": "NUEVOS",
     "collection": "NUEVOS",
-    "price": "$ 14.433",
+    "price": "$ 115.000",
     "unit": "Piece",
     "items_per_box": "1",
     "style_tags": [
@@ -2935,7 +2935,7 @@
     "category": "NUEVOS",
     "subcategory": "NUEVOS",
     "collection": "NUEVOS",
-    "price": "$ 17.945",
+    "price": "$ 150.000",
     "unit": "Piece",
     "items_per_box": "1",
     "style_tags": [
@@ -2953,7 +2953,7 @@
     "category": "NUEVOS",
     "subcategory": "NUEVOS",
     "collection": "NUEVOS",
-    "price": "$ 21.457",
+    "price": "Consultar precio",
     "unit": "Piece",
     "items_per_box": "1",
     "style_tags": [
@@ -2971,7 +2971,7 @@
     "category": "NUEVOS",
     "subcategory": "NUEVOS",
     "collection": "NUEVOS",
-    "price": "$ 4.493",
+    "price": "$ 38.000",
     "unit": "Piece",
     "items_per_box": "1",
     "style_tags": [
@@ -2989,7 +2989,7 @@
     "category": "NUEVOS",
     "subcategory": "NUEVOS",
     "collection": "NUEVOS",
-    "price": "$ 6.812",
+    "price": "$ 61.000",
     "unit": "Piece",
     "items_per_box": "1",
     "style_tags": [
@@ -3007,7 +3007,7 @@
     "category": "NUEVOS",
     "subcategory": "NUEVOS",
     "collection": "NUEVOS",
-    "price": "$ 10.907",
+    "price": "$ 85.000",
     "unit": "Piece",
     "items_per_box": "1",
     "style_tags": [
@@ -3025,7 +3025,7 @@
     "category": "NUEVOS",
     "subcategory": "NUEVOS",
     "collection": "NUEVOS",
-    "price": "$ 28.083",
+    "price": "Consultar precio",
     "unit": "Piece",
     "items_per_box": "1",
     "style_tags": [
@@ -3043,7 +3043,7 @@
     "category": "NUEVOS",
     "subcategory": "NUEVOS",
     "collection": "NUEVOS",
-    "price": "$ 28.083",
+    "price": "Consultar precio",
     "unit": "Piece",
     "items_per_box": "1",
     "style_tags": [
@@ -3061,7 +3061,7 @@
     "category": "NUEVOS",
     "subcategory": "NUEVOS",
     "collection": "NUEVOS",
-    "price": "$ 28.083",
+    "price": "Consultar precio",
     "unit": "Piece",
     "items_per_box": "1",
     "style_tags": [
@@ -3079,7 +3079,7 @@
     "category": "NUEVOS",
     "subcategory": "NUEVOS",
     "collection": "NUEVOS",
-    "price": "$ 28.083",
+    "price": "Consultar precio",
     "unit": "Piece",
     "items_per_box": "1",
     "style_tags": [
@@ -3097,7 +3097,7 @@
     "category": "NUEVOS",
     "subcategory": "NUEVOS",
     "collection": "NUEVOS",
-    "price": "$ 28.083",
+    "price": "Consultar precio",
     "unit": "Piece",
     "items_per_box": "1",
     "style_tags": [
@@ -3115,7 +3115,7 @@
     "category": "NUEVOS",
     "subcategory": "NUEVOS",
     "collection": "NUEVOS",
-    "price": "$ 28.083",
+    "price": "Consultar precio",
     "unit": "Piece",
     "items_per_box": "1",
     "style_tags": [
@@ -3133,7 +3133,7 @@
     "category": "NUEVOS",
     "subcategory": "NUEVOS",
     "collection": "NUEVOS",
-    "price": "$ 28.083",
+    "price": "Consultar precio",
     "unit": "Piece",
     "items_per_box": "1",
     "style_tags": [
@@ -3151,7 +3151,7 @@
     "category": "NUEVOS",
     "subcategory": "NUEVOS",
     "collection": "NUEVOS",
-    "price": "$ 0.000",
+    "price": "Consultar precio",
     "unit": "Piece",
     "items_per_box": "1",
     "style_tags": [
@@ -3169,7 +3169,7 @@
     "category": "NUEVOS",
     "subcategory": "NUEVOS",
     "collection": "NUEVOS",
-    "price": "$ 26.400",
+    "price": "$ 195.000",
     "unit": "Piece",
     "items_per_box": "1",
     "style_tags": [
@@ -3187,7 +3187,7 @@
     "category": "NUEVOS",
     "subcategory": "NUEVOS",
     "collection": "NUEVOS",
-    "price": "$ 26.400",
+    "price": "$ 350.000",
     "unit": "Piece",
     "items_per_box": "1",
     "style_tags": [
@@ -3205,7 +3205,7 @@
     "category": "NUEVOS",
     "subcategory": "NUEVOS",
     "collection": "NUEVOS",
-    "price": "$ 0.000",
+    "price": "Consultar precio",
     "unit": "Piece",
     "items_per_box": "1",
     "style_tags": [
@@ -3223,7 +3223,7 @@
     "category": "NUEVOS",
     "subcategory": "NUEVOS",
     "collection": "NUEVOS",
-    "price": "$ 4.228",
+    "price": "$ 50.000",
     "unit": "Piece",
     "items_per_box": "1",
     "style_tags": [
@@ -3241,7 +3241,7 @@
     "category": "NUEVOS",
     "subcategory": "NUEVOS",
     "collection": "NUEVOS",
-    "price": "$ 4.228",
+    "price": "$ 50.000",
     "unit": "Piece",
     "items_per_box": "1",
     "style_tags": [
@@ -3259,7 +3259,7 @@
     "category": "NUEVOS",
     "subcategory": "NUEVOS",
     "collection": "NUEVOS",
-    "price": "$ 4.228",
+    "price": "$ 50.000",
     "unit": "Piece",
     "items_per_box": "1",
     "style_tags": [
@@ -3277,7 +3277,7 @@
     "category": "NUEVOS",
     "subcategory": "NUEVOS",
     "collection": "NUEVOS",
-    "price": "$ 4.958",
+    "price": "Consultar precio",
     "unit": "Piece",
     "items_per_box": "1",
     "style_tags": [
@@ -3295,7 +3295,7 @@
     "category": "NUEVOS",
     "subcategory": "NUEVOS",
     "collection": "NUEVOS",
-    "price": "$ 4.958",
+    "price": "$ 55.000",
     "unit": "Piece",
     "items_per_box": "1",
     "style_tags": [
@@ -3313,7 +3313,7 @@
     "category": "NUEVOS",
     "subcategory": "NUEVOS",
     "collection": "NUEVOS",
-    "price": "$ 4.958",
+    "price": "Consultar precio",
     "unit": "Piece",
     "items_per_box": "1",
     "style_tags": [
@@ -3331,7 +3331,7 @@
     "category": "NUEVOS",
     "subcategory": "NUEVOS",
     "collection": "NUEVOS",
-    "price": "$ 0.922",
+    "price": "Consultar precio",
     "unit": "Piece",
     "items_per_box": "1",
     "style_tags": [
@@ -3349,7 +3349,7 @@
     "category": "NUEVOS",
     "subcategory": "NUEVOS",
     "collection": "NUEVOS",
-    "price": "$ 9.574",
+    "price": "Consultar precio",
     "unit": "Piece",
     "items_per_box": "1",
     "style_tags": [
@@ -3367,7 +3367,7 @@
     "category": "NUEVOS",
     "subcategory": "NUEVOS",
     "collection": "NUEVOS",
-    "price": "$ 9.574",
+    "price": "$ 50.000",
     "unit": "Piece",
     "items_per_box": "1",
     "style_tags": [
@@ -3385,7 +3385,7 @@
     "category": "NUEVOS",
     "subcategory": "NUEVOS",
     "collection": "NUEVOS",
-    "price": "$ 9.574",
+    "price": "$ 50.000",
     "unit": "Piece",
     "items_per_box": "1",
     "style_tags": [
@@ -3403,7 +3403,7 @@
     "category": "NUEVOS",
     "subcategory": "NUEVOS",
     "collection": "NUEVOS",
-    "price": "$ 9.574",
+    "price": "$ 50.000",
     "unit": "Piece",
     "items_per_box": "1",
     "style_tags": [
@@ -3421,7 +3421,7 @@
     "category": "NUEVOS",
     "subcategory": "NUEVOS",
     "collection": "NUEVOS",
-    "price": "$ 0.000",
+    "price": "Consultar precio",
     "unit": "Piece",
     "items_per_box": "1",
     "style_tags": [
@@ -3439,7 +3439,7 @@
     "category": "NUEVOS",
     "subcategory": "NUEVOS",
     "collection": "NUEVOS",
-    "price": "$ 0.000",
+    "price": "Consultar precio",
     "unit": "Piece",
     "items_per_box": "1",
     "style_tags": [
@@ -3457,7 +3457,7 @@
     "category": "NUEVOS",
     "subcategory": "NUEVOS",
     "collection": "NUEVOS",
-    "price": "$ 7.753",
+    "price": "$ 65.000",
     "unit": "Piece",
     "items_per_box": "1",
     "style_tags": [
@@ -3475,7 +3475,7 @@
     "category": "NUEVOS",
     "subcategory": "NUEVOS",
     "collection": "NUEVOS",
-    "price": "$ 7.753",
+    "price": "$ 65.000",
     "unit": "Piece",
     "items_per_box": "1",
     "style_tags": [
@@ -3493,7 +3493,7 @@
     "category": "NUEVOS",
     "subcategory": "NUEVOS",
     "collection": "NUEVOS",
-    "price": "$ 7.753",
+    "price": "$ 65.000",
     "unit": "Piece",
     "items_per_box": "1",
     "style_tags": [
@@ -3511,7 +3511,7 @@
     "category": "NUEVOS",
     "subcategory": "NUEVOS",
     "collection": "NUEVOS",
-    "price": "$ 7.753",
+    "price": "$ 65.000",
     "unit": "Piece",
     "items_per_box": "1",
     "style_tags": [
@@ -3529,7 +3529,7 @@
     "category": "NUEVOS",
     "subcategory": "NUEVOS",
     "collection": "NUEVOS",
-    "price": "$ 7.753",
+    "price": "$ 65.000",
     "unit": "Piece",
     "items_per_box": "1",
     "style_tags": [
@@ -3547,7 +3547,7 @@
     "category": "NUEVOS",
     "subcategory": "NUEVOS",
     "collection": "NUEVOS",
-    "price": "$ 10.218",
+    "price": "$ 65.000",
     "unit": "Piece",
     "items_per_box": "1",
     "style_tags": [
@@ -3565,7 +3565,7 @@
     "category": "NUEVOS",
     "subcategory": "NUEVOS",
     "collection": "NUEVOS",
-    "price": "$ 10.218",
+    "price": "$ 65.000",
     "unit": "Piece",
     "items_per_box": "1",
     "style_tags": [
@@ -3583,7 +3583,7 @@
     "category": "NUEVOS",
     "subcategory": "NUEVOS",
     "collection": "NUEVOS",
-    "price": "$ 2.743",
+    "price": "$ 27.000",
     "unit": "Piece",
     "items_per_box": "1",
     "style_tags": [
@@ -3601,7 +3601,7 @@
     "category": "NUEVOS",
     "subcategory": "NUEVOS",
     "collection": "NUEVOS",
-    "price": "$ 2.743",
+    "price": "$ 27.000",
     "unit": "Piece",
     "items_per_box": "1",
     "style_tags": [
@@ -3619,7 +3619,7 @@
     "category": "NUEVOS",
     "subcategory": "NUEVOS",
     "collection": "NUEVOS",
-    "price": "$ 2.743",
+    "price": "$ 27.000",
     "unit": "Piece",
     "items_per_box": "1",
     "style_tags": [
@@ -3637,7 +3637,7 @@
     "category": "NUEVOS",
     "subcategory": "NUEVOS",
     "collection": "NUEVOS",
-    "price": "$ 2.743",
+    "price": "$ 27.000",
     "unit": "Piece",
     "items_per_box": "1",
     "style_tags": [
@@ -3655,7 +3655,7 @@
     "category": "NUEVOS",
     "subcategory": "NUEVOS",
     "collection": "NUEVOS",
-    "price": "$ 2.743",
+    "price": "$ 27.000",
     "unit": "Piece",
     "items_per_box": "1",
     "style_tags": [
@@ -3673,7 +3673,7 @@
     "category": "NUEVOS",
     "subcategory": "NUEVOS",
     "collection": "NUEVOS",
-    "price": "$ 2.743",
+    "price": "$ 27.000",
     "unit": "Piece",
     "items_per_box": "1",
     "style_tags": [
@@ -3691,7 +3691,7 @@
     "category": "NUEVOS",
     "subcategory": "NUEVOS",
     "collection": "NUEVOS",
-    "price": "$ 2.743",
+    "price": "$ 27.000",
     "unit": "Piece",
     "items_per_box": "1",
     "style_tags": [
@@ -3709,7 +3709,7 @@
     "category": "NUEVOS",
     "subcategory": "NUEVOS",
     "collection": "NUEVOS",
-    "price": "$ 2.743",
+    "price": "$ 27.000",
     "unit": "Piece",
     "items_per_box": "1",
     "style_tags": [
@@ -3727,7 +3727,7 @@
     "category": "NUEVOS",
     "subcategory": "NUEVOS",
     "collection": "NUEVOS",
-    "price": "$ 0.013",
+    "price": "$ 500",
     "unit": "Piece",
     "items_per_box": "1",
     "style_tags": [
@@ -3745,7 +3745,7 @@
     "category": "NUEVOS",
     "subcategory": "NUEVOS",
     "collection": "NUEVOS",
-    "price": "$ 0.000",
+    "price": "Consultar precio",
     "unit": "Piece",
     "items_per_box": "1",
     "style_tags": [
@@ -3763,7 +3763,7 @@
     "category": "NUEVOS",
     "subcategory": "NUEVOS",
     "collection": "NUEVOS",
-    "price": "$ 1.916",
+    "price": "$ 23.000",
     "unit": "Piece",
     "items_per_box": "1",
     "style_tags": [
@@ -3781,7 +3781,7 @@
     "category": "NUEVOS",
     "subcategory": "NUEVOS",
     "collection": "NUEVOS",
-    "price": "$ 1.916",
+    "price": "$ 23.000",
     "unit": "Piece",
     "items_per_box": "1",
     "style_tags": [
@@ -3799,7 +3799,7 @@
     "category": "NUEVOS",
     "subcategory": "NUEVOS",
     "collection": "NUEVOS",
-    "price": "$ 1.916",
+    "price": "$ 23.000",
     "unit": "Piece",
     "items_per_box": "1",
     "style_tags": [
@@ -3817,7 +3817,7 @@
     "category": "NUEVOS",
     "subcategory": "NUEVOS",
     "collection": "NUEVOS",
-    "price": "$ 1.916",
+    "price": "$ 23.000",
     "unit": "Piece",
     "items_per_box": "1",
     "style_tags": [
@@ -3835,7 +3835,7 @@
     "category": "NUEVOS",
     "subcategory": "NUEVOS",
     "collection": "NUEVOS",
-    "price": "$ 1.916",
+    "price": "$ 23.000",
     "unit": "Piece",
     "items_per_box": "1",
     "style_tags": [
@@ -3853,7 +3853,7 @@
     "category": "NUEVOS",
     "subcategory": "NUEVOS",
     "collection": "NUEVOS",
-    "price": "$ 1.916",
+    "price": "Consultar precio",
     "unit": "Piece",
     "items_per_box": "1",
     "style_tags": [
@@ -3871,7 +3871,7 @@
     "category": "NUEVOS",
     "subcategory": "NUEVOS",
     "collection": "NUEVOS",
-    "price": "$ 1.916",
+    "price": "Consultar precio",
     "unit": "Piece",
     "items_per_box": "1",
     "style_tags": [
@@ -3889,7 +3889,7 @@
     "category": "NUEVOS",
     "subcategory": "NUEVOS",
     "collection": "NUEVOS",
-    "price": "$ 1.916",
+    "price": "Consultar precio",
     "unit": "Piece",
     "items_per_box": "1",
     "style_tags": [
@@ -3907,7 +3907,7 @@
     "category": "NUEVOS",
     "subcategory": "NUEVOS",
     "collection": "NUEVOS",
-    "price": "$ 1.916",
+    "price": "$ 23.000",
     "unit": "Piece",
     "items_per_box": "1",
     "style_tags": [
@@ -3925,7 +3925,7 @@
     "category": "NUEVOS",
     "subcategory": "NUEVOS",
     "collection": "NUEVOS",
-    "price": "$ 1.916",
+    "price": "Consultar precio",
     "unit": "Piece",
     "items_per_box": "1",
     "style_tags": [
@@ -3943,7 +3943,7 @@
     "category": "NUEVOS",
     "subcategory": "NUEVOS",
     "collection": "NUEVOS",
-    "price": "$ 1.916",
+    "price": "$ 23.000",
     "unit": "Piece",
     "items_per_box": "1",
     "style_tags": [
@@ -3961,7 +3961,7 @@
     "category": "NUEVOS",
     "subcategory": "NUEVOS",
     "collection": "NUEVOS",
-    "price": "$ 1.916",
+    "price": "$ 23.000",
     "unit": "Piece",
     "items_per_box": "1",
     "style_tags": [
@@ -3979,7 +3979,7 @@
     "category": "NUEVOS",
     "subcategory": "NUEVOS",
     "collection": "NUEVOS",
-    "price": "$ 1.916",
+    "price": "$ 23.000",
     "unit": "Piece",
     "items_per_box": "1",
     "style_tags": [
@@ -3997,7 +3997,7 @@
     "category": "NUEVOS",
     "subcategory": "NUEVOS",
     "collection": "NUEVOS",
-    "price": "$ 1.916",
+    "price": "$ 23.000",
     "unit": "Piece",
     "items_per_box": "1",
     "style_tags": [
@@ -4015,7 +4015,7 @@
     "category": "NUEVOS",
     "subcategory": "NUEVOS",
     "collection": "NUEVOS",
-    "price": "$ 1.916",
+    "price": "Consultar precio",
     "unit": "Piece",
     "items_per_box": "1",
     "style_tags": [
@@ -4033,7 +4033,7 @@
     "category": "NUEVOS",
     "subcategory": "NUEVOS",
     "collection": "NUEVOS",
-    "price": "$ 1.916",
+    "price": "Consultar precio",
     "unit": "Piece",
     "items_per_box": "1",
     "style_tags": [
@@ -4051,7 +4051,7 @@
     "category": "NUEVOS",
     "subcategory": "NUEVOS",
     "collection": "NUEVOS",
-    "price": "$ 1.916",
+    "price": "$ 23.000",
     "unit": "Piece",
     "items_per_box": "1",
     "style_tags": [
@@ -4069,7 +4069,7 @@
     "category": "NUEVOS",
     "subcategory": "NUEVOS",
     "collection": "NUEVOS",
-    "price": "$ 1.916",
+    "price": "$ 23.000",
     "unit": "Piece",
     "items_per_box": "1",
     "style_tags": [
@@ -4087,7 +4087,7 @@
     "category": "NUEVOS",
     "subcategory": "NUEVOS",
     "collection": "NUEVOS",
-    "price": "$ 1.916",
+    "price": "$ 23.000",
     "unit": "Piece",
     "items_per_box": "1",
     "style_tags": [
@@ -4105,7 +4105,7 @@
     "category": "NUEVOS",
     "subcategory": "NUEVOS",
     "collection": "NUEVOS",
-    "price": "$ 1.916",
+    "price": "$ 23.000",
     "unit": "Piece",
     "items_per_box": "1",
     "style_tags": [
@@ -4123,7 +4123,7 @@
     "category": "NUEVOS",
     "subcategory": "NUEVOS",
     "collection": "NUEVOS",
-    "price": "$ 1.916",
+    "price": "$ 23.000",
     "unit": "Piece",
     "items_per_box": "1",
     "style_tags": [
@@ -4141,7 +4141,7 @@
     "category": "NUEVOS",
     "subcategory": "NUEVOS",
     "collection": "NUEVOS",
-    "price": "$ 1.916",
+    "price": "$ 23.000",
     "unit": "Piece",
     "items_per_box": "1",
     "style_tags": [
@@ -4159,7 +4159,7 @@
     "category": "NUEVOS",
     "subcategory": "NUEVOS",
     "collection": "NUEVOS",
-    "price": "$ 1.916",
+    "price": "$ 23.000",
     "unit": "Piece",
     "items_per_box": "1",
     "style_tags": [
@@ -4177,7 +4177,7 @@
     "category": "NUEVOS",
     "subcategory": "NUEVOS",
     "collection": "NUEVOS",
-    "price": "$ 1.916",
+    "price": "$ 23.000",
     "unit": "Piece",
     "items_per_box": "1",
     "style_tags": [
@@ -4195,7 +4195,7 @@
     "category": "NUEVOS",
     "subcategory": "NUEVOS",
     "collection": "NUEVOS",
-    "price": "$ 1.916",
+    "price": "$ 23.000",
     "unit": "Piece",
     "items_per_box": "1",
     "style_tags": [
@@ -4213,7 +4213,7 @@
     "category": "NUEVOS",
     "subcategory": "NUEVOS",
     "collection": "NUEVOS",
-    "price": "$ 1.916",
+    "price": "$ 23.000",
     "unit": "Piece",
     "items_per_box": "1",
     "style_tags": [
@@ -4231,7 +4231,7 @@
     "category": "NUEVOS",
     "subcategory": "NUEVOS",
     "collection": "NUEVOS",
-    "price": "$ 1.916",
+    "price": "$ 23.000",
     "unit": "Piece",
     "items_per_box": "1",
     "style_tags": [
@@ -4249,7 +4249,7 @@
     "category": "NUEVOS",
     "subcategory": "NUEVOS",
     "collection": "NUEVOS",
-    "price": "$ 1.916",
+    "price": "$ 23.000",
     "unit": "Piece",
     "items_per_box": "1",
     "style_tags": [
@@ -4267,7 +4267,7 @@
     "category": "NUEVOS",
     "subcategory": "NUEVOS",
     "collection": "NUEVOS",
-    "price": "$ 1.916",
+    "price": "$ 23.000",
     "unit": "Piece",
     "items_per_box": "1",
     "style_tags": [
@@ -4285,7 +4285,7 @@
     "category": "NUEVOS",
     "subcategory": "NUEVOS",
     "collection": "NUEVOS",
-    "price": "$ 0.013",
+    "price": "$ 850",
     "unit": "Piece",
     "items_per_box": "1",
     "style_tags": [
@@ -4303,7 +4303,7 @@
     "category": "NUEVOS",
     "subcategory": "NUEVOS",
     "collection": "NUEVOS",
-    "price": "$ 0.000",
+    "price": "Consultar precio",
     "unit": "Piece",
     "items_per_box": "1",
     "style_tags": [
@@ -4321,7 +4321,7 @@
     "category": "NUEVOS",
     "subcategory": "NUEVOS",
     "collection": "NUEVOS",
-    "price": "$ 1.551",
+    "price": "$ 18.000",
     "unit": "Piece",
     "items_per_box": "1",
     "style_tags": [
@@ -4339,7 +4339,7 @@
     "category": "NUEVOS",
     "subcategory": "NUEVOS",
     "collection": "NUEVOS",
-    "price": "$ 1.551",
+    "price": "$ 18.000",
     "unit": "Piece",
     "items_per_box": "1",
     "style_tags": [
@@ -4357,7 +4357,7 @@
     "category": "NUEVOS",
     "subcategory": "NUEVOS",
     "collection": "NUEVOS",
-    "price": "$ 1.551",
+    "price": "$ 18.000",
     "unit": "Piece",
     "items_per_box": "1",
     "style_tags": [
@@ -4375,7 +4375,7 @@
     "category": "NUEVOS",
     "subcategory": "NUEVOS",
     "collection": "NUEVOS",
-    "price": "$ 1.551",
+    "price": "$ 18.000",
     "unit": "Piece",
     "items_per_box": "1",
     "style_tags": [
@@ -4393,7 +4393,7 @@
     "category": "NUEVOS",
     "subcategory": "NUEVOS",
     "collection": "NUEVOS",
-    "price": "$ 1.551",
+    "price": "$ 18.000",
     "unit": "Piece",
     "items_per_box": "1",
     "style_tags": [
@@ -4411,7 +4411,7 @@
     "category": "NUEVOS",
     "subcategory": "NUEVOS",
     "collection": "NUEVOS",
-    "price": "$ 1.551",
+    "price": "$ 18.000",
     "unit": "Piece",
     "items_per_box": "1",
     "style_tags": [
@@ -4429,7 +4429,7 @@
     "category": "NUEVOS",
     "subcategory": "NUEVOS",
     "collection": "NUEVOS",
-    "price": "$ 1.551",
+    "price": "$ 18.000",
     "unit": "Piece",
     "items_per_box": "1",
     "style_tags": [
@@ -4447,7 +4447,7 @@
     "category": "NUEVOS",
     "subcategory": "NUEVOS",
     "collection": "NUEVOS",
-    "price": "$ 1.551",
+    "price": "$ 18.000",
     "unit": "Piece",
     "items_per_box": "1",
     "style_tags": [
@@ -4465,7 +4465,7 @@
     "category": "NUEVOS",
     "subcategory": "NUEVOS",
     "collection": "NUEVOS",
-    "price": "$ 1.551",
+    "price": "$ 18.000",
     "unit": "Piece",
     "items_per_box": "1",
     "style_tags": [
@@ -4483,7 +4483,7 @@
     "category": "NUEVOS",
     "subcategory": "NUEVOS",
     "collection": "NUEVOS",
-    "price": "$ 1.551",
+    "price": "$ 18.000",
     "unit": "Piece",
     "items_per_box": "1",
     "style_tags": [
@@ -4501,7 +4501,7 @@
     "category": "NUEVOS",
     "subcategory": "NUEVOS",
     "collection": "NUEVOS",
-    "price": "$ 1.551",
+    "price": "$ 18.000",
     "unit": "Piece",
     "items_per_box": "1",
     "style_tags": [
@@ -4519,7 +4519,7 @@
     "category": "NUEVOS",
     "subcategory": "NUEVOS",
     "collection": "NUEVOS",
-    "price": "$ 1.551",
+    "price": "Consultar precio",
     "unit": "Piece",
     "items_per_box": "1",
     "style_tags": [
@@ -4537,7 +4537,7 @@
     "category": "NUEVOS",
     "subcategory": "NUEVOS",
     "collection": "NUEVOS",
-    "price": "$ 1.551",
+    "price": "$ 18.000",
     "unit": "Piece",
     "items_per_box": "1",
     "style_tags": [
@@ -4555,7 +4555,7 @@
     "category": "NUEVOS",
     "subcategory": "NUEVOS",
     "collection": "NUEVOS",
-    "price": "$ 1.551",
+    "price": "$ 18.000",
     "unit": "Piece",
     "items_per_box": "1",
     "style_tags": [
@@ -4573,7 +4573,7 @@
     "category": "NUEVOS",
     "subcategory": "NUEVOS",
     "collection": "NUEVOS",
-    "price": "$ 1.551",
+    "price": "$ 18.000",
     "unit": "Piece",
     "items_per_box": "1",
     "style_tags": [
@@ -4591,7 +4591,7 @@
     "category": "NUEVOS",
     "subcategory": "NUEVOS",
     "collection": "NUEVOS",
-    "price": "$ 1.551",
+    "price": "$ 18.000",
     "unit": "Piece",
     "items_per_box": "1",
     "style_tags": [
@@ -4609,7 +4609,7 @@
     "category": "NUEVOS",
     "subcategory": "NUEVOS",
     "collection": "NUEVOS",
-    "price": "$ 1.551",
+    "price": "$ 18.000",
     "unit": "Piece",
     "items_per_box": "1",
     "style_tags": [
@@ -4627,7 +4627,7 @@
     "category": "NUEVOS",
     "subcategory": "NUEVOS",
     "collection": "NUEVOS",
-    "price": "$ 1.551",
+    "price": "$ 18.000",
     "unit": "Piece",
     "items_per_box": "1",
     "style_tags": [
@@ -4645,7 +4645,7 @@
     "category": "NUEVOS",
     "subcategory": "NUEVOS",
     "collection": "NUEVOS",
-    "price": "$ 1.551",
+    "price": "$ 18.000",
     "unit": "Piece",
     "items_per_box": "1",
     "style_tags": [
@@ -4663,7 +4663,7 @@
     "category": "NUEVOS",
     "subcategory": "NUEVOS",
     "collection": "NUEVOS",
-    "price": "$ 1.551",
+    "price": "$ 18.000",
     "unit": "Piece",
     "items_per_box": "1",
     "style_tags": [
@@ -4681,7 +4681,7 @@
     "category": "NUEVOS",
     "subcategory": "NUEVOS",
     "collection": "NUEVOS",
-    "price": "$ 1.551",
+    "price": "$ 18.000",
     "unit": "Piece",
     "items_per_box": "1",
     "style_tags": [
@@ -4699,7 +4699,7 @@
     "category": "NUEVOS",
     "subcategory": "NUEVOS",
     "collection": "NUEVOS",
-    "price": "$ 1.551",
+    "price": "$ 18.000",
     "unit": "Piece",
     "items_per_box": "1",
     "style_tags": [
@@ -4717,7 +4717,7 @@
     "category": "NUEVOS",
     "subcategory": "NUEVOS",
     "collection": "NUEVOS",
-    "price": "$ 0.000",
+    "price": "Consultar precio",
     "unit": "Piece",
     "items_per_box": "1",
     "style_tags": [
@@ -4735,7 +4735,7 @@
     "category": "NUEVOS",
     "subcategory": "NUEVOS",
     "collection": "NUEVOS",
-    "price": "$ 2.619",
+    "price": "Consultar precio",
     "unit": "Piece",
     "items_per_box": "1",
     "style_tags": [
@@ -4753,7 +4753,7 @@
     "category": "NUEVOS",
     "subcategory": "NUEVOS",
     "collection": "NUEVOS",
-    "price": "$ 2.619",
+    "price": "Consultar precio",
     "unit": "Piece",
     "items_per_box": "1",
     "style_tags": [
@@ -4771,7 +4771,7 @@
     "category": "NUEVOS",
     "subcategory": "NUEVOS",
     "collection": "NUEVOS",
-    "price": "$ 2.619",
+    "price": "Consultar precio",
     "unit": "Piece",
     "items_per_box": "1",
     "style_tags": [
@@ -4789,7 +4789,7 @@
     "category": "NUEVOS",
     "subcategory": "NUEVOS",
     "collection": "NUEVOS",
-    "price": "$ 2.619",
+    "price": "Consultar precio",
     "unit": "Piece",
     "items_per_box": "1",
     "style_tags": [
@@ -4807,7 +4807,7 @@
     "category": "NUEVOS",
     "subcategory": "NUEVOS",
     "collection": "NUEVOS",
-    "price": "$ 2.619",
+    "price": "Consultar precio",
     "unit": "Piece",
     "items_per_box": "1",
     "style_tags": [
@@ -4825,7 +4825,7 @@
     "category": "NUEVOS",
     "subcategory": "NUEVOS",
     "collection": "NUEVOS",
-    "price": "$ 2.619",
+    "price": "Consultar precio",
     "unit": "Piece",
     "items_per_box": "1",
     "style_tags": [
@@ -4843,7 +4843,7 @@
     "category": "NUEVOS",
     "subcategory": "NUEVOS",
     "collection": "NUEVOS",
-    "price": "$ 2.619",
+    "price": "Consultar precio",
     "unit": "Piece",
     "items_per_box": "1",
     "style_tags": [
@@ -4861,7 +4861,7 @@
     "category": "NUEVOS",
     "subcategory": "NUEVOS",
     "collection": "NUEVOS",
-    "price": "$ 2.619",
+    "price": "Consultar precio",
     "unit": "Piece",
     "items_per_box": "1",
     "style_tags": [
@@ -4879,7 +4879,7 @@
     "category": "NUEVOS",
     "subcategory": "NUEVOS",
     "collection": "NUEVOS",
-    "price": "$ 2.619",
+    "price": "Consultar precio",
     "unit": "Piece",
     "items_per_box": "1",
     "style_tags": [
@@ -4897,7 +4897,7 @@
     "category": "NUEVOS",
     "subcategory": "NUEVOS",
     "collection": "NUEVOS",
-    "price": "$ 2.619",
+    "price": "Consultar precio",
     "unit": "Piece",
     "items_per_box": "1",
     "style_tags": [
@@ -4915,7 +4915,7 @@
     "category": "NUEVOS",
     "subcategory": "NUEVOS",
     "collection": "NUEVOS",
-    "price": "$ 2.619",
+    "price": "Consultar precio",
     "unit": "Piece",
     "items_per_box": "1",
     "style_tags": [
@@ -4933,7 +4933,7 @@
     "category": "NUEVOS",
     "subcategory": "NUEVOS",
     "collection": "NUEVOS",
-    "price": "$ 0.000",
+    "price": "Consultar precio",
     "unit": "Piece",
     "items_per_box": "1",
     "style_tags": [
@@ -4951,7 +4951,7 @@
     "category": "NUEVOS",
     "subcategory": "NUEVOS",
     "collection": "NUEVOS",
-    "price": "$ 0.000",
+    "price": "Consultar precio",
     "unit": "Piece",
     "items_per_box": "1",
     "style_tags": [
@@ -4969,7 +4969,7 @@
     "category": "NUEVOS",
     "subcategory": "NUEVOS",
     "collection": "NUEVOS",
-    "price": "$ 5.261",
+    "price": "$ 60.000",
     "unit": "Piece",
     "items_per_box": "1",
     "style_tags": [
@@ -4987,7 +4987,7 @@
     "category": "NUEVOS",
     "subcategory": "NUEVOS",
     "collection": "NUEVOS",
-    "price": "$ 5.261",
+    "price": "$ 60.000",
     "unit": "Piece",
     "items_per_box": "1",
     "style_tags": [
@@ -5005,7 +5005,7 @@
     "category": "NUEVOS",
     "subcategory": "NUEVOS",
     "collection": "NUEVOS",
-    "price": "$ 5.261",
+    "price": "$ 60.000",
     "unit": "Piece",
     "items_per_box": "1",
     "style_tags": [
@@ -5023,7 +5023,7 @@
     "category": "NUEVOS",
     "subcategory": "NUEVOS",
     "collection": "NUEVOS",
-    "price": "$ 5.261",
+    "price": "$ 60.000",
     "unit": "Piece",
     "items_per_box": "1",
     "style_tags": [
@@ -5041,7 +5041,7 @@
     "category": "NUEVOS",
     "subcategory": "NUEVOS",
     "collection": "NUEVOS",
-    "price": "$ 5.261",
+    "price": "$ 60.000",
     "unit": "Piece",
     "items_per_box": "1",
     "style_tags": [
@@ -5059,7 +5059,7 @@
     "category": "NUEVOS",
     "subcategory": "NUEVOS",
     "collection": "NUEVOS",
-    "price": "$ 0.000",
+    "price": "Consultar precio",
     "unit": "Piece",
     "items_per_box": "1",
     "style_tags": [
@@ -5077,7 +5077,7 @@
     "category": "NUEVOS",
     "subcategory": "NUEVOS",
     "collection": "NUEVOS",
-    "price": "$ 16.420",
+    "price": "$ 120.000",
     "unit": "Piece",
     "items_per_box": "1",
     "style_tags": [
@@ -5095,7 +5095,7 @@
     "category": "NUEVOS",
     "subcategory": "NUEVOS",
     "collection": "NUEVOS",
-    "price": "$ 16.420",
+    "price": "$ 120.000",
     "unit": "Piece",
     "items_per_box": "1",
     "style_tags": [
@@ -5113,7 +5113,7 @@
     "category": "NUEVOS",
     "subcategory": "NUEVOS",
     "collection": "NUEVOS",
-    "price": "$ 16.420",
+    "price": "$ 120.000",
     "unit": "Piece",
     "items_per_box": "1",
     "style_tags": [
@@ -5131,7 +5131,7 @@
     "category": "NUEVOS",
     "subcategory": "NUEVOS",
     "collection": "NUEVOS",
-    "price": "$ 16.420",
+    "price": "$ 120.000",
     "unit": "Piece",
     "items_per_box": "1",
     "style_tags": [
@@ -5149,7 +5149,7 @@
     "category": "NUEVOS",
     "subcategory": "NUEVOS",
     "collection": "NUEVOS",
-    "price": "$ 40.514",
+    "price": "Consultar precio",
     "unit": "Piece",
     "items_per_box": "1",
     "style_tags": [
@@ -5167,7 +5167,7 @@
     "category": "NUEVOS",
     "subcategory": "NUEVOS",
     "collection": "NUEVOS",
-    "price": "$ 12.312",
+    "price": "$ 98.000",
     "unit": "Piece",
     "items_per_box": "1",
     "style_tags": [
@@ -5185,7 +5185,7 @@
     "category": "NUEVOS",
     "subcategory": "NUEVOS",
     "collection": "NUEVOS",
-    "price": "$ 0.000",
+    "price": "Consultar precio",
     "unit": "Piece",
     "items_per_box": "1",
     "style_tags": [
@@ -5203,7 +5203,7 @@
     "category": "NUEVOS",
     "subcategory": "NUEVOS",
     "collection": "NUEVOS",
-    "price": "$ 0.000",
+    "price": "Consultar precio",
     "unit": "Piece",
     "items_per_box": "1",
     "style_tags": [
@@ -5221,7 +5221,7 @@
     "category": "NUEVOS",
     "subcategory": "NUEVOS",
     "collection": "NUEVOS",
-    "price": "$ 0.000",
+    "price": "Consultar precio",
     "unit": "Piece",
     "items_per_box": "1",
     "style_tags": [
@@ -5239,7 +5239,7 @@
     "category": "NUEVOS",
     "subcategory": "NUEVOS",
     "collection": "NUEVOS",
-    "price": "$ 0.000",
+    "price": "Consultar precio",
     "unit": "Piece",
     "items_per_box": "1",
     "style_tags": [
@@ -5257,7 +5257,7 @@
     "category": "NUEVOS",
     "subcategory": "NUEVOS",
     "collection": "NUEVOS",
-    "price": "$ 0.000",
+    "price": "Consultar precio",
     "unit": "Piece",
     "items_per_box": "1",
     "style_tags": [
@@ -5275,7 +5275,7 @@
     "category": "NUEVOS",
     "subcategory": "NUEVOS",
     "collection": "NUEVOS",
-    "price": "$ 0.000",
+    "price": "Consultar precio",
     "unit": "Piece",
     "items_per_box": "1",
     "style_tags": [
@@ -5293,7 +5293,7 @@
     "category": "NUEVOS",
     "subcategory": "NUEVOS",
     "collection": "NUEVOS",
-    "price": "$ 0.000",
+    "price": "Consultar precio",
     "unit": "Piece",
     "items_per_box": "1",
     "style_tags": [
@@ -5311,7 +5311,7 @@
     "category": "NUEVOS",
     "subcategory": "NUEVOS",
     "collection": "NUEVOS",
-    "price": "$ 0.000",
+    "price": "Consultar precio",
     "unit": "Piece",
     "items_per_box": "1",
     "style_tags": [
@@ -5329,7 +5329,7 @@
     "category": "NUEVOS",
     "subcategory": "NUEVOS",
     "collection": "NUEVOS",
-    "price": "$ 0.000",
+    "price": "Consultar precio",
     "unit": "Piece",
     "items_per_box": "1",
     "style_tags": [
@@ -5347,7 +5347,7 @@
     "category": "NUEVOS",
     "subcategory": "NUEVOS",
     "collection": "NUEVOS",
-    "price": "$ 0.000",
+    "price": "Consultar precio",
     "unit": "Piece",
     "items_per_box": "1",
     "style_tags": [
@@ -5365,7 +5365,7 @@
     "category": "NUEVOS",
     "subcategory": "NUEVOS",
     "collection": "NUEVOS",
-    "price": "$ 32.801",
+    "price": "Consultar precio",
     "unit": "Piece",
     "items_per_box": "1",
     "style_tags": [
@@ -5383,7 +5383,7 @@
     "category": "NUEVOS",
     "subcategory": "NUEVOS",
     "collection": "NUEVOS",
-    "price": "$ 32.801",
+    "price": "Consultar precio",
     "unit": "Piece",
     "items_per_box": "1",
     "style_tags": [
@@ -5401,7 +5401,7 @@
     "category": "NUEVOS",
     "subcategory": "NUEVOS",
     "collection": "NUEVOS",
-    "price": "$ 32.801",
+    "price": "Consultar precio",
     "unit": "Piece",
     "items_per_box": "1",
     "style_tags": [
@@ -5419,7 +5419,7 @@
     "category": "NUEVOS",
     "subcategory": "NUEVOS",
     "collection": "NUEVOS",
-    "price": "$ 32.801",
+    "price": "Consultar precio",
     "unit": "Piece",
     "items_per_box": "1",
     "style_tags": [
@@ -5437,7 +5437,7 @@
     "category": "NUEVOS",
     "subcategory": "NUEVOS",
     "collection": "NUEVOS",
-    "price": "$ 32.801",
+    "price": "Consultar precio",
     "unit": "Piece",
     "items_per_box": "1",
     "style_tags": [
@@ -5455,7 +5455,7 @@
     "category": "NUEVOS",
     "subcategory": "NUEVOS",
     "collection": "NUEVOS",
-    "price": "$ 32.801",
+    "price": "Consultar precio",
     "unit": "Piece",
     "items_per_box": "1",
     "style_tags": [
@@ -5473,7 +5473,7 @@
     "category": "NUEVOS",
     "subcategory": "NUEVOS",
     "collection": "NUEVOS",
-    "price": "$ 32.801",
+    "price": "Consultar precio",
     "unit": "Piece",
     "items_per_box": "1",
     "style_tags": [
@@ -5491,7 +5491,7 @@
     "category": "NUEVOS",
     "subcategory": "NUEVOS",
     "collection": "NUEVOS",
-    "price": "$ 32.801",
+    "price": "Consultar precio",
     "unit": "Piece",
     "items_per_box": "1",
     "style_tags": [
@@ -5509,7 +5509,7 @@
     "category": "NUEVOS",
     "subcategory": "NUEVOS",
     "collection": "NUEVOS",
-    "price": "$ 53.675",
+    "price": "Consultar precio",
     "unit": "Piece",
     "items_per_box": "1",
     "style_tags": [
@@ -5527,7 +5527,7 @@
     "category": "NUEVOS",
     "subcategory": "NUEVOS",
     "collection": "NUEVOS",
-    "price": "$ 53.675",
+    "price": "Consultar precio",
     "unit": "Piece",
     "items_per_box": "1",
     "style_tags": [
@@ -5545,7 +5545,7 @@
     "category": "NUEVOS",
     "subcategory": "NUEVOS",
     "collection": "NUEVOS",
-    "price": "$ 53.675",
+    "price": "Consultar precio",
     "unit": "Piece",
     "items_per_box": "1",
     "style_tags": [
@@ -5563,7 +5563,7 @@
     "category": "NUEVOS",
     "subcategory": "NUEVOS",
     "collection": "NUEVOS",
-    "price": "$ 53.675",
+    "price": "Consultar precio",
     "unit": "Piece",
     "items_per_box": "1",
     "style_tags": [
@@ -5581,7 +5581,7 @@
     "category": "NUEVOS",
     "subcategory": "NUEVOS",
     "collection": "NUEVOS",
-    "price": "$ 53.675",
+    "price": "Consultar precio",
     "unit": "Piece",
     "items_per_box": "1",
     "style_tags": [
@@ -5599,7 +5599,7 @@
     "category": "NUEVOS",
     "subcategory": "NUEVOS",
     "collection": "NUEVOS",
-    "price": "$ 22.663",
+    "price": "Consultar precio",
     "unit": "Piece",
     "items_per_box": "1",
     "style_tags": [
@@ -5617,7 +5617,7 @@
     "category": "NUEVOS",
     "subcategory": "NUEVOS",
     "collection": "NUEVOS",
-    "price": "$ 22.663",
+    "price": "Consultar precio",
     "unit": "Piece",
     "items_per_box": "1",
     "style_tags": [
@@ -5635,7 +5635,7 @@
     "category": "NUEVOS",
     "subcategory": "NUEVOS",
     "collection": "NUEVOS",
-    "price": "$ 22.663",
+    "price": "Consultar precio",
     "unit": "Piece",
     "items_per_box": "1",
     "style_tags": [
@@ -5653,7 +5653,7 @@
     "category": "NUEVOS",
     "subcategory": "NUEVOS",
     "collection": "NUEVOS",
-    "price": "$ 9.542",
+    "price": "Consultar precio",
     "unit": "Piece",
     "items_per_box": "1",
     "style_tags": [
@@ -5671,7 +5671,7 @@
     "category": "NUEVOS",
     "subcategory": "NUEVOS",
     "collection": "NUEVOS",
-    "price": "$ 9.542",
+    "price": "Consultar precio",
     "unit": "Piece",
     "items_per_box": "1",
     "style_tags": [
@@ -5689,7 +5689,7 @@
     "category": "NUEVOS",
     "subcategory": "NUEVOS",
     "collection": "NUEVOS",
-    "price": "$ 9.542",
+    "price": "Consultar precio",
     "unit": "Piece",
     "items_per_box": "1",
     "style_tags": [
@@ -5707,7 +5707,7 @@
     "category": "NUEVOS",
     "subcategory": "NUEVOS",
     "collection": "NUEVOS",
-    "price": "$ 9.542",
+    "price": "Consultar precio",
     "unit": "Piece",
     "items_per_box": "1",
     "style_tags": [
@@ -5725,7 +5725,7 @@
     "category": "NUEVOS",
     "subcategory": "NUEVOS",
     "collection": "NUEVOS",
-    "price": "$ 0.000",
+    "price": "Consultar precio",
     "unit": "Piece",
     "items_per_box": "1",
     "style_tags": [
@@ -5743,7 +5743,7 @@
     "category": "NUEVOS",
     "subcategory": "NUEVOS",
     "collection": "NUEVOS",
-    "price": "$ 22.530",
+    "price": "Consultar precio",
     "unit": "Piece",
     "items_per_box": "1",
     "style_tags": [
@@ -5761,7 +5761,7 @@
     "category": "NUEVOS",
     "subcategory": "NUEVOS",
     "collection": "NUEVOS",
-    "price": "$ 22.530",
+    "price": "Consultar precio",
     "unit": "Piece",
     "items_per_box": "1",
     "style_tags": [
@@ -5779,7 +5779,7 @@
     "category": "NUEVOS",
     "subcategory": "NUEVOS",
     "collection": "NUEVOS",
-    "price": "$ 22.530",
+    "price": "Consultar precio",
     "unit": "Piece",
     "items_per_box": "1",
     "style_tags": [
@@ -5797,7 +5797,7 @@
     "category": "NUEVOS",
     "subcategory": "NUEVOS",
     "collection": "NUEVOS",
-    "price": "$ 22.530",
+    "price": "Consultar precio",
     "unit": "Piece",
     "items_per_box": "1",
     "style_tags": [
@@ -5815,7 +5815,7 @@
     "category": "NUEVOS",
     "subcategory": "NUEVOS",
     "collection": "NUEVOS",
-    "price": "$ 7.819",
+    "price": "Consultar precio",
     "unit": "Piece",
     "items_per_box": "1",
     "style_tags": [
@@ -5833,7 +5833,7 @@
     "category": "NUEVOS",
     "subcategory": "NUEVOS",
     "collection": "NUEVOS",
-    "price": "$ 7.819",
+    "price": "Consultar precio",
     "unit": "Piece",
     "items_per_box": "1",
     "style_tags": [
@@ -5851,7 +5851,7 @@
     "category": "NUEVOS",
     "subcategory": "NUEVOS",
     "collection": "NUEVOS",
-    "price": "$ 7.819",
+    "price": "Consultar precio",
     "unit": "Piece",
     "items_per_box": "1",
     "style_tags": [
@@ -5869,7 +5869,7 @@
     "category": "NUEVOS",
     "subcategory": "NUEVOS",
     "collection": "NUEVOS",
-    "price": "$ 7.819",
+    "price": "Consultar precio",
     "unit": "Piece",
     "items_per_box": "1",
     "style_tags": [
@@ -5887,7 +5887,7 @@
     "category": "NUEVOS",
     "subcategory": "NUEVOS",
     "collection": "NUEVOS",
-    "price": "$ 13.704",
+    "price": "Consultar precio",
     "unit": "Piece",
     "items_per_box": "1",
     "style_tags": [
@@ -5905,7 +5905,7 @@
     "category": "NUEVOS",
     "subcategory": "NUEVOS",
     "collection": "NUEVOS",
-    "price": "$ 13.704",
+    "price": "Consultar precio",
     "unit": "Piece",
     "items_per_box": "1",
     "style_tags": [
@@ -5923,7 +5923,7 @@
     "category": "NUEVOS",
     "subcategory": "NUEVOS",
     "collection": "NUEVOS",
-    "price": "$ 13.704",
+    "price": "Consultar precio",
     "unit": "Piece",
     "items_per_box": "1",
     "style_tags": [
@@ -5941,7 +5941,7 @@
     "category": "NUEVOS",
     "subcategory": "NUEVOS",
     "collection": "NUEVOS",
-    "price": "$ 13.704",
+    "price": "Consultar precio",
     "unit": "Piece",
     "items_per_box": "1",
     "style_tags": [
@@ -5959,7 +5959,7 @@
     "category": "NUEVOS",
     "subcategory": "NUEVOS",
     "collection": "NUEVOS",
-    "price": "$ 33.000",
+    "price": "Consultar precio",
     "unit": "Piece",
     "items_per_box": "1",
     "style_tags": [
@@ -5977,7 +5977,7 @@
     "category": "NUEVOS",
     "subcategory": "NUEVOS",
     "collection": "NUEVOS",
-    "price": "$ 33.000",
+    "price": "Consultar precio",
     "unit": "Piece",
     "items_per_box": "1",
     "style_tags": [
@@ -5995,7 +5995,7 @@
     "category": "NUEVOS",
     "subcategory": "NUEVOS",
     "collection": "NUEVOS",
-    "price": "$ 33.000",
+    "price": "Consultar precio",
     "unit": "Piece",
     "items_per_box": "1",
     "style_tags": [
@@ -6013,7 +6013,7 @@
     "category": "NUEVOS",
     "subcategory": "NUEVOS",
     "collection": "NUEVOS",
-    "price": "$ 33.000",
+    "price": "Consultar precio",
     "unit": "Piece",
     "items_per_box": "1",
     "style_tags": [
@@ -6031,7 +6031,7 @@
     "category": "NUEVOS",
     "subcategory": "NUEVOS",
     "collection": "NUEVOS",
-    "price": "$ 18.355",
+    "price": "Consultar precio",
     "unit": "Piece",
     "items_per_box": "1",
     "style_tags": [
@@ -6049,7 +6049,7 @@
     "category": "NUEVOS",
     "subcategory": "NUEVOS",
     "collection": "NUEVOS",
-    "price": "$ 18.355",
+    "price": "Consultar precio",
     "unit": "Piece",
     "items_per_box": "1",
     "style_tags": [
@@ -6067,7 +6067,7 @@
     "category": "NUEVOS",
     "subcategory": "NUEVOS",
     "collection": "NUEVOS",
-    "price": "$ 18.355",
+    "price": "Consultar precio",
     "unit": "Piece",
     "items_per_box": "1",
     "style_tags": [
@@ -6085,7 +6085,7 @@
     "category": "NUEVOS",
     "subcategory": "NUEVOS",
     "collection": "NUEVOS",
-    "price": "$ 18.355",
+    "price": "Consultar precio",
     "unit": "Piece",
     "items_per_box": "1",
     "style_tags": [
@@ -6103,7 +6103,7 @@
     "category": "NUEVOS",
     "subcategory": "NUEVOS",
     "collection": "NUEVOS",
-    "price": "$ 31.158",
+    "price": "Consultar precio",
     "unit": "Piece",
     "items_per_box": "1",
     "style_tags": [
@@ -6121,7 +6121,7 @@
     "category": "NUEVOS",
     "subcategory": "NUEVOS",
     "collection": "NUEVOS",
-    "price": "$ 31.158",
+    "price": "Consultar precio",
     "unit": "Piece",
     "items_per_box": "1",
     "style_tags": [
@@ -6139,7 +6139,7 @@
     "category": "NUEVOS",
     "subcategory": "NUEVOS",
     "collection": "NUEVOS",
-    "price": "$ 31.158",
+    "price": "Consultar precio",
     "unit": "Piece",
     "items_per_box": "1",
     "style_tags": [
@@ -6157,7 +6157,7 @@
     "category": "NUEVOS",
     "subcategory": "NUEVOS",
     "collection": "NUEVOS",
-    "price": "$ 31.158",
+    "price": "Consultar precio",
     "unit": "Piece",
     "items_per_box": "1",
     "style_tags": [
@@ -6175,7 +6175,7 @@
     "category": "NUEVOS",
     "subcategory": "NUEVOS",
     "collection": "NUEVOS",
-    "price": "$ 0.000",
+    "price": "Consultar precio",
     "unit": "Piece",
     "items_per_box": "1",
     "style_tags": [
@@ -6193,7 +6193,7 @@
     "category": "NUEVOS",
     "subcategory": "NUEVOS",
     "collection": "NUEVOS",
-    "price": "$ 2.571",
+    "price": "Consultar precio",
     "unit": "Piece",
     "items_per_box": "1",
     "style_tags": [
@@ -6211,7 +6211,7 @@
     "category": "NUEVOS",
     "subcategory": "NUEVOS",
     "collection": "NUEVOS",
-    "price": "$ 3.300",
+    "price": "$ 38.000",
     "unit": "Piece",
     "items_per_box": "1",
     "style_tags": [
@@ -6229,7 +6229,7 @@
     "category": "NUEVOS",
     "subcategory": "NUEVOS",
     "collection": "NUEVOS",
-    "price": "$ 4.228",
+    "price": "$ 38.000",
     "unit": "Piece",
     "items_per_box": "1",
     "style_tags": [
@@ -6247,7 +6247,7 @@
     "category": "NUEVOS",
     "subcategory": "NUEVOS",
     "collection": "NUEVOS",
-    "price": "$ 4.228",
+    "price": "Consultar precio",
     "unit": "Piece",
     "items_per_box": "1",
     "style_tags": [
@@ -6265,7 +6265,7 @@
     "category": "NUEVOS",
     "subcategory": "NUEVOS",
     "collection": "NUEVOS",
-    "price": "$ 4.228",
+    "price": "$ 38.000",
     "unit": "Piece",
     "items_per_box": "1",
     "style_tags": [
@@ -6283,7 +6283,7 @@
     "category": "NUEVOS",
     "subcategory": "NUEVOS",
     "collection": "NUEVOS",
-    "price": "$ 5.342",
+    "price": "$ 40.000",
     "unit": "Piece",
     "items_per_box": "1",
     "style_tags": [
@@ -6301,7 +6301,7 @@
     "category": "NUEVOS",
     "subcategory": "NUEVOS",
     "collection": "NUEVOS",
-    "price": "$ 5.341",
+    "price": "Consultar precio",
     "unit": "Piece",
     "items_per_box": "1",
     "style_tags": [
@@ -6319,7 +6319,7 @@
     "category": "NUEVOS",
     "subcategory": "NUEVOS",
     "collection": "NUEVOS",
-    "price": "$ 5.341",
+    "price": "$ 43.000",
     "unit": "Piece",
     "items_per_box": "1",
     "style_tags": [
@@ -6337,7 +6337,7 @@
     "category": "NUEVOS",
     "subcategory": "NUEVOS",
     "collection": "NUEVOS",
-    "price": "$ 5.341",
+    "price": "$ 43.000",
     "unit": "Piece",
     "items_per_box": "1",
     "style_tags": [
@@ -6355,7 +6355,7 @@
     "category": "NUEVOS",
     "subcategory": "NUEVOS",
     "collection": "NUEVOS",
-    "price": "$ 5.341",
+    "price": "$ 43.000",
     "unit": "Piece",
     "items_per_box": "1",
     "style_tags": [
@@ -6373,7 +6373,7 @@
     "category": "NUEVOS",
     "subcategory": "NUEVOS",
     "collection": "NUEVOS",
-    "price": "$ 7.302",
+    "price": "$ 53.000",
     "unit": "Piece",
     "items_per_box": "1",
     "style_tags": [
@@ -6391,7 +6391,7 @@
     "category": "NUEVOS",
     "subcategory": "NUEVOS",
     "collection": "NUEVOS",
-    "price": "$ 5.342",
+    "price": "$ 40.000",
     "unit": "Piece",
     "items_per_box": "1",
     "style_tags": [
@@ -6409,7 +6409,7 @@
     "category": "NUEVOS",
     "subcategory": "NUEVOS",
     "collection": "NUEVOS",
-    "price": "$ 5.342",
+    "price": "$ 40.000",
     "unit": "Piece",
     "items_per_box": "1",
     "style_tags": [
@@ -6427,7 +6427,7 @@
     "category": "NUEVOS",
     "subcategory": "NUEVOS",
     "collection": "NUEVOS",
-    "price": "$ 5.342",
+    "price": "$ 40.000",
     "unit": "Piece",
     "items_per_box": "1",
     "style_tags": [
@@ -6445,7 +6445,7 @@
     "category": "NUEVOS",
     "subcategory": "NUEVOS",
     "collection": "NUEVOS",
-    "price": "$ 4.267",
+    "price": "$ 38.000",
     "unit": "Piece",
     "items_per_box": "1",
     "style_tags": [
@@ -6463,7 +6463,7 @@
     "category": "NUEVOS",
     "subcategory": "NUEVOS",
     "collection": "NUEVOS",
-    "price": "$ 4.228",
+    "price": "$ 38.000",
     "unit": "Piece",
     "items_per_box": "1",
     "style_tags": [
@@ -6481,7 +6481,7 @@
     "category": "NUEVOS",
     "subcategory": "NUEVOS",
     "collection": "NUEVOS",
-    "price": "$ 7.302",
+    "price": "$ 53.000",
     "unit": "Piece",
     "items_per_box": "1",
     "style_tags": [
@@ -6499,7 +6499,7 @@
     "category": "NUEVOS",
     "subcategory": "NUEVOS",
     "collection": "NUEVOS",
-    "price": "$ 0.000",
+    "price": "Consultar precio",
     "unit": "Piece",
     "items_per_box": "1",
     "style_tags": [
@@ -6517,7 +6517,7 @@
     "category": "NUEVOS",
     "subcategory": "NUEVOS",
     "collection": "NUEVOS",
-    "price": "$ 2.571",
+    "price": "$ 20.000",
     "unit": "Piece",
     "items_per_box": "1",
     "style_tags": [
@@ -6535,7 +6535,7 @@
     "category": "NUEVOS",
     "subcategory": "NUEVOS",
     "collection": "NUEVOS",
-    "price": "$ 2.571",
+    "price": "$ 20.000",
     "unit": "Piece",
     "items_per_box": "1",
     "style_tags": [
@@ -6553,7 +6553,7 @@
     "category": "NUEVOS",
     "subcategory": "NUEVOS",
     "collection": "NUEVOS",
-    "price": "$ 2.571",
+    "price": "$ 20.000",
     "unit": "Piece",
     "items_per_box": "1",
     "style_tags": [
@@ -6571,7 +6571,7 @@
     "category": "NUEVOS",
     "subcategory": "NUEVOS",
     "collection": "NUEVOS",
-    "price": "$ 2.571",
+    "price": "$ 20.000",
     "unit": "Piece",
     "items_per_box": "1",
     "style_tags": [
@@ -6589,7 +6589,7 @@
     "category": "NUEVOS",
     "subcategory": "NUEVOS",
     "collection": "NUEVOS",
-    "price": "$ 2.571",
+    "price": "$ 20.000",
     "unit": "Piece",
     "items_per_box": "1",
     "style_tags": [
@@ -6607,7 +6607,7 @@
     "category": "NUEVOS",
     "subcategory": "NUEVOS",
     "collection": "NUEVOS",
-    "price": "$ 2.571",
+    "price": "$ 20.000",
     "unit": "Piece",
     "items_per_box": "1",
     "style_tags": [
@@ -6625,7 +6625,7 @@
     "category": "NUEVOS",
     "subcategory": "NUEVOS",
     "collection": "NUEVOS",
-    "price": "$ 2.571",
+    "price": "$ 20.000",
     "unit": "Piece",
     "items_per_box": "1",
     "style_tags": [
@@ -6643,7 +6643,7 @@
     "category": "NUEVOS",
     "subcategory": "NUEVOS",
     "collection": "NUEVOS",
-    "price": "$ 0.000",
+    "price": "Consultar precio",
     "unit": "Piece",
     "items_per_box": "1",
     "style_tags": [
@@ -6661,7 +6661,7 @@
     "category": "NUEVOS",
     "subcategory": "NUEVOS",
     "collection": "NUEVOS",
-    "price": "$ 6.083",
+    "price": "Consultar precio",
     "unit": "Piece",
     "items_per_box": "1",
     "style_tags": [
@@ -6679,7 +6679,7 @@
     "category": "NUEVOS",
     "subcategory": "NUEVOS",
     "collection": "NUEVOS",
-    "price": "$ 6.083",
+    "price": "$ 60.000",
     "unit": "Piece",
     "items_per_box": "1",
     "style_tags": [
@@ -6697,7 +6697,7 @@
     "category": "NUEVOS",
     "subcategory": "NUEVOS",
     "collection": "NUEVOS",
-    "price": "$ 6.083",
+    "price": "Consultar precio",
     "unit": "Piece",
     "items_per_box": "1",
     "style_tags": [
@@ -6715,7 +6715,7 @@
     "category": "NUEVOS",
     "subcategory": "NUEVOS",
     "collection": "NUEVOS",
-    "price": "$ 6.083",
+    "price": "$ 60.000",
     "unit": "Piece",
     "items_per_box": "1",
     "style_tags": [
@@ -6733,7 +6733,7 @@
     "category": "NUEVOS",
     "subcategory": "NUEVOS",
     "collection": "NUEVOS",
-    "price": "$ 6.083",
+    "price": "Consultar precio",
     "unit": "Piece",
     "items_per_box": "1",
     "style_tags": [
@@ -6751,7 +6751,7 @@
     "category": "NUEVOS",
     "subcategory": "NUEVOS",
     "collection": "NUEVOS",
-    "price": "$ 10.801",
+    "price": "$ 85.000",
     "unit": "Piece",
     "items_per_box": "1",
     "style_tags": [
@@ -6769,7 +6769,7 @@
     "category": "NUEVOS",
     "subcategory": "NUEVOS",
     "collection": "NUEVOS",
-    "price": "$ 10.801",
+    "price": "$ 85.000",
     "unit": "Piece",
     "items_per_box": "1",
     "style_tags": [
@@ -6787,7 +6787,7 @@
     "category": "NUEVOS",
     "subcategory": "NUEVOS",
     "collection": "NUEVOS",
-    "price": "$ 10.801",
+    "price": "$ 85.000",
     "unit": "Piece",
     "items_per_box": "1",
     "style_tags": [
@@ -6805,7 +6805,7 @@
     "category": "NUEVOS",
     "subcategory": "NUEVOS",
     "collection": "NUEVOS",
-    "price": "$ 10.801",
+    "price": "$ 85.000",
     "unit": "Piece",
     "items_per_box": "1",
     "style_tags": [
@@ -6823,7 +6823,7 @@
     "category": "NUEVOS",
     "subcategory": "NUEVOS",
     "collection": "NUEVOS",
-    "price": "$ 0.000",
+    "price": "Consultar precio",
     "unit": "Piece",
     "items_per_box": "1",
     "style_tags": [
@@ -6841,7 +6841,7 @@
     "category": "NUEVOS",
     "subcategory": "NUEVOS",
     "collection": "NUEVOS",
-    "price": "$ 9.927",
+    "price": "$ 78.000",
     "unit": "Piece",
     "items_per_box": "1",
     "style_tags": [
@@ -6859,7 +6859,7 @@
     "category": "NUEVOS",
     "subcategory": "NUEVOS",
     "collection": "NUEVOS",
-    "price": "$ 9.927",
+    "price": "$ 78.000",
     "unit": "Piece",
     "items_per_box": "1",
     "style_tags": [
@@ -6877,7 +6877,7 @@
     "category": "NUEVOS",
     "subcategory": "NUEVOS",
     "collection": "NUEVOS",
-    "price": "$ 6.414",
+    "price": "$ 78.000",
     "unit": "Piece",
     "items_per_box": "1",
     "style_tags": [
@@ -6895,7 +6895,7 @@
     "category": "NUEVOS",
     "subcategory": "NUEVOS",
     "collection": "NUEVOS",
-    "price": "$ 6.414",
+    "price": "$ 78.000",
     "unit": "Piece",
     "items_per_box": "1",
     "style_tags": [
@@ -6913,7 +6913,7 @@
     "category": "NUEVOS",
     "subcategory": "NUEVOS",
     "collection": "NUEVOS",
-    "price": "$ 6.414",
+    "price": "$ 78.000",
     "unit": "Piece",
     "items_per_box": "1",
     "style_tags": [
@@ -6931,7 +6931,7 @@
     "category": "NUEVOS",
     "subcategory": "NUEVOS",
     "collection": "NUEVOS",
-    "price": "$ 9.927",
+    "price": "$ 78.000",
     "unit": "Piece",
     "items_per_box": "1",
     "style_tags": [
@@ -6949,7 +6949,7 @@
     "category": "NUEVOS",
     "subcategory": "NUEVOS",
     "collection": "NUEVOS",
-    "price": "$ 9.927",
+    "price": "$ 78.000",
     "unit": "Piece",
     "items_per_box": "1",
     "style_tags": [
@@ -6967,7 +6967,7 @@
     "category": "NUEVOS",
     "subcategory": "NUEVOS",
     "collection": "NUEVOS",
-    "price": "$ 9.927",
+    "price": "$ 78.000",
     "unit": "Piece",
     "items_per_box": "1",
     "style_tags": [
@@ -6985,7 +6985,7 @@
     "category": "NUEVOS",
     "subcategory": "NUEVOS",
     "collection": "NUEVOS",
-    "price": "$ 0.000",
+    "price": "Consultar precio",
     "unit": "Piece",
     "items_per_box": "1",
     "style_tags": [
@@ -7003,7 +7003,7 @@
     "category": "NUEVOS",
     "subcategory": "NUEVOS",
     "collection": "NUEVOS",
-    "price": "$ 10.390",
+    "price": "$ 105.000",
     "unit": "Piece",
     "items_per_box": "1",
     "style_tags": [
@@ -7021,7 +7021,7 @@
     "category": "NUEVOS",
     "subcategory": "NUEVOS",
     "collection": "NUEVOS",
-    "price": "$ 10.390",
+    "price": "$ 105.000",
     "unit": "Piece",
     "items_per_box": "1",
     "style_tags": [
@@ -7039,7 +7039,7 @@
     "category": "NUEVOS",
     "subcategory": "NUEVOS",
     "collection": "NUEVOS",
-    "price": "$ 10.390",
+    "price": "$ 105.000",
     "unit": "Piece",
     "items_per_box": "1",
     "style_tags": [
@@ -7057,7 +7057,7 @@
     "category": "NUEVOS",
     "subcategory": "NUEVOS",
     "collection": "NUEVOS",
-    "price": "$ 10.390",
+    "price": "$ 105.000",
     "unit": "Piece",
     "items_per_box": "1",
     "style_tags": [
@@ -7075,7 +7075,7 @@
     "category": "NUEVOS",
     "subcategory": "NUEVOS",
     "collection": "NUEVOS",
-    "price": "$ 10.390",
+    "price": "$ 105.000",
     "unit": "Piece",
     "items_per_box": "1",
     "style_tags": [
@@ -7093,7 +7093,7 @@
     "category": "NUEVOS",
     "subcategory": "NUEVOS",
     "collection": "NUEVOS",
-    "price": "$ 10.390",
+    "price": "$ 105.000",
     "unit": "Piece",
     "items_per_box": "1",
     "style_tags": [
@@ -7111,7 +7111,7 @@
     "category": "NUEVOS",
     "subcategory": "NUEVOS",
     "collection": "NUEVOS",
-    "price": "$ 10.390",
+    "price": "$ 105.000",
     "unit": "Piece",
     "items_per_box": "1",
     "style_tags": [
@@ -7129,7 +7129,7 @@
     "category": "NUEVOS",
     "subcategory": "NUEVOS",
     "collection": "NUEVOS",
-    "price": "$ 10.390",
+    "price": "$ 105.000",
     "unit": "Piece",
     "items_per_box": "1",
     "style_tags": [
@@ -7147,7 +7147,7 @@
     "category": "NUEVOS",
     "subcategory": "NUEVOS",
     "collection": "NUEVOS",
-    "price": "$ 10.390",
+    "price": "$ 105.000",
     "unit": "Piece",
     "items_per_box": "1",
     "style_tags": [
@@ -7165,7 +7165,7 @@
     "category": "NUEVOS",
     "subcategory": "NUEVOS",
     "collection": "NUEVOS",
-    "price": "$ 10.390",
+    "price": "$ 105.000",
     "unit": "Piece",
     "items_per_box": "1",
     "style_tags": [
@@ -7183,7 +7183,7 @@
     "category": "NUEVOS",
     "subcategory": "NUEVOS",
     "collection": "NUEVOS",
-    "price": "$ 0.000",
+    "price": "Consultar precio",
     "unit": "Piece",
     "items_per_box": "1",
     "style_tags": [
@@ -7201,7 +7201,7 @@
     "category": "NUEVOS",
     "subcategory": "NUEVOS",
     "collection": "NUEVOS",
-    "price": "$ 5.275",
+    "price": "Consultar precio",
     "unit": "Piece",
     "items_per_box": "1",
     "style_tags": [
@@ -7219,7 +7219,7 @@
     "category": "NUEVOS",
     "subcategory": "NUEVOS",
     "collection": "NUEVOS",
-    "price": "$ 5.275",
+    "price": "Consultar precio",
     "unit": "Piece",
     "items_per_box": "1",
     "style_tags": [
@@ -7237,7 +7237,7 @@
     "category": "NUEVOS",
     "subcategory": "NUEVOS",
     "collection": "NUEVOS",
-    "price": "$ 5.275",
+    "price": "Consultar precio",
     "unit": "Piece",
     "items_per_box": "1",
     "style_tags": [
@@ -7255,7 +7255,7 @@
     "category": "NUEVOS",
     "subcategory": "NUEVOS",
     "collection": "NUEVOS",
-    "price": "$ 5.275",
+    "price": "Consultar precio",
     "unit": "Piece",
     "items_per_box": "1",
     "style_tags": [
@@ -7273,7 +7273,7 @@
     "category": "NUEVOS",
     "subcategory": "NUEVOS",
     "collection": "NUEVOS",
-    "price": "$ 0.000",
+    "price": "Consultar precio",
     "unit": "Piece",
     "items_per_box": "1",
     "style_tags": [
@@ -7291,7 +7291,7 @@
     "category": "NUEVOS",
     "subcategory": "NUEVOS",
     "collection": "NUEVOS",
-    "price": "$ 0.649",
+    "price": "$ 17.000",
     "unit": "Piece",
     "items_per_box": "1",
     "style_tags": [
@@ -7309,7 +7309,7 @@
     "category": "NUEVOS",
     "subcategory": "NUEVOS",
     "collection": "NUEVOS",
-    "price": "$ 0.888",
+    "price": "$ 17.000",
     "unit": "Piece",
     "items_per_box": "1",
     "style_tags": [
@@ -7327,7 +7327,7 @@
     "category": "NUEVOS",
     "subcategory": "NUEVOS",
     "collection": "NUEVOS",
-    "price": "$ 0.000",
+    "price": "Consultar precio",
     "unit": "Piece",
     "items_per_box": "1",
     "style_tags": [
@@ -7345,7 +7345,7 @@
     "category": "NUEVOS",
     "subcategory": "NUEVOS",
     "collection": "NUEVOS",
-    "price": "$ 0.000",
+    "price": "Consultar precio",
     "unit": "Piece",
     "items_per_box": "1",
     "style_tags": [
@@ -7363,7 +7363,7 @@
     "category": "NUEVOS",
     "subcategory": "NUEVOS",
     "collection": "NUEVOS",
-    "price": "$ 0.000",
+    "price": "Consultar precio",
     "unit": "Piece",
     "items_per_box": "1",
     "style_tags": [
@@ -7381,7 +7381,7 @@
     "category": "NUEVOS",
     "subcategory": "NUEVOS",
     "collection": "NUEVOS",
-    "price": "$ 0.000",
+    "price": "Consultar precio",
     "unit": "Piece",
     "items_per_box": "1",
     "style_tags": [
@@ -7399,7 +7399,7 @@
     "category": "NUEVOS",
     "subcategory": "NUEVOS",
     "collection": "NUEVOS",
-    "price": "$ 0.000",
+    "price": "Consultar precio",
     "unit": "Piece",
     "items_per_box": "1",
     "style_tags": [
@@ -7417,7 +7417,7 @@
     "category": "NUEVOS",
     "subcategory": "NUEVOS",
     "collection": "NUEVOS",
-    "price": "$ 0.000",
+    "price": "Consultar precio",
     "unit": "Piece",
     "items_per_box": "1",
     "style_tags": [
@@ -7435,7 +7435,7 @@
     "category": "NUEVOS",
     "subcategory": "NUEVOS",
     "collection": "NUEVOS",
-    "price": "$ 0.000",
+    "price": "Consultar precio",
     "unit": "Piece",
     "items_per_box": "1",
     "style_tags": [
@@ -7453,7 +7453,7 @@
     "category": "NUEVOS",
     "subcategory": "NUEVOS",
     "collection": "NUEVOS",
-    "price": "$ 0.000",
+    "price": "Consultar precio",
     "unit": "Piece",
     "items_per_box": "1",
     "style_tags": [
@@ -7471,7 +7471,7 @@
     "category": "NUEVOS",
     "subcategory": "NUEVOS",
     "collection": "NUEVOS",
-    "price": "$ 0.000",
+    "price": "Consultar precio",
     "unit": "Piece",
     "items_per_box": "1",
     "style_tags": [
@@ -7489,7 +7489,7 @@
     "category": "NUEVOS",
     "subcategory": "NUEVOS",
     "collection": "NUEVOS",
-    "price": "$ 0.000",
+    "price": "Consultar precio",
     "unit": "Piece",
     "items_per_box": "1",
     "style_tags": [
@@ -7507,7 +7507,7 @@
     "category": "NUEVOS",
     "subcategory": "NUEVOS",
     "collection": "NUEVOS",
-    "price": "$ 0.000",
+    "price": "Consultar precio",
     "unit": "Piece",
     "items_per_box": "1",
     "style_tags": [
@@ -7525,7 +7525,7 @@
     "category": "NUEVOS",
     "subcategory": "NUEVOS",
     "collection": "NUEVOS",
-    "price": "$ 0.000",
+    "price": "Consultar precio",
     "unit": "Piece",
     "items_per_box": "1",
     "style_tags": [
@@ -7543,7 +7543,7 @@
     "category": "NUEVOS",
     "subcategory": "NUEVOS",
     "collection": "NUEVOS",
-    "price": "$ 0.000",
+    "price": "Consultar precio",
     "unit": "Piece",
     "items_per_box": "1",
     "style_tags": [
@@ -7561,7 +7561,7 @@
     "category": "NUEVOS",
     "subcategory": "NUEVOS",
     "collection": "NUEVOS",
-    "price": "$ 0.000",
+    "price": "Consultar precio",
     "unit": "Piece",
     "items_per_box": "1",
     "style_tags": [
@@ -7579,7 +7579,7 @@
     "category": "NUEVOS",
     "subcategory": "NUEVOS",
     "collection": "NUEVOS",
-    "price": "$ 0.000",
+    "price": "Consultar precio",
     "unit": "Piece",
     "items_per_box": "1",
     "style_tags": [
@@ -7597,7 +7597,7 @@
     "category": "NUEVOS",
     "subcategory": "NUEVOS",
     "collection": "NUEVOS",
-    "price": "$ 0.000",
+    "price": "Consultar precio",
     "unit": "Piece",
     "items_per_box": "1",
     "style_tags": [
@@ -7615,7 +7615,7 @@
     "category": "NUEVOS",
     "subcategory": "NUEVOS",
     "collection": "NUEVOS",
-    "price": "$ 0.000",
+    "price": "Consultar precio",
     "unit": "Piece",
     "items_per_box": "1",
     "style_tags": [
@@ -7633,7 +7633,7 @@
     "category": "NUEVOS",
     "subcategory": "NUEVOS",
     "collection": "NUEVOS",
-    "price": "$ 0.000",
+    "price": "Consultar precio",
     "unit": "Piece",
     "items_per_box": "1",
     "style_tags": [
@@ -7651,7 +7651,7 @@
     "category": "NUEVOS",
     "subcategory": "NUEVOS",
     "collection": "NUEVOS",
-    "price": "$ 0.000",
+    "price": "Consultar precio",
     "unit": "Piece",
     "items_per_box": "1",
     "style_tags": [
@@ -7669,7 +7669,7 @@
     "category": "NUEVOS",
     "subcategory": "NUEVOS",
     "collection": "NUEVOS",
-    "price": "$ 0.000",
+    "price": "Consultar precio",
     "unit": "Piece",
     "items_per_box": "1",
     "style_tags": [
@@ -7687,7 +7687,7 @@
     "category": "NUEVOS",
     "subcategory": "NUEVOS",
     "collection": "NUEVOS",
-    "price": "$ 7.475",
+    "price": "$ 75.000",
     "unit": "Piece",
     "items_per_box": "1",
     "style_tags": [
@@ -7705,7 +7705,7 @@
     "category": "NUEVOS",
     "subcategory": "NUEVOS",
     "collection": "NUEVOS",
-    "price": "$ 7.475",
+    "price": "$ 75.000",
     "unit": "Piece",
     "items_per_box": "1",
     "style_tags": [
@@ -7723,7 +7723,7 @@
     "category": "NUEVOS",
     "subcategory": "NUEVOS",
     "collection": "NUEVOS",
-    "price": "$ 7.475",
+    "price": "Consultar precio",
     "unit": "Piece",
     "items_per_box": "1",
     "style_tags": [
@@ -7741,7 +7741,7 @@
     "category": "NUEVOS",
     "subcategory": "NUEVOS",
     "collection": "NUEVOS",
-    "price": "$ 8.243",
+    "price": "Consultar precio",
     "unit": "Piece",
     "items_per_box": "1",
     "style_tags": [
@@ -7759,7 +7759,7 @@
     "category": "NUEVOS",
     "subcategory": "NUEVOS",
     "collection": "NUEVOS",
-    "price": "$ 8.243",
+    "price": "Consultar precio",
     "unit": "Piece",
     "items_per_box": "1",
     "style_tags": [
@@ -7777,7 +7777,7 @@
     "category": "NUEVOS",
     "subcategory": "NUEVOS",
     "collection": "NUEVOS",
-    "price": "$ 8.813",
+    "price": "$ 75.000",
     "unit": "Piece",
     "items_per_box": "1",
     "style_tags": [
@@ -7795,7 +7795,7 @@
     "category": "NUEVOS",
     "subcategory": "NUEVOS",
     "collection": "NUEVOS",
-    "price": "$ 8.813",
+    "price": "$ 75.000",
     "unit": "Piece",
     "items_per_box": "1",
     "style_tags": [
@@ -7813,7 +7813,7 @@
     "category": "NUEVOS",
     "subcategory": "NUEVOS",
     "collection": "NUEVOS",
-    "price": "$ 2.651",
+    "price": "$ 30.000",
     "unit": "Piece",
     "items_per_box": "1",
     "style_tags": [
@@ -7831,7 +7831,7 @@
     "category": "NUEVOS",
     "subcategory": "NUEVOS",
     "collection": "NUEVOS",
-    "price": "$ 2.651",
+    "price": "$ 30.000",
     "unit": "Piece",
     "items_per_box": "1",
     "style_tags": [
@@ -7849,7 +7849,7 @@
     "category": "NUEVOS",
     "subcategory": "NUEVOS",
     "collection": "NUEVOS",
-    "price": "$ 2.651",
+    "price": "$ 30.000",
     "unit": "Piece",
     "items_per_box": "1",
     "style_tags": [
@@ -7867,7 +7867,7 @@
     "category": "NUEVOS",
     "subcategory": "NUEVOS",
     "collection": "NUEVOS",
-    "price": "$ 2.651",
+    "price": "$ 30.000",
     "unit": "Piece",
     "items_per_box": "1",
     "style_tags": [
@@ -7885,7 +7885,7 @@
     "category": "NUEVOS",
     "subcategory": "NUEVOS",
     "collection": "NUEVOS",
-    "price": "$ 2.651",
+    "price": "Consultar precio",
     "unit": "Piece",
     "items_per_box": "1",
     "style_tags": [
@@ -7903,7 +7903,7 @@
     "category": "NUEVOS",
     "subcategory": "NUEVOS",
     "collection": "NUEVOS",
-    "price": "$ 2.651",
+    "price": "Consultar precio",
     "unit": "Piece",
     "items_per_box": "1",
     "style_tags": [
@@ -7921,7 +7921,7 @@
     "category": "NUEVOS",
     "subcategory": "NUEVOS",
     "collection": "NUEVOS",
-    "price": "$ 1.140",
+    "price": "Consultar precio",
     "unit": "Piece",
     "items_per_box": "1",
     "style_tags": [
@@ -7939,7 +7939,7 @@
     "category": "NUEVOS",
     "subcategory": "NUEVOS",
     "collection": "NUEVOS",
-    "price": "$ 0.013",
+    "price": "$ 500",
     "unit": "Piece",
     "items_per_box": "1",
     "style_tags": [
@@ -7957,7 +7957,7 @@
     "category": "NUEVOS",
     "subcategory": "NUEVOS",
     "collection": "NUEVOS",
-    "price": "$ 0.000",
+    "price": "Consultar precio",
     "unit": "Piece",
     "items_per_box": "1",
     "style_tags": [
@@ -7975,7 +7975,7 @@
     "category": "NUEVOS",
     "subcategory": "NUEVOS",
     "collection": "NUEVOS",
-    "price": "$ 1.568",
+    "price": "$ 18.000",
     "unit": "Piece",
     "items_per_box": "1",
     "style_tags": [
@@ -7993,7 +7993,7 @@
     "category": "NUEVOS",
     "subcategory": "NUEVOS",
     "collection": "NUEVOS",
-    "price": "$ 1.568",
+    "price": "$ 18.000",
     "unit": "Piece",
     "items_per_box": "1",
     "style_tags": [
@@ -8011,7 +8011,7 @@
     "category": "NUEVOS",
     "subcategory": "NUEVOS",
     "collection": "NUEVOS",
-    "price": "$ 1.568",
+    "price": "$ 18.000",
     "unit": "Piece",
     "items_per_box": "1",
     "style_tags": [
@@ -8029,7 +8029,7 @@
     "category": "NUEVOS",
     "subcategory": "NUEVOS",
     "collection": "NUEVOS",
-    "price": "$ 2.193",
+    "price": "$ 20.500",
     "unit": "Piece",
     "items_per_box": "1",
     "style_tags": [
@@ -8047,7 +8047,7 @@
     "category": "NUEVOS",
     "subcategory": "NUEVOS",
     "collection": "NUEVOS",
-    "price": "$ 2.193",
+    "price": "$ 20.500",
     "unit": "Piece",
     "items_per_box": "1",
     "style_tags": [
@@ -8065,7 +8065,7 @@
     "category": "NUEVOS",
     "subcategory": "NUEVOS",
     "collection": "NUEVOS",
-    "price": "$ 2.193",
+    "price": "$ 20.500",
     "unit": "Piece",
     "items_per_box": "1",
     "style_tags": [
@@ -8083,7 +8083,7 @@
     "category": "NUEVOS",
     "subcategory": "NUEVOS",
     "collection": "NUEVOS",
-    "price": "$ 2.193",
+    "price": "Consultar precio",
     "unit": "Piece",
     "items_per_box": "1",
     "style_tags": [
@@ -8101,7 +8101,7 @@
     "category": "NUEVOS",
     "subcategory": "NUEVOS",
     "collection": "NUEVOS",
-    "price": "$ 0.000",
+    "price": "Consultar precio",
     "unit": "Piece",
     "items_per_box": "1",
     "style_tags": [
@@ -8119,7 +8119,7 @@
     "category": "NUEVOS",
     "subcategory": "NUEVOS",
     "collection": "NUEVOS",
-    "price": "$ 2.386",
+    "price": "$ 21.500",
     "unit": "Piece",
     "items_per_box": "1",
     "style_tags": [
@@ -8137,7 +8137,7 @@
     "category": "NUEVOS",
     "subcategory": "NUEVOS",
     "collection": "NUEVOS",
-    "price": "$ 2.386",
+    "price": "$ 21.500",
     "unit": "Piece",
     "items_per_box": "1",
     "style_tags": [
@@ -8155,7 +8155,7 @@
     "category": "NUEVOS",
     "subcategory": "NUEVOS",
     "collection": "NUEVOS",
-    "price": "$ 2.386",
+    "price": "$ 21.500",
     "unit": "Piece",
     "items_per_box": "1",
     "style_tags": [
@@ -8173,7 +8173,7 @@
     "category": "NUEVOS",
     "subcategory": "NUEVOS",
     "collection": "NUEVOS",
-    "price": "$ 1.816",
+    "price": "Consultar precio",
     "unit": "Piece",
     "items_per_box": "1",
     "style_tags": [
@@ -8191,7 +8191,7 @@
     "category": "NUEVOS",
     "subcategory": "NUEVOS",
     "collection": "NUEVOS",
-    "price": "$ 1.816",
+    "price": "Consultar precio",
     "unit": "Piece",
     "items_per_box": "1",
     "style_tags": [
@@ -8209,7 +8209,7 @@
     "category": "NUEVOS",
     "subcategory": "NUEVOS",
     "collection": "NUEVOS",
-    "price": "$ 1.816",
+    "price": "Consultar precio",
     "unit": "Piece",
     "items_per_box": "1",
     "style_tags": [
@@ -8227,7 +8227,7 @@
     "category": "NUEVOS",
     "subcategory": "NUEVOS",
     "collection": "NUEVOS",
-    "price": "$ 1.816",
+    "price": "Consultar precio",
     "unit": "Piece",
     "items_per_box": "1",
     "style_tags": [
@@ -8245,7 +8245,7 @@
     "category": "NUEVOS",
     "subcategory": "NUEVOS",
     "collection": "NUEVOS",
-    "price": "$ 0.000",
+    "price": "Consultar precio",
     "unit": "Piece",
     "items_per_box": "1",
     "style_tags": [
@@ -8263,7 +8263,7 @@
     "category": "NUEVOS",
     "subcategory": "NUEVOS",
     "collection": "NUEVOS",
-    "price": "$ 2.651",
+    "price": "Consultar precio",
     "unit": "Piece",
     "items_per_box": "1",
     "style_tags": [
@@ -8281,7 +8281,7 @@
     "category": "NUEVOS",
     "subcategory": "NUEVOS",
     "collection": "NUEVOS",
-    "price": "$ 2.651",
+    "price": "Consultar precio",
     "unit": "Piece",
     "items_per_box": "1",
     "style_tags": [
@@ -8299,7 +8299,7 @@
     "category": "NUEVOS",
     "subcategory": "NUEVOS",
     "collection": "NUEVOS",
-    "price": "$ 2.651",
+    "price": "Consultar precio",
     "unit": "Piece",
     "items_per_box": "1",
     "style_tags": [
