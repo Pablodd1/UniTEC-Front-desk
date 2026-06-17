@@ -1,5 +1,5 @@
-import React from 'react';
-import { Users, MessageSquare, Clock, Target, BarChart3, Phone } from 'lucide-react';
+import React, { useState } from 'react';
+import { Users, MessageSquare, Clock, BarChart3, Phone, XCircle, CheckCircle2 } from 'lucide-react';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, PieChart, Pie, Cell } from 'recharts';
 import { ConversationSession } from '../services/conversationService';
 
@@ -8,46 +8,49 @@ interface AnalyticsDashboardProps {
 }
 
 const AnalyticsDashboard: React.FC<AnalyticsDashboardProps> = ({ sessions }) => {
-  // Calculate metrics
-  const totalSessions = sessions.length;
-  const activeSessions = sessions.filter(s => s.status === 'active').length;
+  const [timeFilter, setTimeFilter] = useState<'all' | 'today' | 'week' | 'month'>('all');
 
   const now = new Date();
   const todayStart = new Date(now.getFullYear(), now.getMonth(), now.getDate()).getTime();
   const weekStart = todayStart - 7 * 24 * 60 * 60 * 1000;
+  const monthStart = new Date(now.getFullYear(), now.getMonth(), 1).getTime();
 
-  const dailySessions = sessions.filter(s => new Date(s.createdAt).getTime() >= todayStart).length;
-  const weeklySessions = sessions.filter(s => new Date(s.createdAt).getTime() >= weekStart).length;
+  // Apply time filter
+  const filteredSessions = sessions.filter(s => {
+    const sTime = new Date(s.createdAt).getTime();
+    if (timeFilter === 'today') return sTime >= todayStart;
+    if (timeFilter === 'week') return sTime >= weekStart;
+    if (timeFilter === 'month') return sTime >= monthStart;
+    return true;
+  });
 
-  const dailyMessages = sessions
-    .filter(s => new Date(s.createdAt).getTime() >= todayStart)
-    .reduce((acc, s) => acc + (s.analytics?.messageCount || s.messages?.length || 0), 0);
+  // Calculate metrics based on filtered sessions
+  const totalSessions = filteredSessions.length;
+  const activeSessions = filteredSessions.filter(s => s.status === 'active').length;
   
-  const weeklyMessages = sessions
-    .filter(s => new Date(s.createdAt).getTime() >= weekStart)
-    .reduce((acc, s) => acc + (s.analytics?.messageCount || s.messages?.length || 0), 0);
-  const humanRequested = sessions.filter(s => s.status === 'human_requested').length;
-  const humanAssigned = sessions.filter(s => s.status === 'human_assigned').length;
-  const completedSessions = sessions.filter(s => s.status === 'completed').length;
+  const humanRequested = filteredSessions.filter(s => s.status === 'human_requested').length;
+  const humanAssigned = filteredSessions.filter(s => s.status === 'human_assigned').length;
+  const completedSessions = filteredSessions.filter(s => s.status === 'completed').length;
+  const abandonedSessions = filteredSessions.filter(s => s.status === 'abandoned').length;
   
   const brandDistribution = {
-    unitec: sessions.filter(s => s.brandId === 'unitec').length,
-    building: sessions.filter(s => s.brandId === 'building').length,
+    unitec: filteredSessions.filter(s => s.brandId === 'unitec').length,
+    building: filteredSessions.filter(s => s.brandId === 'building').length,
   };
   
   const sourceDistribution = {
-    web: sessions.filter(s => s.source === 'web').length,
-    phone: sessions.filter(s => s.source === 'phone').length,
-    whatsapp: sessions.filter(s => s.source === 'whatsapp').length,
+    web: filteredSessions.filter(s => s.source === 'web').length,
+    phone: filteredSessions.filter(s => s.source === 'phone').length,
+    whatsapp: filteredSessions.filter(s => s.source === 'whatsapp').length,
   };
   
-  const intentDistribution = sessions.reduce((acc, s) => {
+  const intentDistribution = filteredSessions.reduce((acc, s) => {
     const intent = s.intentCategory || 'unknown';
     acc[intent] = (acc[intent] || 0) + 1;
     return acc;
   }, {} as Record<string, number>);
   
-  const hourlyDistribution = sessions.reduce((acc, s) => {
+  const hourlyDistribution = filteredSessions.reduce((acc, s) => {
     const hour = new Date(s.createdAt).getHours();
     acc[hour] = (acc[hour] || 0) + 1;
     return acc;
@@ -57,7 +60,7 @@ const AnalyticsDashboard: React.FC<AnalyticsDashboardProps> = ({ sessions }) => 
     .map(([hour, count]) => ({ hour: `${hour}:00`, count }))
     .sort((a, b) => parseInt(a.hour) - parseInt(b.hour));
   
-  const sentimentData = sessions.reduce((acc, s) => {
+  const sentimentData = filteredSessions.reduce((acc, s) => {
     const score = s.sentimentScore || 0;
     if (score > 0.3) acc.positive++;
     else if (score < -0.3) acc.negative++;
@@ -68,7 +71,7 @@ const AnalyticsDashboard: React.FC<AnalyticsDashboardProps> = ({ sessions }) => 
   // Unused but defined for future color customization
   void ['#2563eb', '#16a34a', '#ea580c', '#8b5cf6', '#ec4899'];
   
-  const topTopics = sessions.reduce((acc: Record<string, number>, s) => {
+  const topTopics = filteredSessions.reduce((acc: Record<string, number>, s) => {
     s.topics?.forEach((topic: string) => {
       acc[topic] = (acc[topic] || 0) + 1;
     });
@@ -81,80 +84,85 @@ const AnalyticsDashboard: React.FC<AnalyticsDashboardProps> = ({ sessions }) => 
 
   return (
     <div className="h-full overflow-y-auto p-6 space-y-6">
-      {/* Overview Cards */}
-      {/* Daily and Weekly Entries */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-        <div className="bg-white p-4 rounded-2xl border border-slate-200">
-          <div className="flex items-center justify-between mb-2">
-            <span className="text-xs font-bold text-slate-400 uppercase tracking-wider">Daily Sessions</span>
-            <Target size={16} className="text-brand-600" />
-          </div>
-          <p className="text-2xl font-black text-slate-800">{dailySessions}</p>
-        </div>
-        <div className="bg-white p-4 rounded-2xl border border-slate-200">
-          <div className="flex items-center justify-between mb-2">
-            <span className="text-xs font-bold text-slate-400 uppercase tracking-wider">Weekly Sessions</span>
-            <Target size={16} className="text-brand-600" />
-          </div>
-          <p className="text-2xl font-black text-slate-800">{weeklySessions}</p>
-        </div>
-        <div className="bg-white p-4 rounded-2xl border border-slate-200">
-          <div className="flex items-center justify-between mb-2">
-            <span className="text-xs font-bold text-slate-400 uppercase tracking-wider">Daily Messages</span>
-            <MessageSquare size={16} className="text-green-600" />
-          </div>
-          <p className="text-2xl font-black text-slate-800">{dailyMessages}</p>
-        </div>
-        <div className="bg-white p-4 rounded-2xl border border-slate-200">
-          <div className="flex items-center justify-between mb-2">
-            <span className="text-xs font-bold text-slate-400 uppercase tracking-wider">Weekly Messages</span>
-            <MessageSquare size={16} className="text-green-600" />
-          </div>
-          <p className="text-2xl font-black text-slate-800">{weeklyMessages}</p>
+      {/* Header and Filter */}
+      <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
+        <h2 className="text-xl font-bold text-slate-800">Analytics Overview</h2>
+        <div className="flex items-center gap-2 bg-white rounded-lg border border-slate-200 p-1">
+          <button 
+            onClick={() => setTimeFilter('all')}
+            className={`px-3 py-1.5 text-sm font-medium rounded-md transition-colors ${timeFilter === 'all' ? 'bg-brand-50 text-brand-700' : 'text-slate-600 hover:text-slate-800'}`}
+          >
+            Todos
+          </button>
+          <button 
+            onClick={() => setTimeFilter('month')}
+            className={`px-3 py-1.5 text-sm font-medium rounded-md transition-colors ${timeFilter === 'month' ? 'bg-brand-50 text-brand-700' : 'text-slate-600 hover:text-slate-800'}`}
+          >
+            Mes
+          </button>
+          <button 
+            onClick={() => setTimeFilter('week')}
+            className={`px-3 py-1.5 text-sm font-medium rounded-md transition-colors ${timeFilter === 'week' ? 'bg-brand-50 text-brand-700' : 'text-slate-600 hover:text-slate-800'}`}
+          >
+            Semana
+          </button>
+          <button 
+            onClick={() => setTimeFilter('today')}
+            className={`px-3 py-1.5 text-sm font-medium rounded-md transition-colors ${timeFilter === 'today' ? 'bg-brand-50 text-brand-700' : 'text-slate-600 hover:text-slate-800'}`}
+          >
+            Hoy
+          </button>
         </div>
       </div>
 
+      {/* Overview Cards */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
         <div className="bg-white p-4 rounded-2xl border border-slate-200">
           <div className="flex items-center justify-between mb-2">
-            <span className="text-xs font-bold text-slate-400 uppercase tracking-wider">Total Conversations</span>
+            <span className="text-xs font-bold text-slate-400 uppercase tracking-wider">Total Registros</span>
             <MessageSquare size={16} className="text-brand-600" />
           </div>
           <p className="text-2xl font-black text-slate-800">{totalSessions}</p>
-          <p className="text-xs text-slate-400 mt-1">{activeSessions} active now</p>
+          <p className="text-xs text-slate-400 mt-1">{activeSessions} activos ahora</p>
         </div>
         
         <div className="bg-white p-4 rounded-2xl border border-slate-200">
           <div className="flex items-center justify-between mb-2">
-            <span className="text-xs font-bold text-slate-400 uppercase tracking-wider">Human Interventions</span>
+            <span className="text-xs font-bold text-slate-400 uppercase tracking-wider">Finalizados (Éxito)</span>
+            <CheckCircle2 size={16} className="text-green-600" />
+          </div>
+          <p className="text-2xl font-black text-slate-800">{completedSessions}</p>
+          <p className="text-xs text-slate-400 mt-1">Con respuesta exitosa</p>
+        </div>
+
+        <div className="bg-white p-4 rounded-2xl border border-slate-200">
+          <div className="flex items-center justify-between mb-2">
+            <span className="text-xs font-bold text-slate-400 uppercase tracking-wider">Abandonados</span>
+            <XCircle size={16} className="text-red-600" />
+          </div>
+          <p className="text-2xl font-black text-slate-800">{abandonedSessions}</p>
+          <p className="text-xs text-slate-400 mt-1">Por falta de respuesta</p>
+        </div>
+
+        <div className="bg-white p-4 rounded-2xl border border-slate-200">
+          <div className="flex items-center justify-between mb-2">
+            <span className="text-xs font-bold text-slate-400 uppercase tracking-wider">Intervención Humana</span>
             <Users size={16} className="text-orange-600" />
           </div>
           <p className="text-2xl font-black text-slate-800">{humanRequested + humanAssigned}</p>
-          <p className="text-xs text-slate-400 mt-1">{humanRequested} pending</p>
+          <p className="text-xs text-slate-400 mt-1">{humanRequested} pendientes</p>
         </div>
-        
         <div className="bg-white p-4 rounded-2xl border border-slate-200">
           <div className="flex items-center justify-between mb-2">
-            <span className="text-xs font-bold text-slate-400 uppercase tracking-wider">Completed</span>
-            <Target size={16} className="text-green-600" />
-          </div>
-          <p className="text-2xl font-black text-slate-800">{completedSessions}</p>
-          <p className="text-xs text-slate-400 mt-1">
-            {totalSessions > 0 ? ((completedSessions / totalSessions) * 100).toFixed(1) : 0}% completion rate
-          </p>
-        </div>
-        
-        <div className="bg-white p-4 rounded-2xl border border-slate-200">
-          <div className="flex items-center justify-between mb-2">
-            <span className="text-xs font-bold text-slate-400 uppercase tracking-wider">Avg Duration</span>
+            <span className="text-xs font-bold text-slate-400 uppercase tracking-wider">Duración Promedio</span>
             <Clock size={16} className="text-blue-600" />
           </div>
           <p className="text-2xl font-black text-slate-800">
-            {sessions.length > 0
-              ? (sessions.reduce((acc, s) => acc + (s.duration || 0), 0) / sessions.length / 60).toFixed(1)
+            {filteredSessions.length > 0
+              ? (filteredSessions.reduce((acc, s) => acc + (s.duration || 0), 0) / filteredSessions.length / 60).toFixed(1)
               : 0}m
           </p>
-          <p className="text-xs text-slate-400 mt-1">Per conversation</p>
+          <p className="text-xs text-slate-400 mt-1">Por conversación</p>
         </div>
       </div>
 

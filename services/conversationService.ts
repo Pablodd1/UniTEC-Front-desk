@@ -1,4 +1,4 @@
-﻿import { getPrivacyMode } from './firestoreService';
+import { getPrivacyMode } from './firestoreService';
 import { db } from '../firebase';
 import { collection, doc, setDoc, getDocs, getDoc, query, orderBy, onSnapshot, updateDoc, where, increment, limit } from 'firebase/firestore';
 
@@ -198,6 +198,24 @@ export const updateSessionStatus = async (
     update.assignedTo = assignedTo;
   }
   
+  // Calculate duration if session is ending
+  if (status === 'completed' || status === 'abandoned') {
+    try {
+      const sessionRef = doc(db, COLLECTIONS.sessions, sessionId);
+      const sessionSnap = await getDoc(sessionRef);
+      if (sessionSnap.exists()) {
+        const sessionData = sessionSnap.data() as ConversationSession;
+        if (sessionData.createdAt && !sessionData.duration) {
+          const startTime = new Date(sessionData.createdAt).getTime();
+          const endTime = Date.now();
+          update.duration = Math.floor((endTime - startTime) / 1000);
+        }
+      }
+    } catch (e) {
+      console.error('Error calculating duration:', e);
+    }
+  }
+  
   await updateDoc(doc(db, COLLECTIONS.sessions, sessionId), update);
 };
 
@@ -382,10 +400,16 @@ export const extractCustomerData = async (
     return; // Don't save customer data
   }
   
-  await updateDoc(doc(db, COLLECTIONS.sessions, sessionId), {
+  const update: any = {
     extractedData: data,
     lastUpdated: new Date().toISOString(),
-  });
+  };
+  
+  if (data?.name) update.customerName = data.name;
+  if (data?.email) update.customerEmail = data.email;
+  if (data?.phone) update.customerPhone = data.phone;
+  
+  await updateDoc(doc(db, COLLECTIONS.sessions, sessionId), update);
 };
 
 // Update conversation analytics

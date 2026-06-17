@@ -91,9 +91,17 @@ export default async function handler(req, res) {
     return res.status(503).json({ error: 'All configured API keys are suspended or invalid.' });
   }
 
+  const groqKeys = [
+    process.env.GROQ_API_KEY,
+    process.env.VITE_GROQ_API_KEY
+  ].filter(Boolean);
+
+  const groqApiKey = groqKeys[0] || '';
+
   // Return masked key identifier (last 4 chars) for auditing
   return res.status(200).json({
     apiKey: validKey,
     keyHint: validKey.slice(-4),
+    groqApiKey: groqApiKey,
   });
 }

@@ -39,8 +39,43 @@ export async function getApiKey(): Promise<string> {
   return buildTimeKey;
 }
 
-/** Reset cached API key so next call re-fetches fresh key from server */
-export const resetApiKeyCache = (): void => { cachedApiKey = null; };
+let cachedGroqApiKey: string | null = null;
+export async function getGroqApiKey(): Promise<string> {
+  if (cachedGroqApiKey) return cachedGroqApiKey;
+  
+  const localKey = typeof window !== 'undefined' ? window.localStorage.getItem('unitec_groq_api_key') : null;
+  if (localKey) {
+    cachedGroqApiKey = localKey;
+    return localKey;
+  }
+  
+  try {
+    const res = await fetch('/api/gemini-key');
+    if (res.ok) {
+      const data = await res.json();
+      if (data.groqApiKey) {
+        cachedGroqApiKey = data.groqApiKey;
+      }
+      if (data.apiKey) {
+        cachedApiKey = data.apiKey;
+      }
+      if (cachedGroqApiKey) return cachedGroqApiKey;
+    }
+  } catch (e) {
+    console.error("Failed to fetch Groq API key from server:", e);
+  }
+  
+  const buildTimeKey = (typeof process !== 'undefined' && process.env)
+    ? (process.env.GROQ_API_KEY || process.env.VITE_GROQ_API_KEY || '')
+    : '';
+  return buildTimeKey;
+}
+
+/** Reset cached API keys so next call re-fetches fresh keys from server */
+export const resetApiKeyCache = (): void => { 
+  cachedApiKey = null; 
+  cachedGroqApiKey = null;
+};
 
 // Helper for stateless reset
 export const resetChatSession = () => {
@@ -180,6 +215,90 @@ async function executeTool(name: string, args: any): Promise<any> {
 }
 
 
+export async function* sendMessageToGroq(
+  message: string,
+  history: any[] = [],
+  instructions: string,
+  _language: Language = 'es'
+): AsyncGenerator<any, void, unknown> {
+  const groqApiKey = await getGroqApiKey();
+  if (!groqApiKey) {
+    throw new Error('Groq API key is not configured');
+  }
+
+  const groqMessages = [
+    { role: 'system', content: instructions },
+    ...history.map(h => ({
+      role: h.role === 'model' ? 'assistant' : 'user',
+      content: h.parts?.[0]?.text || ''
+    }))
+  ];
+  
+  if (message) {
+    groqMessages.push({ role: 'user', content: message });
+  }
+
+  const response = await fetch('https://api.groq.com/openai/v1/chat/completions', {
+    method: 'POST',
+    headers: {
+      'Authorization': `Bearer ${groqApiKey}`,
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify({
+      model: 'llama-3.3-70b-versatile',
+      messages: groqMessages,
+      stream: true
+    })
+  });
+
+  if (!response.ok) {
+    const errorBody = await response.text().catch(() => '');
+    throw new Error(`Groq API error (${response.status}): ${errorBody || response.statusText}`);
+  }
+
+  const reader = response.body?.getReader();
+  const decoder = new TextDecoder('utf-8');
+  if (!reader) throw new Error('Failed to get stream reader from Groq');
+
+  let buffer = '';
+  try {
+    while (true) {
+      const { done, value } = await reader.read();
+      if (done) break;
+      buffer += decoder.decode(value, { stream: true });
+      const lines = buffer.split('\n');
+      buffer = lines.pop() || '';
+
+      for (const line of lines) {
+        const trimmed = line.trim();
+        if (!trimmed) continue;
+        if (trimmed.startsWith('data: ')) {
+          const dataStr = trimmed.slice(6);
+          if (dataStr === '[DONE]') continue;
+          try {
+            const json = JSON.parse(dataStr);
+            const chunkText = json.choices?.[0]?.delta?.content || '';
+            if (chunkText) {
+              yield {
+                text: chunkText,
+                candidates: [{
+                  content: {
+                    parts: [{ text: chunkText }]
+                  }
+                }]
+              };
+            }
+          } catch (e) {
+            // Ignore parse errors on partial trailing lines
+          }
+        }
+      }
+    }
+  } finally {
+    reader.releaseLock();
+  }
+}
+
 export async function* sendMessageToGemini(
   message: string,
   history: any[] = [],
@@ -198,6 +317,7 @@ export async function* sendMessageToGemini(
 
   // --- Retry with exponential backoff (3 attempts) ---
   let responseStream;
+  let lastError = null;
   for (let _attempt = 1; _attempt <= 3; _attempt++) {
     try {
       responseStream = await ai.models.generateContentStream({
@@ -210,13 +330,29 @@ export async function* sendMessageToGemini(
       });
       break; // success
     } catch (_err: any) {
+      lastError = _err;
       const _isAuth = _err?.status === 401 || _err?.status === 403;
       if (_isAuth) cachedApiKey = null; // Force re-fetch on next call
-      if (_err?.status === 400 || _attempt === 3) throw _err;
+      if (_err?.status === 400 || _attempt === 3) {
+        break; // break loop to enter fallback
+      }
       await new Promise(r => setTimeout(r, _attempt * 1200));
     }
   }
-  if (!responseStream) throw new Error('No se pudo conectar. Intenta de nuevo.');
+
+  if (!responseStream) {
+    console.warn("Gemini stream failed. Attempting silent fallback to Groq Llama 3.3-70b...");
+    try {
+      const groqStream = sendMessageToGroq(message, history, instructions, language);
+      for await (const chunk of groqStream) {
+        yield chunk;
+      }
+      return; // Fallback succeeded, end generator
+    } catch (groqErr) {
+      console.error("Groq fallback also failed:", groqErr);
+      throw lastError || groqErr; // throw original Gemini error if Groq also fails
+    }
+  }
 
   let toolCallPart: any = null;
 

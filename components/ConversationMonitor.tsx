@@ -159,6 +159,17 @@ const ConversationMonitor: React.FC<ConversationMonitorProps> = ({
   useEffect(() => {
     if (!selectedSessionId || !selectedSession) return;
     
+    if (selectedSession.status === 'completed' || selectedSession.status === 'abandoned') {
+      if (selectedSession.duration) {
+        setConversationTimer(selectedSession.duration);
+      } else {
+        const startTime = new Date(selectedSession.createdAt).getTime();
+        const endTime = new Date(selectedSession.lastUpdated).getTime();
+        setConversationTimer(Math.floor((endTime - startTime) / 1000));
+      }
+      return;
+    }
+    
     timerInterval.current = setInterval(() => {
       const startTime = new Date(selectedSession.createdAt).getTime();
       const now = Date.now();

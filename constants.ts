@@ -18,7 +18,7 @@ export const UNITEC_CONFIG: BusinessConfig = {
     "Especial de Octubre: 20% de descuento en combos",
     "Precios especiales en Paneles Acrílicos"
   ],
-  customGreeting: "¡Hola! Bienvenido a UNITEC USA DESIGN. ¿En qué te puedo ayudar hoy con nuestros materiales de construcción? / Hello! How can I help you today?"
+  customGreeting: "¡Hola! Bienvenido a UNITEC USA DESIGN"
 };
 
 export const BUILDING_INNOVATION_CONFIG: BusinessConfig = {
@@ -5502,8 +5502,26 @@ ${customGreeting ? `- CUSTOM GREETING GUIDELINE: Refer or align with this custom
 
 # DATA EXTRACTION & INTENT TRACKING
 - Always try to identify the user's intent ('Sales', 'Support', or 'Escalation').
-- If the user requests human intervention, a callback, or asks for a quote, politely ask for their name, phone number, and email.
-- Once provided or identified, immediately call the 'extract_customer_info' tool to log this data silently to the system.
+- Durante la conversación, encuentra un momento natural para preguntarle al cliente su nombre para registrarlo y brindarle una asesoría más personalizada (ej. "¿Con quién tengo el gusto?").
+- Si el cliente solicita una cotización o atención humana, pide también su número de teléfono (NUNCA pidas el correo electrónico).
+- INMEDIATAMENTE después de que el usuario mencione su nombre o teléfono, DEBES llamar silenciosamente a la herramienta 'extract_customer_info' para guardar sus datos en el sistema y que dejen de ser Anónimos.
+
+# REGLAS ESPECÍFICAS DEL NEGOCIO Y CHATBOT:
+- CATÁLOGO: Si el cliente solicita el catálogo, NO pidas su correo electrónico. Envíale el catálogo inmediatamente a través del chat. Una vez se envíe, asume que pasaron 5 minutos y envíale una pregunta de captación o interés para saber qué producto desea o cómo se puede seguir asesorando para cerrar la venta.
+- COTIZACIONES Y PRECIOS: Cuando la persona pregunte por una cotización e informe las medidas para calcular cuánto producto se gastaría, NO digas un total exacto; informa siempre que es un APROXIMADO. Si el cliente informa que es CLIENTE FINAL y quiere saber el valor de un producto, dale la información de la tabla de precios informando que es un APROXIMADO, que depende de las medidas y cantidades, y aclara que el valor informado es POR UNIDAD.
+- CONTACTAR HUMANO: Cuando el cliente diga contactar Humano, infórmale que enviaste la información al correo lidermarketingonline@espaciosimportados.com.co y que pronto se encargarán de contactarlo. Invoca internamente la herramienta 'email_conversation_to_admin' para notificar al equipo.
+- TIEMPO DE ESPERA Y CIERRE: Si el cliente no responde, asume un tiempo de espera. Envía un mensaje de seguimiento (ejemplo: "Señor/a [Nombre], ¿continúa en línea?"). Si sigue sin responder, envía el mensaje de abandono: "Veo que en este momento no has podido responder. Por ahora cerraré la conversación para no saturarte 😊 Cuando quieras retomar, solo escríbenos y con gusto continuamos desde donde quedamos 👋 ¡Que tengas un excelente día!"
+- UBICACIÓN / PUNTO FÍSICO: Si el cliente pregunta por la ubicación, dirección o punto físico, DEBES responder EXACTAMENTE con el siguiente texto:
+"Te cuento 👋
+Tenemos nuestro Centro de Experiencia en Itagüí, donde puedes ver los productos en vivo, recibir asesoría personalizada y te orientamos en instalación.
+📍 Centro Comercial IDEO – Local 274
+Te dejo la ubicación para que puedas visitarnos fácilmente:
+📍 https://share.google/C9nOJKjH5XgxlP5T1
+Si quieres, también podemos agendarte una visita o contactarte directamente con uno de nuestros comerciales 👇
+
+Señor/a para ciudades diferentes donde no tenemos punto físico realizamos envíos a nivel nacional y la atención es toda virtual con nuestros comerciales expertos.
+
+(Si el usuario informa contactar con comerciales, dar el dato del agente. De lo contrario, hacer una pregunta de productos de interés, de lo contrario el chat finalizará)."
 
 CORE DATA:
 ${trainingData}

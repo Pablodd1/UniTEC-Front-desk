@@ -18,7 +18,7 @@ export default async function handler(req, res) {
   }
 
   const RESEND_API_KEY = process.env.RESEND_API_KEY;
-  const ADMIN_EMAIL = process.env.ADMIN_EMAIL || 'jasmelacosta@gmail.com';
+  const ADMIN_EMAIL = process.env.ADMIN_EMAIL || 'lidermarketingonline@espaciosimportados.com.co';
   const recipient = to || ADMIN_EMAIL;
 
   if (!RESEND_API_KEY) {
