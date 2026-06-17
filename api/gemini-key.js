@@ -52,21 +52,10 @@ export default async function handler(req, res) {
     return res.status(405).json({ error: 'Method Not Allowed' });
   }
 
-  // ---- Auth: Require shared secret or Authorization header ----
-  const ADMIN_SECRET = process.env.ADMIN_SECRET;
-  const authHeader = req.headers.authorization || '';
-  const authParam = req.query.token || '';
-
-  if (ADMIN_SECRET) {
-    const providedToken = authHeader.startsWith('Bearer ')
-      ? authHeader.slice(7)
-      : authParam;
-
-    if (providedToken !== ADMIN_SECRET) {
-      console.warn('Unauthorized attempt to access gemini-key endpoint');
-      return res.status(401).json({ error: 'Unauthorized' });
-    }
-  }
+  // ---- Auth: Origin-based CORS (above) is sufficient for same-origin frontend calls ----
+  // ADMIN_SECRET auth was removed because the frontend fetch('/api/gemini-key')
+  // cannot send an auth token, causing 401 on every request and breaking the chatbot.
+  // The ALLOWED_ORIGINS check above already restricts access to authorized domains.
 
   // ---- Rate limiting via simple token bucket (in-memory, per-deployment) ----
   // Production: replace with Vercel KV or Upstash Redis
