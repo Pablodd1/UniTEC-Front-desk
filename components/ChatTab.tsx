@@ -346,21 +346,23 @@ const ChatTab: React.FC<ChatTabProps> = ({ quickActions, initialMessage, emergen
         } catch (error: any) {
       console.error("Chat error:", error);
       
-      const isConfigError = error.message?.includes("API_KEY_MISSING") || (!process.env.GEMINI_API_KEY && !process.env.API_KEY);
+      const isConfigError = error.message?.includes('API_KEY_MISSING') || error.message?.includes('API key not valid');
       
       if (isConfigError) {
         setError(language === 'en' ? "Configuration Error: API Key is missing." : "Error de Configuración: Falta la API Key.");
       } else {
         const isLocalKeyUsed = typeof window !== 'undefined' && !!window.localStorage.getItem('unitec_gemini_api_key');
-        const errorDetail = error.message || String(error);
+        // Log detailed error for diagnostics (never shown to customer)
+        console.error('Gemini API error detail:', error.message || String(error));
+        
+        // Friendly message for customers — no raw technical details
         let errorText = language === 'en'
-          ? `⚠️ Connection error (${errorDetail}). Please check your internet or API key and try again.`
-          : `⚠️ Error de conexión (${errorDetail}). Por favor, revisa tu internet o la clave de API e inténtalo de nuevo.`;
+          ? '⚠️ Oops! I had a temporary connection hiccup. Please send your message again — I\'m ready to help!'
+          : '⚠️ Ups, tuve un problema de conexión momentáneo. Por favor, envía tu mensaje de nuevo — ¡estoy aquí para ayudarte!';
         
         if (isLocalKeyUsed) {
-          errorText += language === 'en'
-            ? "\n\n*(Note: You have a local API key saved in this browser via the Admin Panel. If this key is invalid or expired, please clear or update it in Admin Settings.)*"
-            : "\n\n*(Nota: Tienes una clave de API local guardada en este navegador a través del Panel de Administración. Si esta clave es inválida o expiró, por favor bórrala o actualízala en los ajustes del Administrador.)*";
+          // Only admins see the API key hint, hidden in console
+          console.warn('Admin note: A local API key override is active in this browser. If errors persist, check Admin Settings.');
         }
 
         // Show inline warning in chat history, but do not set global error to keep the input enabled for retry

@@ -32,10 +32,15 @@ export async function getApiKey(): Promise<string> {
     console.error("Failed to fetch API key from server:", e);
   }
   
-  // 3. Fall back to build-time environment variable
-  const buildTimeKey = process.env.GEMINI_API_KEY || process.env.API_KEY || "";
+  // 3. Fall back to build-time environment variable (safely, browser has no process.env)
+  const buildTimeKey = (typeof process !== 'undefined' && process.env)
+    ? (process.env.GEMINI_API_KEY || process.env.API_KEY || '')
+    : '';
   return buildTimeKey;
 }
+
+/** Reset cached API key so next call re-fetches fresh key from server */
+export const resetApiKeyCache = (): void => { cachedApiKey = null; };
 
 // Helper for stateless reset
 export const resetChatSession = () => {
@@ -191,14 +196,27 @@ export async function* sendMessageToGemini(
     instructions += "\n\n[SYSTEM OVERRIDE: EMERGENCY MODE ACTIVE]. Respond concisely. Prioritize safety protocols immediately.";
   }
 
-  const responseStream = await ai.models.generateContentStream({
-    model: 'gemini-2.5-flash',
-    contents: [...history, { role: 'user', parts: [{ text: message }] }],
-    config: {
-      systemInstruction: instructions,
-      tools: [{ functionDeclarations: TOOLS }],
-    },
-  });
+  // --- Retry with exponential backoff (3 attempts) ---
+  let responseStream;
+  for (let _attempt = 1; _attempt <= 3; _attempt++) {
+    try {
+      responseStream = await ai.models.generateContentStream({
+        model: 'gemini-2.5-flash',
+        contents: [...history, { role: 'user', parts: [{ text: message }] }],
+        config: {
+          systemInstruction: instructions,
+          tools: [{ functionDeclarations: TOOLS }],
+        },
+      });
+      break; // success
+    } catch (_err: any) {
+      const _isAuth = _err?.status === 401 || _err?.status === 403;
+      if (_isAuth) cachedApiKey = null; // Force re-fetch on next call
+      if (_err?.status === 400 || _attempt === 3) throw _err;
+      await new Promise(r => setTimeout(r, _attempt * 1200));
+    }
+  }
+  if (!responseStream) throw new Error('No se pudo conectar. Intenta de nuevo.');
 
   let toolCallPart: any = null;
 
@@ -486,9 +504,9 @@ export async function generateConversationSummary(
 
     const brandName = brandId === 'unitec' ? 'UNITEC Design' : 'Building Innovation';
 
-    const prompt = `Analiza esta conversación de atención al cliente de ${brandName} y devuelve un JSON con el siguiente formato exacto:
+    const prompt = `Analiza esta conversaciï¿½n de atenciï¿½n al cliente de ${brandName} y devuelve un JSON con el siguiente formato exacto:
 {
-  "summary": "Resumen ejecutivo de la conversación en 2-3 oraciones. Incluye: qué quería el cliente, cómo respondió el asistente, resultado final.",
+  "summary": "Resumen ejecutivo de la conversaciï¿½n en 2-3 oraciones. Incluye: quï¿½ querï¿½a el cliente, cï¿½mo respondiï¿½ el asistente, resultado final.",
   "qaPairs": [
     {
       "question": "Pregunta exacta o parafraseada que hizo el cliente",
@@ -498,15 +516,15 @@ export async function generateConversationSummary(
   ]
 }
 
-CONVERSACIÓN:
+CONVERSACIï¿½N:
 ${transcript}
 
 INSTRUCCIONES:
 - Devuelve SOLO el JSON, sin explicaciones adicionales.
 - Extrae todas las preguntas y respuestas importantes.
 - Si el cliente no obtuvo respuesta satisfactoria, incluye igualmente el par con la respuesta real del asistente.
-- El resumen debe ser en español.
-- Máximo 10 pares de Q&A.`;
+- El resumen debe ser en espaï¿½ol.
+- Mï¿½ximo 10 pares de Q&A.`;
 
     const response = await ai.models.generateContent({
       model: 'gemini-2.5-flash',
