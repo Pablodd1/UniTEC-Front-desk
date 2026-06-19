@@ -27,6 +27,7 @@ const App: React.FC = () => {
   
   const [emergencyMode, setEmergencyMode] = useState(false);
   const [language, setLanguage] = useState<Language>('es');
+  const [showAdminTab, setShowAdminTab] = useState(false);
   
   const [currentBrandId, setCurrentBrandId] = useState<'unitec' | 'building'>(() => {
     const brand = new URLSearchParams(window.location.search).get('brandId');
@@ -56,10 +57,33 @@ const App: React.FC = () => {
   }, [emergencyMode, language, currentBrandId]);
 
   useEffect(() => {
+    const checkAdminMode = () => {
+      const hash = window.location.hash;
+      const search = window.location.search;
+      const hasAdminParam = search.includes('admin=true') || hash === '#admin';
+      const hasStoredAdmin = localStorage.getItem('unitec_show_admin') === 'true';
+      
+      if (hasAdminParam || hasStoredAdmin) {
+        setShowAdminTab(true);
+        if (hasAdminParam) {
+          localStorage.setItem('unitec_show_admin', 'true');
+        }
+        if (hash === '#admin') {
+          setActiveTab(Tab.ADMIN_SETTINGS);
+        }
+      }
+    };
+    
+    checkAdminMode();
+    window.addEventListener('hashchange', checkAdminMode);
+    return () => window.removeEventListener('hashchange', checkAdminMode);
+  }, []);
+
+  useEffect(() => {
     const isUnitec = currentBrandId === 'unitec';
     document.documentElement.lang = 'es';
     document.title = isUnitec
-      ? 'UNITEC USA Design | Recepcionista Virtual IA | Distribución Mayorista'
+      ? 'UNITEC USA Design | Recepcionista Virtual IA | Distribuciï¿½n Mayorista'
       : 'Building Innovation | Asistente Virtual IA | Miami, Florida';
 
     let metaDesc = document.querySelector<HTMLMetaElement>('meta[name="description"]');
@@ -69,8 +93,8 @@ const App: React.FC = () => {
       document.head.appendChild(metaDesc);
     }
     metaDesc.content = isUnitec
-      ? 'Recepcionista virtual IA para distribución mayorista de materiales de construcción. Consulta catálogo, stock en Florida y cotizaciones al instante.'
-      : 'Asistente virtual IA de Building Innovation. Consulta productos, stock en Miami y conecta con ventas. Atención inmediata 24/7.';
+      ? 'Recepcionista virtual IA para distribuciï¿½n mayorista de materiales de construcciï¿½n. Consulta catï¿½logo, stock en Florida y cotizaciones al instante.'
+      : 'Asistente virtual IA de Building Innovation. Consulta productos, stock en Miami y conecta con ventas. Atenciï¿½n inmediata 24/7.';
 
     const setOg = (property: string, val: string) => {
       let el = document.querySelector<HTMLMetaElement>(`meta[property="${property}"]`);
@@ -79,8 +103,8 @@ const App: React.FC = () => {
     };
     setOg('og:title', isUnitec ? 'UNITEC USA Design | Asistente Virtual IA' : 'Building Innovation | Asistente Virtual IA');
     setOg('og:description', isUnitec
-      ? 'Consulta catálogo, stock y cotizaciones en tiempo real. Distribuidor mayorista de materiales de construcción premium.'
-      : 'Paneles WPC, pisos SPC, fachadas y más. Consulta disponibilidad y cotiza ahora mismo.');
+      ? 'Consulta catï¿½logo, stock y cotizaciones en tiempo real. Distribuidor mayorista de materiales de construcciï¿½n premium.'
+      : 'Paneles WPC, pisos SPC, fachadas y mï¿½s. Consulta disponibilidad y cotiza ahora mismo.');
     setOg('og:locale', 'es_ES');
 
     const unitecSvg = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64"><rect width="64" height="64" rx="14" fill="#0c4a6e"/><text x="32" y="46" font-family="Arial,sans-serif" font-weight="900" font-size="38" fill="white" text-anchor="middle">U</text></svg>';
@@ -108,6 +132,9 @@ const App: React.FC = () => {
 
   const handleLogout = async () => {
     sessionStorage.removeItem('unitec_local_admin');
+    localStorage.removeItem('unitec_show_admin');
+    setShowAdminTab(false);
+    setActiveTab(Tab.CHAT);
     await logOut();
     setIsLoggedIn(false);
   };
@@ -147,7 +174,7 @@ const App: React.FC = () => {
             onConsultProduct={(productName) => {
               const initMsg = language === 'en' 
                 ? "I would like to know more about " + productName 
-                : "Me gustaría saber más sobre " + productName;
+                : "Me gustarï¿½a saber mï¿½s sobre " + productName;
               window.history.pushState({}, '', '?initialMessage=' + encodeURIComponent(initMsg));
               setActiveTab(Tab.CHAT);
             }}
@@ -216,6 +243,7 @@ const App: React.FC = () => {
           onToggleBrand={undefined}
           cart={cart}
           onOpenCart={() => setIsCartOpen(true)}
+          showAdminTab={showAdminTab}
         >
           {renderContent()}
         </Layout>
@@ -246,6 +274,7 @@ const App: React.FC = () => {
         onToggleBrand={setCurrentBrandId}
         cart={cart}
         onOpenCart={() => setIsCartOpen(true)}
+        showAdminTab={showAdminTab}
       >
         {renderContent()}
       </Layout>

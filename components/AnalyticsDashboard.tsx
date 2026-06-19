@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Users, MessageSquare, Clock, BarChart3, Phone, XCircle, CheckCircle2 } from 'lucide-react';
+import { Users, MessageSquare, Clock, BarChart3, Phone, XCircle } from 'lucide-react';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, PieChart, Pie, Cell } from 'recharts';
 import { ConversationSession } from '../services/conversationService';
 
@@ -26,12 +26,15 @@ const AnalyticsDashboard: React.FC<AnalyticsDashboardProps> = ({ sessions }) => 
 
   // Calculate metrics based on filtered sessions
   const totalSessions = filteredSessions.length;
-  const activeSessions = filteredSessions.filter(s => s.status === 'active').length;
-  
+
   const humanRequested = filteredSessions.filter(s => s.status === 'human_requested').length;
   const humanAssigned = filteredSessions.filter(s => s.status === 'human_assigned').length;
-  const completedSessions = filteredSessions.filter(s => s.status === 'completed').length;
-  const abandonedSessions = filteredSessions.filter(s => s.status === 'abandoned').length;
+
+  const startedChatSessions = filteredSessions.filter(s => (s.analytics?.messageCount || 0) > 0).length;
+  const noChatSessions = filteredSessions.filter(s => (s.analytics?.messageCount || 0) === 0).length;
+  const conversionRate = totalSessions > 0 
+    ? ((startedChatSessions / totalSessions) * 100).toFixed(1) 
+    : '0.0';
   
   const brandDistribution = {
     unitec: filteredSessions.filter(s => s.brandId === 'unitec').length,
@@ -86,7 +89,13 @@ const AnalyticsDashboard: React.FC<AnalyticsDashboardProps> = ({ sessions }) => 
     <div className="h-full overflow-y-auto p-6 space-y-6">
       {/* Header and Filter */}
       <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
-        <h2 className="text-xl font-bold text-slate-800">Analytics Overview</h2>
+        <div className="flex items-center gap-3">
+            <h2 className="text-xl font-bold text-slate-800">Analytics Overview</h2>
+            <span className="flex items-center gap-1.5 text-xs font-semibold text-emerald-600 bg-emerald-50 border border-emerald-200 px-2 py-1 rounded-full">
+              <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse inline-block" />
+              LIVE
+            </span>
+          </div>
         <div className="flex items-center gap-2 bg-white rounded-lg border border-slate-200 p-1">
           <button 
             onClick={() => setTimeFilter('all')}
@@ -116,32 +125,41 @@ const AnalyticsDashboard: React.FC<AnalyticsDashboardProps> = ({ sessions }) => 
       </div>
 
       {/* Overview Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 gap-4">
         <div className="bg-white p-4 rounded-2xl border border-slate-200">
           <div className="flex items-center justify-between mb-2">
-            <span className="text-xs font-bold text-slate-400 uppercase tracking-wider">Total Registros</span>
-            <MessageSquare size={16} className="text-brand-600" />
+            <span className="text-xs font-bold text-slate-400 uppercase tracking-wider">Entradas Totales</span>
+            <Users size={16} className="text-brand-600" />
           </div>
           <p className="text-2xl font-black text-slate-800">{totalSessions}</p>
-          <p className="text-xs text-slate-400 mt-1">{activeSessions} activos ahora</p>
+          <p className="text-xs text-slate-400 mt-1">Visitas únicas al widget</p>
         </div>
         
         <div className="bg-white p-4 rounded-2xl border border-slate-200">
           <div className="flex items-center justify-between mb-2">
-            <span className="text-xs font-bold text-slate-400 uppercase tracking-wider">Finalizados (Éxito)</span>
-            <CheckCircle2 size={16} className="text-green-600" />
+            <span className="text-xs font-bold text-slate-400 uppercase tracking-wider">Iniciaron Chat</span>
+            <MessageSquare size={16} className="text-blue-600" />
           </div>
-          <p className="text-2xl font-black text-slate-800">{completedSessions}</p>
-          <p className="text-xs text-slate-400 mt-1">Con respuesta exitosa</p>
+          <p className="text-2xl font-black text-slate-800">{startedChatSessions}</p>
+          <p className="text-xs text-slate-400 mt-1">Usuarios que escribieron</p>
         </div>
 
         <div className="bg-white p-4 rounded-2xl border border-slate-200">
           <div className="flex items-center justify-between mb-2">
-            <span className="text-xs font-bold text-slate-400 uppercase tracking-wider">Abandonados</span>
-            <XCircle size={16} className="text-red-600" />
+            <span className="text-xs font-bold text-slate-400 uppercase tracking-wider">Sin Chatear</span>
+            <XCircle size={16} className="text-slate-500" />
           </div>
-          <p className="text-2xl font-black text-slate-800">{abandonedSessions}</p>
-          <p className="text-xs text-slate-400 mt-1">Por falta de respuesta</p>
+          <p className="text-2xl font-black text-slate-800">{noChatSessions}</p>
+          <p className="text-xs text-slate-400 mt-1">Solo leyeron bienvenida</p>
+        </div>
+
+        <div className="bg-white p-4 rounded-2xl border border-slate-200">
+          <div className="flex items-center justify-between mb-2">
+            <span className="text-xs font-bold text-slate-400 uppercase tracking-wider">Tasa Conversión</span>
+            <BarChart3 size={16} className="text-purple-600" />
+          </div>
+          <p className="text-2xl font-black text-slate-800">{conversionRate}%</p>
+          <p className="text-xs text-slate-400 mt-1">Conversión de visita a chat</p>
         </div>
 
         <div className="bg-white p-4 rounded-2xl border border-slate-200">
@@ -150,12 +168,13 @@ const AnalyticsDashboard: React.FC<AnalyticsDashboardProps> = ({ sessions }) => 
             <Users size={16} className="text-orange-600" />
           </div>
           <p className="text-2xl font-black text-slate-800">{humanRequested + humanAssigned}</p>
-          <p className="text-xs text-slate-400 mt-1">{humanRequested} pendientes</p>
+          <p className="text-xs text-slate-400 mt-1">{humanRequested} pendientes de staff</p>
         </div>
+
         <div className="bg-white p-4 rounded-2xl border border-slate-200">
           <div className="flex items-center justify-between mb-2">
             <span className="text-xs font-bold text-slate-400 uppercase tracking-wider">Duración Promedio</span>
-            <Clock size={16} className="text-blue-600" />
+            <Clock size={16} className="text-cyan-600" />
           </div>
           <p className="text-2xl font-black text-slate-800">
             {filteredSessions.length > 0
@@ -167,7 +186,7 @@ const AnalyticsDashboard: React.FC<AnalyticsDashboardProps> = ({ sessions }) => 
       </div>
 
       {/* Charts Row */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         <div className="bg-white p-6 rounded-2xl border border-slate-200">
           <h3 className="font-bold text-slate-800 mb-4">Hourly Activity</h3>
           <div className="h-64">
@@ -215,6 +234,42 @@ const AnalyticsDashboard: React.FC<AnalyticsDashboardProps> = ({ sessions }) => 
             <div className="flex items-center gap-2">
               <div className="w-3 h-3 rounded-full bg-[#16a34a]" />
               <span className="text-xs text-slate-600">Building Innovation ({brandDistribution.building})</span>
+            </div>
+          </div>
+        </div>
+
+        <div className="bg-white p-6 rounded-2xl border border-slate-200">
+          <h3 className="font-bold text-slate-800 mb-4">Conversion Distribution</h3>
+          <div className="h-64">
+            <ResponsiveContainer width="100%" height="100%">
+              <PieChart>
+                <Pie
+                  data={[
+                    { name: 'Iniciaron Chat', value: startedChatSessions },
+                    { name: 'Sin Chatear', value: noChatSessions },
+                  ]}
+                  cx="50%"
+                  cy="50%"
+                  innerRadius={60}
+                  outerRadius={80}
+                  paddingAngle={5}
+                  dataKey="value"
+                >
+                  <Cell fill="#3b82f6" />
+                  <Cell fill="#64748b" />
+                </Pie>
+                <Tooltip />
+              </PieChart>
+            </ResponsiveContainer>
+          </div>
+          <div className="flex justify-center gap-4 mt-2">
+            <div className="flex items-center gap-2">
+              <div className="w-3 h-3 rounded-full bg-[#3b82f6]" />
+              <span className="text-xs text-slate-600">Chat ({startedChatSessions})</span>
+            </div>
+            <div className="flex items-center gap-2">
+              <div className="w-3 h-3 rounded-full bg-[#64748b]" />
+              <span className="text-xs text-slate-600">Sin Chatear ({noChatSessions})</span>
             </div>
           </div>
         </div>
@@ -344,3 +399,5 @@ const AnalyticsDashboard: React.FC<AnalyticsDashboardProps> = ({ sessions }) => 
 };
 
 export default AnalyticsDashboard;
+
+

@@ -1,11 +1,13 @@
 
 import React, { useState, useRef, useEffect } from 'react';
+import { db } from '../firebase';
+import { doc, getDoc } from 'firebase/firestore';
 import { Message, QuickAction, Language } from '../types';
 import { saveChatSession } from '../services/firestoreService';
 import { sendMessageToGemini } from '../services/geminiService';
 import { createConversation, addMessage, requestIntervention, extractCustomerData, updateSessionStatus, subscribeToConversation, subscribeToMessages } from '../services/conversationService';
 import { notifyStaffIntervention } from '../services/notificationService';
-import { Send, Bot, User, Box, DollarSign, Hammer, BookOpen, CheckCircle2, Truck, FileText, RefreshCcw, Percent, Headphones, CreditCard, Lock } from 'lucide-react';
+import { Send, Bot, User, Box, DollarSign, Hammer, BookOpen, CheckCircle2, Truck, FileText, RefreshCcw, Percent, Headphones, CreditCard, Lock, MessageSquare } from 'lucide-react';
 import { GenerateContentResponse } from '@google/genai';
 import { UI_TRANSLATIONS } from '../constants';
 import Markdown from 'react-markdown';
@@ -25,6 +27,21 @@ const ChatTab: React.FC<ChatTabProps> = ({ quickActions, initialMessage, emergen
   const t = UI_TRANSLATIONS[language];
   
   const [messages, setMessages] = useState<Message[]>(() => {
+    if (typeof window !== 'undefined') {
+      try {
+        const historyKey = `unitec_chat_history_${brandId || 'unitec'}`;
+        const saved = localStorage.getItem(historyKey);
+        if (saved) {
+          const parsed = JSON.parse(saved);
+          if (parsed && parsed.length > 0) {
+            return parsed.map((m: any) => ({ ...m, timestamp: new Date(m.timestamp) }));
+          }
+        }
+      } catch (e) {
+        console.error("Failed to load chat history from localStorage", e);
+      }
+    }
+    
     const welcomeText = initialMessage 
       ? (brandId === 'unitec' ? "¡Hola! Bienvenido a UNITEC USA DESIGN" : "¡Hola! Bienvenido a Building Innovation")
       : (customGreeting || t.chatWelcome);
@@ -37,6 +54,18 @@ const ChatTab: React.FC<ChatTabProps> = ({ quickActions, initialMessage, emergen
       }
     ];
   });
+
+  // Save messages to localStorage for refresh resiliency
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      try {
+        const historyKey = `unitec_chat_history_${brandId || 'unitec'}`;
+        localStorage.setItem(historyKey, JSON.stringify(messages));
+      } catch (e) {
+        console.error("Failed to save chat history to localStorage", e);
+      }
+    }
+  }, [messages, brandId]);
   const [inputText, setInputText] = useState('');
 
   const [showPaymentSimulation, setShowPaymentSimulation] = useState(false);
@@ -65,14 +94,7 @@ const ChatTab: React.FC<ChatTabProps> = ({ quickActions, initialMessage, emergen
   const [isRequestingIntervention, setIsRequestingIntervention] = useState(false);
 
 
-  // Mark session completed on unmount
-  useEffect(() => {
-    return () => {
-      if (conversationId) {
-        updateSessionStatus(conversationId, 'completed').catch(() => {});
-      }
-    };
-  }, [conversationId]);
+  // Session is maintained continuously across mounts unless explicitly resolved by admin
 
   useEffect(() => {
     const handleHashChange = () => {
@@ -100,6 +122,30 @@ const ChatTab: React.FC<ChatTabProps> = ({ quickActions, initialMessage, emergen
   useEffect(() => {
     const initConversation = async () => {
       try {
+        const storageKey = `unitec_chat_conversation_id_${brandId || 'unitec'}`;
+        const historyKey = `unitec_chat_history_${brandId || 'unitec'}`;
+        const savedId = typeof window !== 'undefined' ? localStorage.getItem(storageKey) : null;
+        
+        if (savedId) {
+          try {
+            // Verify if the session still exists in Firestore (has not been erased/deleted by admin)
+            const sessionRef = doc(db, 'conversations', savedId);
+            const sessionSnap = await getDoc(sessionRef);
+            if (sessionSnap.exists()) {
+              setConversationId(savedId);
+              return;
+            }
+          } catch (err) {
+            console.warn('Failed to verify existing session in Firestore:', err);
+          }
+          
+          // If it doesn't exist, it was deleted/erased by admin, so clear local state
+          if (typeof window !== 'undefined') {
+            localStorage.removeItem(storageKey);
+            localStorage.removeItem(historyKey);
+          }
+        }
+
         const id = await createConversation(
           brandId || 'unitec',
           language,
@@ -107,6 +153,9 @@ const ChatTab: React.FC<ChatTabProps> = ({ quickActions, initialMessage, emergen
           { userAgent: navigator.userAgent, ipAddress: 'unknown' }
         );
         setConversationId(id);
+        if (typeof window !== 'undefined') {
+          localStorage.setItem(storageKey, id);
+        }
       } catch (e) {
         console.warn('Failed to create conversation session:', e);
       }
@@ -114,29 +163,32 @@ const ChatTab: React.FC<ChatTabProps> = ({ quickActions, initialMessage, emergen
     initConversation();
   }, [brandId, language]);
 
-    // ===== NEW: Save messages to Conversation Tracking =====
-  useEffect(() => {
-    if (!conversationId || messages.length <= 1) return;
-    
-    const lastMessage = messages[messages.length - 1];
-    
-    // Throttle the streaming updates by only saving when isLoading is false, 
-    // EXCEPT for user messages which we save immediately.
-    if (isLoading && lastMessage.role === 'model') return;
+  // ===== FULL MEMORY: Save ALL messages to Firestore, never skip any =====
+  // Track which message IDs have already been successfully saved to avoid duplicates
+  const savedMessageIds = useRef<Set<string>>(new Set());
 
-    if (lastMessage.role === 'user') {
+  useEffect(() => {
+    if (!conversationId || messages.length === 0) return;
+    // During streaming, the model message is incomplete � wait until done
+    if (isLoading) return;
+
+    // Save every message that hasn't been saved yet
+    messages.forEach((msg) => {
+      if (savedMessageIds.current.has(msg.id)) return; // Already saved
+      if (!msg.text || msg.text.trim() === '') return;   // Skip empty
+
+      savedMessageIds.current.add(msg.id);
       addMessage(conversationId, {
-        id: lastMessage.id,
-        role: 'user',
-        text: lastMessage.text,
-      }).catch((e: any) => console.warn('Failed to save user message:', e));
-    } else if (lastMessage.role === 'model' && lastMessage.text) {
-      addMessage(conversationId, {
-        id: lastMessage.id,
-        role: 'model',
-        text: lastMessage.text,
-      }).catch((e: any) => console.warn('Failed to save model message:', e));
-    }
+        id: msg.id,
+        role: msg.role as 'user' | 'model',
+        text: msg.text,
+        timestamp: msg.timestamp instanceof Date ? msg.timestamp.toISOString() : new Date(msg.timestamp).toISOString(),
+      }).catch((e: any) => {
+        // Remove from set so it retries next render
+        savedMessageIds.current.delete(msg.id);
+        console.warn('Failed to save message to Firestore, will retry:', e);
+      });
+    });
   }, [messages, conversationId, isLoading]);
   // ===== Handle Session Status & Staff Intervention Messages =====
   useEffect(() => {
@@ -154,9 +206,9 @@ const ChatTab: React.FC<ChatTabProps> = ({ quickActions, initialMessage, emergen
       const staffMsgs = remoteMessages.filter((m: any) => m.role === "staff" || m.isStaff);
       if (staffMsgs.length > 0) {
         setMessages(prev => {
-          const existingTexts = new Set(prev.map(m => m.text));
+          const existingIds = new Set(prev.map(m => m.id));
           const newMsgs = staffMsgs
-            .filter((m: any) => !existingTexts.has(m.text) && !existingTexts.has(`[Staff] ${m.text}`))
+            .filter((m: any) => !existingIds.has(m.id))
             .map((m: any) => ({
               id: m.id || Date.now().toString(),
               role: "model" as const,
@@ -314,6 +366,22 @@ const ChatTab: React.FC<ChatTabProps> = ({ quickActions, initialMessage, emergen
 
     setMessages(prev => [...prev, userMsg]);
     setInputText('');
+
+    if (sessionStatus === 'human_assigned') {
+      try {
+        if (conversationId) {
+          await addMessage(conversationId, {
+            id: userMsg.id,
+            role: 'user',
+            text: userMsg.text,
+          });
+        }
+      } catch (e) {
+        console.warn('Failed to save user message during takeover:', e);
+      }
+      return;
+    }
+
     setIsLoading(true);
 
     try {
@@ -667,23 +735,78 @@ const ChatTab: React.FC<ChatTabProps> = ({ quickActions, initialMessage, emergen
       {/* Messages Area */}
       <div 
         ref={scrollContainerRef}
-        className="flex-1 overflow-y-auto p-4 space-y-6 no-scrollbar relative scroll-smooth"
+        className={`flex-1 overflow-y-auto p-4 space-y-6 no-scrollbar relative scroll-smooth ${
+          brandId === 'building' ? 'bg-[#efeae2]' : ''
+        }`}
+        style={brandId === 'building' ? {
+          backgroundImage: `url("https://user-images.githubusercontent.com/15075759/28719144-86dc0f70-73b1-11e7-911d-60d70fcded21.png")`,
+          backgroundSize: 'contain',
+          backgroundBlendMode: 'overlay',
+          backgroundColor: '#efeae2'
+        } : undefined}
       >
-        {/* Welcome Hero Image */}
-        <div className="mb-8 rounded-3xl overflow-hidden shadow-lg border border-slate-100">
-            <img 
-                src={bgImage || "https://picsum.photos/seed/garden-decoration/800/400"} 
-                alt="Welcome" 
-                className="w-full h-40 object-cover"
-                referrerPolicy="no-referrer"
-            />
-            <div className="p-4 bg-white">
-                <p className="text-[10px] font-black text-brand-500 uppercase tracking-widest mb-1">{t.welcomeToSupport}</p>
-                <p className="text-xs text-slate-500 leading-relaxed">
-                    {t.howCanWeAssist}
-                </p>
+        {brandId === 'building' ? (
+          <div className="mb-8 bg-white/95 rounded-3xl p-6 shadow-md border border-slate-200/60 max-w-md mx-auto text-left relative overflow-hidden backdrop-blur-md">
+            {/* Header/Banner decorative WhatsApp top bar */}
+            <div className="absolute top-0 left-0 right-0 h-2 bg-[#128c7e]" />
+            <div className="flex items-center gap-3.5 mb-4 mt-2">
+              <div className="w-12 h-12 rounded-full bg-[#efeae2] flex items-center justify-center border border-slate-200">
+                <svg className="w-7 h-7 text-[#25d366] fill-current" viewBox="0 0 24 24">
+                  <path d="M12.012 2.25c-5.38 0-9.75 4.37-9.75 9.75 0 1.72.45 3.33 1.24 4.74L2.25 21.75l5.16-1.35a9.69 9.69 0 0 0 4.6 1.15c5.38 0 9.75-4.37 9.75-9.75s-4.37-9.75-9.75-9.75zm0 17.65c-1.59 0-3.14-.42-4.51-1.22l-.32-.19-3.08.81.82-3.01-.21-.33a7.86 7.86 0 0 1-1.2-4.21c0-4.33 3.52-7.85 7.85-7.85s7.85 3.52 7.85 7.85-3.52 7.85-7.85 7.85zM15.97 13.9c-.21-.11-1.24-.61-1.43-.68-.19-.07-.33-.11-.47.1-.14.21-.55.69-.67.83-.12.14-.24.16-.45.05a5.69 5.69 0 0 1-1.68-1.04 6.27 6.27 0 0 1-1.16-1.44c-.12-.21-.01-.33.09-.44.1-.1.21-.24.31-.36.1-.12.14-.2.21-.34.07-.14.03-.26 0-.36-.03-.1-.33-.8-.45-1.09-.12-.28-.24-.24-.33-.24h-.29c-.1 0-.27.04-.41.19a3.13 3.13 0 0 0-.98 2.33c0 1.37.99 2.69 1.13 2.87.14.19 1.95 2.98 4.73 4.17.66.28 1.17.45 1.57.58.66.21 1.27.18 1.75.11.53-.08 1.63-.67 1.86-1.31.23-.64.23-1.19.16-1.3-.07-.11-.26-.17-.47-.28z"/>
+                </svg>
+              </div>
+              <div>
+                <h3 className="text-[17px] font-black text-slate-800 leading-tight">Asistente Building Innovation</h3>
+                <p className="text-xs font-semibold text-emerald-600 uppercase tracking-wider mt-0.5">Fácil de usar / En línea</p>
+              </div>
             </div>
-        </div>
+            
+            <p className="text-[13.5px] text-slate-600 leading-relaxed mb-4">
+              <strong>¡Hola! Bienvenido.</strong> Hemos diseñado este chat para que sea tan fácil y familiar como usar <strong>WhatsApp</strong>. No necesitas saber tecnología para usarlo:
+            </p>
+            
+            <div className="space-y-3 bg-[#f0f9ff]/70 border border-blue-100 rounded-2xl p-4 mb-4">
+              <div className="flex gap-3">
+                <span className="text-[15px] shrink-0">💬</span>
+                <p className="text-xs text-slate-600 leading-normal">
+                  <strong>Escribe o Presiona:</strong> Puedes escribir tu mensaje en la parte inferior o simplemente presionar uno de los botones de opciones rápidas.
+                </p>
+              </div>
+              <div className="flex gap-3">
+                <span className="text-[15px] shrink-0">⚡</span>
+                <p className="text-xs text-slate-600 leading-normal">
+                  <strong>Respuesta Instantánea:</strong> Nuestro asistente inteligente te responderá de inmediato sobre productos, stock y cotizaciones.
+                </p>
+              </div>
+              <div className="flex gap-3">
+                <span className="text-[15px] shrink-0">👤</span>
+                <p className="text-xs text-slate-600 leading-normal">
+                  <strong>Atención Humana:</strong> Si necesitas ayuda adicional, un asesor de nuestro equipo podrá continuar la conversación.
+                </p>
+              </div>
+            </div>
+
+            <div className="text-center pt-2">
+              <span className="text-[11px] font-bold text-slate-400 uppercase tracking-wider">👇 Toca un botón de abajo o escribe un mensaje para comenzar</span>
+            </div>
+          </div>
+        ) : (
+          /* Welcome Hero Image */
+          <div className="mb-8 rounded-3xl overflow-hidden shadow-lg border border-slate-100">
+              <img 
+                  src={bgImage || "https://picsum.photos/seed/garden-decoration/800/400"} 
+                  alt="Welcome" 
+                  className="w-full h-40 object-cover"
+                  referrerPolicy="no-referrer"
+              />
+              <div className="p-4 bg-white">
+                  <p className="text-[10px] font-black text-brand-500 uppercase tracking-widest mb-1">{t.welcomeToSupport}</p>
+                  <p className="text-xs text-slate-500 leading-relaxed">
+                      {t.howCanWeAssist}
+                  </p>
+              </div>
+          </div>
+        )}
 
         {messages
           .filter((msg, idx) => !(msg.role === 'model' && !msg.text && isLoading && idx === messages.length - 1))
@@ -694,15 +817,17 @@ const ChatTab: React.FC<ChatTabProps> = ({ quickActions, initialMessage, emergen
             >
               <div className={`flex max-w-[85%] ${msg.role === 'user' ? 'flex-row-reverse' : 'flex-row'} items-end gap-2`}>
                 <div className={`w-8 h-8 rounded-full flex items-center justify-center shrink-0 shadow-sm ${
-                  msg.role === 'user' ? 'bg-brand-500 text-white' : 'bg-brand-900 text-accent-500'
+                  msg.role === 'user' 
+                    ? (brandId === 'building' ? 'bg-[#128c7e] text-white' : 'bg-brand-500 text-white') 
+                    : (brandId === 'building' ? 'bg-[#075e54] text-white' : 'bg-brand-900 text-accent-500')
                 }`}>
-                  {msg.role === 'user' ? <User size={16} /> : <Bot size={16} />}
+                  {msg.role === 'user' ? <User size={16} /> : (brandId === 'building' ? <MessageSquare size={16} /> : <Bot size={16} />)}
                 </div>
                 <div 
                   className={`p-4 rounded-2xl shadow-sm ${
                     msg.role === 'user' 
-                      ? 'bg-brand-500 text-white rounded-br-none' 
-                      : 'bg-white text-slate-800 rounded-bl-none border border-slate-100'
+                      ? (brandId === 'building' ? 'bg-[#d9fdd3] text-slate-800 rounded-tr-none border border-[#c1f3b3]' : 'bg-brand-500 text-white rounded-br-none') 
+                      : (brandId === 'building' ? 'bg-white text-slate-800 rounded-tl-none border border-slate-200' : 'bg-white text-slate-800 rounded-bl-none border border-slate-100')
                   }`}
                 >
                    <Markdown
@@ -731,10 +856,14 @@ const ChatTab: React.FC<ChatTabProps> = ({ quickActions, initialMessage, emergen
             className="flex justify-start"
           >
              <div className="flex max-w-[85%] items-end gap-2">
-                <div className="w-8 h-8 rounded-full bg-brand-900 text-accent-500 flex items-center justify-center shrink-0 shadow-sm">
-                  <Bot size={16} />
+                <div className={`w-8 h-8 rounded-full flex items-center justify-center shrink-0 shadow-sm ${
+                  brandId === 'building' ? 'bg-[#075e54] text-white' : 'bg-brand-900 text-accent-500'
+                }`}>
+                  {brandId === 'building' ? <MessageSquare size={16} /> : <Bot size={16} />}
                 </div>
-                <div className="bg-white px-4 py-3 rounded-2xl rounded-bl-none border border-slate-100 shadow-sm flex items-center gap-2">
+                <div className={`px-4 py-3 rounded-2xl shadow-sm flex items-center gap-2 ${
+                  brandId === 'building' ? 'bg-white rounded-tl-none border border-slate-200' : 'bg-white rounded-bl-none border border-slate-100'
+                }`}>
                   <div className="flex gap-1.5">
                     {[0, 1, 2].map((i) => (
                       <motion.div
@@ -781,7 +910,7 @@ const ChatTab: React.FC<ChatTabProps> = ({ quickActions, initialMessage, emergen
       </div>
 
       {/* NEW: Request Human Intervention Button */}
-      {sessionStatus === 'active' && !showInterventionRequest && (
+      {brandId !== 'building' && sessionStatus === 'active' && !showInterventionRequest && (
         <div className="px-4 pb-2 bg-white border-t border-gray-50">
           <button
             onClick={() => setShowInterventionRequest(true)}
@@ -865,6 +994,8 @@ const ChatTab: React.FC<ChatTabProps> = ({ quickActions, initialMessage, emergen
 };
 
 export default ChatTab;
+
+
 
 
 

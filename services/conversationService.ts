@@ -1,6 +1,6 @@
 import { getPrivacyMode } from './firestoreService';
 import { db } from '../firebase';
-import { collection, doc, setDoc, getDocs, getDoc, query, orderBy, onSnapshot, updateDoc, where, increment, limit } from 'firebase/firestore';
+import { collection, doc, setDoc, getDocs, getDoc, query, orderBy, onSnapshot, updateDoc, where, increment } from 'firebase/firestore';
 
 // PRIVACY MODE: Set to true to disable all Firestore chat saving
 // This ensures user conversations are NOT stored unless explicitly enabled
@@ -150,7 +150,7 @@ export const createConversation = async (
 // Add a message to a conversation
 export const addMessage = async (
   sessionId: string,
-  message: Omit<ConversationMessage, 'id' | 'timestamp'> & { id?: string }
+  message: Omit<ConversationMessage, 'id' | 'timestamp'> & { id?: string; timestamp?: string }
 ): Promise<void> => {
   if (getPrivacyMode()) {
     logPrivacy('addMessage');
@@ -163,7 +163,7 @@ export const addMessage = async (
   const fullMessage: ConversationMessage = {
     ...message,
     id: messageId,
-    timestamp: now,
+    timestamp: message.timestamp || now,
   };
 
   await setDoc(
@@ -172,11 +172,21 @@ export const addMessage = async (
   );
 
   const sessionRef = doc(db, COLLECTIONS.sessions, sessionId);
-  await updateDoc(sessionRef, {
+  const sessionSnap = await getDoc(sessionRef);
+  const updatePayload: any = {
     lastUpdated: now,
     lastMessage: message.text.substring(0, 200),
     'analytics.messageCount': increment(1),
-  });
+  };
+
+  if (sessionSnap.exists()) {
+    const sessionData = sessionSnap.data() as ConversationSession;
+    if (sessionData.status === 'completed' || sessionData.status === 'abandoned') {
+      updatePayload.status = 'active';
+    }
+  }
+
+  await updateDoc(sessionRef, updatePayload);
 };
 
 // Update session status
@@ -291,7 +301,7 @@ export const getConversations = async (
     return []; // Return empty array when privacy mode is on
   }
   
-  let q = query(collection(db, COLLECTIONS.sessions), orderBy('lastUpdated', 'desc'), limit(50));
+  let q = query(collection(db, COLLECTIONS.sessions), orderBy('lastUpdated', 'desc'));
   
   if (filters?.status) {
     q = query(q, where('status', '==', filters.status));
@@ -314,7 +324,7 @@ export const subscribeToConversations = (
     return () => {}; // No-op unsubscribe
   }
   
-  const q = query(collection(db, COLLECTIONS.sessions), orderBy('lastUpdated', 'desc'), limit(50));
+  const q = query(collection(db, COLLECTIONS.sessions), orderBy('lastUpdated', 'desc'));
   
   return onSnapshot(q, (snapshot) => {
     const sessions = snapshot.docs.map(doc => doc.data() as ConversationSession);
@@ -725,6 +735,8 @@ export const getAllSessionsForBackfill = async (): Promise<ConversationSession[]
   const snapshot = await getDocs(q);
   return snapshot.docs.map(d => d.data() as ConversationSession);
 };
+
+
 
 
 

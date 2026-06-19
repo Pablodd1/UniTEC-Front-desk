@@ -627,7 +627,7 @@ const ConversationMonitor: React.FC<ConversationMonitorProps> = ({
               <StickyNote size={16} />
             </button>
             
-            {selectedSession?.status === 'human_requested' && (
+            {(selectedSession?.status === 'human_requested' || selectedSession?.status === 'active') && (
               <button
                 onClick={() => selectedSession && onRequestIntervention(selectedSession.id)}
                 className="px-3 py-1.5 bg-amber-100 text-amber-700 rounded-lg text-xs font-medium hover:bg-amber-200"
