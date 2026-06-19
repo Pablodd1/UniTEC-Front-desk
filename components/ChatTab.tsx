@@ -7,7 +7,7 @@ import { saveChatSession } from '../services/firestoreService';
 import { sendMessageToGemini } from '../services/geminiService';
 import { createConversation, addMessage, requestIntervention, extractCustomerData, updateSessionStatus, subscribeToConversation, subscribeToMessages } from '../services/conversationService';
 import { notifyStaffIntervention } from '../services/notificationService';
-import { Send, Bot, User, Box, DollarSign, Hammer, BookOpen, CheckCircle2, Truck, FileText, RefreshCcw, Percent, Headphones, CreditCard, Lock, MessageSquare } from 'lucide-react';
+import { Send, User, Box, DollarSign, Hammer, BookOpen, CheckCircle2, Truck, FileText, RefreshCcw, Percent, Headphones, CreditCard, Lock, MessageSquare } from 'lucide-react';
 import { GenerateContentResponse } from '@google/genai';
 import { UI_TRANSLATIONS } from '../constants';
 import Markdown from 'react-markdown';
@@ -23,7 +23,7 @@ interface ChatTabProps {
   brandId?: 'unitec' | 'building';
 }
 
-const ChatTab: React.FC<ChatTabProps> = ({ quickActions, initialMessage, emergencyMode, language, customGreeting, bgImage, brandId }) => {
+const ChatTab: React.FC<ChatTabProps> = ({ quickActions, initialMessage, emergencyMode, language, customGreeting, brandId }) => {
   const t = UI_TRANSLATIONS[language];
   
   const [messages, setMessages] = useState<Message[]>(() => {
@@ -735,17 +735,14 @@ const ChatTab: React.FC<ChatTabProps> = ({ quickActions, initialMessage, emergen
       {/* Messages Area */}
       <div 
         ref={scrollContainerRef}
-        className={`flex-1 overflow-y-auto p-4 space-y-6 no-scrollbar relative scroll-smooth ${
-          brandId === 'building' ? 'bg-[#efeae2]' : ''
-        }`}
-        style={brandId === 'building' ? {
+        className="flex-1 overflow-y-auto p-4 space-y-6 no-scrollbar relative scroll-smooth bg-[#efeae2]"
+        style={{
           backgroundImage: `url("https://user-images.githubusercontent.com/15075759/28719144-86dc0f70-73b1-11e7-911d-60d70fcded21.png")`,
           backgroundSize: 'contain',
           backgroundBlendMode: 'overlay',
           backgroundColor: '#efeae2'
-        } : undefined}
+        }}
       >
-        {brandId === 'building' ? (
           <div className="mb-8 bg-white/95 rounded-3xl p-6 shadow-md border border-slate-200/60 max-w-md mx-auto text-left relative overflow-hidden backdrop-blur-md">
             {/* Header/Banner decorative WhatsApp top bar */}
             <div className="absolute top-0 left-0 right-0 h-2 bg-[#128c7e]" />
@@ -756,7 +753,7 @@ const ChatTab: React.FC<ChatTabProps> = ({ quickActions, initialMessage, emergen
                 </svg>
               </div>
               <div>
-                <h3 className="text-[17px] font-black text-slate-800 leading-tight">Asistente Building Innovation</h3>
+                <h3 className="text-[17px] font-black text-slate-800 leading-tight">Asistente {brandId === 'unitec' ? 'UNITEC USA DESIGN' : 'Building Innovation'}</h3>
                 <p className="text-xs font-semibold text-emerald-600 uppercase tracking-wider mt-0.5">Fácil de usar / En línea</p>
               </div>
             </div>
@@ -790,23 +787,6 @@ const ChatTab: React.FC<ChatTabProps> = ({ quickActions, initialMessage, emergen
               <span className="text-[11px] font-bold text-slate-400 uppercase tracking-wider">👇 Toca un botón de abajo o escribe un mensaje para comenzar</span>
             </div>
           </div>
-        ) : (
-          /* Welcome Hero Image */
-          <div className="mb-8 rounded-3xl overflow-hidden shadow-lg border border-slate-100">
-              <img 
-                  src={bgImage || "https://picsum.photos/seed/garden-decoration/800/400"} 
-                  alt="Welcome" 
-                  className="w-full h-40 object-cover"
-                  referrerPolicy="no-referrer"
-              />
-              <div className="p-4 bg-white">
-                  <p className="text-[10px] font-black text-brand-500 uppercase tracking-widest mb-1">{t.welcomeToSupport}</p>
-                  <p className="text-xs text-slate-500 leading-relaxed">
-                      {t.howCanWeAssist}
-                  </p>
-              </div>
-          </div>
-        )}
 
         {messages
           .filter((msg, idx) => !(msg.role === 'model' && !msg.text && isLoading && idx === messages.length - 1))
@@ -817,17 +797,15 @@ const ChatTab: React.FC<ChatTabProps> = ({ quickActions, initialMessage, emergen
             >
               <div className={`flex max-w-[85%] ${msg.role === 'user' ? 'flex-row-reverse' : 'flex-row'} items-end gap-2`}>
                 <div className={`w-8 h-8 rounded-full flex items-center justify-center shrink-0 shadow-sm ${
-                  msg.role === 'user' 
-                    ? (brandId === 'building' ? 'bg-[#128c7e] text-white' : 'bg-brand-500 text-white') 
-                    : (brandId === 'building' ? 'bg-[#075e54] text-white' : 'bg-brand-900 text-accent-500')
+                  msg.role === 'user' ? 'bg-[#128c7e] text-white' : 'bg-[#075e54] text-white'
                 }`}>
-                  {msg.role === 'user' ? <User size={16} /> : (brandId === 'building' ? <MessageSquare size={16} /> : <Bot size={16} />)}
+                  {msg.role === 'user' ? <User size={16} /> : <MessageSquare size={16} />}
                 </div>
                 <div 
                   className={`p-4 rounded-2xl shadow-sm ${
                     msg.role === 'user' 
-                      ? (brandId === 'building' ? 'bg-[#d9fdd3] text-slate-800 rounded-tr-none border border-[#c1f3b3]' : 'bg-brand-500 text-white rounded-br-none') 
-                      : (brandId === 'building' ? 'bg-white text-slate-800 rounded-tl-none border border-slate-200' : 'bg-white text-slate-800 rounded-bl-none border border-slate-100')
+                      ? 'bg-[#d9fdd3] text-slate-800 rounded-tr-none border border-[#c1f3b3]' 
+                      : 'bg-white text-slate-800 rounded-tl-none border border-slate-200'
                   }`}
                 >
                    <Markdown
@@ -856,14 +834,10 @@ const ChatTab: React.FC<ChatTabProps> = ({ quickActions, initialMessage, emergen
             className="flex justify-start"
           >
              <div className="flex max-w-[85%] items-end gap-2">
-                <div className={`w-8 h-8 rounded-full flex items-center justify-center shrink-0 shadow-sm ${
-                  brandId === 'building' ? 'bg-[#075e54] text-white' : 'bg-brand-900 text-accent-500'
-                }`}>
-                  {brandId === 'building' ? <MessageSquare size={16} /> : <Bot size={16} />}
+                <div className="w-8 h-8 rounded-full bg-[#075e54] text-white flex items-center justify-center shrink-0 shadow-sm">
+                  <MessageSquare size={16} />
                 </div>
-                <div className={`px-4 py-3 rounded-2xl shadow-sm flex items-center gap-2 ${
-                  brandId === 'building' ? 'bg-white rounded-tl-none border border-slate-200' : 'bg-white rounded-bl-none border border-slate-100'
-                }`}>
+                <div className="px-4 py-3 bg-white rounded-2xl rounded-tl-none border border-slate-200 shadow-sm flex items-center gap-2">
                   <div className="flex gap-1.5">
                     {[0, 1, 2].map((i) => (
                       <motion.div
