@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from 'react';
-import { Phone, ShieldCheck, Database, Mic2, Save, RefreshCw, Check, Loader2, Volume2, TrendingUp, Zap, Gauge, Building2, Store, Brain, Code, Copy, ExternalLink, Rocket, ToggleRight, ToggleLeft, DollarSign, MessageSquare, Headphones, BarChart3 } from 'lucide-react';
+﻿import React, { useState, useEffect } from 'react';
+import { Phone, ShieldCheck, Database, Mic2, Save, RefreshCw, Check, Loader2, Volume2, TrendingUp, Zap, Gauge, Building2, Store, Brain, Code, Copy, ExternalLink, Rocket, ToggleRight, ToggleLeft, DollarSign, MessageSquare, Headphones, BarChart3, AlertTriangle, X } from 'lucide-react';
 import { EscalaConfig, VoiceName, VoiceProvider, BillingInvoice, ConversationSession, InterventionRequest, ConversationMessage } from '../types';
 import { playGeminiTTS } from '../services/geminiService';
 import { getEscalaConfig, saveEscalaConfig, testEscalaConnection } from '../services/escalaService';
@@ -13,6 +13,8 @@ import StaffIntervention from './StaffIntervention';
 import AnalyticsDashboard from './AnalyticsDashboard';
 import RetrainingAnalytics from './RetrainingAnalytics';
 import ApiHealthMonitor from './ApiHealthMonitor';
+import { summarizeAndArchiveOldConversations, RetentionResult } from '../services/retentionService';
+import { playNotificationSound, showBrowserNotification, requestNotificationPermission } from '../services/soundService';
 
 interface AdminDashboardProps {
   emergencyMode: boolean;
@@ -49,6 +51,12 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({
   const [conversations, setConversations] = useState<ConversationSession[]>([]);
   const [_interventions, _setInterventions] = useState<InterventionRequest[]>([]);
   const [_selectedConversation, _setSelectedConversation] = useState<ConversationSession | null>(null);
+
+  // ALERTS: Real-time intervention alert system
+  const [pendingAlerts, setPendingAlerts] = useState<InterventionRequest[]>([]);
+  const [dismissedAlertIds, setDismissedAlertIds] = useState<Set<string>>(new Set());
+  const [retentionResult, setRetentionResult] = useState<RetentionResult | null>(null);
+  const seenInterventionIdsRef = React.useRef<Set<string>>(new Set());
   
   // Usage & Billing State
   const [totalTokens, setTotalTokens] = useState(0);
@@ -181,6 +189,48 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({
       unsubInterventions();
     };
   }, []);
+
+  // ALERT: Subscribe to pending interventions + play sound + Telegram on new alerts
+  useEffect(() => {
+    const unsubAlerts = subscribeToInterventions((ints: InterventionRequest[]) => {
+      const pending = ints.filter(i => i.status === 'pending');
+      setPendingAlerts(pending.filter(i => !dismissedAlertIds.has(i.id)));
+      pending.forEach(alert => {
+        if (!seenInterventionIdsRef.current.has(alert.id)) {
+          seenInterventionIdsRef.current.add(alert.id);
+          playNotificationSound();
+          requestNotificationPermission().then(granted => {
+            if (granted) showBrowserNotification('Intervencion Urgente', alert.reason || 'Cliente solicito atencion humana');
+          });
+          const msg = '🚨 INTERVENCION URGENTE\n\nSesion: ' + alert.sessionId + '\nRazon: ' + (alert.reason || 'Cliente solicito hablar con alguien') + '\nHora: ' + new Date(alert.requestedAt).toLocaleTimeString('es') + '\n\nAbrir dashboard: ' + window.location.origin + '/?admin=true';
+          fetch('/api/notify-telegram', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ message: msg }),
+          }).catch(e => console.warn('[Alert] Telegram failed:', e));
+        }
+      });
+    });
+    return () => unsubAlerts();
+  }, [dismissedAlertIds]);
+
+  // RETENTION: Auto-archive old conversations on mount (once per session)
+  useEffect(() => {
+    const runRetention = async () => {
+      try {
+        const result = await summarizeAndArchiveOldConversations();
+        if (result.archived > 0) setRetentionResult(result);
+      } catch (e) {
+        console.warn('[Retention] Auto-archive failed:', e);
+      }
+    };
+    if (!sessionStorage.getItem('unitec_retention_ran')) {
+      sessionStorage.setItem('unitec_retention_ran', '1');
+      runRetention();
+    }
+  }, []);
+
+
 
   const handleCopy = (text: string, id: string) => {
     navigator.clipboard.writeText(text);
@@ -409,7 +459,7 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({
     // Save only non-sensitive config (privacy mode).
     try {
       await saveAppConfig({ 
-        // geminiApiKey deliberately NOT included — keys stay client+server only
+        // geminiApiKey deliberately NOT included â€” keys stay client+server only
       });
     } catch (e) {
       console.error("Failed to save config to Firestore:", e);
@@ -566,7 +616,7 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({
 
                     {/* Admin Dispatch Controls + Live Overwatch Grid */}
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                        {/* ðŸ“¬ ADMIN DISPATCH CONTROLS */}
+                        {/* Ã°Å¸â€œÂ¬ ADMIN DISPATCH CONTROLS */}
                         <div className="bg-white rounded-2xl border border-slate-200 shadow-sm p-6 flex flex-col justify-between">
                             <div>
                                 <h3 className="text-xs font-black text-slate-800 uppercase tracking-wider mb-2 flex items-center gap-2">
@@ -614,7 +664,7 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({
                             </div>
                         </div>
 
-                        {/* ðŸ”´ LIVE TELEMETRY OVERWATCH TERMINAL */}
+                        {/* Ã°Å¸â€Â´ LIVE TELEMETRY OVERWATCH TERMINAL */}
                         <div className="bg-slate-900 rounded-2xl border border-slate-800 p-6 flex flex-col justify-between">
                             <div className="flex flex-col h-full justify-between w-full">
                                 <div className="mb-3">
@@ -709,7 +759,7 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({
                                                 </div>
                                                 {details && (
                                                     <p className="text-[10px] text-slate-500 font-medium">
-                                                        {details.style} â€¢ {details.gender}
+                                                        {details.style} Ã¢â‚¬Â¢ {details.gender}
                                                     </p>
                                                 )}
                                             </button>
@@ -764,7 +814,7 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({
                                 <div className="w-6 h-6 rounded-full bg-brand-100 text-brand-600 flex items-center justify-center text-xs font-bold shrink-0 mt-0.5">3</div>
                                 <div className="flex-1">
                                     <p className="text-sm text-slate-700 font-bold">Set Environment Variables:</p>
-                                    <p className="text-xs text-slate-500 mt-1">In Vercel Dashboard â†’ Settings â†’ Environment Variables, add:</p>
+                                    <p className="text-xs text-slate-500 mt-1">In Vercel Dashboard Ã¢â€ â€™ Settings Ã¢â€ â€™ Environment Variables, add:</p>
                                     <div className="mt-2 space-y-2">
                                         <div className="p-3 bg-slate-50 rounded-xl border border-slate-200 flex items-center justify-between">
                                             <code className="text-xs font-mono text-brand-700">VITE_API_KEY</code>
@@ -831,8 +881,8 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({
                                     <Copy size={24} />
                                 </div>
                                 <div>
-                                    <h3 className="text-lg font-bold text-slate-800">GestiÃ³n de CatÃ¡logos y Archivos</h3>
-                                    <p className="text-xs text-slate-500">Controla los archivos que la IA puede enviar por correo electrÃ³nico.</p>
+                                    <h3 className="text-lg font-bold text-slate-800">GestiÃƒÂ³n de CatÃƒÂ¡logos y Archivos</h3>
+                                    <p className="text-xs text-slate-500">Controla los archivos que la IA puede enviar por correo electrÃƒÂ³nico.</p>
                                 </div>
                             </div>
                         </div>
@@ -841,15 +891,15 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({
                             <div className="bg-slate-50 p-6 rounded-xl border border-slate-200">
                                 <h4 className="text-sm font-bold text-slate-800 mb-2">Instrucciones para la IA</h4>
                                 <p className="text-xs text-slate-600 leading-relaxed mb-4">
-                                    La IA estÃ¡ configurada para usar la herramienta <code className="bg-slate-200 px-1 rounded text-brand-700">send_email</code> cuando un cliente solicita un catÃ¡logo, PDF o ficha tÃ©cnica y proporciona su correo electrÃ³nico.
+                                    La IA estÃƒÂ¡ configurada para usar la herramienta <code className="bg-slate-200 px-1 rounded text-brand-700">send_email</code> cuando un cliente solicita un catÃƒÂ¡logo, PDF o ficha tÃƒÂ©cnica y proporciona su correo electrÃƒÂ³nico.
                                 </p>
                                 <p className="text-xs text-slate-600 leading-relaxed">
-                                    Para modificar los enlaces de los catÃ¡logos que la IA envÃ­a, actualiza la secciÃ³n <strong>"CATALOGS & RESOURCES"</strong> en la pestaÃ±a <strong>Base de Conocimiento</strong>. La IA leerÃ¡ esos enlaces y los incluirÃ¡ en el correo.
+                                    Para modificar los enlaces de los catÃƒÂ¡logos que la IA envÃƒÂ­a, actualiza la secciÃƒÂ³n <strong>"CATALOGS & RESOURCES"</strong> en la pestaÃƒÂ±a <strong>Base de Conocimiento</strong>. La IA leerÃƒÂ¡ esos enlaces y los incluirÃƒÂ¡ en el correo.
                                 </p>
                             </div>
 
                             <div>
-                                <h4 className="text-xs font-black text-slate-400 uppercase tracking-widest mb-4">CatÃ¡logos Activos (Ejemplo)</h4>
+                                <h4 className="text-xs font-black text-slate-400 uppercase tracking-widest mb-4">CatÃƒÂ¡logos Activos (Ejemplo)</h4>
                                 <div className="space-y-3">
                                     <div className="flex items-center justify-between p-4 bg-white border border-slate-100 rounded-xl shadow-sm">
                                         <div className="flex items-center gap-3">
@@ -857,8 +907,8 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({
                                                 <span className="text-[10px] font-bold">PDF</span>
                                             </div>
                                             <div>
-                                                <p className="text-sm font-bold text-slate-800">CatÃ¡logo 2026 UNITEC USA DESIGN</p>
-                                                <p className="text-[10px] text-slate-400">EspaÃ±ol â€¢ General</p>
+                                                <p className="text-sm font-bold text-slate-800">CatÃƒÂ¡logo 2026 UNITEC USA DESIGN</p>
+                                                <p className="text-[10px] text-slate-400">EspaÃƒÂ±ol Ã¢â‚¬Â¢ General</p>
                                             </div>
                                         </div>
                                         <span className="px-2 py-1 bg-emerald-50 text-emerald-600 text-[10px] font-bold uppercase rounded-md">Activo</span>
@@ -870,7 +920,7 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({
                                             </div>
                                             <div>
                                                 <p className="text-sm font-bold text-slate-800">Product Catalog 2026 - Unitec</p>
-                                                <p className="text-[10px] text-slate-400">English â€¢ General</p>
+                                                <p className="text-[10px] text-slate-400">English Ã¢â‚¬Â¢ General</p>
                                             </div>
                                         </div>
                                         <span className="px-2 py-1 bg-emerald-50 text-emerald-600 text-[10px] font-bold uppercase rounded-md">Activo</span>
@@ -1296,7 +1346,7 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({
                                     value={escalaConfig.apiKey}
                                     onChange={e => setEscalaConfig(p => ({ ...p, apiKey: e.target.value }))}
                                     className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-sm focus:ring-2 focus:ring-brand-500 outline-none"
-                                    placeholder="â€¢â€¢â€¢â€¢â€¢â€¢â€¢â€¢â€¢â€¢â€¢â€¢â€¢â€¢â€¢â€¢"
+                                    placeholder="Ã¢â‚¬Â¢Ã¢â‚¬Â¢Ã¢â‚¬Â¢Ã¢â‚¬Â¢Ã¢â‚¬Â¢Ã¢â‚¬Â¢Ã¢â‚¬Â¢Ã¢â‚¬Â¢Ã¢â‚¬Â¢Ã¢â‚¬Â¢Ã¢â‚¬Â¢Ã¢â‚¬Â¢Ã¢â‚¬Â¢Ã¢â‚¬Â¢Ã¢â‚¬Â¢Ã¢â‚¬Â¢"
                                 />
                             </div>
                         </div>
@@ -1349,7 +1399,7 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({
                                       value={twilioConfig.authToken}
                                       onChange={e => setTwilioConfig(p => ({ ...p, authToken: e.target.value }))}
                                       className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-sm focus:ring-2 focus:ring-brand-500 outline-none"
-                                      placeholder="â€¢â€¢â€¢â€¢â€¢â€¢â€¢â€¢â€¢â€¢â€¢â€¢"
+                                      placeholder="Ã¢â‚¬Â¢Ã¢â‚¬Â¢Ã¢â‚¬Â¢Ã¢â‚¬Â¢Ã¢â‚¬Â¢Ã¢â‚¬Â¢Ã¢â‚¬Â¢Ã¢â‚¬Â¢Ã¢â‚¬Â¢Ã¢â‚¬Â¢Ã¢â‚¬Â¢Ã¢â‚¬Â¢"
                                   />
                               </div>
                               <div className="space-y-2">
@@ -1525,6 +1575,43 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({
 
   return (
     <div className="h-full flex flex-col bg-slate-50 font-sans">
+        {/* INTERVENTION ALERT BANNERS */}
+        {pendingAlerts.length > 0 && (
+          <div className="flex flex-col gap-2 p-3 bg-red-50 border-b border-red-200 shrink-0">
+            {pendingAlerts.map(alert => (
+              <div key={alert.id} className="flex items-start gap-3 bg-red-600 text-white rounded-xl px-4 py-3 shadow-lg animate-pulse-once">
+                <AlertTriangle size={18} className="shrink-0 mt-0.5 text-red-200" />
+                <div className="flex-1 min-w-0">
+                  <p className="text-xs font-black uppercase tracking-wider text-red-100">🚨 Cliente necesita ayuda</p>
+                  <p className="text-sm font-medium truncate mt-0.5">{alert.reason || 'Solicitó hablar con un agente'}</p>
+                  <p className="text-[10px] text-red-200 mt-0.5">Sesión: {alert.sessionId.slice(-12)} · {new Date(alert.requestedAt).toLocaleTimeString('es')}</p>
+                </div>
+                <div className="flex gap-2 shrink-0">
+                  <button
+                    onClick={() => { setActiveSubTab('interventions'); setDismissedAlertIds(prev => { const next = new Set(prev); next.add(alert.id); return next; }); }}
+                    className="px-3 py-1.5 bg-white text-red-600 rounded-lg text-[10px] font-black uppercase hover:bg-red-50 transition-colors"
+                  >
+                    Atender →
+                  </button>
+                  <button
+                    onClick={() => setDismissedAlertIds(prev => { const next = new Set(prev); next.add(alert.id); return next; })}
+                    className="p-1.5 bg-red-700 rounded-lg hover:bg-red-800 transition-colors"
+                  >
+                    <X size={12} />
+                  </button>
+                </div>
+              </div>
+            ))}
+          </div>
+        )}
+        {/* Retention toast */}
+        {retentionResult && retentionResult.archived > 0 && (
+          <div className="flex items-center justify-between gap-2 px-4 py-2 bg-emerald-50 border-b border-emerald-200 shrink-0">
+            <span className="text-[11px] text-emerald-700 font-medium">🗄️ {retentionResult.archived} conversaciones archivadas y eliminadas automáticamente (política 30 días)</span>
+            <button onClick={() => setRetentionResult(null)} className="text-emerald-500 hover:text-emerald-700"><X size={12} /></button>
+          </div>
+        )}
+
         <div className="bg-white border-b border-slate-200 px-6 pt-2 overflow-x-auto no-scrollbar shrink-0">
              {/* Header label row */}
              <div className="flex items-center justify-between pt-1 pb-0.5">
@@ -1555,7 +1642,7 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({
                  { id: 'training',        label: 'AI Training',  icon: <Brain size={13} /> },
                  { id: 'general',         label: 'Settings',     icon: <ShieldCheck size={13} /> },
                  { id: 'conversations',   label: 'Conversations',icon: <MessageSquare size={13} /> },
-                 { id: 'interventions',   label: 'Interventions',icon: <Headphones size={13} /> },
+                 { id: 'interventions',   label: 'Interventions', icon: <span className="relative flex items-center gap-1"><Headphones size={13} />{pendingAlerts.length > 0 && <span className="absolute -top-1.5 -right-2 w-3.5 h-3.5 bg-red-500 rounded-full text-[8px] font-black text-white flex items-center justify-center animate-bounce">{pendingAlerts.length}</span>}</span> },
                  { id: 'analytics',       label: 'Analytics',    icon: <BarChart3 size={13} /> },
                   { id: 'retraining',      label: 'Memoria IA',   icon: <Brain size={13} /> },
                ].map((t: any) => (
@@ -1579,6 +1666,7 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({
 };
 
 export default AdminDashboard;
+
 
 
 
