@@ -1,3 +1,4 @@
+import { summarizeSessionNow } from '../services/retentionService';
 
 import React, { useState, useRef, useEffect } from 'react';
 import { db } from '../firebase';
@@ -418,6 +419,11 @@ const ChatTab: React.FC<ChatTabProps> = ({ quickActions, initialMessage, emergen
                     return merged;
                   });
                   if (result.intent_category) setIntentCategory(result.intent_category);
+              } else if (toolName === 'end_conversation') {
+                  if (conversationId) updateSessionStatus(conversationId, 'completed').catch(console.error);
+                  if (conversationId) summarizeSessionNow(conversationId).catch(console.error);
+                  // Force clear input/loading just in case
+                  setIsLoading(false);
               } else if (toolName === 'generate_checkout_payment_link') {
                   console.log("Stripe payment link generated successfully:", result.paymentLink);
                   if (result.paymentLink) {

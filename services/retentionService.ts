@@ -1,5 +1,5 @@
 import { db } from '../firebase';
-import { collection, query, getDocs, doc, setDoc, deleteDoc } from 'firebase/firestore';
+import { collection, query, getDoc, updateDoc, getDocs, doc, setDoc, deleteDoc } from 'firebase/firestore';
 import { getPrivacyMode } from './firestoreService';
 import { ConversationSession, ConversationMessage } from './conversationService';
 import { onSnapshot } from 'firebase/firestore';
@@ -39,7 +39,7 @@ async function generateSummaryWithGemini(
       .map(m => `${m.role === 'user' ? 'Cliente' : 'Bot'}: ${m.text.substring(0, 300)}`)
       .join('\n');
 
-    const prompt = `Eres un asistente que resume conversaciones de chatbot para archivo. Resume esta conversacion en 2-3 oraciones en español. Incluye: tema principal, si el cliente quiso hablar con humano, y resultado.\n\nCONVERSACION:\n${conversationText}\n\nRESUMEN:`;
+    const prompt = `Eres un asistente que resume conversaciones de chatbot para archivo. Resume esta conversacion en 2-3 oraciones en espaï¿½ol. Incluye: tema principal, si el cliente quiso hablar con humano, y resultado.\n\nCONVERSACION:\n${conversationText}\n\nRESUMEN:`;
 
     const res = await fetch(
       `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash-lite:generateContent?key=${apiKey}`,
@@ -155,4 +155,23 @@ export const subscribeToArchives = (
 
 export const deleteArchive = async (archiveId: string): Promise<void> => {
   await deleteDoc(doc(db, 'conversation_archives', archiveId));
+};
+
+
+export const summarizeSessionNow = async (sessionId: string): Promise<void> => {
+  try {
+    const sessionRef = doc(db, 'conversations', sessionId);
+    const sessionSnap = await getDoc(sessionRef);
+    if (!sessionSnap.exists()) return;
+    
+    const session = sessionSnap.data() as ConversationSession;
+    const messagesSnap = await getDocs(collection(db, 'conversations', sessionId, 'messages'));
+    const messages = messagesSnap.docs.map(d => d.data() as ConversationMessage);
+    
+    const summary = await generateSummaryWithGemini(session, messages);
+    await updateDoc(sessionRef, { summary });
+    console.log('[Retention] Summarized concluded session:', sessionId);
+  } catch (e) {
+    console.error('[Retention] Failed to summarize concluded session:', e);
+  }
 };

@@ -131,6 +131,10 @@ export async function playGeminiTTS(text: string, voiceName: string = 'Kore') {
 
 async function executeTool(name: string, args: any): Promise<any> {
   try {
+    if (name === 'end_conversation') {
+      return { success: true, reason: args.reason };
+    }
+    
     if (name === 'calculate_shipping') {
       const { destinationZip, destinationCity, destinationState, cartItems } = args;
       

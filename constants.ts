@@ -192,7 +192,19 @@ const generateCheckoutPaymentLinkTool: FunctionDeclaration = {
   }
 };
 
-export const TOOLS = [bookAppointmentTool, logToCrmTool, sendEmailTool, emailConversationToAdminTool, extractCustomerInfoTool, calculateShippingTool, generateCheckoutPaymentLinkTool];
+const endConversationTool: FunctionDeclaration = {
+  name: "end_conversation",
+  description: "Call this tool to explicitly mark the conversation as completed when the user indicates they have no more questions, says goodbye, or explicitly ends the chat. This ensures the chat is properly saved and closed.",
+  parameters: {
+    type: Type.OBJECT,
+    properties: {
+      reason: { type: Type.STRING, description: "Reason for ending the conversation (e.g. User said goodbye)" }
+    },
+    required: ["reason"]
+  }
+};
+
+export const TOOLS = [bookAppointmentTool, logToCrmTool, sendEmailTool, emailConversationToAdminTool, extractCustomerInfoTool, calculateShippingTool, generateCheckoutPaymentLinkTool, endConversationTool];
 
 // --- COMPLETE TRAINING DATASET ---
 export const DEFAULT_TRAINING_DATA = `
