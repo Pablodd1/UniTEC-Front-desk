@@ -3,6 +3,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { Mic, Phone, Loader2, CheckCircle2, Download, Headphones } from 'lucide-react';
 import { connectLiveSession } from '../services/geminiService';
 import { saveChatSession } from '../services/firestoreService';
+import { summarizeSessionNow } from '../services/retentionService';
 import { Language, VoiceName, VoiceProvider, CallRecording } from '../types';
 import { UI_TRANSLATIONS } from '../constants';
 import { createConversation, addMessage } from '../services/conversationService';
@@ -162,12 +163,26 @@ const CallTab: React.FC<CallTabProps> = ({ emergencyMode, language, voiceName, c
     }
   };
 
+
+
+  // ===== 5-minute idle timer for CallTab =====
+  useEffect(() => {
+    if (status !== 'connected' && status !== 'listening' && status !== 'processing' && status !== 'speaking') return;
+
+    const timer = setTimeout(() => {
+      console.log('Call idle for 5 minutes. Ending call and summarizing.');
+      handleEndCall();
+    }, 5 * 60 * 1000); // 5 minutes
+
+    return () => clearTimeout(timer);
+  }, [transcript, status]);
+
   const handleEndCall = async () => {
     const currentTranscript = transcript.map(m => `${m.role.toUpperCase()}: ${m.text}`).join('\n');
     
     if (transcript.length > 0) {
         saveChatSession({
-          id: `call_${Date.now()}`,
+          id: conversationId || `call_${Date.now()}`,
           timestamp: new Date().toISOString(),
           lastUpdated: new Date().toISOString(),
           messages: transcript.map(m => ({

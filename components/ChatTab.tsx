@@ -289,54 +289,37 @@ const ChatTab: React.FC<ChatTabProps> = ({ quickActions, initialMessage, emergen
     }
   }, [showEmailConfirmation]);
 
-  // ===== double-stage idle timer (5-minute follow-up, 10-minute abandon) =====
+    // ===== single-stage idle timer (5-minute abandon & save) =====
   useEffect(() => {
     if (sessionStatus !== 'active' || !conversationId || messages.length <= 1) return;
 
     const lastMessage = messages[messages.length - 1];
-    const isLastMessageFollowUp = lastMessage.id?.startsWith('idle_followup_');
+    
+    // Do not trigger if the last message was the abandon message
+    if (lastMessage.id?.startsWith('idle_abandon_')) return;
 
-    if (isLastMessageFollowUp) {
-      // We already sent the warning, now set the 5-minute countdown to close the chat (10m total)
-      const abandonTimeoutMs = 5 * 60 * 1000; // 5 more minutes
-      const timer = setTimeout(() => {
-        console.log('Session idle for 10 minutes. Closing as abandoned.');
-        updateSessionStatus(conversationId, 'abandoned').catch(() => {});
-        
-        const closingText = language === 'en'
-          ? "It looks like you aren't able to respond right now. I'll close the chat for now to keep things clean. Feel free to message again whenever you're ready! 😊"
-          : "Veo que en este momento no has podido responder.\nPor ahora cerraré la conversación para no saturarte 😊\nCuando quieras retomar, solo escríbenos y con gusto continuamos desde donde quedamos 🙌\n¡Que tengas un excelente día!";
+    const abandonTimeoutMs = 5 * 60 * 1000; // 5 minutes
+    const timer = setTimeout(() => {
+      console.log('Session idle for 5 minutes. Closing and saving as completed.');
+      
+      // Update session status to completed and summarize
+      updateSessionStatus(conversationId, 'completed').catch(() => {});
+      summarizeSessionNow(conversationId).catch(console.error);
+      
+      const closingText = language === 'en'
+        ? "It looks like you aren't able to respond right now. I'll close the chat and save our conversation to keep things clean. Feel free to message again whenever you're ready! 😊"
+        : "Veo que en este momento no has podido responder. Por ahora cerraré la conversación y guardaré nuestro progreso para no saturarte 😊 Cuando quieras retomar, solo escríbenos y con gusto continuamos desde donde quedamos 🙌 ¡Que tengas un excelente día!";
 
-        setMessages(prev => [...prev, {
-          id: `idle_abandon_${Date.now()}`,
-          role: 'model',
-          text: closingText,
-          timestamp: new Date()
-        }]);
-      }, abandonTimeoutMs);
+      setMessages(prev => [...prev, {
+        id: `idle_abandon_${Date.now()}`,
+        role: 'model',
+        text: closingText,
+        timestamp: new Date()
+      }]);
+    }, abandonTimeoutMs);
 
-      return () => clearTimeout(timer);
-    } else {
-      // Set the 5-minute countdown to send the follow-up warning
-      const warningTimeoutMs = 5 * 60 * 1000; // 5 minutes
-      const timer = setTimeout(() => {
-        console.log('Session idle for 5 minutes. Sending follow-up warning.');
-        const name = extractedPii?.name ? `, ${extractedPii.name}` : '';
-        const warningText = language === 'en'
-          ? `Are you still online${name}?`
-          : `¿Continúa en línea${name}?`;
-
-        setMessages(prev => [...prev, {
-          id: `idle_followup_${Date.now()}`,
-          role: 'model',
-          text: warningText,
-          timestamp: new Date()
-        }]);
-      }, warningTimeoutMs);
-
-      return () => clearTimeout(timer);
-    }
-  }, [messages, sessionStatus, conversationId, language, extractedPii, brandId]);
+    return () => clearTimeout(timer);
+  }, [messages, sessionStatus, conversationId, language]);
 
   // Robust Auto-Scroll Implementation
   const scrollToBottom = (behavior: ScrollBehavior = 'smooth') => {
