@@ -197,6 +197,10 @@ const CallTab: React.FC<CallTabProps> = ({ emergencyMode, language, voiceName, c
         }).catch(e => console.warn('Sync warning', e));
     }
 
+    if (conversationId) {
+        summarizeSessionNow(conversationId).catch(console.error);
+    }
+
     if (sessionControllerRef.current) {
       const blob = sessionControllerRef.current.getAudioBlob();
       if (blob.size > 100) {
