@@ -66,7 +66,7 @@ export async function getGroqApiKey(): Promise<string> {
   }
   
   const buildTimeKey = (typeof process !== 'undefined' && process.env)
-    ? (process.env.GROQ_API_KEY || process.env.VITE_GROQ_API_KEY || '')
+    ? (process.env.XAI_API_KEY || process.env.GROK_API_KEY || process.env.GROQ_API_KEY || process.env.VITE_XAI_API_KEY || process.env.VITE_GROK_API_KEY || process.env.VITE_GROQ_API_KEY || '')
     : '';
   return buildTimeKey;
 }
@@ -242,14 +242,23 @@ export async function* sendMessageToGroq(
     groqMessages.push({ role: 'user', content: message });
   }
 
-  const response = await fetch('https://api.groq.com/openai/v1/chat/completions', {
+  // Detect if the key is for xAI/Grok (starts with "xai-")
+  const isXAI = groqApiKey.trim().startsWith('xai-');
+  const endpoint = isXAI 
+    ? 'https://api.x.ai/v1/chat/completions' 
+    : 'https://api.groq.com/openai/v1/chat/completions';
+  const model = isXAI 
+    ? 'grok-2-latest' 
+    : 'llama-3.3-70b-versatile';
+
+  const response = await fetch(endpoint, {
     method: 'POST',
     headers: {
       'Authorization': `Bearer ${groqApiKey}`,
       'Content-Type': 'application/json'
     },
     body: JSON.stringify({
-      model: 'llama-3.3-70b-versatile',
+      model: model,
       messages: groqMessages,
       stream: true
     })

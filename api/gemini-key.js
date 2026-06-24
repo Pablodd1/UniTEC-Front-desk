@@ -81,7 +81,11 @@ export default async function handler(req, res) {
   }
 
   const groqKeys = [
+    process.env.XAI_API_KEY,
+    process.env.GROK_API_KEY,
     process.env.GROQ_API_KEY,
+    process.env.VITE_XAI_API_KEY,
+    process.env.VITE_GROK_API_KEY,
     process.env.VITE_GROQ_API_KEY
   ].filter(Boolean);
 
