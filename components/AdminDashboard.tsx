@@ -5,7 +5,9 @@ import { playGeminiTTS } from '../services/geminiService';
 import { getEscalaConfig, saveEscalaConfig, testEscalaConnection } from '../services/escalaService';
 import { getUsageStats, getProfitEstimate, generateInvoice, trackUsage } from '../services/usageService';
 import { generateImage, editImage } from '../services/imageService';
-import { getAppConfig, saveAppConfig, getCrmLogs, CrmLog } from '../services/firestoreService';
+import { getAppConfig, saveAppConfig, getCrmLogs, CrmLog, getAllChatSessions } from '../services/firestoreService';
+import { db } from '../firebase';
+import { doc, writeBatch } from 'firebase/firestore';
 import { DEFAULT_TRAINING_DATA } from '../constants';
 import { subscribeToConversations, subscribeToInterventions, updateSessionStatus, addMessage, subscribeToMessages } from '../services/conversationService';
 import ConversationMonitor from './ConversationMonitor';
@@ -105,6 +107,76 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({
 
   // CRM Logs State
   const [crmLogs, setCrmLogs] = useState<CrmLog[]>([]);
+
+  // Migration State
+  const [isMigratingChats, setIsMigratingChats] = useState(false);
+  const [migrationStatus, setMigrationStatus] = useState<string | null>(null);
+
+  const handleMigrateLegacyChats = async () => {
+    try {
+      setIsMigratingChats(true);
+      setMigrationStatus('Fetching legacy chats...');
+      const oldSessions = await getAllChatSessions();
+      
+      if (!oldSessions || oldSessions.length === 0) {
+        setMigrationStatus('No legacy chats found (or privacy mode is on).');
+        setIsMigratingChats(false);
+        return;
+      }
+
+      setMigrationStatus(`Found ${oldSessions.length} legacy chats. Migrating...`);
+      
+      const batch = writeBatch(db);
+      
+      oldSessions.forEach(old => {
+        const newSessionRef = doc(db, 'conversations', old.id);
+        const mappedSession: any = {
+          id: old.id,
+          status: old.status || 'completed',
+          brandId: currentBrandId || 'unitec',
+          language: 'es',
+          createdAt: old.timestamp || old.lastUpdated || new Date().toISOString(),
+          lastUpdated: old.lastUpdated || new Date().toISOString(),
+          source: old.type === 'call' ? 'phone' : 'web',
+          topics: old.intent_category ? [old.intent_category] : [],
+          analytics: {
+            messageCount: old.messages?.length || 0,
+            avgResponseTime: 0,
+            escalationCount: 0,
+            productMentions: []
+          },
+          legacy: true
+        };
+        
+        if (old.customerName) {
+            mappedSession.tags = [old.customerName];
+        }
+        
+        batch.set(newSessionRef, mappedSession, { merge: true });
+
+        if (old.messages && Array.isArray(old.messages)) {
+          old.messages.forEach(msg => {
+            const msgId = msg.id || Math.random().toString(36).substring(7);
+            const msgRef = doc(db, `conversations/${old.id}/messages`, msgId);
+            batch.set(msgRef, {
+              id: msgId,
+              role: msg.role === 'model' || msg.role === 'assistant' ? 'model' : 'user',
+              text: msg.text || msg.content || '',
+              timestamp: msg.timestamp || mappedSession.createdAt
+            }, { merge: true });
+          });
+        }
+      });
+
+      await batch.commit();
+      setMigrationStatus(`Successfully migrated ${oldSessions.length} chats!`);
+    } catch (err: any) {
+      console.error(err);
+      setMigrationStatus(`Error migrating: ${err.message}`);
+    } finally {
+      setIsMigratingChats(false);
+    }
+  };
   
   // Copy State
   const [copyStatus, setCopyStatus] = useState<string | null>(null);
@@ -1469,6 +1541,25 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({
                               </div>
                           </div>
                       </div>
+
+                        <div className="bg-white p-8 rounded-2xl border border-slate-200 shadow-sm relative mt-8">
+                            <div className="flex items-center justify-between mb-4">
+                                <div>
+                                    <h3 className="text-lg font-bold text-slate-800">Legacy Chat Migration</h3>
+                                    <p className="text-xs text-slate-500">Restore historical chats from the old database structure into the new system.</p>
+                                </div>
+                                <button 
+                                    onClick={handleMigrateLegacyChats} 
+                                    disabled={isMigratingChats || privacyMode}
+                                    className={`px-6 py-2.5 rounded-xl text-xs font-bold shadow-lg flex items-center gap-2 ${privacyMode ? 'bg-slate-300 text-slate-500 cursor-not-allowed' : 'bg-brand-600 text-white hover:bg-brand-700'}`}
+                                >
+                                    {isMigratingChats ? <Loader2 size={14} className="animate-spin" /> : <Database size={14} />}
+                                    Migrate Legacy Chats
+                                </button>
+                            </div>
+                            {migrationStatus && <p className="text-brand-600 font-bold text-sm">{migrationStatus}</p>}
+                            {privacyMode && <p className="text-red-500 text-sm font-bold mt-2">Privacy Mode is ON. You must turn it OFF (in the Google Gemini AI Core section above) before you can migrate legacy chats.</p>}
+                        </div>
 
                 </div>
             );
