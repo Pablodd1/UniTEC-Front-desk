@@ -1,5 +1,5 @@
 ﻿import React, { useState, useEffect } from 'react';
-import { Phone, ShieldCheck, Database, Mic2, Save, RefreshCw, Check, Loader2, Volume2, TrendingUp, Zap, Gauge, Building2, Store, Brain, Code, Copy, ExternalLink, Rocket, ToggleRight, ToggleLeft, DollarSign, MessageSquare, Headphones, BarChart3, AlertTriangle, X } from 'lucide-react';
+import { Plug, Phone, ShieldCheck, Database, Mic2, Save, RefreshCw, Check, Loader2, Volume2, TrendingUp, Zap, Gauge, Building2, Store, Brain, Code, Copy, ExternalLink, Rocket, ToggleRight, ToggleLeft, DollarSign, MessageSquare, Headphones, BarChart3, AlertTriangle, X } from 'lucide-react';
 import { EscalaConfig, VoiceName, VoiceProvider, BillingInvoice, ConversationSession, InterventionRequest, ConversationMessage } from '../types';
 import { playGeminiTTS } from '../services/geminiService';
 import { getEscalaConfig, saveEscalaConfig, testEscalaConnection } from '../services/escalaService';
@@ -1732,6 +1732,7 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({
                {[
                  { id: 'training',        label: 'AI Training',  icon: <Brain size={13} /> },
                  { id: 'general',         label: 'Settings',     icon: <ShieldCheck size={13} /> },
+                   { id: 'integrations',    label: 'Integrations', icon: <Plug size={13} /> },
                  { id: 'conversations',   label: 'Conversations',icon: <MessageSquare size={13} /> },
                  { id: 'interventions',   label: 'Interventions', icon: <span className="relative flex items-center gap-1"><Headphones size={13} />{pendingAlerts.length > 0 && <span className="absolute -top-1.5 -right-2 w-3.5 h-3.5 bg-red-500 rounded-full text-[8px] font-black text-white flex items-center justify-center animate-bounce">{pendingAlerts.length}</span>}</span> },
                  { id: 'analytics',       label: 'Analytics',    icon: <BarChart3 size={13} /> },
