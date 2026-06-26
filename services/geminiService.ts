@@ -90,7 +90,7 @@ export async function playGeminiTTS(text: string, voiceName: string = 'Kore') {
   const apiKey = await getApiKey();
   const ai = new GoogleGenAI({ apiKey: apiKey as string });
   const response = await ai.models.generateContent({
-    model: "gemini-2.5-flash-preview-tts",
+    model: "gemini-2.0-flash-exp",
     contents: [{ parts: [{ text: text }] }],
     config: {
       responseModalities: [Modality.AUDIO],
@@ -498,7 +498,7 @@ export const connectLiveSession = async (
   }
 
   const sessionPromise = ai.live.connect({
-    model: 'gemini-2.5-flash-native-audio-preview-12-2025',
+    model: 'gemini-2.0-flash-exp',
     callbacks: {
       onopen: () => {
         callbacks.onOpen();
