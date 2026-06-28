@@ -44,15 +44,15 @@ const WebsiteLayout: React.FC<WebsiteLayoutProps> = ({
   const cartItemsCount = cart.reduce((acc, item) => acc + item.quantity, 0);
 
   return (
-    <div className="h-full flex-1 flex flex-col bg-slate-50 font-sans selection:bg-brand-500/30 overflow-hidden">
+    <div className="h-full flex-1 min-h-0 flex flex-col bg-slate-50 font-sans selection:bg-brand-500/30 overflow-hidden">
       {/* Sticky Navbar */}
       
 
       {/* Main Content Area: Split Screen */}
-      <main className="flex-1 flex flex-col w-full bg-slate-50 relative z-10">
+      <main className="flex-1 min-h-0 flex flex-col w-full bg-slate-50 relative z-10">
         
         {/* Right Side: Interactive App Area (Chat/Admin/Etc) */}
-        <div className="w-full relative bg-slate-50 flex flex-col flex-1">
+        <div className="w-full relative bg-slate-50 flex flex-col flex-1 min-h-0">
           {/* Tab Switcher for Chat/Voice Call (Only when not in admin/privacy/calendar tabs) */}
           {(activeTab === Tab.CHAT || activeTab === Tab.CALL) && (
             <div className="flex border-b border-slate-200 bg-white shrink-0 p-1.5 gap-1.5">
