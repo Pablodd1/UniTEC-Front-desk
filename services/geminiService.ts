@@ -207,6 +207,15 @@ export const connectLiveSession = async (
   let messageHistory: any[] = [];
   let instructions = getSystemInstruction(language, customGreeting, brandId);
   
+  // Request microphone permission explicitly so browser shows permission dialog
+  try {
+    const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+    stream.getTracks().forEach(t => t.stop());
+  } catch (permErr) {
+    callbacks.onError(new Error("Microphone permission denied. Please allow access and try again."));
+    return { disconnect: async () => {}, getAudioBlob: () => new Blob(), stream: null };
+  }
+
   setTimeout(() => callbacks.onOpen(), 100);
 
   if ('webkitSpeechRecognition' in window) {
