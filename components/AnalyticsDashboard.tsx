@@ -111,7 +111,7 @@ const AnalyticsDashboard: React.FC<AnalyticsDashboardProps> = ({ sessions }) => 
             <div className="flex items-center gap-3">
               <div className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
               <span className="text-[11px] font-black uppercase tracking-[0.2em] text-slate-300">Today Live</span>
-              <span className="px-2 py-0.5 bg-red-500 rounded-full text-[9px] font-black uppercase tracking-wider text-white animate-pulse">● LIVE</span>
+              <span className="px-2 py-0.5 bg-red-500 rounded-full text-[9px] font-black uppercase tracking-wider text-white animate-pulse">? LIVE</span>
             </div>
             <span className="text-[10px] text-slate-400">{now.toLocaleTimeString('es', { hour: '2-digit', minute: '2-digit' })} · Actualizado cada 30s</span>
           </div>
@@ -399,3 +399,7 @@ const AnalyticsDashboard: React.FC<AnalyticsDashboardProps> = ({ sessions }) => 
 };
 
 export default AnalyticsDashboard;
+
+
+
+

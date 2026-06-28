@@ -1,4 +1,4 @@
-
+﻿
 // geminiService.ts handles interactions with the Google GenAI SDK
 import { GoogleGenAI, LiveServerMessage, Modality, GenerateContentResponse } from "@google/genai";
 import { getSystemInstruction, TOOLS, PRODUCTS } from "../constants";
@@ -90,7 +90,7 @@ export async function playGeminiTTS(text: string, voiceName: string = 'Kore') {
   const apiKey = await getApiKey();
   const ai = new GoogleGenAI({ apiKey: apiKey as string });
   const response = await ai.models.generateContent({
-    model: "gemini-2.0-flash-exp",
+    model: "gemini-2.0-flash",
     contents: [{ parts: [{ text: text }] }],
     config: {
       responseModalities: [Modality.AUDIO],
@@ -248,7 +248,7 @@ export async function* sendMessageToGroq(
     ? 'https://api.x.ai/v1/chat/completions' 
     : 'https://api.groq.com/openai/v1/chat/completions';
   const model = isXAI 
-    ? 'grok-2-latest' 
+    ? 'grok-latest' 
     : 'llama-3.3-70b-versatile';
 
   const response = await fetch(endpoint, {
@@ -334,7 +334,7 @@ export async function* sendMessageToGemini(
   for (let _attempt = 1; _attempt <= 3; _attempt++) {
     try {
       responseStream = await ai.models.generateContentStream({
-        model: 'gemini-2.5-flash',
+        model: 'gemini-2.0-flash',
         contents: [...history, { role: 'user', parts: [{ text: message }] }],
         config: {
           systemInstruction: instructions,
@@ -498,7 +498,7 @@ export const connectLiveSession = async (
   }
 
   const sessionPromise = ai.live.connect({
-    model: 'gemini-2.0-flash-exp',
+    model: 'gemini-2.0-flash',
     callbacks: {
       onopen: () => {
         callbacks.onOpen();
@@ -518,10 +518,10 @@ export const connectLiveSession = async (
 
         // Immediate greeting trigger
         const greetPrompt = customGreeting 
-          ? `¡Hola! Por favor salúdame inmediatamente con nuestro saludo personalizado de la empresa en español: "${customGreeting}"`
+          ? `Â¡Hola! Por favor salÃºdame inmediatamente con nuestro saludo personalizado de la empresa en espaÃ±ol: "${customGreeting}"`
           : (language === 'en' 
             ? "Hello! Please greet me now cordially, introduce yourself as the front desk coordinator of UNITEC Design." 
-            : "¡Hola! Por favor salúdame con mucho entusiasmo ahora mismo en español, dándome la bienvenida a UNITEC Design.");
+            : "Â¡Hola! Por favor salÃºdame con mucho entusiasmo ahora mismo en espaÃ±ol, dÃ¡ndome la bienvenida a UNITEC Design.");
 
         sessionPromise.then(s => {
           s.sendClientContent({
@@ -620,6 +620,11 @@ export const connectLiveSession = async (
     }
   });
 
+  sessionPromise.catch(e => {
+    console.error('Live session promise rejected:', e);
+    callbacks.onError(e);
+  });
+
   return {
     disconnect: async () => {
       clearInterval(visualizerInterval);
@@ -653,9 +658,9 @@ export async function generateConversationSummary(
 
     const brandName = brandId === 'unitec' ? 'UNITEC Design' : 'Building Innovation';
 
-    const prompt = `Analiza esta conversaci�n de atenci�n al cliente de ${brandName} y devuelve un JSON con el siguiente formato exacto:
+    const prompt = `Analiza esta conversaciï¿½n de atenciï¿½n al cliente de ${brandName} y devuelve un JSON con el siguiente formato exacto:
 {
-  "summary": "Resumen ejecutivo de la conversaci�n en 2-3 oraciones. Incluye: qu� quer�a el cliente, c�mo respondi� el asistente, resultado final.",
+  "summary": "Resumen ejecutivo de la conversaciï¿½n en 2-3 oraciones. Incluye: quï¿½ querï¿½a el cliente, cï¿½mo respondiï¿½ el asistente, resultado final.",
   "qaPairs": [
     {
       "question": "Pregunta exacta o parafraseada que hizo el cliente",
@@ -665,18 +670,18 @@ export async function generateConversationSummary(
   ]
 }
 
-CONVERSACI�N:
+CONVERSACIï¿½N:
 ${transcript}
 
 INSTRUCCIONES:
 - Devuelve SOLO el JSON, sin explicaciones adicionales.
 - Extrae todas las preguntas y respuestas importantes.
 - Si el cliente no obtuvo respuesta satisfactoria, incluye igualmente el par con la respuesta real del asistente.
-- El resumen debe ser en espa�ol.
-- M�ximo 10 pares de Q&A.`;
+- El resumen debe ser en espaï¿½ol.
+- Mï¿½ximo 10 pares de Q&A.`;
 
     const response = await ai.models.generateContent({
-      model: 'gemini-2.5-flash',
+      model: 'gemini-2.0-flash',
       contents: [{ parts: [{ text: prompt }] }],
       config: {
         temperature: 0.2,
@@ -698,3 +703,5 @@ INSTRUCCIONES:
     return { summary: 'Error al generar resumen.', qaPairs: [] };
   }
 }
+
+

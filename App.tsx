@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import Layout from './components/Layout';
+import WebsiteLayout from './components/WebsiteLayout';
 import ChatTab from './components/ChatTab';
 import CallTab from './components/CallTab';
 import AdminDashboard from './components/AdminDashboard';
@@ -258,11 +259,29 @@ const App: React.FC = () => {
     );
   }
 
+  if (activeTab === Tab.ADMIN_SETTINGS && !isEmbedMode) {
+    return (
+      <div className="min-h-screen w-full bg-slate-50 flex flex-col font-sans">
+        <AdminDashboard 
+            emergencyMode={emergencyMode}
+            setEmergencyMode={setEmergencyMode}
+            voiceName={voiceName}
+            setVoiceName={setVoiceName}
+            voiceProvider={voiceProvider}
+            setVoiceProvider={setVoiceProvider}
+            currentBrandId={currentBrandId}
+            onToggleBrand={setCurrentBrandId}
+            onUpdateBackground={setBgImage}
+            language={language}
+            onBack={() => setActiveTab(Tab.CHAT)}
+        />
+      </div>
+    );
+  }
+
   return (
-    <div className="h-screen w-screen bg-white overflow-hidden">
-      <Layout 
-        activeTab={activeTab} 
-        onTabChange={setActiveTab}
+    <div className="min-h-screen w-full bg-slate-50 overflow-y-auto">
+      <WebsiteLayout 
         config={activeConfig}
         onOpenDashboard={() => setActiveTab(Tab.ADMIN_SETTINGS)}
         language={language}
@@ -275,9 +294,11 @@ const App: React.FC = () => {
         cart={cart}
         onOpenCart={() => setIsCartOpen(true)}
         showAdminTab={showAdminTab}
+        activeTab={activeTab}
+        onTabChange={setActiveTab}
       >
         {renderContent()}
-      </Layout>
+      </WebsiteLayout>
       <CartSidebar 
         isOpen={isCartOpen}
         onClose={() => setIsCartOpen(false)}

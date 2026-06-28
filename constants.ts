@@ -1,4 +1,4 @@
-
+﻿
 import { BusinessConfig, QuickAction, Product } from './types';
 import { FunctionDeclaration, Type } from "@google/genai";
 import { Language } from './types';
@@ -31,7 +31,20 @@ export const UNITEC_CONFIG: BusinessConfig = {
     "Especial de Octubre: 20% de descuento en combos",
     "Precios especiales en Paneles Acrílicos"
   ],
-  customGreeting: "¡Hola! Bienvenido a UNITEC USA DESIGN"
+  customGreeting: "¡Hola! Bienvenido a UNITEC USA DESIGN",
+  heroImage: "https://images.unsplash.com/photo-1541888081-309505f03d52?auto=format&fit=crop&q=80&w=1920",
+  heroTitle: "UNITEC USA DESIGN",
+  heroSubtitle: "Importador Directo - Distribución Mayorista de Materiales de Construcción",
+  socialLinks: {
+    facebook: "https://facebook.com",
+    instagram: "https://instagram.com/unitecusadesign",
+    linkedin: "https://linkedin.com"
+  },
+  navLinks: [
+    { label: "Inicio", href: "/" },
+    { label: "Catálogo", href: "#products" },
+    { label: "Contacto", href: "#contact" }
+  ]
 };
 
 export const BUILDING_INNOVATION_CONFIG: BusinessConfig = {
@@ -46,7 +59,20 @@ export const BUILDING_INNOVATION_CONFIG: BusinessConfig = {
     "Nuevos Paneles Tech-composite",
     "Semana de Innovación: Consultas gratuitas"
   ],
-  customGreeting: "¡Hola! Bienvenido a Building Innovation. Soy tu asesor virtual. ¿En qué te puedo ayudar hoy? / Hello! How can I help you today?"
+  customGreeting: "¡Hola! Bienvenido a Building Innovation. Soy tu asesor virtual. ¿En qué te puedo ayudar hoy? / Hello! How can I help you today?",
+  heroImage: "https://images.unsplash.com/photo-1497366216548-37526070297c?auto=format&fit=crop&q=80&w=1920",
+  heroTitle: "BUILDING INNOVATION",
+  heroSubtitle: "¡Diseñamos el futuro! / We design the future! Premium Construction Materials",
+  socialLinks: {
+    facebook: "https://facebook.com",
+    instagram: "https://instagram.com/building.innovation",
+    linkedin: "https://linkedin.com"
+  },
+  navLinks: [
+    { label: "Home", href: "/" },
+    { label: "Products", href: "#products" },
+    { label: "Contact Us", href: "#contact" }
+  ]
 };
 
 // Default export for initial load
@@ -54,14 +80,14 @@ export const BUSINESS_CONFIG = BUILDING_INNOVATION_CONFIG;
 
 export const QUICK_ACTIONS: QuickAction[] = [
   { id: 'stock', title: 'Consultar Stock', message: 'Quiero consultar el stock y disponibilidad de un producto.', iconName: 'Box' },
-  { id: 'quote', title: 'Cotizar', message: 'Quiero solicitar una cotización para un producto.', iconName: 'DollarSign' },
-  { id: 'install', title: 'Instalación', message: 'Necesito información sobre cómo instalar un producto.', iconName: 'Hammer' },
+  { id: 'quote', title: 'Cotizar', message: 'Quiero solicitar una cotizaciÃ³n para un producto.', iconName: 'DollarSign' },
+  { id: 'install', title: 'InstalaciÃ³n', message: 'Necesito informaciÃ³n sobre cÃ³mo instalar un producto.', iconName: 'Hammer' },
   { id: 'general', title: 'Consulta General', message: 'Tengo una consulta general sobre sus productos y servicios.', iconName: 'MessageCircle' },
-  { id: 'contact', title: 'Contactar Ventas', message: 'Por favor, comunícame con un representante de ventas.', iconName: 'BookOpen' },
-  { id: 'shipping', title: 'Envíos', message: 'Me gustaría saber cuáles son las opciones de envío y tiempos de entrega.', iconName: 'Truck' },
-  { id: 'specs', title: 'Ficha Técnica', message: 'Necesito las especificaciones técnicas de un producto.', iconName: 'FileText' },
-  { id: 'returns', title: 'Devoluciones', message: '¿Cuál es su política de devoluciones y cambios?', iconName: 'RefreshCcw' },
-  { id: 'discount', title: 'Descuento Mayorista', message: '¿Ofrecen descuentos para compras al por mayor?', iconName: 'Percent' },
+  { id: 'contact', title: 'Contactar Ventas', message: 'Por favor, comunÃ­came con un representante de ventas.', iconName: 'BookOpen' },
+  { id: 'shipping', title: 'EnvÃ­os', message: 'Me gustarÃ­a saber cuÃ¡les son las opciones de envÃ­o y tiempos de entrega.', iconName: 'Truck' },
+  { id: 'specs', title: 'Ficha TÃ©cnica', message: 'Necesito las especificaciones tÃ©cnicas de un producto.', iconName: 'FileText' },
+  { id: 'returns', title: 'Devoluciones', message: 'Â¿CuÃ¡l es su polÃ­tica de devoluciones y cambios?', iconName: 'RefreshCcw' },
+  { id: 'discount', title: 'Descuento Mayorista', message: 'Â¿Ofrecen descuentos para compras al por mayor?', iconName: 'Percent' },
 ];
 
 // --- Tools Definition ---
@@ -214,65 +240,65 @@ DETAILED PRODUCT SPECIFICATIONS (EXTRACTED FROM FICHAS TECNICAS)
 ================================================================================
 
 --- PRODUCT DATA: 01_FT_Piso_Deck.pdf ---
-FICHA TÉCNICA
+FICHA TÃ‰CNICA
 SOBRE EL PRODUCTO
 ESPECIFICACIONES
 VENTAJAS Y BENEFICIOS
 Piso Deck Exterior
-Garantía
+GarantÃ­a
 Unitec
-Fácil
-Instalación
+FÃ¡cil
+InstalaciÃ³n
 Sostenible Impermeable
 No Flamable
 Liviano
 Resistente
 Bajo
 Mantenimiento
-Económico
-POLITICAS DE GARANTÍAS
-Verificar y recibir a conformidad el producto en el momento de entrega, No se aceptan reclamos por faltantes, daños o golpes después de recibida la mercancía.
-UNITEC USA DESIGN no cubre las garantías por productos instalados que presenten diferencias en tamaño, tono, color, rayado, por alabeo o cualquier defecto visible
-que pudiera ser detectado antes de la instalación.
-En el caso de que encuentre este tipo de defectos, por favor absténganse de instalar el producto y comunícate inmediatamente con el respectivo vendedor.
-La garantía no cubre los daños ocasionados al producto, o uso inadecuado del usuario.
-Seguir las recomendaciones de la ficha técnica en cuanto a uso, aplicaciones e instalación. 
+EconÃ³mico
+POLITICAS DE GARANTÃAS
+Verificar y recibir a conformidad el producto en el momento de entrega, No se aceptan reclamos por faltantes, daÃ±os o golpes despuÃ©s de recibida la mercancÃ­a.
+UNITEC USA DESIGN no cubre las garantÃ­as por productos instalados que presenten diferencias en tamaÃ±o, tono, color, rayado, por alabeo o cualquier defecto visible
+que pudiera ser detectado antes de la instalaciÃ³n.
+En el caso de que encuentre este tipo de defectos, por favor abstÃ©nganse de instalar el producto y comunÃ­cate inmediatamente con el respectivo vendedor.
+La garantÃ­a no cubre los daÃ±os ocasionados al producto, o uso inadecuado del usuario.
+Seguir las recomendaciones de la ficha tÃ©cnica en cuanto a uso, aplicaciones e instalaciÃ³n. 
 01
-El Piso en DECK Exterior es fabricado con madera plástica compuesta, su
-excelente apariencia y características le otorgan alta resistencia ante
-cualquier condición climática, un producto de bajo mantenimiento, con
-tecnología perdura, especial para jardines, piscinas, terrazas y zonas
+El Piso en DECK Exterior es fabricado con madera plÃ¡stica compuesta, su
+excelente apariencia y caracterÃ­sticas le otorgan alta resistencia ante
+cualquier condiciÃ³n climÃ¡tica, un producto de bajo mantenimiento, con
+tecnologÃ­a perdura, especial para jardines, piscinas, terrazas y zonas
 sociales. Disponible en los siguientes colores:
-GUÍA DE INSTALACIÓN
+GUÃA DE INSTALACIÃ“N
 USOS Y APLICACIONES
 Residencial: Piscinas, Patios exteriores, fincas.
-Comercial: Hoteles, Cabañas, Salones a cielo abierto,
+Comercial: Hoteles, CabaÃ±as, Salones a cielo abierto,
 Glampings, Restaurantes exteriores.
 Exterior: Principalmente orientado en su exterior, alta
-resistencia a tráficos medianos.
-1.Preparación de la superficie: Para la estructura portante
+resistencia a trÃ¡ficos medianos.
+1.PreparaciÃ³n de la superficie: Para la estructura portante
 utilice perfil base WPC nivelados, y distanciados entre 30 y 45
-cms máximo, nivélelos mediante calzas según sea necesario,
-teniendo en cuenta una pendiente mínima del 2%.
-2.Cortes: Realizar los cortes de longitud necesarios según
+cms mÃ¡ximo, nivÃ©lelos mediante calzas segÃºn sea necesario,
+teniendo en cuenta una pendiente mÃ­nima del 2%.
+2.Cortes: Realizar los cortes de longitud necesarios segÃºn
 medidas en obra y fije las tablas lo antes posible.
-3.Sujeción: El piso DECK debe tener una altura mínima de 2''
+3.SujeciÃ³n: El piso DECK debe tener una altura mÃ­nima de 2''
 permitiendo un paso de aire continuo entre el piso y las
-tablas, para los empalmes se tendrá que tener en cuenta un
+tablas, para los empalmes se tendrÃ¡ que tener en cuenta un
 doble perfil base con doble clip por cada encuentro de tabla
 a lo ancho (14.08cm).
 4.Acabados: Sigue las recomendaciones del fabricante con los
 accesorios sugeridos en caso de ser necesarios.
-5.Mantenimiento: Agua y jabón neutro para retirar el polvo
+5.Mantenimiento: Agua y jabÃ³n neutro para retirar el polvo
 acumulado en el tiempo, cuando se considere necesario.
-Herramienta: Flexómetro, sierra caladora, cinta métrica,
-taladro, regla, lápiz, chazos y tornillos.
+Herramienta: FlexÃ³metro, sierra caladora, cinta mÃ©trica,
+taladro, regla, lÃ¡piz, chazos y tornillos.
 Peso:
 Espesor:
 Formato:
 Embalaje:
 Densidad:
-País de Origen:
+PaÃ­s de Origen:
 Material Principal:
 Nombre del Producto:
 Piso DECK exterior
@@ -283,79 +309,79 @@ Unidad
 -
 PVC - Madera
 China
-Garantía
-Fácil
-Instalación
+GarantÃ­a
+FÃ¡cil
+InstalaciÃ³n
 Sostenible
 Impermeable
-Económico
+EconÃ³mico
 No Flamable
 Liviano
 Resistente
 Bajo
 Mantenimiento
-Alto Diseño
+Alto DiseÃ±o
 
 --- PRODUCT DATA: 02_FT_Piso_SPC.pdf ---
-FICHA TÉCNICA
+FICHA TÃ‰CNICA
 SOBRE EL PRODUCTO
 ESPECIFICACIONES
 VENTAJAS Y BENEFICIOS
 Piso SPC
-Garantía
+GarantÃ­a
 Unitec
-Fácil
-Instalación
+FÃ¡cil
+InstalaciÃ³n
 Sostenible Impermeable
 No Flamable
 Liviano
 Resistente
 Bajo
 Mantenimiento
-Económico
-POLITICAS DE GARANTÍAS
-Verificar y recibir a conformidad el producto en el momento de entrega, No se aceptan reclamos por faltantes, daños o golpes después de recibida la mercancía.
-UNITEC USA DESIGN no cubre las garantías por productos instalados que presenten diferencias en tamaño, tono, color, rayado, por alabeo o cualquier defecto visible
-que pudiera ser detectado antes de la instalación.
-En el caso de que encuentre este tipo de defectos, por favor absténganse de instalar el producto y comunícate inmediatamente con el respectivo vendedor.
-La garantía no cubre los daños ocasionados al producto, o uso inadecuado del usuario.
-Seguir las recomendaciones de la ficha técnica en cuanto a uso, aplicaciones e instalación. 
+EconÃ³mico
+POLITICAS DE GARANTÃAS
+Verificar y recibir a conformidad el producto en el momento de entrega, No se aceptan reclamos por faltantes, daÃ±os o golpes despuÃ©s de recibida la mercancÃ­a.
+UNITEC USA DESIGN no cubre las garantÃ­as por productos instalados que presenten diferencias en tamaÃ±o, tono, color, rayado, por alabeo o cualquier defecto visible
+que pudiera ser detectado antes de la instalaciÃ³n.
+En el caso de que encuentre este tipo de defectos, por favor abstÃ©nganse de instalar el producto y comunÃ­cate inmediatamente con el respectivo vendedor.
+La garantÃ­a no cubre los daÃ±os ocasionados al producto, o uso inadecuado del usuario.
+Seguir las recomendaciones de la ficha tÃ©cnica en cuanto a uso, aplicaciones e instalaciÃ³n. 
 02
-Sistema de suelo SPC de núcleo rígido formado por una mezcla de polvo
+Sistema de suelo SPC de nÃºcleo rÃ­gido formado por una mezcla de polvo
 de piedra (carbonato de calcio) y PVC virgen, con acabado decorativo
 que imita madera o tonos naturales (avellana, gris cenizo, roble claro,
-etc.). Incluye capa de desgaste UV resistente a rasguños, manchas y
-humedad, proporcionando estabilidad dimensional y apariencia estética
-de alta definición. Ideal tanto para residencias como locales comerciales.
-GUÍA DE INSTALACIÓN
+etc.). Incluye capa de desgaste UV resistente a rasguÃ±os, manchas y
+humedad, proporcionando estabilidad dimensional y apariencia estÃ©tica
+de alta definiciÃ³n. Ideal tanto para residencias como locales comerciales.
+GUÃA DE INSTALACIÃ“N
 USOS Y APLICACIONES
-Espacios residenciales: salas, dormitorios, cocinas, baños y
-lavanderías (100% resistente al agua)
-Entornos comerciales: Oficinas, boutiques, cafés, hoteles,
+Espacios residenciales: salas, dormitorios, cocinas, baÃ±os y
+lavanderÃ­as (100% resistente al agua)
+Entornos comerciales: Oficinas, boutiques, cafÃ©s, hoteles,
 salas de espera
-Ámbitos institucionales: Guarderías, colegios, clínicas
-1.Preparación de la superficie: Debe estar limpia, seca, plana y
-estructuralmente sólida.
+Ãmbitos institucionales: GuarderÃ­as, colegios, clÃ­nicas
+1.PreparaciÃ³n de la superficie: Debe estar limpia, seca, plana y
+estructuralmente sÃ³lida.
 2.Cortes: Dejar expansiones de aproximadamente 6mm en
-bordes. Cortar lamas con sierra o cúter.
-3.Fijación: Instalación como sistema flotante: encaje lateral y
+bordes. Cortar lamas con sierra o cÃºter.
+3.FijaciÃ³n: InstalaciÃ³n como sistema flotante: encaje lateral y
 final de lamas con sistema clic, sin adherirse al subsuelo.
 Mantener espaciador las paredes.
-4.Acabados: Instalar los zócalos o molduras sin fijarlos al suelo,
-cubriendo juntas de expansión. Undercut en marcos de puertas
+4.Acabados: Instalar los zÃ³calos o molduras sin fijarlos al suelo,
+cubriendo juntas de expansiÃ³n. Undercut en marcos de puertas
 para que la lama encaje por debajo.
 5.Mantenimiento: Limpiar con escoba o aspiradora. Para
-manchas, usar detergente suave y paño húmedo. Evitar el uso
+manchas, usar detergente suave y paÃ±o hÃºmedo. Evitar el uso
 de ceras, abrasivos, solventes o esponjas rugosas.
-Herramienta: Regla métrica, cúter o sierra, bloque de golpeo o
-maza de goma, barra de tracción, espaciadores 6mm (1/4''), nivel
+Herramienta: Regla mÃ©trica, cÃºter o sierra, bloque de golpeo o
+maza de goma, barra de tracciÃ³n, espaciadores 6mm (1/4''), nivel
 de burbuja, aspiradora o cepillo, guantes.
 Peso:
 Espesor Tipo L / Espesor Tipo XL / Espesor Tipo XXL
 Formato Tipo L / Formato Tipo XL / Formato Tipo XXL
 Embalaje:
 Densidad:
-País de Origen:
+PaÃ­s de Origen:
 Material Principal:
 Nombre del Producto:
 Piso SPC
@@ -363,80 +389,80 @@ Piso SPC
 0,8 Kilogramos
 Unidad
 0,4 cm / 0,45 cm / 0,55 cm
-Aproximadamente 8kg/m²
+Aproximadamente 8kg/mÂ²
 PVC (Policloruro de Vinilo)
 China
-Garantía
-Fácil
-Instalación
+GarantÃ­a
+FÃ¡cil
+InstalaciÃ³n
 Sostenible
 Impermeable
-Económico
+EconÃ³mico
 No Flamable
 Liviano
 Resistente
 Bajo
 Mantenimiento
-Alto Diseño
+Alto DiseÃ±o
 
 --- PRODUCT DATA: 03_FT_Lamina Marmol PVC.pdf ---
-FICHA TÉCNICA
+FICHA TÃ‰CNICA
 ESPECIFICACIONES
 VENTAJAS Y BENEFICIOS
-Garantía
+GarantÃ­a
 Unitec
-Fácil
-Instalación
+FÃ¡cil
+InstalaciÃ³n
 Sostenible Impermeable
 No Flamable
 Liviano
 Resistente
 Bajo
 Mantenimiento
-Económico
-POLITICAS DE GARANTÍAS
-Verificar y recibir a conformidad el producto en el momento de entrega, No se aceptan reclamos por faltantes, daños o golpes después de recibida la mercancía.
-UNITEC USA DESIGN no cubre las garantías por productos instalados que presenten diferencias en tamaño, tono, color, rayado, por alabeo o cualquier defecto visible
-que pudiera ser detectado antes de la instalación.
-En el caso de que encuentre este tipo de defectos, por favor absténganse de instalar el producto y comunícate inmediatamente con el respectivo vendedor.
-La garantía no cubre los daños ocasionados al producto, o uso inadecuado del usuario.
-Seguir las recomendaciones de la ficha técnica en cuanto a uso, aplicaciones e instalación. 
+EconÃ³mico
+POLITICAS DE GARANTÃAS
+Verificar y recibir a conformidad el producto en el momento de entrega, No se aceptan reclamos por faltantes, daÃ±os o golpes despuÃ©s de recibida la mercancÃ­a.
+UNITEC USA DESIGN no cubre las garantÃ­as por productos instalados que presenten diferencias en tamaÃ±o, tono, color, rayado, por alabeo o cualquier defecto visible
+que pudiera ser detectado antes de la instalaciÃ³n.
+En el caso de que encuentre este tipo de defectos, por favor abstÃ©nganse de instalar el producto y comunÃ­cate inmediatamente con el respectivo vendedor.
+La garantÃ­a no cubre los daÃ±os ocasionados al producto, o uso inadecuado del usuario.
+Seguir las recomendaciones de la ficha tÃ©cnica en cuanto a uso, aplicaciones e instalaciÃ³n. 
 03
-Lamina Mármol PVC
-GUÍA DE INSTALACIÓN
+Lamina MÃ¡rmol PVC
+GUÃA DE INSTALACIÃ“N
 USOS Y APLICACIONES
 Recepciones
 Habitaciones
 Centros de entrenamiento
 Salas de estar
-Baños
-1.Preparación de la superficie: esta debe estar nivelada, libre de
-material biótico, humedades y polvo.
-2.Cortes: De acuerdo al área corte la primera pieza si es necesario
+BaÃ±os
+1.PreparaciÃ³n de la superficie: esta debe estar nivelada, libre de
+material biÃ³tico, humedades y polvo.
+2.Cortes: De acuerdo al Ã¡rea corte la primera pieza si es necesario
 y nivela de manera correcta paralelo al piso para que iniciar
-manera ascendente la instalación.
-3.Sujeción: Agregamos adhesivo de montaje en la cara posterior
-producto en O-H y puntos de seguridad en los vacíos.
-4.Acabados: Repetimos el proceso dejando una dilatación entre
-cada pieza mínima de 2mm y máxima de 5mm para cubrir la
+manera ascendente la instalaciÃ³n.
+3.SujeciÃ³n: Agregamos adhesivo de montaje en la cara posterior
+producto en O-H y puntos de seguridad en los vacÃ­os.
+4.Acabados: Repetimos el proceso dejando una dilataciÃ³n entre
+cada pieza mÃ­nima de 2mm y mÃ¡xima de 5mm para cubrir la
 superficie deseada.
-5.Mantenimiento: La dilatación o la junta le damos el acabado
-con boquilla acrílica de acuerdo al color de la referencia
+5.Mantenimiento: La dilataciÃ³n o la junta le damos el acabado
+con boquilla acrÃ­lica de acuerdo al color de la referencia
 elegida, limpiamos y retiramos excesos de polvo y listo.
-Herramienta: Bisturí, regla metálica de 120cms, guantes y gafas
+Herramienta: BisturÃ­, regla metÃ¡lica de 120cms, guantes y gafas
 de seguridad, adhesivo de montaje. 
-Lámina mármol es un decorativo en PVC, la marca UNITEC U.S.A. trae la
-solución ideal para el revestimiento de paredes interiores, ya que ofrece
-un valor estético único para hogares, oficinas y comercios. Sus
-propiedades técnicas brindan un acabado de la más alta calidad.
-Además, es de fácil lavado y resistente contra la humedad.
+LÃ¡mina mÃ¡rmol es un decorativo en PVC, la marca UNITEC U.S.A. trae la
+soluciÃ³n ideal para el revestimiento de paredes interiores, ya que ofrece
+un valor estÃ©tico Ãºnico para hogares, oficinas y comercios. Sus
+propiedades tÃ©cnicas brindan un acabado de la mÃ¡s alta calidad.
+AdemÃ¡s, es de fÃ¡cil lavado y resistente contra la humedad.
 SOBRE EL PRODUCTO
 Peso:
 Espesor:
 Formato:
 Embalaje:
 Densidad:
-País de Origen:
+PaÃ­s de Origen:
 Material Principal:
 Nombre del Producto:
 Lamina Marmol PVC
@@ -447,73 +473,73 @@ Unidad
 -
 PVC (Policloruro de Vinilo)
 China
-Garantía
-Fácil
-Instalación
+GarantÃ­a
+FÃ¡cil
+InstalaciÃ³n
 Sostenible
 Impermeable
-Económico
+EconÃ³mico
 No Flamable
 Liviano
 Resistente
 Bajo
 Mantenimiento
-Alto Diseño
+Alto DiseÃ±o
 
 --- PRODUCT DATA: 04_FT_Pared PU ArqUnitec.pdf ---
-Garantía
+GarantÃ­a
 Unitec
-Fácil
-Instalación
+FÃ¡cil
+InstalaciÃ³n
 Sostenible Impermeable
 No Flamable
 Liviano
 Resistente
 Bajo
 Mantenimiento
-Económico
-Garantía
-Fácil
-Instalación
+EconÃ³mico
+GarantÃ­a
+FÃ¡cil
+InstalaciÃ³n
 Sostenible
 Impermeable
-Económico
+EconÃ³mico
 No Flamable
 Liviano
 Resistente
 Bajo
 Mantenimiento
-Alto Diseño
-FICHA TÉCNICA
+Alto DiseÃ±o
+FICHA TÃ‰CNICA
 SOBRE EL PRODUCTO
 ESPECIFICACIONES
 VENTAJAS Y BENEFICIOS
 Pared PU ArqUnitec
-POLITICAS DE GARANTÍAS
-Verificar y recibir a conformidad el producto en el momento de entrega, No se aceptan reclamos por faltantes, daños o golpes después de recibida la mercancía.
-UNITEC USA DESIGN no cubre las garantías por productos instalados que presenten diferencias en tamaño, tono, color, rayado, por alabeo o cualquier defecto visible
-que pudiera ser detectado antes de la instalación.
-En el caso de que encuentre este tipo de defectos, por favor absténganse de instalar el producto y comunícate inmediatamente con el respectivo vendedor.
-La garantía no cubre los daños ocasionados al producto, o uso inadecuado del usuario.
-Seguir las recomendaciones de la ficha técnica en cuanto a uso, aplicaciones e instalación. 
+POLITICAS DE GARANTÃAS
+Verificar y recibir a conformidad el producto en el momento de entrega, No se aceptan reclamos por faltantes, daÃ±os o golpes despuÃ©s de recibida la mercancÃ­a.
+UNITEC USA DESIGN no cubre las garantÃ­as por productos instalados que presenten diferencias en tamaÃ±o, tono, color, rayado, por alabeo o cualquier defecto visible
+que pudiera ser detectado antes de la instalaciÃ³n.
+En el caso de que encuentre este tipo de defectos, por favor abstÃ©nganse de instalar el producto y comunÃ­cate inmediatamente con el respectivo vendedor.
+La garantÃ­a no cubre los daÃ±os ocasionados al producto, o uso inadecuado del usuario.
+Seguir las recomendaciones de la ficha tÃ©cnica en cuanto a uso, aplicaciones e instalaciÃ³n. 
 04
-GUÍA DE INSTALACIÓN
+GUÃA DE INSTALACIÃ“N
 USOS Y APLICACIONES
 Recepciones
 Habitaciones
 Centros de entrenamiento
 Salas de estar
-1.Preparación de la superficie: Esta debe estar nivelada, libre de
+1.PreparaciÃ³n de la superficie: Esta debe estar nivelada, libre de
 material bituminoso, humedades y polvo.
 2.Cortes: Utiliza una sierra para cortar los paneles de PU Stone
-según las medidas y formas necesarias. Asegúrate de seguir las
+segÃºn las medidas y formas necesarias. AsegÃºrate de seguir las
 instrucciones del fabricante para un corte preciso.
-3.Sujeción: Aplica un adhesivo recomendado por el fabricante en
-la parte posterior de cada panel. Asegúrate de distribuir
+3.SujeciÃ³n: Aplica un adhesivo recomendado por el fabricante en
+la parte posterior de cada panel. AsegÃºrate de distribuir
 uniformemente el adhesivo.
-4.Acabados: Realiza cortes adicionales en los paneles según sea
+4.Acabados: Realiza cortes adicionales en los paneles segÃºn sea
 necesario para ajustarse a las esquinas y bordes. Utiliza
-molduras o accesorios específicos para dar un acabado
+molduras o accesorios especÃ­ficos para dar un acabado
 profesional.
 5.Mantenimiento: 
 En 
@@ -523,23 +549,23 @@ ser
 necesario 
 retirar 
 la
-acumulación de polvo con una manguera de jardín o agua a
-presión no superior a los 100 PSI, adopta las medidas de
-seguridad necesarias para evitar daños.
+acumulaciÃ³n de polvo con una manguera de jardÃ­n o agua a
+presiÃ³n no superior a los 100 PSI, adopta las medidas de
+seguridad necesarias para evitar daÃ±os.
 Herramienta: Sierra de corte, guantes y gafas de seguridad,
 adhesivo de montaje.
-PARED PU ARQUNITEC, más conocida como piedra sintética de
+PARED PU ARQUNITEC, mÃ¡s conocida como piedra sintÃ©tica de
 poliuretano o PU STONE, es un material para acabados constructivos de
 uso interior y exterior. Es liviano, flexible y maleable, capaz de adaptarse
 a cualquier superficie y ambiente, su apariencia logra imitar la piedra
 natural en gran formato, permite conseguir espacios modernos, de lujo y
-con alto diseño. Disponible en los siguientes colores:
+con alto diseÃ±o. Disponible en los siguientes colores:
 Peso:
 Espesor:
 Formato:
 Embalaje:
 Densidad:
-País de Origen:
+PaÃ­s de Origen:
 Material Principal:
 Nombre del Producto:
 Pared PU ArqUnitec
@@ -552,65 +578,65 @@ Poliuretano
 China
 
 --- PRODUCT DATA: 05_FT_Paredes_Muroflex.pdf ---
-FICHA TÉCNICA
+FICHA TÃ‰CNICA
 SOBRE EL PRODUCTO
 ESPECIFICACIONES
 VENTAJAS Y BENEFICIOS
-Garantía
+GarantÃ­a
 Unitec
-Fácil
-Instalación
+FÃ¡cil
+InstalaciÃ³n
 Sostenible Impermeable
 No Flamable
 Liviano
 Resistente
 Bajo
 Mantenimiento
-Económico
-POLITICAS DE GARANTÍAS
-Verificar y recibir a conformidad el producto en el momento de entrega, No se aceptan reclamos por faltantes, daños o golpes después de recibida la mercancía.
-UNITEC USA DESIGN no cubre las garantías por productos instalados que presenten diferencias en tamaño, tono, color, rayado, por alabeo o cualquier defecto visible
-que pudiera ser detectado antes de la instalación.
-En el caso de que encuentre este tipo de defectos, por favor absténganse de instalar el producto y comunícate inmediatamente con el respectivo vendedor.
-La garantía no cubre los daños ocasionados al producto, o uso inadecuado del usuario.
-Seguir las recomendaciones de la ficha técnica en cuanto a uso, aplicaciones e instalación. 
+EconÃ³mico
+POLITICAS DE GARANTÃAS
+Verificar y recibir a conformidad el producto en el momento de entrega, No se aceptan reclamos por faltantes, daÃ±os o golpes despuÃ©s de recibida la mercancÃ­a.
+UNITEC USA DESIGN no cubre las garantÃ­as por productos instalados que presenten diferencias en tamaÃ±o, tono, color, rayado, por alabeo o cualquier defecto visible
+que pudiera ser detectado antes de la instalaciÃ³n.
+En el caso de que encuentre este tipo de defectos, por favor abstÃ©nganse de instalar el producto y comunÃ­cate inmediatamente con el respectivo vendedor.
+La garantÃ­a no cubre los daÃ±os ocasionados al producto, o uso inadecuado del usuario.
+Seguir las recomendaciones de la ficha tÃ©cnica en cuanto a uso, aplicaciones e instalaciÃ³n. 
 05
 Pared Muroflex
-GUÍA DE INSTALACIÓN
+GUÃA DE INSTALACIÃ“N
 USOS Y APLICACIONES
-1.Preparación de la superficie: Verifica que el muro esté limpio,
+1.PreparaciÃ³n de la superficie: Verifica que el muro estÃ© limpio,
 seco y nivelado. Si hay imperfecciones, corrige con masilla y lija.
-2.Cortes: Marca una línea base en la parte inferior para alinear la
+2.Cortes: Marca una lÃ­nea base en la parte inferior para alinear la
 primera lama. Corta las piezas con una sierra manual,
 ingleteadora o caladora si necesitas empalmes.
-3.Sujeción: Aplica adhesivo de montaje tipo poliuretano o
-silicona neutra en zigzag por detrás de la lama.
-4.Acabados: Revisa uniones, esquinas y nivelación. Usa perfiles
-de remate si deseas un acabado más limpio en bordes y
+3.SujeciÃ³n: Aplica adhesivo de montaje tipo poliuretano o
+silicona neutra en zigzag por detrÃ¡s de la lama.
+4.Acabados: Revisa uniones, esquinas y nivelaciÃ³n. Usa perfiles
+de remate si deseas un acabado mÃ¡s limpio en bordes y
 esquinas.
-5.Mantenimiento: Revisa uniones, esquinas y nivelación. Usa
-perfiles de remate si deseas un acabado más limpio en bordes y
+5.Mantenimiento: Revisa uniones, esquinas y nivelaciÃ³n. Usa
+perfiles de remate si deseas un acabado mÃ¡s limpio en bordes y
 esquinas.
-Herramienta: Metro, nivel, cúter o sierra, adhesivo de montaje o
+Herramienta: Metro, nivel, cÃºter o sierra, adhesivo de montaje o
 tornillos, escuadra.
-Panel decorativo fabricado con un compuesto de madera plástica (WPC),
-que combina fibras de madera natural y polímeros plásticos reciclados.
-Su diseño rotativo y modular permite crear texturas y efectos
+Panel decorativo fabricado con un compuesto de madera plÃ¡stica (WPC),
+que combina fibras de madera natural y polÃ­meros plÃ¡sticos reciclados.
+Su diseÃ±o rotativo y modular permite crear texturas y efectos
 tridimensionales, ideales para espacios modernos y sofisticados. Es
-resistente al agua, al moho y a los cambios climáticos, siendo ideal para
+resistente al agua, al moho y a los cambios climÃ¡ticos, siendo ideal para
 interiores y exteriores bajo techo.
 Revestimiento:
  Muros en salas, habitaciones, oficinas, locales comerciales.
-Decoración:
+DecoraciÃ³n:
  Paredes tipo cabecero, fondos de TV, pasillos o columnas.
-Espacios de alto diseño con necesidad de estética cálida y
+Espacios de alto diseÃ±o con necesidad de estÃ©tica cÃ¡lida y
 textura visual.
 Peso:
 Espesor:
 Formato:
 Embalaje:
 Densidad:
-País de Origen:
+PaÃ­s de Origen:
 Material Principal:
 Nombre del Producto:
 Pared Muroflex
@@ -618,89 +644,89 @@ Pared Muroflex
 1,33 Kgs por unidad / 32 Kgs por Caja
 Caja por 24 unidades
 1.8 cm
-Aproximadamente – kg/m²
+Aproximadamente â€“ kg/mÂ²
 WPC
 China
-Garantía
-Fácil
-Instalación
+GarantÃ­a
+FÃ¡cil
+InstalaciÃ³n
 Sostenible
 Impermeable
-Económico
+EconÃ³mico
 No Flamable
 Liviano
 Resistente
 Bajo
 Mantenimiento
-Alto Diseño
+Alto DiseÃ±o
 
 --- PRODUCT DATA: 06_FT_Pared Uniflex.pdf ---
-Garantía
+GarantÃ­a
 Unitec
-Fácil
-Instalación
+FÃ¡cil
+InstalaciÃ³n
 Sostenible Impermeable
 No Flamable
 Liviano
 Resistente
 Bajo
 Mantenimiento
-Económico
-Garantía
-Fácil
-Instalación
+EconÃ³mico
+GarantÃ­a
+FÃ¡cil
+InstalaciÃ³n
 Sostenible
 Impermeable
-Económico
+EconÃ³mico
 No Flamable
 Liviano
 Resistente
 Bajo
 Mantenimiento
-Alto Diseño
-FICHA TÉCNICA
+Alto DiseÃ±o
+FICHA TÃ‰CNICA
 SOBRE EL PRODUCTO
 ESPECIFICACIONES
 VENTAJAS Y BENEFICIOS
-POLITICAS DE GARANTÍAS
-Verificar y recibir a conformidad el producto en el momento de entrega, No se aceptan reclamos por faltantes, daños o golpes después de recibida la mercancía.
-UNITEC USA DESIGN no cubre las garantías por productos instalados que presenten diferencias en tamaño, tono, color, rayado, por alabeo o cualquier defecto visible
-que pudiera ser detectado antes de la instalación.
-En el caso de que encuentre este tipo de defectos, por favor absténganse de instalar el producto y comunícate inmediatamente con el respectivo vendedor.
-La garantía no cubre los daños ocasionados al producto, o uso inadecuado del usuario.
-Seguir las recomendaciones de la ficha técnica en cuanto a uso, aplicaciones e instalación. 
+POLITICAS DE GARANTÃAS
+Verificar y recibir a conformidad el producto en el momento de entrega, No se aceptan reclamos por faltantes, daÃ±os o golpes despuÃ©s de recibida la mercancÃ­a.
+UNITEC USA DESIGN no cubre las garantÃ­as por productos instalados que presenten diferencias en tamaÃ±o, tono, color, rayado, por alabeo o cualquier defecto visible
+que pudiera ser detectado antes de la instalaciÃ³n.
+En el caso de que encuentre este tipo de defectos, por favor abstÃ©nganse de instalar el producto y comunÃ­cate inmediatamente con el respectivo vendedor.
+La garantÃ­a no cubre los daÃ±os ocasionados al producto, o uso inadecuado del usuario.
+Seguir las recomendaciones de la ficha tÃ©cnica en cuanto a uso, aplicaciones e instalaciÃ³n. 
 06
 Pared Uniflex
-GUÍA DE INSTALACIÓN
+GUÃA DE INSTALACIÃ“N
 USOS Y APLICACIONES
 Paredes interiores
 Fachadas exteriores
 Remodelaciones comerciales
-Construcción industrial
+ConstrucciÃ³n industrial
 Proyectos institucionales
-1.Preparación de la superficie: esta debe estar nivelada, libre de
-material biótico, humedades y polvo.
-2.Cortes: De acuerdo al área corte la primera pieza si es necesario
+1.PreparaciÃ³n de la superficie: esta debe estar nivelada, libre de
+material biÃ³tico, humedades y polvo.
+2.Cortes: De acuerdo al Ã¡rea corte la primera pieza si es necesario
 y nivela de manera correcta paralelo al piso para que iniciar
-manera ascendente la instalación.
-3.Sujeción: Agregamos adhesivo de montaje en la cara posterior
-producto en “OH” y puntos de seguridad en los vacíos.
-4.Acabados: Repetimos el proceso dejando una dilatación entre
-cada pieza mínima de 2mm y máxima de 5mm para cubrir la
+manera ascendente la instalaciÃ³n.
+3.SujeciÃ³n: Agregamos adhesivo de montaje en la cara posterior
+producto en â€œOHâ€ y puntos de seguridad en los vacÃ­os.
+4.Acabados: Repetimos el proceso dejando una dilataciÃ³n entre
+cada pieza mÃ­nima de 2mm y mÃ¡xima de 5mm para cubrir la
 superficie deseada.
-5.Mantenimiento: La dilatación o la junta le damos el acabado
-con boquilla acrílica de acuerdo al color de la referencia
+5.Mantenimiento: La dilataciÃ³n o la junta le damos el acabado
+con boquilla acrÃ­lica de acuerdo al color de la referencia
 elegida, limpiamos y retiramos excesos de polvo y listo.
-Herramienta: Bisturí, regla metálica de 120 cm, guantes y gafas
+Herramienta: BisturÃ­, regla metÃ¡lica de 120 cm, guantes y gafas
 de seguridad, adhesivo de montaje.
 Las paredes Uniflex son acabados decorativos flexibles hechos de tierra
 modificada (MMC), caracterizadas por su materia prima principal (arena
-de cuarzo, tela de rejilla alcalina, emulsión ecológica), moldeadas y
+de cuarzo, tela de rejilla alcalina, emulsiÃ³n ecolÃ³gica), moldeadas y
 horneadas e irradiadas utilizando un sistema de peinado con control de
-temperatura especialmente diseñado.
+temperatura especialmente diseÃ±ado.
  Dado que tienen la apariencia de una baldosa al principio de su
-nacimiento, se las conoce comúnmente como baldosas blandas.
-Además, debido a su propio peso ligero, relativamente delgado, también
+nacimiento, se las conoce comÃºnmente como baldosas blandas.
+AdemÃ¡s, debido a su propio peso ligero, relativamente delgado, tambiÃ©n
 es relativamente conveniente para transportar.
 Disponible en los siguientes colores:
 Peso:
@@ -708,7 +734,7 @@ Espesor:
 Formato:
 Embalaje:
 Densidad:
-País de Origen:
+PaÃ­s de Origen:
 Material Principal:
 Nombre del Producto:
 Pared Uniflex
@@ -734,143 +760,143 @@ Citrino
 Macadamia
 
 --- PRODUCT DATA: 07.1_FT_Pared_acolchada PalmaTrigo.pdf ---
-Garantía
+GarantÃ­a
 Unitec
-Fácil
-Instalación
+FÃ¡cil
+InstalaciÃ³n
 Sostenible Impermeable
 No Flamable
 Liviano
 Resistente
 Bajo
 Mantenimiento
-Económico
-Garantía
-Fácil
-Instalación
+EconÃ³mico
+GarantÃ­a
+FÃ¡cil
+InstalaciÃ³n
 Sostenible
 Impermeable
-Económico
+EconÃ³mico
 No Flamable
 Liviano
 Resistente
 Bajo
 Mantenimiento
-Alto Diseño
-FICHA TÉCNICA
+Alto DiseÃ±o
+FICHA TÃ‰CNICA
 SOBRE EL PRODUCTO
 ESPECIFICACIONES
 VENTAJAS Y BENEFICIOS
-POLITICAS DE GARANTÍAS
-Verificar y recibir a conformidad el producto en el momento de entrega, No se aceptan reclamos por faltantes, daños o golpes después de recibida la mercancía.
-UNITEC USA DESIGN no cubre las garantías por productos instalados que presenten diferencias en tamaño, tono, color, rayado, por alabeo o cualquier defecto visible
-que pudiera ser detectado antes de la instalación.
-En el caso de que encuentre este tipo de defectos, por favor absténganse de instalar el producto y comunícate inmediatamente con el respectivo vendedor.
-La garantía no cubre los daños ocasionados al producto, o uso inadecuado del usuario.
-Seguir las recomendaciones de la ficha técnica en cuanto a uso, aplicaciones e instalación. 
+POLITICAS DE GARANTÃAS
+Verificar y recibir a conformidad el producto en el momento de entrega, No se aceptan reclamos por faltantes, daÃ±os o golpes despuÃ©s de recibida la mercancÃ­a.
+UNITEC USA DESIGN no cubre las garantÃ­as por productos instalados que presenten diferencias en tamaÃ±o, tono, color, rayado, por alabeo o cualquier defecto visible
+que pudiera ser detectado antes de la instalaciÃ³n.
+En el caso de que encuentre este tipo de defectos, por favor abstÃ©nganse de instalar el producto y comunÃ­cate inmediatamente con el respectivo vendedor.
+La garantÃ­a no cubre los daÃ±os ocasionados al producto, o uso inadecuado del usuario.
+Seguir las recomendaciones de la ficha tÃ©cnica en cuanto a uso, aplicaciones e instalaciÃ³n. 
 07.1
 Pared acolchada Palma/Trigo
-GUÍA DE INSTALACIÓN
+GUÃA DE INSTALACIÃ“N
 USOS Y APLICACIONES
-Absorción acústica:
- Estudios de grabación, salas de reuniones, auditorios,
+AbsorciÃ³n acÃºstica:
+ Estudios de grabaciÃ³n, salas de reuniones, auditorios,
 oficinas, salas de ensayo, etc.
-Protección anti-colisión:
- Habitaciones infantiles, espacios terapéuticos o mobiliario
+ProtecciÃ³n anti-colisiÃ³n:
+ Habitaciones infantiles, espacios terapÃ©uticos o mobiliario
 acolchado decorativo.
-Diseño interior:
- Espaldar de cama, decoración de oficina.
-1.Preparación de la superficie: La pared debe estar limpia, lisa,
+DiseÃ±o interior:
+ Espaldar de cama, decoraciÃ³n de oficina.
+1.PreparaciÃ³n de la superficie: La pared debe estar limpia, lisa,
 seca y libre de polvo, grasa u hongos.
-2.Cortes: Determine la distribución de los paneles sobre la
-superficie. Marque las líneas guías con lápiz y nivel.
-3.Fijación: Aplique adhesivo tipo montaje (no corrosivo) en
-forma de “S” o puntos sobre la parte posterior del panel.
+2.Cortes: Determine la distribuciÃ³n de los paneles sobre la
+superficie. Marque las lÃ­neas guÃ­as con lÃ¡piz y nivel.
+3.FijaciÃ³n: Aplique adhesivo tipo montaje (no corrosivo) en
+forma de â€œSâ€ o puntos sobre la parte posterior del panel.
 Presione firmemente contra la pared por al menos 30 segundos.
 4.Acabados: Revise que no haya espacios entre paneles. Para
-uniones visibles o esquinas, puede usar perfiles de terminación
+uniones visibles o esquinas, puede usar perfiles de terminaciÃ³n
 o tapajuntas.
-5.Mantenimiento: Limpie ocasionalmente con un paño seco o
-levemente húmedo. Para suciedad adherida, use jabón neutro y
+5.Mantenimiento: Limpie ocasionalmente con un paÃ±o seco o
+levemente hÃºmedo. Para suciedad adherida, use jabÃ³n neutro y
 agua.
-Herramienta: Cinta métrica, cúter o bisturí, nivel de burbuja,
-adhesivo de montaje, guantes y paño seco.
+Herramienta: Cinta mÃ©trica, cÃºter o bisturÃ­, nivel de burbuja,
+adhesivo de montaje, guantes y paÃ±o seco.
 Panel tapizado con forma decorativa (arcos redondeados, espiga)
-fabricado con núcleo acústico de espuma de poliuretano de celda
-abierta y cubierta de tela suave (terciopelo o microfibra). Su diseño
-lúdico y cuidado lo hace ideal para entornos infantiles, salas lounge o
-proyectos de interiorismo contemporáneo que requieren estética y
-absorción acústica.
+fabricado con nÃºcleo acÃºstico de espuma de poliuretano de celda
+abierta y cubierta de tela suave (terciopelo o microfibra). Su diseÃ±o
+lÃºdico y cuidado lo hace ideal para entornos infantiles, salas lounge o
+proyectos de interiorismo contemporÃ¡neo que requieren estÃ©tica y
+absorciÃ³n acÃºstica.
 Peso:
 Espesor PALMA     /      Espesor TRIGO
 PALMA          /          TRIGO
 Embalaje:
 Densidad:
-País de Origen:
+PaÃ­s de Origen:
 Material Principal:
 Nombre del Producto:
 Pared Acolchada
 295 cm x 60 cm  /  395 cm x 60 cm
 5 mm  /   5,5 mm
-Aproximadamente 15kg/m²
-Cuero sintético de alta calidad y espuma de poliuretano
+Aproximadamente 15kg/mÂ²
+Cuero sintÃ©tico de alta calidad y espuma de poliuretano
 China
 2 Kilos  /  2 Kilos
 6 rollos  /  6 rollos
 
 --- PRODUCT DATA: 07.2_FT_Pared  Acolchada Aurora.pdf ---
-Garantía
+GarantÃ­a
 Unitec
-Fácil
-Instalación
+FÃ¡cil
+InstalaciÃ³n
 Sostenible Impermeable
 No Flamable
 Liviano
 Resistente
 Bajo
 Mantenimiento
-Económico
-Garantía
-Fácil
-Instalación
+EconÃ³mico
+GarantÃ­a
+FÃ¡cil
+InstalaciÃ³n
 Sostenible
 Impermeable
-Económico
+EconÃ³mico
 No Flamable
 Liviano
 Resistente
 Bajo
 Mantenimiento
-Alto Diseño
-FICHA TÉCNICA
+Alto DiseÃ±o
+FICHA TÃ‰CNICA
 SOBRE EL PRODUCTO
 ESPECIFICACIONES
 VENTAJAS Y BENEFICIOS
-POLITICAS DE GARANTÍAS
-Verificar y recibir a conformidad el producto en el momento de entrega, No se aceptan reclamos por faltantes, daños o golpes después de recibida la mercancía.
-UNITEC USA DESIGN no cubre las garantías por productos instalados que presenten diferencias en tamaño, tono, color, rayado, por alabeo o cualquier defecto visible
-que pudiera ser detectado antes de la instalación.
-En el caso de que encuentre este tipo de defectos, por favor absténganse de instalar el producto y comunícate inmediatamente con el respectivo vendedor.
-La garantía no cubre los daños ocasionados al producto, o uso inadecuado del usuario.
-Seguir las recomendaciones de la ficha técnica en cuanto a uso, aplicaciones e instalación. 
+POLITICAS DE GARANTÃAS
+Verificar y recibir a conformidad el producto en el momento de entrega, No se aceptan reclamos por faltantes, daÃ±os o golpes despuÃ©s de recibida la mercancÃ­a.
+UNITEC USA DESIGN no cubre las garantÃ­as por productos instalados que presenten diferencias en tamaÃ±o, tono, color, rayado, por alabeo o cualquier defecto visible
+que pudiera ser detectado antes de la instalaciÃ³n.
+En el caso de que encuentre este tipo de defectos, por favor abstÃ©nganse de instalar el producto y comunÃ­cate inmediatamente con el respectivo vendedor.
+La garantÃ­a no cubre los daÃ±os ocasionados al producto, o uso inadecuado del usuario.
+Seguir las recomendaciones de la ficha tÃ©cnica en cuanto a uso, aplicaciones e instalaciÃ³n. 
 07.2
 Pared acolchada Aurora
 La Pared Acolchada Aurora es un revestimiento decorativo para
-interiores que combina diseño contemporáneo, confort y funcionalidad.
-Fabricada con núcleo de espuma de poliuretano y recubierta en cuero
-sintético de alta calidad, aporta un acabado elegante, suave al tacto y de
+interiores que combina diseÃ±o contemporÃ¡neo, confort y funcionalidad.
+Fabricada con nÃºcleo de espuma de poliuretano y recubierta en cuero
+sintÃ©tico de alta calidad, aporta un acabado elegante, suave al tacto y de
 alto impacto visual.
-Su estructura acolchada contribuye a la absorción acústica, mejorando el
-confort sonoro del espacio, mientras que su diseño volumétrico añade
-profundidad y sofisticación. Es una solución ideal para destacar muros y
-elevar el diseño en proyectos residenciales y comerciales.
+Su estructura acolchada contribuye a la absorciÃ³n acÃºstica, mejorando el
+confort sonoro del espacio, mientras que su diseÃ±o volumÃ©trico aÃ±ade
+profundidad y sofisticaciÃ³n. Es una soluciÃ³n ideal para destacar muros y
+elevar el diseÃ±o en proyectos residenciales y comerciales.
 Disponible en los siguientes colores:
 Peso:
 Espesor:
 Formato:
 Embalaje:
 Densidad:
-País de Origen:
+PaÃ­s de Origen:
 Material Principal:
 Nombre del Producto:
 Pared Acolchada Aurora
@@ -878,8 +904,8 @@ Pared Acolchada Aurora
 4 Kg
 Caja por 10 Unidades
 22 mm
-Aproximadamente 15 kg/m²
-Cuero sintético de alta calidad y espuma de poliuretano
+Aproximadamente 15 kg/mÂ²
+Cuero sintÃ©tico de alta calidad y espuma de poliuretano
 China
 Siena
 Caoba
@@ -889,68 +915,68 @@ Negro
 Brillo Plata
 Rocio
 Floral
-GUÍA DE INSTALACIÓN
+GUÃA DE INSTALACIÃ“N
 USOS Y APLICACIONES
-Absorción acústica:
- Estudios de grabación, salas de reuniones, auditorios, oficinas,
+AbsorciÃ³n acÃºstica:
+ Estudios de grabaciÃ³n, salas de reuniones, auditorios, oficinas,
 salas de ensayo, etc.
-Protección anti-colisión:
- Habitaciones infantiles, espacios terapéuticos o mobiliario
+ProtecciÃ³n anti-colisiÃ³n:
+ Habitaciones infantiles, espacios terapÃ©uticos o mobiliario
 acolchado decorativo.
-Diseño interior:
- Espaldar de cama, decoración de oficina.
-1.Preparación de la superficie: La pared debe estar limpia, lisa, seca y
+DiseÃ±o interior:
+ Espaldar de cama, decoraciÃ³n de oficina.
+1.PreparaciÃ³n de la superficie: La pared debe estar limpia, lisa, seca y
 libre de polvo, grasa u hongos.
-2.Cortes: Determine la distribución de los paneles sobre la superficie.
-Marque las líneas guías con lápiz y nivel.
-3.Fijación: Aplique adhesivo tipo montaje (no corrosivo) en forma de “S”
+2.Cortes: Determine la distribuciÃ³n de los paneles sobre la superficie.
+Marque las lÃ­neas guÃ­as con lÃ¡piz y nivel.
+3.FijaciÃ³n: Aplique adhesivo tipo montaje (no corrosivo) en forma de â€œSâ€
 o puntos sobre la parte posterior del panel. Presione firmemente
 contra la pared por al menos 30 segundos.
 4.Acabados: Revise que no haya espacios entre paneles. Para uniones
-visibles o esquinas, puede usar perfiles de terminación o tapajuntas.
-5.Mantenimiento: Limpie ocasionalmente con un paño seco o
-levemente húmedo. Para suciedad adherida, use jabón neutro y agua.
-Herramienta: Cinta métrica, cúter o bisturí, nivel de burbuja, adhesivo
-de montaje, guantes y paño seco.
+visibles o esquinas, puede usar perfiles de terminaciÃ³n o tapajuntas.
+5.Mantenimiento: Limpie ocasionalmente con un paÃ±o seco o
+levemente hÃºmedo. Para suciedad adherida, use jabÃ³n neutro y agua.
+Herramienta: Cinta mÃ©trica, cÃºter o bisturÃ­, nivel de burbuja, adhesivo
+de montaje, guantes y paÃ±o seco.
 
 --- PRODUCT DATA: 08_FT_Panel_PS_Interior.pdf ---
-FICHA TÉCNICA
+FICHA TÃ‰CNICA
 SOBRE EL PRODUCTO
 ESPECIFICACIONES
 VENTAJAS Y BENEFICIOS
-Garantía
+GarantÃ­a
 Unitec
-Fácil
-Instalación
+FÃ¡cil
+InstalaciÃ³n
 Sostenible Impermeable
 No Flamable
 Liviano
 Resistente
 Bajo
 Mantenimiento
-Económico
-POLITICAS DE GARANTÍAS
-Verificar y recibir a conformidad el producto en el momento de entrega, No se aceptan reclamos por faltantes, daños o golpes después de recibida la mercancía.
-UNITEC USA DESIGN no cubre las garantías por productos instalados que presenten diferencias en tamaño, tono, color, rayado, por alabeo o cualquier defecto visible
-que pudiera ser detectado antes de la instalación.
-En el caso de que encuentre este tipo de defectos, por favor absténganse de instalar el producto y comunícate inmediatamente con el respectivo vendedor.
-La garantía no cubre los daños ocasionados al producto, o uso inadecuado del usuario.
-Seguir las recomendaciones de la ficha técnica en cuanto a uso, aplicaciones e instalación. 
+EconÃ³mico
+POLITICAS DE GARANTÃAS
+Verificar y recibir a conformidad el producto en el momento de entrega, No se aceptan reclamos por faltantes, daÃ±os o golpes despuÃ©s de recibida la mercancÃ­a.
+UNITEC USA DESIGN no cubre las garantÃ­as por productos instalados que presenten diferencias en tamaÃ±o, tono, color, rayado, por alabeo o cualquier defecto visible
+que pudiera ser detectado antes de la instalaciÃ³n.
+En el caso de que encuentre este tipo de defectos, por favor abstÃ©nganse de instalar el producto y comunÃ­cate inmediatamente con el respectivo vendedor.
+La garantÃ­a no cubre los daÃ±os ocasionados al producto, o uso inadecuado del usuario.
+Seguir las recomendaciones de la ficha tÃ©cnica en cuanto a uso, aplicaciones e instalaciÃ³n. 
 08
 Panel PS Interior
-Garantía
-Fácil
-Instalación
+GarantÃ­a
+FÃ¡cil
+InstalaciÃ³n
 Sostenible
 Impermeable
-Económico
+EconÃ³mico
 No Flamable
 Liviano
 Resistente
 Bajo
 Mantenimiento
-Alto Diseño
-GUÍA DE INSTALACIÓN
+Alto DiseÃ±o
+GUÃA DE INSTALACIÃ“N
 USOS Y APLICACIONES
 Residencial: Salas de estar, dormitorios.
 Comercial: 
@@ -959,34 +985,34 @@ restaurantes,
 hoteles, 
 espacios
 comerciales.
-Decoración de Eventos: Bodas, fiestas, exhibiciones.
-Diseños Arquitectónico
-1.Preparación de la superficie: debe de estar limpia y seca, libre
-de polvo, material biótico y humedad.
-2.Cortes: De acuerdo al área, optimice los cortes del producto
-teniendo en cuenta su medida estándar.
-3.Sujeción: Aplique adhesivo de montaje al respaldo del
-producto en líneas horizontales cada 30 cms y conecta cada
+DecoraciÃ³n de Eventos: Bodas, fiestas, exhibiciones.
+DiseÃ±os ArquitectÃ³nico
+1.PreparaciÃ³n de la superficie: debe de estar limpia y seca, libre
+de polvo, material biÃ³tico y humedad.
+2.Cortes: De acuerdo al Ã¡rea, optimice los cortes del producto
+teniendo en cuenta su medida estÃ¡ndar.
+3.SujeciÃ³n: Aplique adhesivo de montaje al respaldo del
+producto en lÃ­neas horizontales cada 30 cms y conecta cada
 pieza con su sistema machimbrado hasta cubrir la superficie
 deseada.
 4.Acabados: Sigue las recomendaciones del fabricante con los
 accesorios sugeridos en caso de ser necesarios.
-5.Mantenimiento: Agua y jabón neutro para retirar el polvo
+5.Mantenimiento: Agua y jabÃ³n neutro para retirar el polvo
 acumulado en el tiempo, cuando se considere necesario.
-Herramienta: Flexómetro, cortadora, regla aluminio y guantes.
-El panel PS es un nuevo material de protección ambiental. Ideal para
+Herramienta: FlexÃ³metro, cortadora, regla aluminio y guantes.
+El panel PS es un nuevo material de protecciÃ³n ambiental. Ideal para
 pared hecho en PVC con insumos complementarios que lo hacen liviano
-para facilitar el transporte y la manipulación. Vale la pena mencionar que
-el panel de pared es fácil de instalar, adecuado para diseño de interiores.
-Solo una persona puede completar la renovación de la habitación
+para facilitar el transporte y la manipulaciÃ³n. Vale la pena mencionar que
+el panel de pared es fÃ¡cil de instalar, adecuado para diseÃ±o de interiores.
+Solo una persona puede completar la renovaciÃ³n de la habitaciÃ³n
 interior. Color y forma diversos, cumple con los diferentes estilos de
-diseño.  Disponibles en linea luxury, biselado y estuario.
+diseÃ±o.  Disponibles en linea luxury, biselado y estuario.
 Peso:
 Espesor:
 Formato:
 Embalaje:
 Densidad:
-País de Origen:
+PaÃ­s de Origen:
 Material Principal:
 Nombre del Producto:
 Panel PS
@@ -999,28 +1025,28 @@ PVC (Policloruro de Vinilo)
 China
 
 --- PRODUCT DATA: 09_FT_fachada_Deck.pdf ---
-FICHA TÉCNICA
+FICHA TÃ‰CNICA
 SOBRE EL PRODUCTO
 ESPECIFICACIONES
 VENTAJAS Y BENEFICIOS
-GUÍA DE INSTALACIÓN
+GUÃA DE INSTALACIÃ“N
 USOS Y APLICACIONES
 Peso:
 Espesor:
 Formato:
 Embalaje:
 Densidad:
-País de Origen:
+PaÃ­s de Origen:
 Material Principal:
-La Fachada DECK es un sistema de recubrimiento exterior diseñado para
+La Fachada DECK es un sistema de recubrimiento exterior diseÃ±ado para
 revestir fachadas en proyectos residenciales, comerciales, institucionales
-y campestres. Su diseño tipo listón imita la apariencia de la madera
-natural, aportando un acabado moderno, elegante y arquitectónico.
+y campestres. Su diseÃ±o tipo listÃ³n imita la apariencia de la madera
+natural, aportando un acabado moderno, elegante y arquitectÃ³nico.
 Fabricada en PVC de alta resistencia, la Fachada DECK ofrece excelente
-desempeño frente a la humedad, la radiación solar y los cambios
-climáticos, proporcionando durabilidad, estabilidad dimensional y bajo
-mantenimiento. Además de su valor estético, contribuye al aislamiento
-térmico y a la protección de la estructura frente a las inclemencias del
+desempeÃ±o frente a la humedad, la radiaciÃ³n solar y los cambios
+climÃ¡ticos, proporcionando durabilidad, estabilidad dimensional y bajo
+mantenimiento. AdemÃ¡s de su valor estÃ©tico, contribuye al aislamiento
+tÃ©rmico y a la protecciÃ³n de la estructura frente a las inclemencias del
 tiempo. Disponible en los siguientes colores:
 Fachada DECK
 Fachada DECK
@@ -1028,22 +1054,22 @@ Fachada DECK
 4.9 kilogramos por unidad
 Unidad
 1.5 cm
-Aproximadamente 7 kg/m²
+Aproximadamente 7 kg/mÂ²
 PVC (Policloruro de Vinilo)
 China
-Residencial: Fachadas, división de jardines, cerramientos y
+Residencial: Fachadas, divisiÃ³n de jardines, cerramientos y
 espacios privados.
-Comercial: Proyectos comerciales y diseños arquitectónicos
-Espacios públicos: Parques, áreas de juego y proyectos
+Comercial: Proyectos comerciales y diseÃ±os arquitectÃ³nicos
+Espacios pÃºblicos: Parques, Ã¡reas de juego y proyectos
 urbanos.
-Herramienta: Flexómetro, cortadora, regla de aluminio y
+Herramienta: FlexÃ³metro, cortadora, regla de aluminio y
 guantes 
-1.Preparación de la superficie: debe estar limpia, seca y libre
+1.PreparaciÃ³n de la superficie: debe estar limpia, seca y libre
 de polvo, material bituminoso y humedad.
-2.Cortes: Realizar los cortes de acuerdo al área a cubrir,
-optimizando el producto según su medida estándar.
-3.Sujeción: La instalación puede realizarse sobre estructura
-metálica, madera o directamente sobre pared.  El anclaje se
+2.Cortes: Realizar los cortes de acuerdo al Ã¡rea a cubrir,
+optimizando el producto segÃºn su medida estÃ¡ndar.
+3.SujeciÃ³n: La instalaciÃ³n puede realizarse sobre estructura
+metÃ¡lica, madera o directamente sobre pared.  El anclaje se
 hace 
 mediante 
 tornillo 
@@ -1053,71 +1079,71 @@ riel
 de 
 cada 
 pieza,
-aproximadamente cada 60 cm. Su geometría permite
+aproximadamente cada 60 cm. Su geometrÃ­a permite
 ensamblar una pieza con otra para lograr un acabado
 continuo y uniforme.
 4.Acabados: Seguir las recomendaciones del fabricante y
 utilizar los accesorios sugeridos cuando sea necesario.
-5.Mantenimiento: Limpieza con agua y jabón neutro para
+5.Mantenimiento: Limpieza con agua y jabÃ³n neutro para
 retirar el polvo acumulado con el paso del tiempo.
-Garantía
+GarantÃ­a
 Unitec
-Fácil
-Instalación
+FÃ¡cil
+InstalaciÃ³n
 Sostenible Impermeable
 No Flamable
 Liviano
 Resistente
 Bajo
 Mantenimiento
-Económico
-POLITICAS DE GARANTÍAS
-Verificar y recibir a conformidad el producto en el momento de entrega, No se aceptan reclamos por faltantes, daños o golpes después de recibida la mercancía.
-UNITEC USA DESIGN no cubre las garantías por productos instalados que presenten diferencias en tamaño, tono, color, rayado, por alabeo o cualquier defecto visible
-que pudiera ser detectado antes de la instalación.
-En el caso de que encuentre este tipo de defectos, por favor absténganse de instalar el producto y comunícate inmediatamente con el respectivo vendedor.
-La garantía no cubre los daños ocasionados al producto, o uso inadecuado del usuario.
-Seguir las recomendaciones de la ficha técnica en cuanto a uso, aplicaciones e instalación. 
+EconÃ³mico
+POLITICAS DE GARANTÃAS
+Verificar y recibir a conformidad el producto en el momento de entrega, No se aceptan reclamos por faltantes, daÃ±os o golpes despuÃ©s de recibida la mercancÃ­a.
+UNITEC USA DESIGN no cubre las garantÃ­as por productos instalados que presenten diferencias en tamaÃ±o, tono, color, rayado, por alabeo o cualquier defecto visible
+que pudiera ser detectado antes de la instalaciÃ³n.
+En el caso de que encuentre este tipo de defectos, por favor abstÃ©nganse de instalar el producto y comunÃ­cate inmediatamente con el respectivo vendedor.
+La garantÃ­a no cubre los daÃ±os ocasionados al producto, o uso inadecuado del usuario.
+Seguir las recomendaciones de la ficha tÃ©cnica en cuanto a uso, aplicaciones e instalaciÃ³n. 
 09
 Nombre del Producto:
-Garantía
-Fácil
-Instalación
+GarantÃ­a
+FÃ¡cil
+InstalaciÃ³n
 Sostenible
 Impermeable
-Económico
+EconÃ³mico
 No Flamable
 Liviano
 Resistente
 Bajo
 Mantenimiento
-Alto Diseño
+Alto DiseÃ±o
 
 --- PRODUCT DATA: 10_FT_Polifachada.pdf ---
-Garantía
+GarantÃ­a
 Unitec
-Fácil
-Instalación
+FÃ¡cil
+InstalaciÃ³n
 Sostenible Impermeable
 No Flamable
 Liviano
 Resistente
 Bajo
 Mantenimiento
-Económico
-Garantía
-Fácil
-Instalación
+EconÃ³mico
+GarantÃ­a
+FÃ¡cil
+InstalaciÃ³n
 Sostenible
 Impermeable
-Económico
+EconÃ³mico
 No Flamable
 Liviano
 Resistente
 Bajo
 Mantenimiento
-Alto Diseño
-FICHA TÉCNICA
+Alto DiseÃ±o
+FICHA TÃ‰CNICA
 ESPECIFICACIONES
 VENTAJAS Y BENEFICIOS
 Peso:
@@ -1125,7 +1151,7 @@ Espesor:
 Formato:
 Embalaje:
 Densidad:
-País de Origen:
+PaÃ­s de Origen:
 Material Principal:
 Polifachada
 Polifachada
@@ -1133,32 +1159,32 @@ Polifachada
 4,25 Kilogramos
 Unidad
 2,5 cm
-Aproximadamente 15 kg/m²
+Aproximadamente 15 kg/mÂ²
 PVC (Policloruro de Vinilo)
 China
-POLITICAS DE GARANTÍAS
-Verificar y recibir a conformidad el producto en el momento de entrega, No se aceptan reclamos por faltantes, daños o golpes después de recibida la mercancía.
-UNITEC USA DESIGN no cubre las garantías por productos instalados que presenten diferencias en tamaño, tono, color, rayado, por alabeo o cualquier defecto visible
-que pudiera ser detectado antes de la instalación.
-En el caso de que encuentre este tipo de defectos, por favor absténganse de instalar el producto y comunícate inmediatamente con el respectivo vendedor.
-La garantía no cubre los daños ocasionados al producto, o uso inadecuado del usuario.
-Seguir las recomendaciones de la ficha técnica en cuanto a uso, aplicaciones e instalación. 
+POLITICAS DE GARANTÃAS
+Verificar y recibir a conformidad el producto en el momento de entrega, No se aceptan reclamos por faltantes, daÃ±os o golpes despuÃ©s de recibida la mercancÃ­a.
+UNITEC USA DESIGN no cubre las garantÃ­as por productos instalados que presenten diferencias en tamaÃ±o, tono, color, rayado, por alabeo o cualquier defecto visible
+que pudiera ser detectado antes de la instalaciÃ³n.
+En el caso de que encuentre este tipo de defectos, por favor abstÃ©nganse de instalar el producto y comunÃ­cate inmediatamente con el respectivo vendedor.
+La garantÃ­a no cubre los daÃ±os ocasionados al producto, o uso inadecuado del usuario.
+Seguir las recomendaciones de la ficha tÃ©cnica en cuanto a uso, aplicaciones e instalaciÃ³n. 
 10
 Nombre del Producto:
 SOBRE EL PRODUCTO
-GUÍA DE INSTALACIÓN
+GUÃA DE INSTALACIÃ“N
 USOS Y APLICACIONES
-1.Preparación de la superficie: La estructura de soporte (muros
-portantes o panelería) debe estar nivelada, firme y seca.
-Verifique la correcta alineación de la perfilería antes de iniciar la
-instalación.
-2.Cortes: Determinar las líneas de fijación y ubicación de los
+1.PreparaciÃ³n de la superficie: La estructura de soporte (muros
+portantes o panelerÃ­a) debe estar nivelada, firme y seca.
+Verifique la correcta alineaciÃ³n de la perfilerÃ­a antes de iniciar la
+instalaciÃ³n.
+2.Cortes: Determinar las lÃ­neas de fijaciÃ³n y ubicaciÃ³n de los
 paneles. Cortar a medida utilizando herramientas adecuadas,
 asegurando cortes rectos y precisos.
-3.Fijación: Empezar por el primer panel en esquina o punto de
+3.FijaciÃ³n: Empezar por el primer panel en esquina o punto de
 arranque. Fijar mediante tornillos autorroscantes en los puntos
 indicados 
-(fijación 
+(fijaciÃ³n 
 visible 
 u 
 oculta), 
@@ -1167,110 +1193,110 @@ los
 espaciamientos recomendados por el fabricante. Instalar los
 paneles sucesivos encajando el lado macho en el hembra del
 panel anterior.
-4.Acabados: Colocar perfiles de terminación en remates, juntas y
-esquinas. Revisar la correcta alineación y continuidad visual.
-Sellar con silicona si aplica, según recomendaciones técnicas.
-5.Mantenimiento: Limpiar regularmente con agua y jabón
+4.Acabados: Colocar perfiles de terminaciÃ³n en remates, juntas y
+esquinas. Revisar la correcta alineaciÃ³n y continuidad visual.
+Sellar con silicona si aplica, segÃºn recomendaciones tÃ©cnicas.
+5.Mantenimiento: Limpiar regularmente con agua y jabÃ³n
 neutro. Evitar productos abrasivos o corrosivos.
-Herramienta: Cinta métrica, nivel láser o de burbuja, guantes,
+Herramienta: Cinta mÃ©trica, nivel lÃ¡ser o de burbuja, guantes,
 taladro con broca adecuada, tornillos autorroscantes, listones o
-perfiles metálicos de soporte, perfiles de terminación.
-La Polifachada es un sistema de revestimiento arquitectónico para
-fachadas exteriores, fabricado en PVC (Policloruro de Vinilo), diseñado
-para ofrecer alta resistencia a la humedad, agentes atmosféricos e
-insectos. Su configuración modular de listones verticales permite una
-instalación eficiente sobre estructuras de soporte, aportando estabilidad,
-durabilidad y un acabado contemporáneo con bajo mantenimiento.
+perfiles metÃ¡licos de soporte, perfiles de terminaciÃ³n.
+La Polifachada es un sistema de revestimiento arquitectÃ³nico para
+fachadas exteriores, fabricado en PVC (Policloruro de Vinilo), diseÃ±ado
+para ofrecer alta resistencia a la humedad, agentes atmosfÃ©ricos e
+insectos. Su configuraciÃ³n modular de listones verticales permite una
+instalaciÃ³n eficiente sobre estructuras de soporte, aportando estabilidad,
+durabilidad y un acabado contemporÃ¡neo con bajo mantenimiento.
 Revestimiento exterior:
 Fachadas ventiladas en edificios residenciales, comerciales,
-industriales y prefabricados, casetas modulares, cámaras
-frigoríficas, 
-sectorización 
+industriales y prefabricados, casetas modulares, cÃ¡maras
+frigorÃ­ficas, 
+sectorizaciÃ³n 
 industrial 
 y 
 cerramientos
 decorativos.
 
 --- PRODUCT DATA: 11_FT_Lamina_Sintetica.pdf ---
-Garantía
+GarantÃ­a
 Unitec
-Fácil
-Instalación
+FÃ¡cil
+InstalaciÃ³n
 Sostenible Impermeable
 No Flamable
 Liviano
 Resistente
 Bajo
 Mantenimiento
-Económico
-Garantía
-Fácil
-Instalación
+EconÃ³mico
+GarantÃ­a
+FÃ¡cil
+InstalaciÃ³n
 Sostenible
 Impermeable
-Económico
+EconÃ³mico
 No Flamable
 Liviano
 Resistente
 Bajo
 Mantenimiento
-Alto Diseño
-FICHA TÉCNICA
+Alto DiseÃ±o
+FICHA TÃ‰CNICA
 SOBRE EL PRODUCTO
 ESPECIFICACIONES
 VENTAJAS Y BENEFICIOS
-POLITICAS DE GARANTÍAS
-Verificar y recibir a conformidad el producto en el momento de entrega, No se aceptan reclamos por faltantes, daños o golpes después de recibida la mercancía.
-UNITEC USA DESIGN no cubre las garantías por productos instalados que presenten diferencias en tamaño, tono, color, rayado, por alabeo o cualquier defecto visible
-que pudiera ser detectado antes de la instalación.
-En el caso de que encuentre este tipo de defectos, por favor absténganse de instalar el producto y comunícate inmediatamente con el respectivo vendedor.
-La garantía no cubre los daños ocasionados al producto, o uso inadecuado del usuario.
-Seguir las recomendaciones de la ficha técnica en cuanto a uso, aplicaciones e instalación. 
+POLITICAS DE GARANTÃAS
+Verificar y recibir a conformidad el producto en el momento de entrega, No se aceptan reclamos por faltantes, daÃ±os o golpes despuÃ©s de recibida la mercancÃ­a.
+UNITEC USA DESIGN no cubre las garantÃ­as por productos instalados que presenten diferencias en tamaÃ±o, tono, color, rayado, por alabeo o cualquier defecto visible
+que pudiera ser detectado antes de la instalaciÃ³n.
+En el caso de que encuentre este tipo de defectos, por favor abstÃ©nganse de instalar el producto y comunÃ­cate inmediatamente con el respectivo vendedor.
+La garantÃ­a no cubre los daÃ±os ocasionados al producto, o uso inadecuado del usuario.
+Seguir las recomendaciones de la ficha tÃ©cnica en cuanto a uso, aplicaciones e instalaciÃ³n. 
 11
-Lámina Sintética
-GUÍA DE INSTALACIÓN
+LÃ¡mina SintÃ©tica
+GUÃA DE INSTALACIÃ“N
 USOS Y APLICACIONES
 Revestimiento: Muros en salas, habitaciones, oficinas y
 locales comerciales
-Decoración: Paredes tipo cabecero, fondos de TV, pasillos y
+DecoraciÃ³n: Paredes tipo cabecero, fondos de TV, pasillos y
 columnas
-Espacios de alto diseño con necesidad de estética cálida y
+Espacios de alto diseÃ±o con necesidad de estÃ©tica cÃ¡lida y
 textura visual
-Proyectos con retroiluminación decorativa
-1.Preparación de la superficie: Asegúrese de que la base esté
+Proyectos con retroiluminaciÃ³n decorativa
+1.PreparaciÃ³n de la superficie: AsegÃºrese de que la base estÃ©
 limpia, seca y firme. Puede utilizar madera, MDF o aluminio
 como soporte.
-2.Cortes: Marque las medidas sobre la lámina con cinta o
-marcador suave y realice los cortes según el diseño requerido.
-3.Fijación: Utilice adhesivo de montaje neutro o silicona
-transparente para fijar la lámina. También puede atornillarse
-desde atrás si se instala sobre estructura metálica o modular.
+2.Cortes: Marque las medidas sobre la lÃ¡mina con cinta o
+marcador suave y realice los cortes segÃºn el diseÃ±o requerido.
+3.FijaciÃ³n: Utilice adhesivo de montaje neutro o silicona
+transparente para fijar la lÃ¡mina. TambiÃ©n puede atornillarse
+desde atrÃ¡s si se instala sobre estructura metÃ¡lica o modular.
 4.Acabados: Retire excedentes de adhesivo. Instale luces LED si
-el diseño es retroiluminado.
-5.Mantenimiento: Limpie con paño suave y detergente neutro.
+el diseÃ±o es retroiluminado.
+5.Mantenimiento: Limpie con paÃ±o suave y detergente neutro.
 Evite abrasivos o estropajos. No se recomienda exponer
 directamente al fuego u objetos calientes.
-Herramienta: Sierra circular o caladora, cinta métrica, nivel,
+Herramienta: Sierra circular o caladora, cinta mÃ©trica, nivel,
 taladro, brochas, luz LED (si es retroiluminada), adhesivo de
 montaje neutro o silicona transparente.
-La Lámina Sintética es un revestimiento decorativo de alto impacto
-visual, diseñado para simular la apariencia natural del ónix
-retroiluminado. Fabricada en WPC, su superficie translúcida permite el
+La LÃ¡mina SintÃ©tica es un revestimiento decorativo de alto impacto
+visual, diseÃ±ado para simular la apariencia natural del Ã³nix
+retroiluminado. Fabricada en WPC, su superficie translÃºcida permite el
 paso de la luz, generando un efecto luminoso elegante y sofisticado.
-Gracias a su ligereza, resistencia y facilidad de manipulación, es una
-solución ideal para proyectos de interiorismo que buscan acabados
-modernos, cálidos y personalizados, especialmente en aplicaciones
-decorativas con iluminación integrada.
+Gracias a su ligereza, resistencia y facilidad de manipulaciÃ³n, es una
+soluciÃ³n ideal para proyectos de interiorismo que buscan acabados
+modernos, cÃ¡lidos y personalizados, especialmente en aplicaciones
+decorativas con iluminaciÃ³n integrada.
 Peso:
 Embalaje:
 Densidad:
-País de Origen:
+PaÃ­s de Origen:
 Material Principal:
 Nombre del Producto:
-Lámina Sintética
+LÃ¡mina SintÃ©tica
 Piedra del Sol / Crema Selecta: 244 cm x 122 cm
 0,6 cm
-Aproximadamente 8 kg/m²
+Aproximadamente 8 kg/mÂ²
 WPC
 China
 12 Kilogramos
@@ -1279,94 +1305,94 @@ Espesor:
 Formato:
 
 --- PRODUCT DATA: 12_FT_Foam_Board.pdf ---
-Garantía
+GarantÃ­a
 Unitec
-Fácil
-Instalación
+FÃ¡cil
+InstalaciÃ³n
 Sostenible Impermeable
 No Flamable
 Liviano
 Resistente
 Bajo
 Mantenimiento
-Económico
-Garantía
-Fácil
-Instalación
+EconÃ³mico
+GarantÃ­a
+FÃ¡cil
+InstalaciÃ³n
 Sostenible
 Impermeable
-Económico
+EconÃ³mico
 No Flamable
 Liviano
 Resistente
 Bajo
 Mantenimiento
-Alto Diseño
-FICHA TÉCNICA
+Alto DiseÃ±o
+FICHA TÃ‰CNICA
 SOBRE EL PRODUCTO
 ESPECIFICACIONES
 VENTAJAS Y BENEFICIOS
-POLITICAS DE GARANTÍAS
-Verificar y recibir a conformidad el producto en el momento de entrega, No se aceptan reclamos por faltantes, daños o golpes después de recibida la mercancía.
-UNITEC USA DESIGN no cubre las garantías por productos instalados que presenten diferencias en tamaño, tono, color, rayado, por alabeo o cualquier defecto visible
-que pudiera ser detectado antes de la instalación.
-En el caso de que encuentre este tipo de defectos, por favor absténganse de instalar el producto y comunícate inmediatamente con el respectivo vendedor.
-La garantía no cubre los daños ocasionados al producto, o uso inadecuado del usuario.
-Seguir las recomendaciones de la ficha técnica en cuanto a uso, aplicaciones e instalación. 
+POLITICAS DE GARANTÃAS
+Verificar y recibir a conformidad el producto en el momento de entrega, No se aceptan reclamos por faltantes, daÃ±os o golpes despuÃ©s de recibida la mercancÃ­a.
+UNITEC USA DESIGN no cubre las garantÃ­as por productos instalados que presenten diferencias en tamaÃ±o, tono, color, rayado, por alabeo o cualquier defecto visible
+que pudiera ser detectado antes de la instalaciÃ³n.
+En el caso de que encuentre este tipo de defectos, por favor abstÃ©nganse de instalar el producto y comunÃ­cate inmediatamente con el respectivo vendedor.
+La garantÃ­a no cubre los daÃ±os ocasionados al producto, o uso inadecuado del usuario.
+Seguir las recomendaciones de la ficha tÃ©cnica en cuanto a uso, aplicaciones e instalaciÃ³n. 
 12
 Foam Board
-GUÍA DE INSTALACIÓN
+GUÃA DE INSTALACIÃ“N
 USOS Y APLICACIONES
-Decoración de interiores
+DecoraciÃ³n de interiores
 Acabados para proyectos comerciales
-Impresión digital y serigrafía
-Señalización y cartelería
+ImpresiÃ³n digital y serigrafÃ­a
+SeÃ±alizaciÃ³n y cartelerÃ­a
 Puntos de venta y exhibiciones
 Manualidades y proyectos de arte
-1.Preparación de la superficie: La superficie debe estar limpia,
+1.PreparaciÃ³n de la superficie: La superficie debe estar limpia,
 seca, lisa y libre de polvo, material bituminoso o humedad.
-2.Cortes: De acuerdo al área, optimice los cortes del producto
-teniendo en cuenta su medida estándar. Realice cortes precisos
-con bisturí o herramienta adecuada.
-3.Sujeción: Aplique adhesivo de montaje para PVC en la pared o
-en la cara posterior del Foam Board, utilizando un patrón en
+2.Cortes: De acuerdo al Ã¡rea, optimice los cortes del producto
+teniendo en cuenta su medida estÃ¡ndar. Realice cortes precisos
+con bisturÃ­ o herramienta adecuada.
+3.SujeciÃ³n: Aplique adhesivo de montaje para PVC en la pared o
+en la cara posterior del Foam Board, utilizando un patrÃ³n en
 zigzag o puntos uniformemente distribuidos.
 4.Acabados: Siga las recomendaciones del fabricante y utilice los
 accesorios sugeridos en caso de ser necesarios para lograr un
 acabado limpio y profesional.
-5.Mantenimiento: Limpie con agua y jabón neutro para retirar el
+5.Mantenimiento: Limpie con agua y jabÃ³n neutro para retirar el
 polvo acumulado con el tiempo, cuando sea necesario.
-Herramienta: Flexómetro, bisturí o cúter, regla de aluminio y
+Herramienta: FlexÃ³metro, bisturÃ­ o cÃºter, regla de aluminio y
 guantes.
-El Foam Board es un panel decorativo liviano y versátil, compuesto por
-un núcleo de espuma de poliestireno de alta densidad, recubierto por
-capas externas de acabado técnico y decorativo. Su estructura garantiza
+El Foam Board es un panel decorativo liviano y versÃ¡til, compuesto por
+un nÃºcleo de espuma de poliestireno de alta densidad, recubierto por
+capas externas de acabado tÃ©cnico y decorativo. Su estructura garantiza
 rigidez, 
 estabilidad 
 dimensional 
 y 
 facilidad 
 de 
-manipulación,
-convirtiéndolo en una solución ideal para aplicaciones de diseño interior,
+manipulaciÃ³n,
+convirtiÃ©ndolo en una soluciÃ³n ideal para aplicaciones de diseÃ±o interior,
 exhibiciones, revestimientos decorativos y proyectos creativos.  
-Disponible en múltiples líneas especializadas, diseñadas para responder
-a diferentes conceptos estéticos y necesidades de diseño: Aurora Boreal,
+Disponible en mÃºltiples lÃ­neas especializadas, diseÃ±adas para responder
+a diferentes conceptos estÃ©ticos y necesidades de diseÃ±o: Aurora Boreal,
 Zen, Espejo, Gotas de Agua y Pastel.
-Gracias a su bajo peso, fácil corte, rápida instalación y amplia variedad de
+Gracias a su bajo peso, fÃ¡cil corte, rÃ¡pida instalaciÃ³n y amplia variedad de
 acabados, el Foam Board permite transformar superficies simples en
-elementos de alto valor estético, manteniendo un excelente balance
-entre diseño, funcionalidad y rendimiento.
+elementos de alto valor estÃ©tico, manteniendo un excelente balance
+entre diseÃ±o, funcionalidad y rendimiento.
 Peso:
 Embalaje:
 Densidad:
-País de Origen:
+PaÃ­s de Origen:
 Material Principal:
 Nombre del Producto:
 Foam Board
 244 cm x 122 cm
 0.5 cm
-Aproximadamente 0.55 g/cm³
+Aproximadamente 0.55 g/cmÂ³
 PVC (Policloruro de Vinilo)
 China
 9.5 Kilogramos
@@ -1374,90 +1400,90 @@ Unidad
 Formato:
 Espesor:
 
---- PRODUCT DATA: 13_FT_Rollo Adhesivo Mármol.pdf ---
-Garantía
+--- PRODUCT DATA: 13_FT_Rollo Adhesivo MÃ¡rmol.pdf ---
+GarantÃ­a
 Unitec
-Fácil
-Instalación
+FÃ¡cil
+InstalaciÃ³n
 Sostenible Impermeable
 No Flamable
 Liviano
 Resistente
 Bajo
 Mantenimiento
-Económico
-Garantía
-Fácil
-Instalación
+EconÃ³mico
+GarantÃ­a
+FÃ¡cil
+InstalaciÃ³n
 Sostenible
 Impermeable
-Económico
+EconÃ³mico
 No Flamable
 Liviano
 Resistente
 Bajo
 Mantenimiento
-Alto Diseño
-FICHA TÉCNICA
+Alto DiseÃ±o
+FICHA TÃ‰CNICA
 SOBRE EL PRODUCTO
 ESPECIFICACIONES
 VENTAJAS Y BENEFICIOS
-POLITICAS DE GARANTÍAS
-Verificar y recibir a conformidad el producto en el momento de entrega, No se aceptan reclamos por faltantes, daños o golpes después de recibida la mercancía.
-UNITEC USA DESIGN no cubre las garantías por productos instalados que presenten diferencias en tamaño, tono, color, rayado, por alabeo o cualquier defecto visible
-que pudiera ser detectado antes de la instalación.
-En el caso de que encuentre este tipo de defectos, por favor absténganse de instalar el producto y comunícate inmediatamente con el respectivo vendedor.
-La garantía no cubre los daños ocasionados al producto, o uso inadecuado del usuario.
-Seguir las recomendaciones de la ficha técnica en cuanto a uso, aplicaciones e instalación. 
+POLITICAS DE GARANTÃAS
+Verificar y recibir a conformidad el producto en el momento de entrega, No se aceptan reclamos por faltantes, daÃ±os o golpes despuÃ©s de recibida la mercancÃ­a.
+UNITEC USA DESIGN no cubre las garantÃ­as por productos instalados que presenten diferencias en tamaÃ±o, tono, color, rayado, por alabeo o cualquier defecto visible
+que pudiera ser detectado antes de la instalaciÃ³n.
+En el caso de que encuentre este tipo de defectos, por favor abstÃ©nganse de instalar el producto y comunÃ­cate inmediatamente con el respectivo vendedor.
+La garantÃ­a no cubre los daÃ±os ocasionados al producto, o uso inadecuado del usuario.
+Seguir las recomendaciones de la ficha tÃ©cnica en cuanto a uso, aplicaciones e instalaciÃ³n. 
 13
-Rollo Adhesivo de Mármol
-GUÍA DE INSTALACIÓN
+Rollo Adhesivo de MÃ¡rmol
+GUÃA DE INSTALACIÃ“N
 USOS Y APLICACIONES
-Revestimientos: Cocinas, baños, salas, oficinas o como
+Revestimientos: Cocinas, baÃ±os, salas, oficinas o como
 backsplash
-Cubiertas de mobiliario: Encimeras, zócalos y superficies
+Cubiertas de mobiliario: Encimeras, zÃ³calos y superficies
 planas
 Aplicaciones 
 temporales 
 o 
 decorativas: 
 Stands,
-exhibiciones y remodelaciones rápidas
-1.Preparación de la superficie: La superficie debe estar limpia,
+exhibiciones y remodelaciones rÃ¡pidas
+1.PreparaciÃ³n de la superficie: La superficie debe estar limpia,
 seca, lisa y libre de polvo, grasa o humedad. Lijar ligeramente
-superficies brillantes o acrílicas y retirar residuos con alcohol.
-2.Cortes: Cortar el vinilo con precisión antes de retirar el liner
-protector. Para esquinas, marcar con lápiz fino.
-3.Sujeción: Retirar el papel protector gradualmente y aplicar
+superficies brillantes o acrÃ­licas y retirar residuos con alcohol.
+2.Cortes: Cortar el vinilo con precisiÃ³n antes de retirar el liner
+protector. Para esquinas, marcar con lÃ¡piz fino.
+3.SujeciÃ³n: Retirar el papel protector gradualmente y aplicar
 sobre la superficie con la mano o rodillo desde un extremo,
 presionando hacia afuera para evitar burbujas de aire.
 4.Acabados: Alinear bien las vetas entre tramos si aplica junta.
-Recortar bordes sobrantes con cúter tras la fijación.
-5.Mantenimiento: Limpiar con paño húmedo y jabón neutro.
+Recortar bordes sobrantes con cÃºter tras la fijaciÃ³n.
+5.Mantenimiento: Limpiar con paÃ±o hÃºmedo y jabÃ³n neutro.
 Evitar productos abrasivos.
-Herramienta: Cinta métrica, cúter, regla metálica, espátula o
-rodillo de presión, paño seco, alcohol isopropílico para limpieza.
-El Rollo Adhesivo Mármol es un revestimiento decorativo autoadhesivo
-fabricado en vinilo PVC, diseñado para replicar el acabado visual del
-mármol natural de forma práctica y económica. Su superficie ofrece un
+Herramienta: Cinta mÃ©trica, cÃºter, regla metÃ¡lica, espÃ¡tula o
+rodillo de presiÃ³n, paÃ±o seco, alcohol isopropÃ­lico para limpieza.
+El Rollo Adhesivo MÃ¡rmol es un revestimiento decorativo autoadhesivo
+fabricado en vinilo PVC, diseÃ±ado para replicar el acabado visual del
+mÃ¡rmol natural de forma prÃ¡ctica y econÃ³mica. Su superficie ofrece un
 efecto elegante y sofisticado, ideal para renovar espacios sin necesidad
 de obras ni procesos complejos.
-Gracias a su flexibilidad, bajo peso y fácil instalación, permite transformar
-muros, mobiliario y superficies planas, proporcionando una solución
-funcional para proyectos decorativos, remodelaciones rápidas y
+Gracias a su flexibilidad, bajo peso y fÃ¡cil instalaciÃ³n, permite transformar
+muros, mobiliario y superficies planas, proporcionando una soluciÃ³n
+funcional para proyectos decorativos, remodelaciones rÃ¡pidas y
 aplicaciones temporales, con buena resistencia al uso diario y a la
 humedad.
-Disponible en 4 colores: Gris, Negro, Mármol T9 y Blanco. 
+Disponible en 4 colores: Gris, Negro, MÃ¡rmol T9 y Blanco. 
 Peso:
 Embalaje:
 Densidad:
-País de Origen:
+PaÃ­s de Origen:
 Material Principal:
 Nombre del Producto:
-Rollo Adhesivo Mármol
+Rollo Adhesivo MÃ¡rmol
 300 cm x 60 cm
 0,008 cm
-Aproximadamente 8 kg/m²
+Aproximadamente 8 kg/mÂ²
 Vinilo PVC
 China
 0,2 Kilogramos
@@ -1466,49 +1492,49 @@ Formato:
 Espesor:
 
 --- PRODUCT DATA: 14_FT_Panel_WPC_Exterior.pdf ---
-Garantía
+GarantÃ­a
 Unitec
-Fácil
-Instalación
+FÃ¡cil
+InstalaciÃ³n
 Sostenible Impermeable
 No Flamable
 Liviano
 Resistente
 Bajo
 Mantenimiento
-Económico
-Garantía
-Fácil
-Instalación
+EconÃ³mico
+GarantÃ­a
+FÃ¡cil
+InstalaciÃ³n
 Sostenible
 Impermeable
-Económico
+EconÃ³mico
 No Flamable
 Liviano
 Resistente
 Bajo
 Mantenimiento
-Alto Diseño
-FICHA TÉCNICA
+Alto DiseÃ±o
+FICHA TÃ‰CNICA
 SOBRE EL PRODUCTO
 ESPECIFICACIONES
 VENTAJAS Y BENEFICIOS
-POLITICAS DE GARANTÍAS
-Verificar y recibir a conformidad el producto en el momento de entrega, No se aceptan reclamos por faltantes, daños o golpes después de recibida la mercancía.
-UNITEC USA DESIGN no cubre las garantías por productos instalados que presenten diferencias en tamaño, tono, color, rayado, por alabeo o cualquier defecto visible
-que pudiera ser detectado antes de la instalación.
-En el caso de que encuentre este tipo de defectos, por favor absténganse de instalar el producto y comunícate inmediatamente con el respectivo vendedor.
-La garantía no cubre los daños ocasionados al producto, o uso inadecuado del usuario.
-Seguir las recomendaciones de la ficha técnica en cuanto a uso, aplicaciones e instalación. 
+POLITICAS DE GARANTÃAS
+Verificar y recibir a conformidad el producto en el momento de entrega, No se aceptan reclamos por faltantes, daÃ±os o golpes despuÃ©s de recibida la mercancÃ­a.
+UNITEC USA DESIGN no cubre las garantÃ­as por productos instalados que presenten diferencias en tamaÃ±o, tono, color, rayado, por alabeo o cualquier defecto visible
+que pudiera ser detectado antes de la instalaciÃ³n.
+En el caso de que encuentre este tipo de defectos, por favor abstÃ©nganse de instalar el producto y comunÃ­cate inmediatamente con el respectivo vendedor.
+La garantÃ­a no cubre los daÃ±os ocasionados al producto, o uso inadecuado del usuario.
+Seguir las recomendaciones de la ficha tÃ©cnica en cuanto a uso, aplicaciones e instalaciÃ³n. 
 14
 Panel WPC Exterior
-GUÍA DE INSTALACIÓN
+GUÃA DE INSTALACIÃ“N
 USOS Y APLICACIONES
-El panel en WPC Exterior es fabricado con madera plástica compuesta
-(WPC - Wood Plastic Composite) su excelente apariencia y características
-le otorgan alta resistencia ante cualquier condición climática, un
+El panel en WPC Exterior es fabricado con madera plÃ¡stica compuesta
+(WPC - Wood Plastic Composite) su excelente apariencia y caracterÃ­sticas
+le otorgan alta resistencia ante cualquier condiciÃ³n climÃ¡tica, un
 producto de bajo mantenimiento que combina calidad y sostenibilidad,
-con estética y funcionalidad. Disponible en los siguientes colores:
+con estÃ©tica y funcionalidad. Disponible en los siguientes colores:
 Residencial: Salas de estar, dormitorios.
 Comercial: 
 Oficinas, 
@@ -1516,28 +1542,28 @@ restaurantes,
 hoteles, 
 espacios
 comerciales.
-Decoración de Eventos: Bodas, fiestas, exhibiciones.
-Diseños Arquitectónico
-1.Preparación de la superficie: debe de estar limpia y seca,
-libre de polvo, material biótico y humedad.
-2.Cortes: De acuerdo al área, optimice los cortes del producto
-teniendo en cuenta su medida estándar.
-3.Sujeción: Aplique adhesivo de montaje al respaldo del
-producto en líneas horizontales cada 30 cms y conecta cada
+DecoraciÃ³n de Eventos: Bodas, fiestas, exhibiciones.
+DiseÃ±os ArquitectÃ³nico
+1.PreparaciÃ³n de la superficie: debe de estar limpia y seca,
+libre de polvo, material biÃ³tico y humedad.
+2.Cortes: De acuerdo al Ã¡rea, optimice los cortes del producto
+teniendo en cuenta su medida estÃ¡ndar.
+3.SujeciÃ³n: Aplique adhesivo de montaje al respaldo del
+producto en lÃ­neas horizontales cada 30 cms y conecta cada
 pieza con su sistema machimbrado hasta cubrir la superficie
 deseada.
 4.Acabados: Sigue las recomendaciones del fabricante con los
 accesorios sugeridos en caso de ser necesarios.
-5.Mantenimiento: Agua y jabón neutro para retirar el polvo
+5.Mantenimiento: Agua y jabÃ³n neutro para retirar el polvo
 acumulado en el tiempo, cuando se considere necesario.
-Herramienta: Flexómetro, cortadora, regla aluminio y
+Herramienta: FlexÃ³metro, cortadora, regla aluminio y
 guantes.
 Peso:
 Espesor:
 Formato:
 Embalaje:
 Densidad:
-País de Origen:
+PaÃ­s de Origen:
 Material Principal:
 Nombre del Producto:
 Panel WPC exterior
@@ -1550,48 +1576,48 @@ WPC
 China
 
 --- PRODUCT DATA: 15_FT_Panel_WPC_Interior.pdf ---
-Garantía
+GarantÃ­a
 Unitec
-Fácil
-Instalación
+FÃ¡cil
+InstalaciÃ³n
 Sostenible Impermeable
 No Flamable
 Liviano
 Resistente
 Bajo
 Mantenimiento
-Económico
-Garantía
-Fácil
-Instalación
+EconÃ³mico
+GarantÃ­a
+FÃ¡cil
+InstalaciÃ³n
 Sostenible
 Impermeable
-Económico
+EconÃ³mico
 No Flamable
 Liviano
 Resistente
 Bajo
 Mantenimiento
-Alto Diseño
-FICHA TÉCNICA
+Alto DiseÃ±o
+FICHA TÃ‰CNICA
 SOBRE EL PRODUCTO
 ESPECIFICACIONES
 VENTAJAS Y BENEFICIOS
-POLITICAS DE GARANTÍAS
-Verificar y recibir a conformidad el producto en el momento de entrega, No se aceptan reclamos por faltantes, daños o golpes después de recibida la mercancía.
-UNITEC USA DESIGN no cubre las garantías por productos instalados que presenten diferencias en tamaño, tono, color, rayado, por alabeo o cualquier defecto visible
-que pudiera ser detectado antes de la instalación.
-En el caso de que encuentre este tipo de defectos, por favor absténganse de instalar el producto y comunícate inmediatamente con el respectivo vendedor.
-La garantía no cubre los daños ocasionados al producto, o uso inadecuado del usuario.
-Seguir las recomendaciones de la ficha técnica en cuanto a uso, aplicaciones e instalación. 
+POLITICAS DE GARANTÃAS
+Verificar y recibir a conformidad el producto en el momento de entrega, No se aceptan reclamos por faltantes, daÃ±os o golpes despuÃ©s de recibida la mercancÃ­a.
+UNITEC USA DESIGN no cubre las garantÃ­as por productos instalados que presenten diferencias en tamaÃ±o, tono, color, rayado, por alabeo o cualquier defecto visible
+que pudiera ser detectado antes de la instalaciÃ³n.
+En el caso de que encuentre este tipo de defectos, por favor abstÃ©nganse de instalar el producto y comunÃ­cate inmediatamente con el respectivo vendedor.
+La garantÃ­a no cubre los daÃ±os ocasionados al producto, o uso inadecuado del usuario.
+Seguir las recomendaciones de la ficha tÃ©cnica en cuanto a uso, aplicaciones e instalaciÃ³n. 
 15
 Panel WPC Interior
-GUÍA DE INSTALACIÓN
+GUÃA DE INSTALACIÃ“N
 USOS Y APLICACIONES
 Panel decorativo interior fabricado en Wood-Plastic Composite (WPC),
 con aspecto de madera y acabado en listones verticales. Ideal para
-revestir muros con diseño contemporáneo y alta resistencia al agua,
-insectos y humedad, con bajo mantenimiento y excelente desempeño
+revestir muros con diseÃ±o contemporÃ¡neo y alta resistencia al agua,
+insectos y humedad, con bajo mantenimiento y excelente desempeÃ±o
 en espacios interiores.
 Revestimiento: Mural decorativo en salas, recibidores,
 zonas lounge, oficinas, restaurantes, hoteles y locales
@@ -1601,31 +1627,31 @@ con
 humedad 
 ocasional: 
 Cocinas, 
-baños,
-lavanderías
+baÃ±os,
+lavanderÃ­as
 Paredes de acento: fondos de muebles, divisiones con
-estética vertical y moderna
-1.Preparación de la superficie: La pared debe estar limpia, seca,
+estÃ©tica vertical y moderna
+1.PreparaciÃ³n de la superficie: La pared debe estar limpia, seca,
 plana y libre de polvo o grasa.
-2.Cortes: Marcar alineación con nivel y lápiz. Cortar paneles con
+2.Cortes: Marcar alineaciÃ³n con nivel y lÃ¡piz. Cortar paneles con
 sierra para un ajuste preciso en esquinas o extremos.
-3.Fijación: Dos clips por cada metro lineal; fijar los clips al
+3.FijaciÃ³n: Dos clips por cada metro lineal; fijar los clips al
 bastidor o pared primero y luego encajar los paneles.
 4.Acabados: Colocar perfiles o molduras en remates, cubrir
 juntas visibles y asegurar un alineado vertical perfecto entre
 listones.
-5.Mantenimiento: Limpiar con paño seco o húmedo. Para
+5.Mantenimiento: Limpiar con paÃ±o seco o hÃºmedo. Para
 manchas, usar detergente suave. Evitar abrasivos, solventes o
-limpiadores agresivos que puedan dañar la superficie.
-Herramienta: Cinta métrica, sierra circular o caladora, adhesivo
-o clips metálicos, pistola de silicona, nivel, espaciadores, guantes
-y gafas de protección.
+limpiadores agresivos que puedan daÃ±ar la superficie.
+Herramienta: Cinta mÃ©trica, sierra circular o caladora, adhesivo
+o clips metÃ¡licos, pistola de silicona, nivel, espaciadores, guantes
+y gafas de protecciÃ³n.
 Peso:
 Espesor:
 Formato:
 Embalaje:
 Densidad:
-País de Origen:
+PaÃ­s de Origen:
 Material Principal:
 Nombre del Producto:
 Panel WPC Interior
@@ -1633,48 +1659,48 @@ Panel WPC Interior
 3 Kilogramos
 10 Piezas por caja
 2,5cm
-Aproximadamente 9kg/m²
+Aproximadamente 9kg/mÂ²
 PVC (Policloruro de Vinilo)
 China
 
 --- PRODUCT DATA: 16_FT_Panel_WPC_Interior_Redondo.pdf ---
-Garantía
+GarantÃ­a
 Unitec
-Fácil
-Instalación
+FÃ¡cil
+InstalaciÃ³n
 Sostenible Impermeable
 No Flamable
 Liviano
 Resistente
 Bajo
 Mantenimiento
-Económico
-Garantía
-Fácil
-Instalación
+EconÃ³mico
+GarantÃ­a
+FÃ¡cil
+InstalaciÃ³n
 Sostenible
 Impermeable
-Económico
+EconÃ³mico
 No Flamable
 Liviano
 Resistente
 Bajo
 Mantenimiento
-Alto Diseño
-FICHA TÉCNICA
+Alto DiseÃ±o
+FICHA TÃ‰CNICA
 SOBRE EL PRODUCTO
 ESPECIFICACIONES
 VENTAJAS Y BENEFICIOS
-POLITICAS DE GARANTÍAS
-Verificar y recibir a conformidad el producto en el momento de entrega, No se aceptan reclamos por faltantes, daños o golpes después de recibida la mercancía.
-UNITEC USA DESIGN no cubre las garantías por productos instalados que presenten diferencias en tamaño, tono, color, rayado, por alabeo o cualquier defecto visible
-que pudiera ser detectado antes de la instalación.
-En el caso de que encuentre este tipo de defectos, por favor absténganse de instalar el producto y comunícate inmediatamente con el respectivo vendedor.
-La garantía no cubre los daños ocasionados al producto, o uso inadecuado del usuario.
-Seguir las recomendaciones de la ficha técnica en cuanto a uso, aplicaciones e instalación. 
+POLITICAS DE GARANTÃAS
+Verificar y recibir a conformidad el producto en el momento de entrega, No se aceptan reclamos por faltantes, daÃ±os o golpes despuÃ©s de recibida la mercancÃ­a.
+UNITEC USA DESIGN no cubre las garantÃ­as por productos instalados que presenten diferencias en tamaÃ±o, tono, color, rayado, por alabeo o cualquier defecto visible
+que pudiera ser detectado antes de la instalaciÃ³n.
+En el caso de que encuentre este tipo de defectos, por favor abstÃ©nganse de instalar el producto y comunÃ­cate inmediatamente con el respectivo vendedor.
+La garantÃ­a no cubre los daÃ±os ocasionados al producto, o uso inadecuado del usuario.
+Seguir las recomendaciones de la ficha tÃ©cnica en cuanto a uso, aplicaciones e instalaciÃ³n. 
 16
 Panel WPC Interior Redondo
-GUÍA DE INSTALACIÓN
+GUÃA DE INSTALACIÃ“N
 USOS Y APLICACIONES
 Revestimiento: Mural decorativo en salas, recibidores,
 zonas lounge, oficinas, restaurantes, hoteles y locales
@@ -1684,36 +1710,36 @@ con
 humedad 
 ocasional: 
 Cocinas, 
-baños,
-lavanderías
+baÃ±os,
+lavanderÃ­as
 Paredes de acento: fondos de muebles, divisiones con
-estética vertical y moderna
-1.Preparación de la superficie: La pared debe estar limpia, seca,
+estÃ©tica vertical y moderna
+1.PreparaciÃ³n de la superficie: La pared debe estar limpia, seca,
 plana y libre de polvo o grasa.
-2.Cortes: Marcar alineación con nivel y lápiz. Cortar paneles con
+2.Cortes: Marcar alineaciÃ³n con nivel y lÃ¡piz. Cortar paneles con
 sierra para un ajuste preciso en esquinas o extremos.
-3.Fijación: Dos clips por cada metro lineal; fijar los clips al
+3.FijaciÃ³n: Dos clips por cada metro lineal; fijar los clips al
 bastidor o pared primero y luego encajar los paneles.
 4.Acabados: Colocar perfiles o molduras en remates, cubrir
 juntas visibles y asegurar un alineado vertical perfecto entre
 listones.
-5.Mantenimiento: Limpiar con paño seco o húmedo. Para
+5.Mantenimiento: Limpiar con paÃ±o seco o hÃºmedo. Para
 manchas, usar detergente suave. Evitar abrasivos, solventes o
-limpiadores agresivos que puedan dañar la superficie.
-Herramienta: Cinta métrica, sierra circular o caladora, adhesivo
-o clips metálicos, pistola de silicona, nivel, espaciadores, guantes
-y gafas de protección.
-Panel decorativo interior de Composite de Madera-Plástico (WPC) con
-perfil semi-redondo fluted, de diseño elegante y textura curva. Ideal
+limpiadores agresivos que puedan daÃ±ar la superficie.
+Herramienta: Cinta mÃ©trica, sierra circular o caladora, adhesivo
+o clips metÃ¡licos, pistola de silicona, nivel, espaciadores, guantes
+y gafas de protecciÃ³n.
+Panel decorativo interior de Composite de Madera-PlÃ¡stico (WPC) con
+perfil semi-redondo fluted, de diseÃ±o elegante y textura curva. Ideal
 como revestimiento mural o de cielo en proyectos residenciales y
 comerciales que buscan acabado moderno, resistente a humedad, libre
-de mantenimiento y con estética cálida.
+de mantenimiento y con estÃ©tica cÃ¡lida.
 Peso:
 Espesor:
 Formato:
 Embalaje:
 Densidad:
-País de Origen:
+PaÃ­s de Origen:
 Material Principal:
 Nombre del Producto:
 Panel WPC Interior Redondo
@@ -1721,89 +1747,89 @@ Panel WPC Interior Redondo
 3 Kilogramos
 10 Piezas por caja
 2,5cm
-Aproximadamente 9kg/m²
+Aproximadamente 9kg/mÂ²
 PVC (Policloruro de Vinilo)
 China
 
 --- PRODUCT DATA: 17_FT_Paneles_acolchados DuoBig  DuoSmall.pdf ---
-Garantía
+GarantÃ­a
 Unitec
-Fácil
-Instalación
+FÃ¡cil
+InstalaciÃ³n
 Sostenible Impermeable
 No Flamable
 Liviano
 Resistente
 Bajo
 Mantenimiento
-Económico
-Garantía
-Fácil
-Instalación
+EconÃ³mico
+GarantÃ­a
+FÃ¡cil
+InstalaciÃ³n
 Sostenible
 Impermeable
-Económico
+EconÃ³mico
 No Flamable
 Liviano
 Resistente
 Bajo
 Mantenimiento
-Alto Diseño
-FICHA TÉCNICA
+Alto DiseÃ±o
+FICHA TÃ‰CNICA
 SOBRE EL PRODUCTO
 ESPECIFICACIONES
 VENTAJAS Y BENEFICIOS
-POLITICAS DE GARANTÍAS
-Verificar y recibir a conformidad el producto en el momento de entrega, No se aceptan reclamos por faltantes, daños o golpes después de recibida la mercancía.
-UNITEC USA DESIGN no cubre las garantías por productos instalados que presenten diferencias en tamaño, tono, color, rayado, por alabeo o cualquier defecto visible
-que pudiera ser detectado antes de la instalación.
-En el caso de que encuentre este tipo de defectos, por favor absténganse de instalar el producto y comunícate inmediatamente con el respectivo vendedor.
-La garantía no cubre los daños ocasionados al producto, o uso inadecuado del usuario.
-Seguir las recomendaciones de la ficha técnica en cuanto a uso, aplicaciones e instalación. 
+POLITICAS DE GARANTÃAS
+Verificar y recibir a conformidad el producto en el momento de entrega, No se aceptan reclamos por faltantes, daÃ±os o golpes despuÃ©s de recibida la mercancÃ­a.
+UNITEC USA DESIGN no cubre las garantÃ­as por productos instalados que presenten diferencias en tamaÃ±o, tono, color, rayado, por alabeo o cualquier defecto visible
+que pudiera ser detectado antes de la instalaciÃ³n.
+En el caso de que encuentre este tipo de defectos, por favor abstÃ©nganse de instalar el producto y comunÃ­cate inmediatamente con el respectivo vendedor.
+La garantÃ­a no cubre los daÃ±os ocasionados al producto, o uso inadecuado del usuario.
+Seguir las recomendaciones de la ficha tÃ©cnica en cuanto a uso, aplicaciones e instalaciÃ³n. 
 17
 Panel Acolchado DuoBig / DuoSmall
-GUÍA DE INSTALACIÓN
+GUÃA DE INSTALACIÃ“N
 USOS Y APLICACIONES
-Revestimiento: Mural en habitaciones infantiles, guarderías,
-áreas lúdicas y salas temáticas.
+Revestimiento: Mural en habitaciones infantiles, guarderÃ­as,
+Ã¡reas lÃºdicas y salas temÃ¡ticas.
 Ambientes: Espacios comerciales y lounge que buscan
-estética decorativa con funcionalidad acústica (cafés,
+estÃ©tica decorativa con funcionalidad acÃºstica (cafÃ©s,
 boutiques, salas de espera)
 Otros: Espacios con necesidad moderada de control de
-reverberación sin perder diseño
-1.Preparación de la superficie: La pared debe estar limpia, seca
+reverberaciÃ³n sin perder diseÃ±o
+1.PreparaciÃ³n de la superficie: La pared debe estar limpia, seca
 y libre de polvo, humedad o grasa.
-2.Cortes: Marcar la disposición de los paneles sobre la pared
-usando nivel y lápiz antes de iniciar la instalación.
-3.Sujeción: Aplicar adhesivo tipo montaje en forma de “S” o
+2.Cortes: Marcar la disposiciÃ³n de los paneles sobre la pared
+usando nivel y lÃ¡piz antes de iniciar la instalaciÃ³n.
+3.SujeciÃ³n: Aplicar adhesivo tipo montaje en forma de â€œSâ€ o
 puntos en la parte posterior del panel. Presionar firmemente
 contra la pared por al menos 30 segundos.
-4.Acabados: Revisar alineación entre paneles y cubrir juntas
+4.Acabados: Revisar alineaciÃ³n entre paneles y cubrir juntas
 visibles con perfiles decorativos o tapajuntas si se requiere.
-5.Mantenimiento: Limpiar con paño seco o ligeramente
-húmedo. En caso de manchas, usar jabón neutro y agua. Evitar
-solventes, lijas o productos abrasivos que dañen la tela.
-Herramienta: Cinta métrica, cúter o bisturí, nivel o nivel de
-burbuja, guantes, adhesivo de montaje o clips metálicos para
-fijación, paño limpio.
+5.Mantenimiento: Limpiar con paÃ±o seco o ligeramente
+hÃºmedo. En caso de manchas, usar jabÃ³n neutro y agua. Evitar
+solventes, lijas o productos abrasivos que daÃ±en la tela.
+Herramienta: Cinta mÃ©trica, cÃºter o bisturÃ­, nivel o nivel de
+burbuja, guantes, adhesivo de montaje o clips metÃ¡licos para
+fijaciÃ³n, paÃ±o limpio.
 El Panel Acolchado Duo Big y Duo Small es un sistema decorativo y
-funcional diseñado para aportar confort acústico, suavidad visual y alto
-valor estético a espacios interiores. Su geometría curva y modular genera
-una lectura vertical continua que ayuda a reducir la reverberación sonora
-y mejora el acondicionamiento acústico del ambiente.
-Fabricado con núcleo de espuma de poliuretano y recubierto con cuero
-sintético de alta calidad, el panel ofrece una textura uniforme,
+funcional diseÃ±ado para aportar confort acÃºstico, suavidad visual y alto
+valor estÃ©tico a espacios interiores. Su geometrÃ­a curva y modular genera
+una lectura vertical continua que ayuda a reducir la reverberaciÃ³n sonora
+y mejora el acondicionamiento acÃºstico del ambiente.
+Fabricado con nÃºcleo de espuma de poliuretano y recubierto con cuero
+sintÃ©tico de alta calidad, el panel ofrece una textura uniforme,
 envolvente y resistente. El espesor controlado de cada formato garantiza
-un buen desempeño acústico sin sacrificar limpieza estética,
-convirtiéndolo en una solución ideal para proyectos de interiorismo
-contemporáneo que buscan calidez, control sonoro y diseño.
+un buen desempeÃ±o acÃºstico sin sacrificar limpieza estÃ©tica,
+convirtiÃ©ndolo en una soluciÃ³n ideal para proyectos de interiorismo
+contemporÃ¡neo que buscan calidez, control sonoro y diseÃ±o.
 Disponible en 4 colores:
 Peso:
 Espesor:
 Formato:
 Embalaje:
 Densidad:
-País de Origen:
+PaÃ­s de Origen:
 Material Principal:
 Nombre del Producto:
 Panel Acolchado
@@ -1811,8 +1837,8 @@ Duo Big: 120 cm x 40 cm /  Duo Small: 110 cm x 20 cm
 0,5 Kilogramos (unidad)
 Unidad
 Duo Big: 3,5 cm / Duo Small: 2,5 cm
-Aproximadamente 15 kg/m²
-Cuero sintético de alta calidad y espuma de poliuretano
+Aproximadamente 15 kg/mÂ²
+Cuero sintÃ©tico de alta calidad y espuma de poliuretano
 China
 Azul
 Fractal
@@ -1821,624 +1847,624 @@ Luminoso
 Brillo Plata
 Vainilla
 
---- PRODUCT DATA: 18.1_FT_Panel Acústico Tipo 1.pdf ---
-Garantía
+--- PRODUCT DATA: 18.1_FT_Panel AcÃºstico Tipo 1.pdf ---
+GarantÃ­a
 Unitec
-Fácil
-Instalación
+FÃ¡cil
+InstalaciÃ³n
 Sostenible Impermeable
 No Flamable
 Liviano
 Resistente
 Bajo
 Mantenimiento
-Económico
-Garantía
-Fácil
-Instalación
+EconÃ³mico
+GarantÃ­a
+FÃ¡cil
+InstalaciÃ³n
 Sostenible
 Impermeable
-Económico
+EconÃ³mico
 No Flamable
 Liviano
 Resistente
 Bajo
 Mantenimiento
-Alto Diseño
-FICHA TÉCNICA
+Alto DiseÃ±o
+FICHA TÃ‰CNICA
 SOBRE EL PRODUCTO
 ESPECIFICACIONES
 VENTAJAS Y BENEFICIOS
-POLITICAS DE GARANTÍAS
-Verificar y recibir a conformidad el producto en el momento de entrega, No se aceptan reclamos por faltantes, daños o golpes después de recibida la mercancía.
-UNITEC USA DESIGN no cubre las garantías por productos instalados que presenten diferencias en tamaño, tono, color, rayado, por alabeo o cualquier defecto visible
-que pudiera ser detectado antes de la instalación.
-En el caso de que encuentre este tipo de defectos, por favor absténganse de instalar el producto y comunícate inmediatamente con el respectivo vendedor.
-La garantía no cubre los daños ocasionados al producto, o uso inadecuado del usuario.
-Seguir las recomendaciones de la ficha técnica en cuanto a uso, aplicaciones e instalación. 
+POLITICAS DE GARANTÃAS
+Verificar y recibir a conformidad el producto en el momento de entrega, No se aceptan reclamos por faltantes, daÃ±os o golpes despuÃ©s de recibida la mercancÃ­a.
+UNITEC USA DESIGN no cubre las garantÃ­as por productos instalados que presenten diferencias en tamaÃ±o, tono, color, rayado, por alabeo o cualquier defecto visible
+que pudiera ser detectado antes de la instalaciÃ³n.
+En el caso de que encuentre este tipo de defectos, por favor abstÃ©nganse de instalar el producto y comunÃ­cate inmediatamente con el respectivo vendedor.
+La garantÃ­a no cubre los daÃ±os ocasionados al producto, o uso inadecuado del usuario.
+Seguir las recomendaciones de la ficha tÃ©cnica en cuanto a uso, aplicaciones e instalaciÃ³n. 
 18.1
-Panel Acústico Tipo 1
-El Panel Acústico Tipo 1 es un revestimiento decorativo acústico de
-diseño ondulado tipo listón, desarrollado para mejorar la absorción
+Panel AcÃºstico Tipo 1
+El Panel AcÃºstico Tipo 1 es un revestimiento decorativo acÃºstico de
+diseÃ±o ondulado tipo listÃ³n, desarrollado para mejorar la absorciÃ³n
 sonora y aportar profundidad visual a los espacios interiores. Su
-geometría curva genera una lectura vertical continua que optimiza el
-control de la reverberación y refuerza la continuidad arquitectónica del
+geometrÃ­a curva genera una lectura vertical continua que optimiza el
+control de la reverberaciÃ³n y refuerza la continuidad arquitectÃ³nica del
 ambiente.
-Fabricado en MDF con respaldo acústico, combina estética tipo madera
-con funcionalidad acústica, siendo ideal para proyectos contemporáneos
-que buscan equilibrio entre diseño, confort sonoro y durabilidad. Su
-acabado de listones “crisply aligned” ofrece un aspecto limpio, moderno
+Fabricado en MDF con respaldo acÃºstico, combina estÃ©tica tipo madera
+con funcionalidad acÃºstica, siendo ideal para proyectos contemporÃ¡neos
+que buscan equilibrio entre diseÃ±o, confort sonoro y durabilidad. Su
+acabado de listones â€œcrisply alignedâ€ ofrece un aspecto limpio, moderno
 y sofisticado. 
 Disponible en 4 colores: cedro, cedro madera, ebano y avellana.
-GUÍA DE INSTALACIÓN
+GUÃA DE INSTALACIÃ“N
 USOS Y APLICACIONES
 Revestimientos: Interiores en oficinas, salas de reuniones,
 hoteles, residencias y restaurantes.
 Espacios 
 de 
-difusión 
-acústica: 
+difusiÃ³n 
+acÃºstica: 
 Teatros, 
 salas 
 de
 conferencias, zonas lounge.
-Paredes de acento: Detrás de sofás, áreas de trabajo y
+Paredes de acento: DetrÃ¡s de sofÃ¡s, Ã¡reas de trabajo y
 murales decorativos.
-1.Preparación de la superficie: La pared debe estar limpia, seca,
+1.PreparaciÃ³n de la superficie: La pared debe estar limpia, seca,
 plana y libre de polvo o grasa.
-2.Cortes: Marcar alineación con nivel y lápiz. Cortar paneles con
+2.Cortes: Marcar alineaciÃ³n con nivel y lÃ¡piz. Cortar paneles con
 sierra para un ajuste preciso en esquinas o extremos.
-3.Fijación: Dos clips por cada metro lineal; fijar los clips al
+3.FijaciÃ³n: Dos clips por cada metro lineal; fijar los clips al
 bastidor o pared primero y luego encajar los paneles.
 4.Acabados: Colocar perfiles o molduras en remates, cubrir
 juntas visibles y asegurar un alineado vertical perfecto entre
 listones.
-5.Mantenimiento: Limpiar con paño seco o húmedo. Para
+5.Mantenimiento: Limpiar con paÃ±o seco o hÃºmedo. Para
 manchas, usar detergente suave. Evitar abrasivos, solventes o
-limpiadores agresivos que puedan dañar la superficie.
-Herramienta: Cinta métrica, sierra circular o caladora, adhesivo
-o clips metálicos, pistola de silicona, nivel, espaciadores, guantes
-y gafas de protección.
+limpiadores agresivos que puedan daÃ±ar la superficie.
+Herramienta: Cinta mÃ©trica, sierra circular o caladora, adhesivo
+o clips metÃ¡licos, pistola de silicona, nivel, espaciadores, guantes
+y gafas de protecciÃ³n.
 Peso:
 Espesor:
 Formato:
 Embalaje:
 Densidad:
-País de Origen:
+PaÃ­s de Origen:
 Material Principal:
 Nombre del Producto:
-Panel Acústico Tipo 1
+Panel AcÃºstico Tipo 1
 240 cm x 60 cm
 5 Kilogramos
 Unidad
 1,4 cm
-Aproximadamente 8 kg/m²
+Aproximadamente 8 kg/mÂ²
 MDF + Fieltro negro
 China
 
---- PRODUCT DATA: 18.2_FT_Panel Acústico Tipo 2.pdf ---
-Garantía
+--- PRODUCT DATA: 18.2_FT_Panel AcÃºstico Tipo 2.pdf ---
+GarantÃ­a
 Unitec
-Fácil
-Instalación
+FÃ¡cil
+InstalaciÃ³n
 Sostenible Impermeable
 No Flamable
 Liviano
 Resistente
 Bajo
 Mantenimiento
-Económico
-Garantía
-Fácil
-Instalación
+EconÃ³mico
+GarantÃ­a
+FÃ¡cil
+InstalaciÃ³n
 Sostenible
 Impermeable
-Económico
+EconÃ³mico
 No Flamable
 Liviano
 Resistente
 Bajo
 Mantenimiento
-Alto Diseño
-FICHA TÉCNICA
+Alto DiseÃ±o
+FICHA TÃ‰CNICA
 SOBRE EL PRODUCTO
 ESPECIFICACIONES
 VENTAJAS Y BENEFICIOS
-POLITICAS DE GARANTÍAS
-Verificar y recibir a conformidad el producto en el momento de entrega, No se aceptan reclamos por faltantes, daños o golpes después de recibida la mercancía.
-UNITEC USA DESIGN no cubre las garantías por productos instalados que presenten diferencias en tamaño, tono, color, rayado, por alabeo o cualquier defecto visible
-que pudiera ser detectado antes de la instalación.
-En el caso de que encuentre este tipo de defectos, por favor absténganse de instalar el producto y comunícate inmediatamente con el respectivo vendedor.
-La garantía no cubre los daños ocasionados al producto, o uso inadecuado del usuario.
-Seguir las recomendaciones de la ficha técnica en cuanto a uso, aplicaciones e instalación. 
+POLITICAS DE GARANTÃAS
+Verificar y recibir a conformidad el producto en el momento de entrega, No se aceptan reclamos por faltantes, daÃ±os o golpes despuÃ©s de recibida la mercancÃ­a.
+UNITEC USA DESIGN no cubre las garantÃ­as por productos instalados que presenten diferencias en tamaÃ±o, tono, color, rayado, por alabeo o cualquier defecto visible
+que pudiera ser detectado antes de la instalaciÃ³n.
+En el caso de que encuentre este tipo de defectos, por favor abstÃ©nganse de instalar el producto y comunÃ­cate inmediatamente con el respectivo vendedor.
+La garantÃ­a no cubre los daÃ±os ocasionados al producto, o uso inadecuado del usuario.
+Seguir las recomendaciones de la ficha tÃ©cnica en cuanto a uso, aplicaciones e instalaciÃ³n. 
 18.2
-Panel Acústico Tipo 2
-El Panel Acústico Tipo 2 es un revestimiento decorativo acústico
-modular de geometría hexagonal, diseñado para optimizar la absorción y
-difusión sonora en espacios interiores. Su textura tipo madera y relieve
+Panel AcÃºstico Tipo 2
+El Panel AcÃºstico Tipo 2 es un revestimiento decorativo acÃºstico
+modular de geometrÃ­a hexagonal, diseÃ±ado para optimizar la absorciÃ³n y
+difusiÃ³n sonora en espacios interiores. Su textura tipo madera y relieve
 tridimensional generan un alto impacto visual, al tiempo que
-contribuyen al control de la reverberación y a la mejora del confort
-acústico.
-Fabricado en MDF con respaldo acústico, permite crear composiciones
-precisas y personalizadas, adaptándose a diferentes configuraciones
-arquitectónicas. Es una solución ideal para proyectos contemporáneos
-que buscan combinar diseño, funcionalidad acústica y estética de alto
+contribuyen al control de la reverberaciÃ³n y a la mejora del confort
+acÃºstico.
+Fabricado en MDF con respaldo acÃºstico, permite crear composiciones
+precisas y personalizadas, adaptÃ¡ndose a diferentes configuraciones
+arquitectÃ³nicas. Es una soluciÃ³n ideal para proyectos contemporÃ¡neos
+que buscan combinar diseÃ±o, funcionalidad acÃºstica y estÃ©tica de alto
 nivel.
 Disponible en 4 colores: cedro, cedro madera, ebano y avellana.
-GUÍA DE INSTALACIÓN
+GUÃA DE INSTALACIÃ“N
 USOS Y APLICACIONES
 Revestimientos: Interiores en oficinas, salas de reuniones,
 hoteles, residencias y restaurantes.
 Espacios 
 de 
-difusión 
-acústica: 
+difusiÃ³n 
+acÃºstica: 
 Teatros, 
 salas 
 de
 conferencias, zonas lounge.
-Paredes de acento: Detrás de sofás, áreas de trabajo y
+Paredes de acento: DetrÃ¡s de sofÃ¡s, Ã¡reas de trabajo y
 murales decorativos.
-1.Preparación de la superficie: La pared debe estar limpia, seca,
+1.PreparaciÃ³n de la superficie: La pared debe estar limpia, seca,
 plana y libre de polvo o grasa.
-2.Cortes: Marcar alineación con nivel y lápiz. Cortar paneles con
+2.Cortes: Marcar alineaciÃ³n con nivel y lÃ¡piz. Cortar paneles con
 sierra para un ajuste preciso en esquinas o extremos.
-3.Fijación: Dos clips por cada metro lineal; fijar los clips al
+3.FijaciÃ³n: Dos clips por cada metro lineal; fijar los clips al
 bastidor o pared primero y luego encajar los paneles.
 4.Acabados: Colocar perfiles o molduras en remates, cubrir
 juntas visibles y asegurar un alineado vertical perfecto entre
 listones.
-5.Mantenimiento: Limpiar con paño seco o húmedo. Para
+5.Mantenimiento: Limpiar con paÃ±o seco o hÃºmedo. Para
 manchas, usar detergente suave. Evitar abrasivos, solventes o
-limpiadores agresivos que puedan dañar la superficie.
-Herramienta: Cinta métrica, sierra circular o caladora, adhesivo
-o clips metálicos, pistola de silicona, nivel, espaciadores, guantes
-y gafas de protección.
+limpiadores agresivos que puedan daÃ±ar la superficie.
+Herramienta: Cinta mÃ©trica, sierra circular o caladora, adhesivo
+o clips metÃ¡licos, pistola de silicona, nivel, espaciadores, guantes
+y gafas de protecciÃ³n.
 Peso:
 Espesor:
 Formato:
 Embalaje:
 Densidad:
-País de Origen:
+PaÃ­s de Origen:
 Material Principal:
 Nombre del Producto:
-Panel Acústico Tipo 2
+Panel AcÃºstico Tipo 2
 76 cm x 62 cm
 3 Kilogramos
 Unidad
 1,8 cm
-Aproximadamente 5 kg/m²
+Aproximadamente 5 kg/mÂ²
 MDF + Fieltro negro
 China
 
---- PRODUCT DATA: 18.3_FT_Panel Acústico Tipo 3.pdf ---
-Garantía
+--- PRODUCT DATA: 18.3_FT_Panel AcÃºstico Tipo 3.pdf ---
+GarantÃ­a
 Unitec
-Fácil
-Instalación
+FÃ¡cil
+InstalaciÃ³n
 Sostenible Impermeable
 No Flamable
 Liviano
 Resistente
 Bajo
 Mantenimiento
-Económico
-Garantía
-Fácil
-Instalación
+EconÃ³mico
+GarantÃ­a
+FÃ¡cil
+InstalaciÃ³n
 Sostenible
 Impermeable
-Económico
+EconÃ³mico
 No Flamable
 Liviano
 Resistente
 Bajo
 Mantenimiento
-Alto Diseño
-FICHA TÉCNICA
+Alto DiseÃ±o
+FICHA TÃ‰CNICA
 SOBRE EL PRODUCTO
 ESPECIFICACIONES
 VENTAJAS Y BENEFICIOS
-POLITICAS DE GARANTÍAS
-Verificar y recibir a conformidad el producto en el momento de entrega, No se aceptan reclamos por faltantes, daños o golpes después de recibida la mercancía.
-UNITEC USA DESIGN no cubre las garantías por productos instalados que presenten diferencias en tamaño, tono, color, rayado, por alabeo o cualquier defecto visible
-que pudiera ser detectado antes de la instalación.
-En el caso de que encuentre este tipo de defectos, por favor absténganse de instalar el producto y comunícate inmediatamente con el respectivo vendedor.
-La garantía no cubre los daños ocasionados al producto, o uso inadecuado del usuario.
-Seguir las recomendaciones de la ficha técnica en cuanto a uso, aplicaciones e instalación. 
+POLITICAS DE GARANTÃAS
+Verificar y recibir a conformidad el producto en el momento de entrega, No se aceptan reclamos por faltantes, daÃ±os o golpes despuÃ©s de recibida la mercancÃ­a.
+UNITEC USA DESIGN no cubre las garantÃ­as por productos instalados que presenten diferencias en tamaÃ±o, tono, color, rayado, por alabeo o cualquier defecto visible
+que pudiera ser detectado antes de la instalaciÃ³n.
+En el caso de que encuentre este tipo de defectos, por favor abstÃ©nganse de instalar el producto y comunÃ­cate inmediatamente con el respectivo vendedor.
+La garantÃ­a no cubre los daÃ±os ocasionados al producto, o uso inadecuado del usuario.
+Seguir las recomendaciones de la ficha tÃ©cnica en cuanto a uso, aplicaciones e instalaciÃ³n. 
 18.3
-Panel Acústico Tipo 3
-El Panel Acústico Tipo 3 es un revestimiento decorativo acústico de
-formato vertical con patrón en espiga, diseñado para mejorar la
-absorción y difusión sonora en espacios interiores. Su textura tipo
+Panel AcÃºstico Tipo 3
+El Panel AcÃºstico Tipo 3 es un revestimiento decorativo acÃºstico de
+formato vertical con patrÃ³n en espiga, diseÃ±ado para mejorar la
+absorciÃ³n y difusiÃ³n sonora en espacios interiores. Su textura tipo
 madera y relieve direccional aportan dinamismo visual y ritmo
-arquitectónico, convirtiéndolo en un elemento protagónico del diseño
+arquitectÃ³nico, convirtiÃ©ndolo en un elemento protagÃ³nico del diseÃ±o
 interior.
-Fabricado en MDF con respaldo acústico, su diseño modular permite una
-instalación precisa y composiciones continuas, optimizando el control
-acústico sin sacrificar estética. Es una solución ideal para proyectos
-contemporáneos que buscan equilibrio entre diseño, confort sonoro y
+Fabricado en MDF con respaldo acÃºstico, su diseÃ±o modular permite una
+instalaciÃ³n precisa y composiciones continuas, optimizando el control
+acÃºstico sin sacrificar estÃ©tica. Es una soluciÃ³n ideal para proyectos
+contemporÃ¡neos que buscan equilibrio entre diseÃ±o, confort sonoro y
 funcionalidad.
 Disponible en 4 colores: cedro, cedro madera, ebano y avellana.
-GUÍA DE INSTALACIÓN
+GUÃA DE INSTALACIÃ“N
 USOS Y APLICACIONES
 Revestimientos: Interiores en oficinas, salas de reuniones,
 hoteles, residencias y restaurantes.
 Espacios 
 de 
-difusión 
-acústica: 
+difusiÃ³n 
+acÃºstica: 
 Teatros, 
 salas 
 de
 conferencias, zonas lounge.
-Paredes de acento: Detrás de sofás, áreas de trabajo y
+Paredes de acento: DetrÃ¡s de sofÃ¡s, Ã¡reas de trabajo y
 murales decorativos.
-1.Preparación de la superficie: La pared debe estar limpia, seca,
+1.PreparaciÃ³n de la superficie: La pared debe estar limpia, seca,
 plana y libre de polvo o grasa.
-2.Cortes: Marcar alineación con nivel y lápiz. Cortar paneles con
+2.Cortes: Marcar alineaciÃ³n con nivel y lÃ¡piz. Cortar paneles con
 sierra para un ajuste preciso en esquinas o extremos.
-3.Fijación: Dos clips por cada metro lineal; fijar los clips al
+3.FijaciÃ³n: Dos clips por cada metro lineal; fijar los clips al
 bastidor o pared primero y luego encajar los paneles.
 4.Acabados: Colocar perfiles o molduras en remates, cubrir
 juntas visibles y asegurar un alineado vertical perfecto entre
 listones.
-5.Mantenimiento: Limpiar con paño seco o húmedo. Para
+5.Mantenimiento: Limpiar con paÃ±o seco o hÃºmedo. Para
 manchas, usar detergente suave. Evitar abrasivos, solventes o
-limpiadores agresivos que puedan dañar la superficie.
-Herramienta: Cinta métrica, sierra circular o caladora, adhesivo
-o clips metálicos, pistola de silicona, nivel, espaciadores, guantes
-y gafas de protección.
+limpiadores agresivos que puedan daÃ±ar la superficie.
+Herramienta: Cinta mÃ©trica, sierra circular o caladora, adhesivo
+o clips metÃ¡licos, pistola de silicona, nivel, espaciadores, guantes
+y gafas de protecciÃ³n.
 Peso:
 Espesor:
 Formato:
 Embalaje:
 Densidad:
-País de Origen:
+PaÃ­s de Origen:
 Material Principal:
 Nombre del Producto:
-Panel Acústico Tipo 3
+Panel AcÃºstico Tipo 3
 125,9 cm x 56,6 cm
 5 Kilogramos
 Unidad
 2,1 cm
-Aproximadamente 7 kg/m²
+Aproximadamente 7 kg/mÂ²
 MDF + Fieltro negro
 China
 
---- PRODUCT DATA: 18.4_FT_Panel Acústico Tipo 4.pdf ---
-Garantía
+--- PRODUCT DATA: 18.4_FT_Panel AcÃºstico Tipo 4.pdf ---
+GarantÃ­a
 Unitec
-Fácil
-Instalación
+FÃ¡cil
+InstalaciÃ³n
 Sostenible Impermeable
 No Flamable
 Liviano
 Resistente
 Bajo
 Mantenimiento
-Económico
-Garantía
-Fácil
-Instalación
+EconÃ³mico
+GarantÃ­a
+FÃ¡cil
+InstalaciÃ³n
 Sostenible
 Impermeable
-Económico
+EconÃ³mico
 No Flamable
 Liviano
 Resistente
 Bajo
 Mantenimiento
-Alto Diseño
-FICHA TÉCNICA
+Alto DiseÃ±o
+FICHA TÃ‰CNICA
 SOBRE EL PRODUCTO
 ESPECIFICACIONES
 VENTAJAS Y BENEFICIOS
-POLITICAS DE GARANTÍAS
-Verificar y recibir a conformidad el producto en el momento de entrega, No se aceptan reclamos por faltantes, daños o golpes después de recibida la mercancía.
-UNITEC USA DESIGN no cubre las garantías por productos instalados que presenten diferencias en tamaño, tono, color, rayado, por alabeo o cualquier defecto visible
-que pudiera ser detectado antes de la instalación.
-En el caso de que encuentre este tipo de defectos, por favor absténganse de instalar el producto y comunícate inmediatamente con el respectivo vendedor.
-La garantía no cubre los daños ocasionados al producto, o uso inadecuado del usuario.
-Seguir las recomendaciones de la ficha técnica en cuanto a uso, aplicaciones e instalación. 
+POLITICAS DE GARANTÃAS
+Verificar y recibir a conformidad el producto en el momento de entrega, No se aceptan reclamos por faltantes, daÃ±os o golpes despuÃ©s de recibida la mercancÃ­a.
+UNITEC USA DESIGN no cubre las garantÃ­as por productos instalados que presenten diferencias en tamaÃ±o, tono, color, rayado, por alabeo o cualquier defecto visible
+que pudiera ser detectado antes de la instalaciÃ³n.
+En el caso de que encuentre este tipo de defectos, por favor abstÃ©nganse de instalar el producto y comunÃ­cate inmediatamente con el respectivo vendedor.
+La garantÃ­a no cubre los daÃ±os ocasionados al producto, o uso inadecuado del usuario.
+Seguir las recomendaciones de la ficha tÃ©cnica en cuanto a uso, aplicaciones e instalaciÃ³n. 
 18.4
-Panel Acústico Tipo 4
-El Panel Acústico Tipo 4 es un revestimiento decorativo acústico de
-gran formato, diseñado con patrón en espiga continua que aporta
-continuidad visual y alto desempeño acústico en muros arquitectónicos.
-Su textura tipo madera y relieve lineal optimizan la absorción y difusión
-sonora, mejorando el confort acústico del espacio.
-Fabricado en MDF con respaldo acústico, su diseño vertical refuerza la
-percepción de altura y orden, convirtiéndolo en una solución ideal para
-proyectos contemporáneos que requieren control sonoro, estética
+Panel AcÃºstico Tipo 4
+El Panel AcÃºstico Tipo 4 es un revestimiento decorativo acÃºstico de
+gran formato, diseÃ±ado con patrÃ³n en espiga continua que aporta
+continuidad visual y alto desempeÃ±o acÃºstico en muros arquitectÃ³nicos.
+Su textura tipo madera y relieve lineal optimizan la absorciÃ³n y difusiÃ³n
+sonora, mejorando el confort acÃºstico del espacio.
+Fabricado en MDF con respaldo acÃºstico, su diseÃ±o vertical refuerza la
+percepciÃ³n de altura y orden, convirtiÃ©ndolo en una soluciÃ³n ideal para
+proyectos contemporÃ¡neos que requieren control sonoro, estÃ©tica
 sofisticada y alto impacto visual.
 Disponible en 4 colores: cedro, cedro madera, ebano y avellana.
-GUÍA DE INSTALACIÓN
+GUÃA DE INSTALACIÃ“N
 USOS Y APLICACIONES
 Revestimientos: Interiores en oficinas, salas de reuniones,
 hoteles, residencias y restaurantes.
 Espacios 
 de 
-difusión 
-acústica: 
+difusiÃ³n 
+acÃºstica: 
 Teatros, 
 salas 
 de
 conferencias, zonas lounge.
-Paredes de acento: Detrás de sofás, áreas de trabajo y
+Paredes de acento: DetrÃ¡s de sofÃ¡s, Ã¡reas de trabajo y
 murales decorativos.
-1.Preparación de la superficie: La pared debe estar limpia, seca,
+1.PreparaciÃ³n de la superficie: La pared debe estar limpia, seca,
 plana y libre de polvo o grasa.
-2.Cortes: Marcar alineación con nivel y lápiz. Cortar paneles con
+2.Cortes: Marcar alineaciÃ³n con nivel y lÃ¡piz. Cortar paneles con
 sierra para un ajuste preciso en esquinas o extremos.
-3.Fijación: Dos clips por cada metro lineal; fijar los clips al
+3.FijaciÃ³n: Dos clips por cada metro lineal; fijar los clips al
 bastidor o pared primero y luego encajar los paneles.
 4.Acabados: Colocar perfiles o molduras en remates, cubrir
 juntas visibles y asegurar un alineado vertical perfecto entre
 listones.
-5.Mantenimiento: Limpiar con paño seco o húmedo. Para
+5.Mantenimiento: Limpiar con paÃ±o seco o hÃºmedo. Para
 manchas, usar detergente suave. Evitar abrasivos, solventes o
-limpiadores agresivos que puedan dañar la superficie.
-Herramienta: Cinta métrica, sierra circular o caladora, adhesivo
-o clips metálicos, pistola de silicona, nivel, espaciadores, guantes
-y gafas de protección.
+limpiadores agresivos que puedan daÃ±ar la superficie.
+Herramienta: Cinta mÃ©trica, sierra circular o caladora, adhesivo
+o clips metÃ¡licos, pistola de silicona, nivel, espaciadores, guantes
+y gafas de protecciÃ³n.
 Peso:
 Espesor:
 Formato:
 Embalaje:
 Densidad:
-País de Origen:
+PaÃ­s de Origen:
 Material Principal:
 Nombre del Producto:
-Panel Acústico Tipo 4
+Panel AcÃºstico Tipo 4
 270 cm x 55,9 cm
 5 Kilogramos
 Unidad
 2,1 cm
-Aproximadamente 7 kg/m²
+Aproximadamente 7 kg/mÂ²
 MDF + Fieltro negro
 China
 
---- PRODUCT DATA: 18.5_FT_Panel Acústico Tipo 5.pdf ---
-Garantía
+--- PRODUCT DATA: 18.5_FT_Panel AcÃºstico Tipo 5.pdf ---
+GarantÃ­a
 Unitec
-Fácil
-Instalación
+FÃ¡cil
+InstalaciÃ³n
 Sostenible Impermeable
 No Flamable
 Liviano
 Resistente
 Bajo
 Mantenimiento
-Económico
-Garantía
-Fácil
-Instalación
+EconÃ³mico
+GarantÃ­a
+FÃ¡cil
+InstalaciÃ³n
 Sostenible
 Impermeable
-Económico
+EconÃ³mico
 No Flamable
 Liviano
 Resistente
 Bajo
 Mantenimiento
-Alto Diseño
-FICHA TÉCNICA
+Alto DiseÃ±o
+FICHA TÃ‰CNICA
 SOBRE EL PRODUCTO
 ESPECIFICACIONES
 VENTAJAS Y BENEFICIOS
-POLITICAS DE GARANTÍAS
-Verificar y recibir a conformidad el producto en el momento de entrega, No se aceptan reclamos por faltantes, daños o golpes después de recibida la mercancía.
-UNITEC USA DESIGN no cubre las garantías por productos instalados que presenten diferencias en tamaño, tono, color, rayado, por alabeo o cualquier defecto visible
-que pudiera ser detectado antes de la instalación.
-En el caso de que encuentre este tipo de defectos, por favor absténganse de instalar el producto y comunícate inmediatamente con el respectivo vendedor.
-La garantía no cubre los daños ocasionados al producto, o uso inadecuado del usuario.
-Seguir las recomendaciones de la ficha técnica en cuanto a uso, aplicaciones e instalación. 
+POLITICAS DE GARANTÃAS
+Verificar y recibir a conformidad el producto en el momento de entrega, No se aceptan reclamos por faltantes, daÃ±os o golpes despuÃ©s de recibida la mercancÃ­a.
+UNITEC USA DESIGN no cubre las garantÃ­as por productos instalados que presenten diferencias en tamaÃ±o, tono, color, rayado, por alabeo o cualquier defecto visible
+que pudiera ser detectado antes de la instalaciÃ³n.
+En el caso de que encuentre este tipo de defectos, por favor abstÃ©nganse de instalar el producto y comunÃ­cate inmediatamente con el respectivo vendedor.
+La garantÃ­a no cubre los daÃ±os ocasionados al producto, o uso inadecuado del usuario.
+Seguir las recomendaciones de la ficha tÃ©cnica en cuanto a uso, aplicaciones e instalaciÃ³n. 
 18.5
-Panel Acústico Tipo 5
-El Panel Acústico Tipo 5 es un revestimiento decorativo acústico de
+Panel AcÃºstico Tipo 5
+El Panel AcÃºstico Tipo 5 es un revestimiento decorativo acÃºstico de
 formato vertical, compuesto por listones lineales con textura tipo
-madera, diseñado para mejorar la absorción sonora y el control acústico
-en espacios interiores. Su geometría continua aporta orden visual,
-profundidad y continuidad arquitectónica, convirtiéndose en una
-solución funcional y estética para muros de alto diseño.
-Fabricado en MDF y montado sobre respaldo acústico, ofrece un
-equilibrio ideal entre desempeño acústico, facilidad de instalación y
-acabado contemporáneo, siendo apto para muros y cielos interiores.
+madera, diseÃ±ado para mejorar la absorciÃ³n sonora y el control acÃºstico
+en espacios interiores. Su geometrÃ­a continua aporta orden visual,
+profundidad y continuidad arquitectÃ³nica, convirtiÃ©ndose en una
+soluciÃ³n funcional y estÃ©tica para muros de alto diseÃ±o.
+Fabricado en MDF y montado sobre respaldo acÃºstico, ofrece un
+equilibrio ideal entre desempeÃ±o acÃºstico, facilidad de instalaciÃ³n y
+acabado contemporÃ¡neo, siendo apto para muros y cielos interiores.
 Disponible en 4 colores: cedro, cedro madera, ebano y avellana.
-GUÍA DE INSTALACIÓN
+GUÃA DE INSTALACIÃ“N
 USOS Y APLICACIONES
 Revestimientos: Interiores en oficinas, salas de reuniones,
 hoteles, residencias y restaurantes.
 Espacios 
 de 
-difusión 
-acústica: 
+difusiÃ³n 
+acÃºstica: 
 Teatros, 
 salas 
 de
 conferencias, zonas lounge.
-Paredes de acento: Detrás de sofás, áreas de trabajo y
+Paredes de acento: DetrÃ¡s de sofÃ¡s, Ã¡reas de trabajo y
 murales decorativos.
-1.Preparación de la superficie: La pared debe estar limpia, seca,
+1.PreparaciÃ³n de la superficie: La pared debe estar limpia, seca,
 plana y libre de polvo o grasa.
-2.Cortes: Marcar alineación con nivel y lápiz. Cortar paneles con
+2.Cortes: Marcar alineaciÃ³n con nivel y lÃ¡piz. Cortar paneles con
 sierra para un ajuste preciso en esquinas o extremos.
-3.Fijación: Dos clips por cada metro lineal; fijar los clips al
+3.FijaciÃ³n: Dos clips por cada metro lineal; fijar los clips al
 bastidor o pared primero y luego encajar los paneles.
 4.Acabados: Colocar perfiles o molduras en remates, cubrir
 juntas visibles y asegurar un alineado vertical perfecto entre
 listones.
-5.Mantenimiento: Limpiar con paño seco o húmedo. Para
+5.Mantenimiento: Limpiar con paÃ±o seco o hÃºmedo. Para
 manchas, usar detergente suave. Evitar abrasivos, solventes o
-limpiadores agresivos que puedan dañar la superficie.
-Herramienta: Cinta métrica, sierra circular o caladora, adhesivo
-o clips metálicos, pistola de silicona, nivel, espaciadores, guantes
-y gafas de protección.
+limpiadores agresivos que puedan daÃ±ar la superficie.
+Herramienta: Cinta mÃ©trica, sierra circular o caladora, adhesivo
+o clips metÃ¡licos, pistola de silicona, nivel, espaciadores, guantes
+y gafas de protecciÃ³n.
 Peso:
 Espesor:
 Formato:
 Embalaje:
 Densidad:
-País de Origen:
+PaÃ­s de Origen:
 Material Principal:
 Nombre del Producto:
-Panel Acústico Tipo 5
+Panel AcÃºstico Tipo 5
 240 cm x 60 cm
 2 Kilogramos
 Unidad
 1,6 cm
-Aproximadamente 5 kg/m²
+Aproximadamente 5 kg/mÂ²
 MDF + Fieltro negro
 China
 
---- PRODUCT DATA: 18.6_FT_Panel Acústico Tipo 6.pdf ---
-Garantía
+--- PRODUCT DATA: 18.6_FT_Panel AcÃºstico Tipo 6.pdf ---
+GarantÃ­a
 Unitec
-Fácil
-Instalación
+FÃ¡cil
+InstalaciÃ³n
 Sostenible Impermeable
 No Flamable
 Liviano
 Resistente
 Bajo
 Mantenimiento
-Económico
-Garantía
-Fácil
-Instalación
+EconÃ³mico
+GarantÃ­a
+FÃ¡cil
+InstalaciÃ³n
 Sostenible
 Impermeable
-Económico
+EconÃ³mico
 No Flamable
 Liviano
 Resistente
 Bajo
 Mantenimiento
-Alto Diseño
-FICHA TÉCNICA
+Alto DiseÃ±o
+FICHA TÃ‰CNICA
 SOBRE EL PRODUCTO
 ESPECIFICACIONES
 VENTAJAS Y BENEFICIOS
-POLITICAS DE GARANTÍAS
-Verificar y recibir a conformidad el producto en el momento de entrega, No se aceptan reclamos por faltantes, daños o golpes después de recibida la mercancía.
-UNITEC USA DESIGN no cubre las garantías por productos instalados que presenten diferencias en tamaño, tono, color, rayado, por alabeo o cualquier defecto visible
-que pudiera ser detectado antes de la instalación.
-En el caso de que encuentre este tipo de defectos, por favor absténganse de instalar el producto y comunícate inmediatamente con el respectivo vendedor.
-La garantía no cubre los daños ocasionados al producto, o uso inadecuado del usuario.
-Seguir las recomendaciones de la ficha técnica en cuanto a uso, aplicaciones e instalación. 
+POLITICAS DE GARANTÃAS
+Verificar y recibir a conformidad el producto en el momento de entrega, No se aceptan reclamos por faltantes, daÃ±os o golpes despuÃ©s de recibida la mercancÃ­a.
+UNITEC USA DESIGN no cubre las garantÃ­as por productos instalados que presenten diferencias en tamaÃ±o, tono, color, rayado, por alabeo o cualquier defecto visible
+que pudiera ser detectado antes de la instalaciÃ³n.
+En el caso de que encuentre este tipo de defectos, por favor abstÃ©nganse de instalar el producto y comunÃ­cate inmediatamente con el respectivo vendedor.
+La garantÃ­a no cubre los daÃ±os ocasionados al producto, o uso inadecuado del usuario.
+Seguir las recomendaciones de la ficha tÃ©cnica en cuanto a uso, aplicaciones e instalaciÃ³n. 
 18.6
-Panel Acústico Tipo 6
-El Panel Acústico Tipo 6 es un revestimiento decorativo acústico tipo
-listón de madera natural o laminada, montado sobre respaldo acústico
-(fieltro PET o núcleo mineral/fibra). Su geometría ondulada genera una
-superficie tridimensional que mejora la difusión acústica, reduce
+Panel AcÃºstico Tipo 6
+El Panel AcÃºstico Tipo 6 es un revestimiento decorativo acÃºstico tipo
+listÃ³n de madera natural o laminada, montado sobre respaldo acÃºstico
+(fieltro PET o nÃºcleo mineral/fibra). Su geometrÃ­a ondulada genera una
+superficie tridimensional que mejora la difusiÃ³n acÃºstica, reduce
 reflexiones directas y optimiza la calidad del sonido en el espacio.
-Su textura formada por listones crea variaciones rítmicas que aportan
-profundidad visual y carácter contemporáneo, mientras que su formato
-modular permite una instalación precisa y continua. Es una solución
-funcional y estética para interiores que requieren alto desempeño
-acústico y diseño arquitectónico.
+Su textura formada por listones crea variaciones rÃ­tmicas que aportan
+profundidad visual y carÃ¡cter contemporÃ¡neo, mientras que su formato
+modular permite una instalaciÃ³n precisa y continua. Es una soluciÃ³n
+funcional y estÃ©tica para interiores que requieren alto desempeÃ±o
+acÃºstico y diseÃ±o arquitectÃ³nico.
 Disponible en 4 colores: cedro mix avellana, madera mix avellana, cedro
 mix ebano, madera mix ebano.
-GUÍA DE INSTALACIÓN
+GUÃA DE INSTALACIÃ“N
 USOS Y APLICACIONES
 Revestimientos: Interiores en oficinas, salas de reuniones,
 hoteles, residencias y restaurantes.
 Espacios 
 de 
-difusión 
-acústica: 
+difusiÃ³n 
+acÃºstica: 
 Teatros, 
 salas 
 de
 conferencias, zonas lounge.
-Paredes de acento: Detrás de sofás, áreas de trabajo y
+Paredes de acento: DetrÃ¡s de sofÃ¡s, Ã¡reas de trabajo y
 murales decorativos.
-1.Preparación de la superficie: La pared debe estar limpia, seca,
+1.PreparaciÃ³n de la superficie: La pared debe estar limpia, seca,
 plana y libre de polvo o grasa.
-2.Cortes: Marcar alineación con nivel y lápiz. Cortar paneles con
+2.Cortes: Marcar alineaciÃ³n con nivel y lÃ¡piz. Cortar paneles con
 sierra para un ajuste preciso en esquinas o extremos.
-3.Fijación: Dos clips por cada metro lineal; fijar los clips al
+3.FijaciÃ³n: Dos clips por cada metro lineal; fijar los clips al
 bastidor o pared primero y luego encajar los paneles.
 4.Acabados: Colocar perfiles o molduras en remates, cubrir
 juntas visibles y asegurar un alineado vertical perfecto entre
 listones.
-5.Mantenimiento: Limpiar con paño seco o húmedo. Para
+5.Mantenimiento: Limpiar con paÃ±o seco o hÃºmedo. Para
 manchas, usar detergente suave. Evitar abrasivos, solventes o
-limpiadores agresivos que puedan dañar la superficie.
-Herramienta: Cinta métrica, sierra circular o caladora, adhesivo
-o clips metálicos, pistola de silicona, nivel, espaciadores, guantes
-y gafas de protección.
+limpiadores agresivos que puedan daÃ±ar la superficie.
+Herramienta: Cinta mÃ©trica, sierra circular o caladora, adhesivo
+o clips metÃ¡licos, pistola de silicona, nivel, espaciadores, guantes
+y gafas de protecciÃ³n.
 Peso:
 Espesor:
 Formato:
 Embalaje:
 Densidad:
-País de Origen:
+PaÃ­s de Origen:
 Material Principal:
 Nombre del Producto:
-Panel Acústico Tipo 6
+Panel AcÃºstico Tipo 6
 116,1 cm x 120 cm
 5 Kilogramos
 Unidad
 2,1 cm
-Aproximadamente 7 kg/m²
+Aproximadamente 7 kg/mÂ²
 MDF + Fieltro negro
 China
 
---- PRODUCT DATA: 19_FT_Panel_Acrilico Mármol.pdf ---
-Garantía
+--- PRODUCT DATA: 19_FT_Panel_Acrilico MÃ¡rmol.pdf ---
+GarantÃ­a
 Unitec
-Fácil
-Instalación
+FÃ¡cil
+InstalaciÃ³n
 Sostenible Impermeable
 No Flamable
 Liviano
 Resistente
 Bajo
 Mantenimiento
-Económico
-Garantía
-Fácil
-Instalación
+EconÃ³mico
+GarantÃ­a
+FÃ¡cil
+InstalaciÃ³n
 Sostenible
 Impermeable
-Económico
+EconÃ³mico
 No Flamable
 Liviano
 Resistente
 Bajo
 Mantenimiento
-Alto Diseño
-FICHA TÉCNICA
+Alto DiseÃ±o
+FICHA TÃ‰CNICA
 ESPECIFICACIONES
 VENTAJAS Y BENEFICIOS
-POLITICAS DE GARANTÍAS
-Verificar y recibir a conformidad el producto en el momento de entrega, No se aceptan reclamos por faltantes, daños o golpes después de recibida la mercancía.
-UNITEC USA DESIGN no cubre las garantías por productos instalados que presenten diferencias en tamaño, tono, color, rayado, por alabeo o cualquier defecto visible
-que pudiera ser detectado antes de la instalación.
-En el caso de que encuentre este tipo de defectos, por favor absténganse de instalar el producto y comunícate inmediatamente con el respectivo vendedor.
-La garantía no cubre los daños ocasionados al producto, o uso inadecuado del usuario.
-Seguir las recomendaciones de la ficha técnica en cuanto a uso, aplicaciones e instalación. 
+POLITICAS DE GARANTÃAS
+Verificar y recibir a conformidad el producto en el momento de entrega, No se aceptan reclamos por faltantes, daÃ±os o golpes despuÃ©s de recibida la mercancÃ­a.
+UNITEC USA DESIGN no cubre las garantÃ­as por productos instalados que presenten diferencias en tamaÃ±o, tono, color, rayado, por alabeo o cualquier defecto visible
+que pudiera ser detectado antes de la instalaciÃ³n.
+En el caso de que encuentre este tipo de defectos, por favor abstÃ©nganse de instalar el producto y comunÃ­cate inmediatamente con el respectivo vendedor.
+La garantÃ­a no cubre los daÃ±os ocasionados al producto, o uso inadecuado del usuario.
+Seguir las recomendaciones de la ficha tÃ©cnica en cuanto a uso, aplicaciones e instalaciÃ³n. 
 19
-Panel Acrilico de Mármol
+Panel Acrilico de MÃ¡rmol
 SOBRE EL PRODUCTO
-GUÍA DE INSTALACIÓN
+GUÃA DE INSTALACIÃ“N
 USOS Y APLICACIONES
 Revestimiento de paredes y muros decorativos
 Fondos para salas, recepciones y locales comerciales
 Revestimiento de columnas e islas decorativas
 Tableros retroiluminados
-Señalética y elementos arquitectónicos
+SeÃ±alÃ©tica y elementos arquitectÃ³nicos
 Mesones decorativos y aplicaciones interiores
-1.Preparación de la superficie: Verifique que el muro esté seco,
+1.PreparaciÃ³n de la superficie: Verifique que el muro estÃ© seco,
 limpio, liso y firme. En caso de irregularidades, realice un lijado
 o relleno previo.
 2.Corte del panel: Marque el contorno deseado directamente
 sobre la parte posterior del panel y realice el corte con
 herramientas adecuadas.
-3.Sujeción: Aplique adhesivo de montaje o silicona neutra de
+3.SujeciÃ³n: Aplique adhesivo de montaje o silicona neutra de
 forma uniforme en la parte posterior del panel. Presione
 firmemente 
 contra 
@@ -2448,107 +2474,107 @@ asegurando
 una 
 correcta
 adherencia.
-4.Acabados: Verifique la nivelación. Selle bordes si el proyecto lo
+4.Acabados: Verifique la nivelaciÃ³n. Selle bordes si el proyecto lo
 requiere o instale perfiles decorativos en esquinas y uniones.
-5.Mantenimiento: Limpie con paño seco o ligeramente húmedo.
-No utilice productos abrasivos, ácidos o solventes. Evite
+5.Mantenimiento: Limpie con paÃ±o seco o ligeramente hÃºmedo.
+No utilice productos abrasivos, Ã¡cidos o solventes. Evite
 contacto directo con objetos calientes.
-Herramienta: Nivel láser, adhesivo neutro o adhesivo de
-montaje, cinta métrica, caladora de dientes finos, guantes, paño
+Herramienta: Nivel lÃ¡ser, adhesivo neutro o adhesivo de
+montaje, cinta mÃ©trica, caladora de dientes finos, guantes, paÃ±o
 suave.
-El Panel Acrílico Mármol es un revestimiento decorativo de alto brillo
-fabricado en resina acrílica de alta densidad, diseñado para reproducir
-fielmente la estética del mármol natural con una solución más liviana,
-resistente y fácil de instalar.
-Su acabado translúcido y efecto profundo aportan elegancia,
-luminosidad y sofisticación a los espacios, convirtiéndose en una
-alternativa moderna al mármol o granito tradicional, ideal para proyectos
-arquitectónicos y de diseño interior.
+El Panel AcrÃ­lico MÃ¡rmol es un revestimiento decorativo de alto brillo
+fabricado en resina acrÃ­lica de alta densidad, diseÃ±ado para reproducir
+fielmente la estÃ©tica del mÃ¡rmol natural con una soluciÃ³n mÃ¡s liviana,
+resistente y fÃ¡cil de instalar.
+Su acabado translÃºcido y efecto profundo aportan elegancia,
+luminosidad y sofisticaciÃ³n a los espacios, convirtiÃ©ndose en una
+alternativa moderna al mÃ¡rmol o granito tradicional, ideal para proyectos
+arquitectÃ³nicos y de diseÃ±o interior.
 Peso:
 Espesor:
 Formato:
 Embalaje:
 Densidad:
-País de Origen:
+PaÃ­s de Origen:
 Material Principal:
 Nombre del Producto:
-Panel Acrílico Mármol
-2,44 m x 1,22 m (Área por panel: 2,9 m²)
+Panel AcrÃ­lico MÃ¡rmol
+2,44 m x 1,22 m (Ãrea por panel: 2,9 mÂ²)
 7 kg
 Unidad
 2 mm
-Aproximadamente 9kg/m²
-Acrílico
+Aproximadamente 9kg/mÂ²
+AcrÃ­lico
 China
 
---- PRODUCT DATA: 20_FT_Listón WPC Exterior.pdf ---
-Garantía
+--- PRODUCT DATA: 20_FT_ListÃ³n WPC Exterior.pdf ---
+GarantÃ­a
 Unitec
-Fácil
-Instalación
+FÃ¡cil
+InstalaciÃ³n
 Sostenible Impermeable
 No Flamable
 Liviano
 Resistente
 Bajo
 Mantenimiento
-Económico
-Garantía
-Fácil
-Instalación
+EconÃ³mico
+GarantÃ­a
+FÃ¡cil
+InstalaciÃ³n
 Sostenible
 Impermeable
-Económico
+EconÃ³mico
 No Flamable
 Liviano
 Resistente
 Bajo
 Mantenimiento
-Alto Diseño
-FICHA TÉCNICA
+Alto DiseÃ±o
+FICHA TÃ‰CNICA
 ESPECIFICACIONES
 VENTAJAS Y BENEFICIOS
-POLITICAS DE GARANTÍAS
-Verificar y recibir a conformidad el producto en el momento de entrega, No se aceptan reclamos por faltantes, daños o golpes después de recibida la mercancía.
-UNITEC USA DESIGN no cubre las garantías por productos instalados que presenten diferencias en tamaño, tono, color, rayado, por alabeo o cualquier defecto visible
-que pudiera ser detectado antes de la instalación.
-En el caso de que encuentre este tipo de defectos, por favor absténganse de instalar el producto y comunícate inmediatamente con el respectivo vendedor.
-La garantía no cubre los daños ocasionados al producto, o uso inadecuado del usuario.
-Seguir las recomendaciones de la ficha técnica en cuanto a uso, aplicaciones e instalación. 
+POLITICAS DE GARANTÃAS
+Verificar y recibir a conformidad el producto en el momento de entrega, No se aceptan reclamos por faltantes, daÃ±os o golpes despuÃ©s de recibida la mercancÃ­a.
+UNITEC USA DESIGN no cubre las garantÃ­as por productos instalados que presenten diferencias en tamaÃ±o, tono, color, rayado, por alabeo o cualquier defecto visible
+que pudiera ser detectado antes de la instalaciÃ³n.
+En el caso de que encuentre este tipo de defectos, por favor abstÃ©nganse de instalar el producto y comunÃ­cate inmediatamente con el respectivo vendedor.
+La garantÃ­a no cubre los daÃ±os ocasionados al producto, o uso inadecuado del usuario.
+Seguir las recomendaciones de la ficha tÃ©cnica en cuanto a uso, aplicaciones e instalaciÃ³n. 
 20
-Listón WPC Exterior
+ListÃ³n WPC Exterior
 SOBRE EL PRODUCTO
-RECOMENDACIONES DE INSTALACIÓN
+RECOMENDACIONES DE INSTALACIÃ“N
 VENTAJAS DEL PRODUCTO
-Alta resistencia a la humedad, sol y cambios climáticos
+Alta resistencia a la humedad, sol y cambios climÃ¡ticos
 No se pudre, no se oxida y no se astilla
 Apariencia tipo madera natural
 Bajo mantenimiento
-Material sostenible y de larga vida útil
-Ideal para uso arquitectónico exterior
+Material sostenible y de larga vida Ãºtil
+Ideal para uso arquitectÃ³nico exterior
 Instalar sobre estructura nivelada y firme.
-Utilizar tornillería y accesorios recomendados para WPC
+Utilizar tornillerÃ­a y accesorios recomendados para WPC
 exterior.
-Dejar dilataciones entre piezas según condiciones climáticas
+Dejar dilataciones entre piezas segÃºn condiciones climÃ¡ticas
 Uso de tornillo de acero inoxidable WPC exterior REF:
 14122901.
-El Listón WPC Exterior es un elemento arquitectónico fabricado en
-Wood Plastic Composite (WPC), diseñado para aplicaciones exteriores
-que requieren alta resistencia a la intemperie y una estética tipo madera
-natural. Su composición combina fibras de madera y polímeros, logrando
+El ListÃ³n WPC Exterior es un elemento arquitectÃ³nico fabricado en
+Wood Plastic Composite (WPC), diseÃ±ado para aplicaciones exteriores
+que requieren alta resistencia a la intemperie y una estÃ©tica tipo madera
+natural. Su composiciÃ³n combina fibras de madera y polÃ­meros, logrando
 un producto duradero, estable y de bajo mantenimiento, ideal para
-fachadas, pérgolas, celosías y revestimientos decorativos exteriores.
+fachadas, pÃ©rgolas, celosÃ­as y revestimientos decorativos exteriores.
 Disponible en los siguientes colores:
 Peso:
 Espesor:
 Formato:
 Embalaje:
 Densidad:
-País de Origen:
+PaÃ­s de Origen:
 Material Principal:
 Nombre del Producto:
-Listón WPC Exterior
-Listón tipo tubular 5,60m (largo) x 6cm (ancho) x 4cm (alto)
+ListÃ³n WPC Exterior
+ListÃ³n tipo tubular 5,60m (largo) x 6cm (ancho) x 4cm (alto)
 8,8Kg
 Unidad
 6 mm
@@ -2556,60 +2582,60 @@ Unidad
 WPC (Wood Plastic Composite)
 China
 MANTENIMIENTO
-Limpieza con agua y jabón neutro
+Limpieza con agua y jabÃ³n neutro
 No requiere barnices, selladores ni tratamientos especiales
 USOS Y APLICACIONES
 Fachadas exteriores
 Muros decorativos
-Pérgolas y parasoles
-Cerramientos arquitectónicos
+PÃ©rgolas y parasoles
+Cerramientos arquitectÃ³nicos
 Proyectos residenciales y comerciales
 
---- PRODUCT DATA: 21_FT_Listón PVC Interior.pdf ---
-Garantía
+--- PRODUCT DATA: 21_FT_ListÃ³n PVC Interior.pdf ---
+GarantÃ­a
 Unitec
-Fácil
-Instalación
+FÃ¡cil
+InstalaciÃ³n
 Sostenible Impermeable
 No Flamable
 Liviano
 Resistente
 Bajo
 Mantenimiento
-Económico
-Garantía
-Fácil
-Instalación
+EconÃ³mico
+GarantÃ­a
+FÃ¡cil
+InstalaciÃ³n
 Sostenible
 Impermeable
-Económico
+EconÃ³mico
 No Flamable
 Liviano
 Resistente
 Bajo
 Mantenimiento
-Alto Diseño
-FICHA TÉCNICA
+Alto DiseÃ±o
+FICHA TÃ‰CNICA
 ESPECIFICACIONES
 VENTAJAS Y BENEFICIOS
-POLITICAS DE GARANTÍAS
-Verificar y recibir a conformidad el producto en el momento de entrega, No se aceptan reclamos por faltantes, daños o golpes después de recibida la mercancía.
-UNITEC USA DESIGN no cubre las garantías por productos instalados que presenten diferencias en tamaño, tono, color, rayado, por alabeo o cualquier defecto visible
-que pudiera ser detectado antes de la instalación.
-En el caso de que encuentre este tipo de defectos, por favor absténganse de instalar el producto y comunícate inmediatamente con el respectivo vendedor.
-La garantía no cubre los daños ocasionados al producto, o uso inadecuado del usuario.
-Seguir las recomendaciones de la ficha técnica en cuanto a uso, aplicaciones e instalación. 
+POLITICAS DE GARANTÃAS
+Verificar y recibir a conformidad el producto en el momento de entrega, No se aceptan reclamos por faltantes, daÃ±os o golpes despuÃ©s de recibida la mercancÃ­a.
+UNITEC USA DESIGN no cubre las garantÃ­as por productos instalados que presenten diferencias en tamaÃ±o, tono, color, rayado, por alabeo o cualquier defecto visible
+que pudiera ser detectado antes de la instalaciÃ³n.
+En el caso de que encuentre este tipo de defectos, por favor abstÃ©nganse de instalar el producto y comunÃ­cate inmediatamente con el respectivo vendedor.
+La garantÃ­a no cubre los daÃ±os ocasionados al producto, o uso inadecuado del usuario.
+Seguir las recomendaciones de la ficha tÃ©cnica en cuanto a uso, aplicaciones e instalaciÃ³n. 
 21
-Listón PVC Interior
+ListÃ³n PVC Interior
 SOBRE EL PRODUCTO
-El Listón PVC Interior es un revestimiento decorativo arquitectónico
-fabricado en PVC de alta calidad, diseñado para aplicaciones interiores
+El ListÃ³n PVC Interior es un revestimiento decorativo arquitectÃ³nico
+fabricado en PVC de alta calidad, diseÃ±ado para aplicaciones interiores
 que requieren ligereza, resistencia a la humedad y bajo mantenimiento.
-Su diseño tipo listón con acabado tipo madera permite crear superficies
+Su diseÃ±o tipo listÃ³n con acabado tipo madera permite crear superficies
 continuas, modernas y elegantes, aportando orden visual y profundidad
 a los espacios.
-Es una solución ideal para proyectos de interiorismo residencial y
-comercial, donde se busca una alternativa práctica a la madera natural,
+Es una soluciÃ³n ideal para proyectos de interiorismo residencial y
+comercial, donde se busca una alternativa prÃ¡ctica a la madera natural,
 sin los requerimientos de mantenimiento ni las limitaciones frente a la
 humedad.
 Disponible en los siguientes colores:
@@ -2618,11 +2644,11 @@ Espesor:
 Formato:
 Embalaje:
 Densidad:
-País de Origen:
+PaÃ­s de Origen:
 Material Principal:
 Nombre del Producto:
-Listón PVC Interior
-Listón tipo sólido 2,90 m (largo) x 10 cm (ancho frente) x 5 cm (alto)
+ListÃ³n PVC Interior
+ListÃ³n tipo sÃ³lido 2,90 m (largo) x 10 cm (ancho frente) x 5 cm (alto)
 1,1 kg
 Unidad
 3 mm
@@ -2632,93 +2658,93 @@ China
 USOS Y APLICACIONES
 Paredes decorativas
 Revestimiento de columnas interiores
-Proyectos residenciales y comerciales de diseño interior
-GUÍA DE INSTALACIÓN
-1.Preparación de la superficie: La pared debe estar seca, limpia, lisa y
+Proyectos residenciales y comerciales de diseÃ±o interior
+GUÃA DE INSTALACIÃ“N
+1.PreparaciÃ³n de la superficie: La pared debe estar seca, limpia, lisa y
 nivelada. Si existen imperfecciones mayores, se recomienda resanar o
-alisar previamente para garantizar una correcta alineación de los listones.
-2.Trazado y cortes: Marque las líneas guía sobre el muro para asegurar una
-instalación recta y continua. Corte los listones a la medida requerida
-utilizando herramientas manuales o eléctricas adecuadas.
-3.Fijación del listón: El listón PVC estructural puede fijarse de dos maneras:
-4.Fijación mecánica (recomendada): Atornille el listón directamente a la
+alisar previamente para garantizar una correcta alineaciÃ³n de los listones.
+2.Trazado y cortes: Marque las lÃ­neas guÃ­a sobre el muro para asegurar una
+instalaciÃ³n recta y continua. Corte los listones a la medida requerida
+utilizando herramientas manuales o elÃ©ctricas adecuadas.
+3.FijaciÃ³n del listÃ³n: El listÃ³n PVC estructural puede fijarse de dos maneras:
+4.FijaciÃ³n mecÃ¡nica (recomendada): Atornille el listÃ³n directamente a la
 superficie o estructura de soporte, utilizando tornillos adecuados para PVC.
-5.Fijación con adhesivo (uso interior): Aplique adhesivo de montaje en la
-parte posterior del listón en forma de cordón o puntos uniformes y
+5.FijaciÃ³n con adhesivo (uso interior): Aplique adhesivo de montaje en la
+parte posterior del listÃ³n en forma de cordÃ³n o puntos uniformes y
 presione firmemente contra el muro.
-6.Instalación del KIT TAPONES: Una vez fijado el listón: Inserte los tapones
-del KIT TAPONES LISTÓN PVC ESTRUCTURAL 10 CM en los extremos visibles
+6.InstalaciÃ³n del KIT TAPONES: Una vez fijado el listÃ³n: Inserte los tapones
+del KIT TAPONES LISTÃ“N PVC ESTRUCTURAL 10 CM en los extremos visibles
 del perfil. Asegure el ajuste presionando suavemente hasta lograr un cierre
-limpio y alineado. El uso de los tapones garantiza un acabado estético,
-uniforme y seguro, además de proteger el interior del perfil.
-7.Acabados: Revise la alineación final de los listones.  En esquinas o
-terminaciones, puede complementar con perfiles decorativos si el diseño
+limpio y alineado. El uso de los tapones garantiza un acabado estÃ©tico,
+uniforme y seguro, ademÃ¡s de proteger el interior del perfil.
+7.Acabados: Revise la alineaciÃ³n final de los listones.  En esquinas o
+terminaciones, puede complementar con perfiles decorativos si el diseÃ±o
 lo requiere. No es necesario pintar ni sellar el producto.
-Herramienta: Cinta métrica, nivel, sierra manual o eléctrica, taladro,
+Herramienta: Cinta mÃ©trica, nivel, sierra manual o elÃ©ctrica, taladro,
 tornillos para PVC, adhesivo de montaje (opcional), martillo de goma,
-KIT TAPONES LISTÓN PVC ESTRUCTURAL 10 CM, paño limpio.
+KIT TAPONES LISTÃ“N PVC ESTRUCTURAL 10 CM, paÃ±o limpio.
 
---- PRODUCT DATA: 22_FT_Listón PVC Cielo Raso.pdf ---
-Garantía
+--- PRODUCT DATA: 22_FT_ListÃ³n PVC Cielo Raso.pdf ---
+GarantÃ­a
 Unitec
-Fácil
-Instalación
+FÃ¡cil
+InstalaciÃ³n
 Sostenible Impermeable
 No Flamable
 Liviano
 Resistente
 Bajo
 Mantenimiento
-Económico
-Garantía
-Fácil
-Instalación
+EconÃ³mico
+GarantÃ­a
+FÃ¡cil
+InstalaciÃ³n
 Sostenible
 Impermeable
-Económico
+EconÃ³mico
 No Flamable
 Liviano
 Resistente
 Bajo
 Mantenimiento
-Alto Diseño
-FICHA TÉCNICA
+Alto DiseÃ±o
+FICHA TÃ‰CNICA
 ESPECIFICACIONES
 VENTAJAS Y BENEFICIOS
-POLITICAS DE GARANTÍAS
-Verificar y recibir a conformidad el producto en el momento de entrega, No se aceptan reclamos por faltantes, daños o golpes después de recibida la mercancía.
-UNITEC USA DESIGN no cubre las garantías por productos instalados que presenten diferencias en tamaño, tono, color, rayado, por alabeo o cualquier defecto visible
-que pudiera ser detectado antes de la instalación.
-En el caso de que encuentre este tipo de defectos, por favor absténganse de instalar el producto y comunícate inmediatamente con el respectivo vendedor.
-La garantía no cubre los daños ocasionados al producto, o uso inadecuado del usuario.
-Seguir las recomendaciones de la ficha técnica en cuanto a uso, aplicaciones e instalación. 
+POLITICAS DE GARANTÃAS
+Verificar y recibir a conformidad el producto en el momento de entrega, No se aceptan reclamos por faltantes, daÃ±os o golpes despuÃ©s de recibida la mercancÃ­a.
+UNITEC USA DESIGN no cubre las garantÃ­as por productos instalados que presenten diferencias en tamaÃ±o, tono, color, rayado, por alabeo o cualquier defecto visible
+que pudiera ser detectado antes de la instalaciÃ³n.
+En el caso de que encuentre este tipo de defectos, por favor abstÃ©nganse de instalar el producto y comunÃ­cate inmediatamente con el respectivo vendedor.
+La garantÃ­a no cubre los daÃ±os ocasionados al producto, o uso inadecuado del usuario.
+Seguir las recomendaciones de la ficha tÃ©cnica en cuanto a uso, aplicaciones e instalaciÃ³n. 
 22
-Listón PVC Cielo Raso
+ListÃ³n PVC Cielo Raso
 SOBRE EL PRODUCTO
-GUÍA DE INSTALACIÓN
+GUÃA DE INSTALACIÃ“N
 USOS Y APLICACIONES
-Cielos rasos interiores en salas, oficinas y baños
+Cielos rasos interiores en salas, oficinas y baÃ±os
 Pasillos o recepciones
-Aplicaciones decorativas en techos de bajo tráfico
-1.Preparación de la superficie: Verifique que el cielo esté limpio
-y nivelado. Use perfiles de soporte metálicos o de PVC para
+Aplicaciones decorativas en techos de bajo trÃ¡fico
+1.PreparaciÃ³n de la superficie: Verifique que el cielo estÃ© limpio
+y nivelado. Use perfiles de soporte metÃ¡licos o de PVC para
 asegurar la estructura.
-2.Cortes: Tome medidas del área. Corte las piezas al largo
+2.Cortes: Tome medidas del Ã¡rea. Corte las piezas al largo
 deseado, cuidando el acabado de los bordes.
-3.Sujeción: Instale los perfiles guía en el perímetro. Luego
+3.SujeciÃ³n: Instale los perfiles guÃ­a en el perÃ­metro. Luego
 introduzca y fije los listones en los perfiles con tornillos o clips
-de presión.
+de presiÃ³n.
 4.Acabados: Puede sellar juntas con silicona blanca o rematar con
 perfiles decorativos para dar un acabado profesional.
-5.Mantenimiento: Limpieza sencilla con paño húmedo. No
+5.Mantenimiento: Limpieza sencilla con paÃ±o hÃºmedo. No
 requiere pintura ni tratamientos especiales.
-Herramienta: Cinta métrica, cúter o sierra, taladro, perfiles en U
+Herramienta: Cinta mÃ©trica, cÃºter o sierra, taladro, perfiles en U
 o L.
-El Listón PVC Cielo Raso es un elemento decorativo y funcional
-diseñado para revestimiento de cielos rasos interiores. Su geometría
+El ListÃ³n PVC Cielo Raso es un elemento decorativo y funcional
+diseÃ±ado para revestimiento de cielos rasos interiores. Su geometrÃ­a
 lineal aporta un acabado moderno y continuo, ideal para proyectos
 residenciales y comerciales. Fabricado en PVC de alta calidad, es liviano,
-resistente a la humedad y de fácil instalación, ofreciendo una alternativa
+resistente a la humedad y de fÃ¡cil instalaciÃ³n, ofreciendo una alternativa
 duradera frente a materiales tradicionales.
 Disponible en los siguientes colores:
 Peso:
@@ -2726,10 +2752,10 @@ Espesor:
 Formato:
 Embalaje:
 Densidad:
-País de Origen:
+PaÃ­s de Origen:
 Material Principal:
 Nombre del Producto:
-Listón PVC Cielo Raso
+ListÃ³n PVC Cielo Raso
 7 kg
 Unidad
 2.5 mm
@@ -2741,51 +2767,51 @@ VENTAJAS DEL PRODUCTO
 Resistente a la humedad
 No se oxida ni se pudre
 Material liviano
-Fácil limpieza
+FÃ¡cil limpieza
 Bajo mantenimiento
-Instalación rápida
-Acabado tipo madera de alta estética
+InstalaciÃ³n rÃ¡pida
+Acabado tipo madera de alta estÃ©tica
 
 --- PRODUCT DATA: 23_FT_Cielo Raso Lamina PVC.pdf ---
-Garantía
+GarantÃ­a
 Unitec
-Fácil
-Instalación
+FÃ¡cil
+InstalaciÃ³n
 Sostenible Impermeable
 No Flamable
 Liviano
 Resistente
 Bajo
 Mantenimiento
-Económico
-Garantía
-Fácil
-Instalación
+EconÃ³mico
+GarantÃ­a
+FÃ¡cil
+InstalaciÃ³n
 Sostenible
 Impermeable
-Económico
+EconÃ³mico
 No Flamable
 Liviano
 Resistente
 Bajo
 Mantenimiento
-Alto Diseño
-FICHA TÉCNICA
+Alto DiseÃ±o
+FICHA TÃ‰CNICA
 ESPECIFICACIONES
 VENTAJAS Y BENEFICIOS
-POLITICAS DE GARANTÍAS
-Verificar y recibir a conformidad el producto en el momento de entrega, No se aceptan reclamos por faltantes, daños o golpes después de recibida la mercancía.
-UNITEC USA DESIGN no cubre las garantías por productos instalados que presenten diferencias en tamaño, tono, color, rayado, por alabeo o cualquier defecto visible
-que pudiera ser detectado antes de la instalación.
-En el caso de que encuentre este tipo de defectos, por favor absténganse de instalar el producto y comunícate inmediatamente con el respectivo vendedor.
-La garantía no cubre los daños ocasionados al producto, o uso inadecuado del usuario.
-Seguir las recomendaciones de la ficha técnica en cuanto a uso, aplicaciones e instalación. 
+POLITICAS DE GARANTÃAS
+Verificar y recibir a conformidad el producto en el momento de entrega, No se aceptan reclamos por faltantes, daÃ±os o golpes despuÃ©s de recibida la mercancÃ­a.
+UNITEC USA DESIGN no cubre las garantÃ­as por productos instalados que presenten diferencias en tamaÃ±o, tono, color, rayado, por alabeo o cualquier defecto visible
+que pudiera ser detectado antes de la instalaciÃ³n.
+En el caso de que encuentre este tipo de defectos, por favor abstÃ©nganse de instalar el producto y comunÃ­cate inmediatamente con el respectivo vendedor.
+La garantÃ­a no cubre los daÃ±os ocasionados al producto, o uso inadecuado del usuario.
+Seguir las recomendaciones de la ficha tÃ©cnica en cuanto a uso, aplicaciones e instalaciÃ³n. 
 23
-Cielo Raso Lámina PVC
+Cielo Raso LÃ¡mina PVC
 SOBRE EL PRODUCTO
-La Lámina PVC para Cielo Raso es un sistema decorativo y funcional
+La LÃ¡mina PVC para Cielo Raso es un sistema decorativo y funcional
 para recubrimiento de techos interiores. Fabricada en PVC de alta
-calidad, ofrece una solución liviana, resistente y de fácil instalación, ideal
+calidad, ofrece una soluciÃ³n liviana, resistente y de fÃ¡cil instalaciÃ³n, ideal
 para proyectos residenciales, comerciales e institucionales.
 Disponible en acabados brillantes, mate, textura marmolizada,
 amaderada, y colores exclusivos (bajo pedido).
@@ -2794,121 +2820,121 @@ Calibre:
 Formato:
 Embalaje:
 Acabado:
-País de Origen:
+PaÃ­s de Origen:
 Material Principal:
 Nombre del Producto:
 Cielo Raso Lamina PVC
-2.5 – 3 kg por unidad
+2.5 â€“ 3 kg por unidad
 Unidad
 8.5 mm
-Brillante / Mate (según referencia)
+Brillante / Mate (segÃºn referencia)
 China
 PVC (Policloruro de Vinilo)
 USOS Y APLICACIONES
 Cielos rasos residenciales
 Oficinas y locales comerciales
-Zonas húmedas (baños, cocinas, lavanderías)
+Zonas hÃºmedas (baÃ±os, cocinas, lavanderÃ­as)
 Proyectos institucionales
 30 cm (ancho) x 5,95 m (largo)
 CARACTERISTICAS
 Impermeable
-Fácil de limpiar
-Aislante térmico
-Aislante acústico
+FÃ¡cil de limpiar
+Aislante tÃ©rmico
+Aislante acÃºstico
 Material liviano
-Fácil instalación
+FÃ¡cil instalaciÃ³n
 Autoextinguible
 Material reciclable
 No contiene metales
 No requiere mantenimiento
 BENEFICIOS DEL PRODUCTO
-Mejora la estética del espacio
+Mejora la estÃ©tica del espacio
 Reduce costos de mantenimiento
-Instalación rápida y limpia
+InstalaciÃ³n rÃ¡pida y limpia
 Alta durabilidad
 Resistente a la humedad y al moho
 ACCESORIOS COMPATIBLES
 Corniza PVC
 Perimetral tipo F
 Perimetral tipo U
-Unión tipo H
+UniÃ³n tipo H
 Esquinero
-        (Accesorios diseñados para garantizar una instalación estética y profesional)
+        (Accesorios diseÃ±ados para garantizar una instalaciÃ³n estÃ©tica y profesional)
 
 --- PRODUCT DATA: 24_FT_Zocalo SPC.pdf ---
-Garantía
+GarantÃ­a
 Unitec
-Fácil
-Instalación
+FÃ¡cil
+InstalaciÃ³n
 Sostenible Impermeable
 No Flamable
 Liviano
 Resistente
 Bajo
 Mantenimiento
-Económico
-Garantía
-Fácil
-Instalación
+EconÃ³mico
+GarantÃ­a
+FÃ¡cil
+InstalaciÃ³n
 Sostenible
 Impermeable
-Económico
+EconÃ³mico
 No Flamable
 Liviano
 Resistente
 Bajo
 Mantenimiento
-Alto Diseño
-FICHA TÉCNICA
+Alto DiseÃ±o
+FICHA TÃ‰CNICA
 ESPECIFICACIONES
 VENTAJAS Y BENEFICIOS
-POLITICAS DE GARANTÍAS
-Verificar y recibir a conformidad el producto en el momento de entrega, No se aceptan reclamos por faltantes, daños o golpes después de recibida la mercancía.
-UNITEC USA DESIGN no cubre las garantías por productos instalados que presenten diferencias en tamaño, tono, color, rayado, por alabeo o cualquier defecto visible
-que pudiera ser detectado antes de la instalación.
-En el caso de que encuentre este tipo de defectos, por favor absténganse de instalar el producto y comunícate inmediatamente con el respectivo vendedor.
-La garantía no cubre los daños ocasionados al producto, o uso inadecuado del usuario.
-Seguir las recomendaciones de la ficha técnica en cuanto a uso, aplicaciones e instalación. 
+POLITICAS DE GARANTÃAS
+Verificar y recibir a conformidad el producto en el momento de entrega, No se aceptan reclamos por faltantes, daÃ±os o golpes despuÃ©s de recibida la mercancÃ­a.
+UNITEC USA DESIGN no cubre las garantÃ­as por productos instalados que presenten diferencias en tamaÃ±o, tono, color, rayado, por alabeo o cualquier defecto visible
+que pudiera ser detectado antes de la instalaciÃ³n.
+En el caso de que encuentre este tipo de defectos, por favor abstÃ©nganse de instalar el producto y comunÃ­cate inmediatamente con el respectivo vendedor.
+La garantÃ­a no cubre los daÃ±os ocasionados al producto, o uso inadecuado del usuario.
+Seguir las recomendaciones de la ficha tÃ©cnica en cuanto a uso, aplicaciones e instalaciÃ³n. 
 24
 Zocalo SPC
 SOBRE EL PRODUCTO
-GUÍA DE INSTALACIÓN
+GUÃA DE INSTALACIÃ“N
 USOS Y APLICACIONES
 Remate perimetral entre piso y muro
 Proyectos residenciales y comerciales
 Espacios interiores como salas, habitaciones, oficinas y
 pasillos
 Compatible con pisos SPC, laminados y otros pisos flotantes
-1.Preparación de la superficie: El muro debe estar limpio, seco y
+1.PreparaciÃ³n de la superficie: El muro debe estar limpio, seco y
 libre de polvo o grasa.
-2.Cortes: Corte los zócalos a la medida requerida, cuidando los
-ángulos en esquinas internas y externas.
-3.Fijación: Aplique adhesivo de montaje en la parte posterior del
-zócalo y presione firmemente contra el muro. No fijar al piso
-para permitir la dilatación del revestimiento.
-4.Acabados: Verifique alineación y continuidad. Selle juntas si el
-diseño lo requiere.
-5.Mantenimiento: Limpieza con paño húmedo y detergente
+2.Cortes: Corte los zÃ³calos a la medida requerida, cuidando los
+Ã¡ngulos en esquinas internas y externas.
+3.FijaciÃ³n: Aplique adhesivo de montaje en la parte posterior del
+zÃ³calo y presione firmemente contra el muro. No fijar al piso
+para permitir la dilataciÃ³n del revestimiento.
+4.Acabados: Verifique alineaciÃ³n y continuidad. Selle juntas si el
+diseÃ±o lo requiere.
+5.Mantenimiento: Limpieza con paÃ±o hÃºmedo y detergente
 suave. No usar productos abrasivos.
-Herramienta: Cinta métrica, sierra manual o ingleteadora,
-adhesivo de montaje, espátula, paño limpio.
-El Zócalo SPC (Stone Plastic Composite) es un accesorio arquitectónico
-diseñado para brindar un acabado limpio, estético y funcional en la
-unión entre pisos y muros. Fabricado con núcleo rígido SPC, ofrece alta
+Herramienta: Cinta mÃ©trica, sierra manual o ingleteadora,
+adhesivo de montaje, espÃ¡tula, paÃ±o limpio.
+El ZÃ³calo SPC (Stone Plastic Composite) es un accesorio arquitectÃ³nico
+diseÃ±ado para brindar un acabado limpio, estÃ©tico y funcional en la
+uniÃ³n entre pisos y muros. Fabricado con nÃºcleo rÃ­gido SPC, ofrece alta
 resistencia, estabilidad dimensional y durabilidad, siendo ideal para
 proyectos residenciales y comerciales.
 Su acabado tipo madera complementa perfectamente los pisos SPC y
-otros revestimientos, aportando continuidad visual y protección
+otros revestimientos, aportando continuidad visual y protecciÃ³n
 perimetral frente a golpes, humedad y desgaste diario.
 Peso:
 Espesor:
 Formato:
 Embalaje:
 Densidad:
-País de Origen:
+PaÃ­s de Origen:
 Material Principal:
 Nombre del Producto:
-Zócalo SPC
+ZÃ³calo SPC
 240 cm x 7 cm
 -
 10 piezas por caja
@@ -2918,61 +2944,61 @@ SPC (Stone Plastic Composite)
 China
 
 --- PRODUCT DATA: 25_FT_Lamina PVC Board.pdf ---
-Garantía
+GarantÃ­a
 Unitec
-Fácil
-Instalación
+FÃ¡cil
+InstalaciÃ³n
 Sostenible Impermeable
 No Flamable
 Liviano
 Resistente
 Bajo
 Mantenimiento
-Económico
-Garantía
-Fácil
-Instalación
+EconÃ³mico
+GarantÃ­a
+FÃ¡cil
+InstalaciÃ³n
 Sostenible
 Impermeable
-Económico
+EconÃ³mico
 No Flamable
 Liviano
 Resistente
 Bajo
 Mantenimiento
-Alto Diseño
-FICHA TÉCNICA
+Alto DiseÃ±o
+FICHA TÃ‰CNICA
 ESPECIFICACIONES
 VENTAJAS Y BENEFICIOS
-POLITICAS DE GARANTÍAS
-Verificar y recibir a conformidad el producto en el momento de entrega, No se aceptan reclamos por faltantes, daños o golpes después de recibida la mercancía.
-UNITEC USA DESIGN no cubre las garantías por productos instalados que presenten diferencias en tamaño, tono, color, rayado, por alabeo o cualquier defecto visible
-que pudiera ser detectado antes de la instalación.
-En el caso de que encuentre este tipo de defectos, por favor absténganse de instalar el producto y comunícate inmediatamente con el respectivo vendedor.
-La garantía no cubre los daños ocasionados al producto, o uso inadecuado del usuario.
-Seguir las recomendaciones de la ficha técnica en cuanto a uso, aplicaciones e instalación. 
+POLITICAS DE GARANTÃAS
+Verificar y recibir a conformidad el producto en el momento de entrega, No se aceptan reclamos por faltantes, daÃ±os o golpes despuÃ©s de recibida la mercancÃ­a.
+UNITEC USA DESIGN no cubre las garantÃ­as por productos instalados que presenten diferencias en tamaÃ±o, tono, color, rayado, por alabeo o cualquier defecto visible
+que pudiera ser detectado antes de la instalaciÃ³n.
+En el caso de que encuentre este tipo de defectos, por favor abstÃ©nganse de instalar el producto y comunÃ­cate inmediatamente con el respectivo vendedor.
+La garantÃ­a no cubre los daÃ±os ocasionados al producto, o uso inadecuado del usuario.
+Seguir las recomendaciones de la ficha tÃ©cnica en cuanto a uso, aplicaciones e instalaciÃ³n. 
 25
-Lámina PVC Board
+LÃ¡mina PVC Board
 SOBRE EL PRODUCTO
-GUÍA DE INSTALACIÓN
+GUÃA DE INSTALACIÃ“N
 USOS Y APLICACIONES
-Publicidad y artes gráficas
+Publicidad y artes grÃ¡ficas
 Muebles para el hogar
-Construcción liviana
-Aplicación industrial
+ConstrucciÃ³n liviana
+AplicaciÃ³n industrial
 Material de acabados
-1.Preparación de la superficie: La superficie debe estar limpia,
+1.PreparaciÃ³n de la superficie: La superficie debe estar limpia,
 nivelada y libre de material bituminoso, humedad o polvo.
 2.Cortes: Utilice una sierra adecuada para el corte de paneles de
-PVC BOARD según las medidas y formas necesarias. Asegúrese
+PVC BOARD segÃºn las medidas y formas necesarias. AsegÃºrese
 de seguir las recomendaciones del fabricante para obtener
 cortes precisos.
-3.Sujeción: Aplique un adhesivo recomendado por el fabricante
+3.SujeciÃ³n: Aplique un adhesivo recomendado por el fabricante
 en la parte posterior de cada panel. Distribuya el adhesivo de
-manera uniforme para asegurar una correcta fijación.
+manera uniforme para asegurar una correcta fijaciÃ³n.
 4.Acabados: Realice cortes adicionales si es necesario para
 ajustar el panel a esquinas y bordes. Utilice molduras o
-accesorios específicos para lograr un acabado profesional.
+accesorios especÃ­ficos para lograr un acabado profesional.
 5.Mantenimiento: 
 En 
 caso 
@@ -2981,29 +3007,29 @@ ser
 necesario, 
 retire 
 la
-acumulación de polvo con una manguera de jardín o con agua
-a presión no superior a 110 PSI, adoptando las medidas de
-seguridad necesarias para evitar daños.
+acumulaciÃ³n de polvo con una manguera de jardÃ­n o con agua
+a presiÃ³n no superior a 110 PSI, adoptando las medidas de
+seguridad necesarias para evitar daÃ±os.
 Herramienta: Sierra de corte, guantes y gafas de seguridad,
 adhesivo de montaje.
-Denominado comercialmente como PVC BOARD, es una lámina
-fabricada en PVC espumado rígido, con acabado endurecido, superficie
-suave y disponible en presentación brillante o mate. Gracias a su
-estructura celular interna, ofrece una excelente combinación de ligereza,
-resistencia y estabilidad dimensional, facilitando su manipulación, corte
-e instalación.
-Las láminas PVC BOARD pueden pintarse, imprimirse, laminarse, rutearse
+Denominado comercialmente como PVC BOARD, es una lÃ¡mina
+fabricada en PVC espumado rÃ­gido, con acabado endurecido, superficie
+suave y disponible en presentaciÃ³n brillante o mate. Gracias a su
+estructura celular interna, ofrece una excelente combinaciÃ³n de ligereza,
+resistencia y estabilidad dimensional, facilitando su manipulaciÃ³n, corte
+e instalaciÃ³n.
+Las lÃ¡minas PVC BOARD pueden pintarse, imprimirse, laminarse, rutearse
 y perforarse con facilidad, siendo ideales para aplicaciones de
-modelismo, construcción liviana, mobiliario, señalización, ferias y
+modelismo, construcciÃ³n liviana, mobiliario, seÃ±alizaciÃ³n, ferias y
 exposiciones. Es un material impermeable, autoextinguible, resistente a
 vibraciones y a la humedad, lo que lo convierte en una alternativa
-versátil y duradera para proyectos de interior y uso técnico.
+versÃ¡til y duradera para proyectos de interior y uso tÃ©cnico.
 Peso:
 Espesor:
 Formato:
 Embalaje:
 Densidad / Calibres disponibles:
-País de Origen:
+PaÃ­s de Origen:
 Material Principal:
 Nombre del Producto:
 PVC BOARD
@@ -3016,61 +3042,61 @@ China
 5 Kilogramos
 
 --- PRODUCT DATA: 26.1_FT_Cubierta Termoacustica UPVC Roma.pdf ---
-Garantía
+GarantÃ­a
 Unitec
-Fácil
-Instalación
+FÃ¡cil
+InstalaciÃ³n
 Sostenible Impermeable
 No Flamable
 Liviano
 Resistente
 Bajo
 Mantenimiento
-Económico
-Garantía
-Fácil
-Instalación
+EconÃ³mico
+GarantÃ­a
+FÃ¡cil
+InstalaciÃ³n
 Sostenible
 Impermeable
-Económico
+EconÃ³mico
 No Flamable
 Liviano
 Resistente
 Bajo
 Mantenimiento
-Alto Diseño
-FICHA TÉCNICA
+Alto DiseÃ±o
+FICHA TÃ‰CNICA
 SOBRE EL PRODUCTO
 ESPECIFICACIONES
 VENTAJAS Y BENEFICIOS
-POLITICAS DE GARANTÍAS
-Verificar y recibir a conformidad el producto en el momento de entrega, No se aceptan reclamos por faltantes, daños o golpes después de recibida la mercancía.
-UNITEC USA DESIGN no cubre las garantías por productos instalados que presenten diferencias en tamaño, tono, color, rayado, por alabeo o cualquier defecto visible
-que pudiera ser detectado antes de la instalación.
-En el caso de que encuentre este tipo de defectos, por favor absténganse de instalar el producto y comunícate inmediatamente con el respectivo vendedor.
-La garantía no cubre los daños ocasionados al producto, o uso inadecuado del usuario.
-Seguir las recomendaciones de la ficha técnica en cuanto a uso, aplicaciones e instalación. 
+POLITICAS DE GARANTÃAS
+Verificar y recibir a conformidad el producto en el momento de entrega, No se aceptan reclamos por faltantes, daÃ±os o golpes despuÃ©s de recibida la mercancÃ­a.
+UNITEC USA DESIGN no cubre las garantÃ­as por productos instalados que presenten diferencias en tamaÃ±o, tono, color, rayado, por alabeo o cualquier defecto visible
+que pudiera ser detectado antes de la instalaciÃ³n.
+En el caso de que encuentre este tipo de defectos, por favor abstÃ©nganse de instalar el producto y comunÃ­cate inmediatamente con el respectivo vendedor.
+La garantÃ­a no cubre los daÃ±os ocasionados al producto, o uso inadecuado del usuario.
+Seguir las recomendaciones de la ficha tÃ©cnica en cuanto a uso, aplicaciones e instalaciÃ³n. 
 26.1
 Cubierta Termoacustica UPVC Roma 
 USOS Y APLICACIONES
-Lámina termoacústica fabricada en UPVC (cloruro de polivinilo no
-plastificado) con perfil tipo teja romana, diseñada para cubrir y proteger
+LÃ¡mina termoacÃºstica fabricada en UPVC (cloruro de polivinilo no
+plastificado) con perfil tipo teja romana, diseÃ±ada para cubrir y proteger
 espacios reduciendo el ruido y el calor. Ofrece alta resistencia a la
-intemperie, a la corrosión y a los rayos UV, garantizando durabilidad y
+intemperie, a la corrosiÃ³n y a los rayos UV, garantizando durabilidad y
 bajo mantenimiento.
 Cubiertas residenciales estilo colonial
 Techos de terrazas y patios
-Proyectos arquitectónicos con estética de teja curva
+Proyectos arquitectÃ³nicos con estÃ©tica de teja curva
 Peso:
 Espesor:
 Formato:
 Embalaje:
 Densidad:
-País de Origen:
+PaÃ­s de Origen:
 Material Principal:
 Nombre del Producto:
 Cubierta Termoacustica UPVC 2,5mm Roma
-11,80m - 1,05m (Ancho útil 98cm)
+11,80m - 1,05m (Ancho Ãºtil 98cm)
 Unidad
 Aproximadamente 1,40 g/cm3l
 UPVC (Cloruro de Polivinilo no Plastificado)
@@ -3079,89 +3105,89 @@ COLORES DISPONIBLES
 2.5MM
 5 Kilogramos
 2.5 mm
-1.Preparación de la superficie: Instale una estructura de soporte metálica o de
-madera, limpia, firme y nivelada. Verifique la correcta alineación y respete la
-separación de correas según especificación técnica, garantizando una
-pendiente adecuada para la evacuación del agua.
-2.Corte: Marque las medidas requeridas sobre la lámina. Realice los cortes
-utilizando tijera para lámina plástica o herramienta de disco fino, evitando
+1.PreparaciÃ³n de la superficie: Instale una estructura de soporte metÃ¡lica o de
+madera, limpia, firme y nivelada. Verifique la correcta alineaciÃ³n y respete la
+separaciÃ³n de correas segÃºn especificaciÃ³n tÃ©cnica, garantizando una
+pendiente adecuada para la evacuaciÃ³n del agua.
+2.Corte: Marque las medidas requeridas sobre la lÃ¡mina. Realice los cortes
+utilizando tijera para lÃ¡mina plÃ¡stica o herramienta de disco fino, evitando
 generar rebabas o deformaciones en el material.
-3.Colocación: Coloque las láminas en sentido contrario a la dirección del viento
+3.ColocaciÃ³n: Coloque las lÃ¡minas en sentido contrario a la direcciÃ³n del viento
 dominante, iniciando desde el alero hacia la cumbrera. Asegure el correcto
 traslape lateral y longitudinal para evitar filtraciones.
-4.Sujeción: Fije las láminas perforando previamente en la cresta de la teja. Utilice
+4.SujeciÃ³n: Fije las lÃ¡minas perforando previamente en la cresta de la teja. Utilice
 tornillos autoperforantes con arandela de neopreno, sin sobreapretar,
-permitiendo la dilatación térmica natural del UPVC.
+permitiendo la dilataciÃ³n tÃ©rmica natural del UPVC.
 5.Acabados: Instale remates, cumbreras y accesorios compatibles. Revise sellos y
-puntos de unión para garantizar estanqueidad y continuidad estética.
-6.Mantenimiento: Limpie periódicamente con agua y jabón neutro. Evite el uso
-de productos químicos abrasivos. Inspeccione anualmente la fijación y el estado
+puntos de uniÃ³n para garantizar estanqueidad y continuidad estÃ©tica.
+6.Mantenimiento: Limpie periÃ³dicamente con agua y jabÃ³n neutro. Evite el uso
+de productos quÃ­micos abrasivos. Inspeccione anualmente la fijaciÃ³n y el estado
 general de la cubierta.
 Recomendaciones importantes:
-No caminar directamente sobre la lámina sin apoyo estructural.
-Evitar instalaciones en condiciones climáticas extremas.
+No caminar directamente sobre la lÃ¡mina sin apoyo estructural.
+Evitar instalaciones en condiciones climÃ¡ticas extremas.
 Respetar siempre las recomendaciones del fabricante para asegurar la
-durabilidad y la garantía del producto.
-GUÍA DE INSTALACIÓN
+durabilidad y la garantÃ­a del producto.
+GUÃA DE INSTALACIÃ“N
 Herramienta: Taladro, broca para metal o madera, tornillos
-autoperforantes con arandela de neopreno, cinta métrica,
-tijera para lámina plástica o herramienta de disco fino,
+autoperforantes con arandela de neopreno, cinta mÃ©trica,
+tijera para lÃ¡mina plÃ¡stica o herramienta de disco fino,
 guantes y gafas de seguridad.
 
 --- PRODUCT DATA: 26.2_FT_Cubierta Termoacustica UPVC Blanca O.A.pdf ---
-Garantía
+GarantÃ­a
 Unitec
-Fácil
-Instalación
+FÃ¡cil
+InstalaciÃ³n
 Sostenible Impermeable
 No Flamable
 Liviano
 Resistente
 Bajo
 Mantenimiento
-Económico
-Garantía
-Fácil
-Instalación
+EconÃ³mico
+GarantÃ­a
+FÃ¡cil
+InstalaciÃ³n
 Sostenible
 Impermeable
-Económico
+EconÃ³mico
 No Flamable
 Liviano
 Resistente
 Bajo
 Mantenimiento
-Alto Diseño
-FICHA TÉCNICA
+Alto DiseÃ±o
+FICHA TÃ‰CNICA
 SOBRE EL PRODUCTO
 ESPECIFICACIONES
 VENTAJAS Y BENEFICIOS
-POLITICAS DE GARANTÍAS
-Verificar y recibir a conformidad el producto en el momento de entrega, No se aceptan reclamos por faltantes, daños o golpes después de recibida la mercancía.
-UNITEC USA DESIGN no cubre las garantías por productos instalados que presenten diferencias en tamaño, tono, color, rayado, por alabeo o cualquier defecto visible
-que pudiera ser detectado antes de la instalación.
-En el caso de que encuentre este tipo de defectos, por favor absténganse de instalar el producto y comunícate inmediatamente con el respectivo vendedor.
-La garantía no cubre los daños ocasionados al producto, o uso inadecuado del usuario.
-Seguir las recomendaciones de la ficha técnica en cuanto a uso, aplicaciones e instalación. 
+POLITICAS DE GARANTÃAS
+Verificar y recibir a conformidad el producto en el momento de entrega, No se aceptan reclamos por faltantes, daÃ±os o golpes despuÃ©s de recibida la mercancÃ­a.
+UNITEC USA DESIGN no cubre las garantÃ­as por productos instalados que presenten diferencias en tamaÃ±o, tono, color, rayado, por alabeo o cualquier defecto visible
+que pudiera ser detectado antes de la instalaciÃ³n.
+En el caso de que encuentre este tipo de defectos, por favor abstÃ©nganse de instalar el producto y comunÃ­cate inmediatamente con el respectivo vendedor.
+La garantÃ­a no cubre los daÃ±os ocasionados al producto, o uso inadecuado del usuario.
+Seguir las recomendaciones de la ficha tÃ©cnica en cuanto a uso, aplicaciones e instalaciÃ³n. 
 26.2
 Cubierta Termoacustica UPVC Blanca O.A
 USOS Y APLICACIONES
-Lámina termoacústica de UPVC con perfil ondulado alto, diseñada para
+LÃ¡mina termoacÃºstica de UPVC con perfil ondulado alto, diseÃ±ada para
 cubrir grandes luces y ofrecer mayor resistencia estructural. Especial para
 naves industriales y techos expuestos a altas cargas de viento.
 Galpones y bodegas
 Cubiertas industriales
-Áreas de producción o almacenamiento
+Ãreas de producciÃ³n o almacenamiento
 Peso:
 Espesor:
 Formato:
 Embalaje:
 Densidad:
-País de Origen:
+PaÃ­s de Origen:
 Material Principal:
 Nombre del Producto:
 Cubierta Termoacustica UPVC 2.5mm Blanca O.A
-11,80m - 1,07m (Ancho útil 1m)
+11,80m - 1,07m (Ancho Ãºtil 1m)
 Unidad
 Aproximadamente 1,40 g/cm3
 UPVC (Cloruro de Polivinilo no Plastificado)
@@ -3170,89 +3196,89 @@ China
 COLORES DISPONIBLES
 5 Kilogramos
 2.5 mm
-1.Preparación de la superficie: Instale una estructura de soporte metálica o de
-madera, limpia, firme y nivelada. Verifique la correcta alineación y respete la
-separación de correas según especificación técnica, garantizando una
-pendiente adecuada para la evacuación del agua.
-2.Corte: Marque las medidas requeridas sobre la lámina. Realice los cortes
-utilizando tijera para lámina plástica o herramienta de disco fino, evitando
+1.PreparaciÃ³n de la superficie: Instale una estructura de soporte metÃ¡lica o de
+madera, limpia, firme y nivelada. Verifique la correcta alineaciÃ³n y respete la
+separaciÃ³n de correas segÃºn especificaciÃ³n tÃ©cnica, garantizando una
+pendiente adecuada para la evacuaciÃ³n del agua.
+2.Corte: Marque las medidas requeridas sobre la lÃ¡mina. Realice los cortes
+utilizando tijera para lÃ¡mina plÃ¡stica o herramienta de disco fino, evitando
 generar rebabas o deformaciones en el material.
-3.Colocación: Coloque las láminas en sentido contrario a la dirección del viento
+3.ColocaciÃ³n: Coloque las lÃ¡minas en sentido contrario a la direcciÃ³n del viento
 dominante, iniciando desde el alero hacia la cumbrera. Asegure el correcto
 traslape lateral y longitudinal para evitar filtraciones.
-4.Sujeción: Fije las láminas perforando previamente en la cresta de la teja. Utilice
+4.SujeciÃ³n: Fije las lÃ¡minas perforando previamente en la cresta de la teja. Utilice
 tornillos autoperforantes con arandela de neopreno, sin sobreapretar,
-permitiendo la dilatación térmica natural del UPVC.
+permitiendo la dilataciÃ³n tÃ©rmica natural del UPVC.
 5.Acabados: Instale remates, cumbreras y accesorios compatibles. Revise sellos y
-puntos de unión para garantizar estanqueidad y continuidad estética.
-6.Mantenimiento: Limpie periódicamente con agua y jabón neutro. Evite el uso
-de productos químicos abrasivos. Inspeccione anualmente la fijación y el estado
+puntos de uniÃ³n para garantizar estanqueidad y continuidad estÃ©tica.
+6.Mantenimiento: Limpie periÃ³dicamente con agua y jabÃ³n neutro. Evite el uso
+de productos quÃ­micos abrasivos. Inspeccione anualmente la fijaciÃ³n y el estado
 general de la cubierta.
 Recomendaciones importantes:
-No caminar directamente sobre la lámina sin apoyo estructural.
-Evitar instalaciones en condiciones climáticas extremas.
+No caminar directamente sobre la lÃ¡mina sin apoyo estructural.
+Evitar instalaciones en condiciones climÃ¡ticas extremas.
 Respetar siempre las recomendaciones del fabricante para asegurar la
-durabilidad y la garantía del producto.
-GUÍA DE INSTALACIÓN
+durabilidad y la garantÃ­a del producto.
+GUÃA DE INSTALACIÃ“N
 Herramienta: Taladro, broca para metal o madera, tornillos
-autoperforantes con arandela de neopreno, cinta métrica,
-tijera para lámina plástica o herramienta de disco fino,
+autoperforantes con arandela de neopreno, cinta mÃ©trica,
+tijera para lÃ¡mina plÃ¡stica o herramienta de disco fino,
 guantes y gafas de seguridad.
 
 --- PRODUCT DATA: 26.3_FT_Cubierta Termoacustica UPVC Blanca O.B.pdf ---
-Garantía
+GarantÃ­a
 Unitec
-Fácil
-Instalación
+FÃ¡cil
+InstalaciÃ³n
 Sostenible Impermeable
 No Flamable
 Liviano
 Resistente
 Bajo
 Mantenimiento
-Económico
-Garantía
-Fácil
-Instalación
+EconÃ³mico
+GarantÃ­a
+FÃ¡cil
+InstalaciÃ³n
 Sostenible
 Impermeable
-Económico
+EconÃ³mico
 No Flamable
 Liviano
 Resistente
 Bajo
 Mantenimiento
-Alto Diseño
-FICHA TÉCNICA
+Alto DiseÃ±o
+FICHA TÃ‰CNICA
 SOBRE EL PRODUCTO
 ESPECIFICACIONES
 VENTAJAS Y BENEFICIOS
-POLITICAS DE GARANTÍAS
-Verificar y recibir a conformidad el producto en el momento de entrega, No se aceptan reclamos por faltantes, daños o golpes después de recibida la mercancía.
-UNITEC USA DESIGN no cubre las garantías por productos instalados que presenten diferencias en tamaño, tono, color, rayado, por alabeo o cualquier defecto visible
-que pudiera ser detectado antes de la instalación.
-En el caso de que encuentre este tipo de defectos, por favor absténganse de instalar el producto y comunícate inmediatamente con el respectivo vendedor.
-La garantía no cubre los daños ocasionados al producto, o uso inadecuado del usuario.
-Seguir las recomendaciones de la ficha técnica en cuanto a uso, aplicaciones e instalación. 
+POLITICAS DE GARANTÃAS
+Verificar y recibir a conformidad el producto en el momento de entrega, No se aceptan reclamos por faltantes, daÃ±os o golpes despuÃ©s de recibida la mercancÃ­a.
+UNITEC USA DESIGN no cubre las garantÃ­as por productos instalados que presenten diferencias en tamaÃ±o, tono, color, rayado, por alabeo o cualquier defecto visible
+que pudiera ser detectado antes de la instalaciÃ³n.
+En el caso de que encuentre este tipo de defectos, por favor abstÃ©nganse de instalar el producto y comunÃ­cate inmediatamente con el respectivo vendedor.
+La garantÃ­a no cubre los daÃ±os ocasionados al producto, o uso inadecuado del usuario.
+Seguir las recomendaciones de la ficha tÃ©cnica en cuanto a uso, aplicaciones e instalaciÃ³n. 
 26.3
 Cubierta Termoacustica UPVC Blanca O.B
 USOS Y APLICACIONES
-Panel de UPVC con perfil de onda baja, idóneo para cubiertas
-residenciales o comerciales donde se busque un acabado más discreto y
+Panel de UPVC con perfil de onda baja, idÃ³neo para cubiertas
+residenciales o comerciales donde se busque un acabado mÃ¡s discreto y
 menor altura de onda.
 Tejados de vivienda urbana
 Cubiertas comerciales ligeras
-Techos de pérgolas o corredores
+Techos de pÃ©rgolas o corredores
 Peso:
 Espesor:
 Formato:
 Embalaje:
 Densidad:
-País de Origen:
+PaÃ­s de Origen:
 Material Principal:
 Nombre del Producto:
 Cubierta Termoacustica UPVC 2.0mm Blanca O.B
-11,80m - 1,13m (Ancho útil 1,5m)
+11,80m - 1,13m (Ancho Ãºtil 1,5m)
 Unidad
 2.0 mm
 Aproximadamente 1,40 g/cm3
@@ -3261,90 +3287,90 @@ China
 2.0MM
 COLORES DISPONIBLES
 5 Kilogramos
-1.Preparación de la superficie: Instale una estructura de soporte metálica o de
-madera, limpia, firme y nivelada. Verifique la correcta alineación y respete la
-separación de correas según especificación técnica, garantizando una
-pendiente adecuada para la evacuación del agua.
-2.Corte: Marque las medidas requeridas sobre la lámina. Realice los cortes
-utilizando tijera para lámina plástica o herramienta de disco fino, evitando
+1.PreparaciÃ³n de la superficie: Instale una estructura de soporte metÃ¡lica o de
+madera, limpia, firme y nivelada. Verifique la correcta alineaciÃ³n y respete la
+separaciÃ³n de correas segÃºn especificaciÃ³n tÃ©cnica, garantizando una
+pendiente adecuada para la evacuaciÃ³n del agua.
+2.Corte: Marque las medidas requeridas sobre la lÃ¡mina. Realice los cortes
+utilizando tijera para lÃ¡mina plÃ¡stica o herramienta de disco fino, evitando
 generar rebabas o deformaciones en el material.
-3.Colocación: Coloque las láminas en sentido contrario a la dirección del viento
+3.ColocaciÃ³n: Coloque las lÃ¡minas en sentido contrario a la direcciÃ³n del viento
 dominante, iniciando desde el alero hacia la cumbrera. Asegure el correcto
 traslape lateral y longitudinal para evitar filtraciones.
-4.Sujeción: Fije las láminas perforando previamente en la cresta de la teja. Utilice
+4.SujeciÃ³n: Fije las lÃ¡minas perforando previamente en la cresta de la teja. Utilice
 tornillos autoperforantes con arandela de neopreno, sin sobreapretar,
-permitiendo la dilatación térmica natural del UPVC.
+permitiendo la dilataciÃ³n tÃ©rmica natural del UPVC.
 5.Acabados: Instale remates, cumbreras y accesorios compatibles. Revise sellos y
-puntos de unión para garantizar estanqueidad y continuidad estética.
-6.Mantenimiento: Limpie periódicamente con agua y jabón neutro. Evite el uso
-de productos químicos abrasivos. Inspeccione anualmente la fijación y el estado
+puntos de uniÃ³n para garantizar estanqueidad y continuidad estÃ©tica.
+6.Mantenimiento: Limpie periÃ³dicamente con agua y jabÃ³n neutro. Evite el uso
+de productos quÃ­micos abrasivos. Inspeccione anualmente la fijaciÃ³n y el estado
 general de la cubierta.
 Recomendaciones importantes:
-No caminar directamente sobre la lámina sin apoyo estructural.
-Evitar instalaciones en condiciones climáticas extremas.
+No caminar directamente sobre la lÃ¡mina sin apoyo estructural.
+Evitar instalaciones en condiciones climÃ¡ticas extremas.
 Respetar siempre las recomendaciones del fabricante para asegurar la
-durabilidad y la garantía del producto.
-GUÍA DE INSTALACIÓN
+durabilidad y la garantÃ­a del producto.
+GUÃA DE INSTALACIÃ“N
 Herramienta: Taladro, broca para metal o madera, tornillos
-autoperforantes con arandela de neopreno, cinta métrica,
-tijera para lámina plástica o herramienta de disco fino,
+autoperforantes con arandela de neopreno, cinta mÃ©trica,
+tijera para lÃ¡mina plÃ¡stica o herramienta de disco fino,
 guantes y gafas de seguridad.
 
 --- PRODUCT DATA: 26.4_FT_Teja Termoacustica UPVC 2.5mm COLONIAL.pdf ---
-Garantía
+GarantÃ­a
 Unitec
-Fácil
-Instalación
+FÃ¡cil
+InstalaciÃ³n
 Sostenible Impermeable
 No Flamable
 Liviano
 Resistente
 Bajo
 Mantenimiento
-Económico
-Garantía
-Fácil
-Instalación
+EconÃ³mico
+GarantÃ­a
+FÃ¡cil
+InstalaciÃ³n
 Sostenible
 Impermeable
-Económico
+EconÃ³mico
 No Flamable
 Liviano
 Resistente
 Bajo
 Mantenimiento
-Alto Diseño
-FICHA TÉCNICA
+Alto DiseÃ±o
+FICHA TÃ‰CNICA
 SOBRE EL PRODUCTO
 ESPECIFICACIONES
 VENTAJAS Y BENEFICIOS
-POLITICAS DE GARANTÍAS
-Verificar y recibir a conformidad el producto en el momento de entrega, No se aceptan reclamos por faltantes, daños o golpes después de recibida la mercancía.
-UNITEC USA DESIGN no cubre las garantías por productos instalados que presenten diferencias en tamaño, tono, color, rayado, por alabeo o cualquier defecto visible
-que pudiera ser detectado antes de la instalación.
-En el caso de que encuentre este tipo de defectos, por favor absténganse de instalar el producto y comunícate inmediatamente con el respectivo vendedor.
-La garantía no cubre los daños ocasionados al producto, o uso inadecuado del usuario.
-Seguir las recomendaciones de la ficha técnica en cuanto a uso, aplicaciones e instalación. 
+POLITICAS DE GARANTÃAS
+Verificar y recibir a conformidad el producto en el momento de entrega, No se aceptan reclamos por faltantes, daÃ±os o golpes despuÃ©s de recibida la mercancÃ­a.
+UNITEC USA DESIGN no cubre las garantÃ­as por productos instalados que presenten diferencias en tamaÃ±o, tono, color, rayado, por alabeo o cualquier defecto visible
+que pudiera ser detectado antes de la instalaciÃ³n.
+En el caso de que encuentre este tipo de defectos, por favor abstÃ©nganse de instalar el producto y comunÃ­cate inmediatamente con el respectivo vendedor.
+La garantÃ­a no cubre los daÃ±os ocasionados al producto, o uso inadecuado del usuario.
+Seguir las recomendaciones de la ficha tÃ©cnica en cuanto a uso, aplicaciones e instalaciÃ³n. 
 26.4
 Teja PVC Terracota Colonial 11,80*1.05 de 2,5mm
 USOS Y APLICACIONES
-Panel termoacústico en UPVC con perfil tipo teja colonial, ideal para
-edificaciones que buscan un diseño clásico y aislamiento eficiente. Su
+Panel termoacÃºstico en UPVC con perfil tipo teja colonial, ideal para
+edificaciones que buscan un diseÃ±o clÃ¡sico y aislamiento eficiente. Su
 estructura multicapa reduce significativamente el ruido de impacto y la
 temperatura interior.
 Casas campestres y rurales
 Centros recreativos
-Cubiertas decorativas en climas cálidos
+Cubiertas decorativas en climas cÃ¡lidos
 Peso:
 Espesor:
 Formato:
 Embalaje:
 Densidad:
-País de Origen:
+PaÃ­s de Origen:
 Material Principal:
 Nombre del Producto:
 Teja PVC Terracota Colonial 11,80*1.05 de 2,5mm
-11,80m - 1,05m (Ancho útil 98cm)
+11,80m - 1,05m (Ancho Ãºtil 98cm)
 5 Kilogramos
 Unidad
 2.5 mm
@@ -3353,114 +3379,114 @@ UPVC (Cloruro de Polivinilo no Plastificado)
 China
 2.5MM
 COLORES DISPONIBLES
-1.Preparación de la superficie: Instale una estructura de soporte metálica o de
-madera, limpia, firme y nivelada. Verifique la correcta alineación y respete la
-separación de correas según especificación técnica, garantizando una
-pendiente adecuada para la evacuación del agua.
-2.Corte: Marque las medidas requeridas sobre la lámina. Realice los cortes
-utilizando tijera para lámina plástica o herramienta de disco fino, evitando
+1.PreparaciÃ³n de la superficie: Instale una estructura de soporte metÃ¡lica o de
+madera, limpia, firme y nivelada. Verifique la correcta alineaciÃ³n y respete la
+separaciÃ³n de correas segÃºn especificaciÃ³n tÃ©cnica, garantizando una
+pendiente adecuada para la evacuaciÃ³n del agua.
+2.Corte: Marque las medidas requeridas sobre la lÃ¡mina. Realice los cortes
+utilizando tijera para lÃ¡mina plÃ¡stica o herramienta de disco fino, evitando
 generar rebabas o deformaciones en el material.
-3.Colocación: Coloque las láminas en sentido contrario a la dirección del viento
+3.ColocaciÃ³n: Coloque las lÃ¡minas en sentido contrario a la direcciÃ³n del viento
 dominante, iniciando desde el alero hacia la cumbrera. Asegure el correcto
 traslape lateral y longitudinal para evitar filtraciones.
-4.Sujeción: Fije las láminas perforando previamente en la cresta de la teja. Utilice
+4.SujeciÃ³n: Fije las lÃ¡minas perforando previamente en la cresta de la teja. Utilice
 tornillos autoperforantes con arandela de neopreno, sin sobreapretar,
-permitiendo la dilatación térmica natural del UPVC.
+permitiendo la dilataciÃ³n tÃ©rmica natural del UPVC.
 5.Acabados: Instale remates, cumbreras y accesorios compatibles. Revise sellos y
-puntos de unión para garantizar estanqueidad y continuidad estética.
-6.Mantenimiento: Limpie periódicamente con agua y jabón neutro. Evite el uso
-de productos químicos abrasivos. Inspeccione anualmente la fijación y el estado
+puntos de uniÃ³n para garantizar estanqueidad y continuidad estÃ©tica.
+6.Mantenimiento: Limpie periÃ³dicamente con agua y jabÃ³n neutro. Evite el uso
+de productos quÃ­micos abrasivos. Inspeccione anualmente la fijaciÃ³n y el estado
 general de la cubierta.
 Recomendaciones importantes:
-No caminar directamente sobre la lámina sin apoyo estructural.
-Evitar instalaciones en condiciones climáticas extremas.
+No caminar directamente sobre la lÃ¡mina sin apoyo estructural.
+Evitar instalaciones en condiciones climÃ¡ticas extremas.
 Respetar siempre las recomendaciones del fabricante para asegurar la
-durabilidad y la garantía del producto.
-GUÍA DE INSTALACIÓN
+durabilidad y la garantÃ­a del producto.
+GUÃA DE INSTALACIÃ“N
 Herramienta: Taladro, broca para metal o madera, tornillos
-autoperforantes con arandela de neopreno, cinta métrica,
-tijera para lámina plástica o herramienta de disco fino,
+autoperforantes con arandela de neopreno, cinta mÃ©trica,
+tijera para lÃ¡mina plÃ¡stica o herramienta de disco fino,
 guantes y gafas de seguridad.
 
 --- PRODUCT DATA: 26.5_FT_Teja UPVC Tipo Zinc.pdf ---
-Garantía
+GarantÃ­a
 Unitec
-Fácil
-Instalación
+FÃ¡cil
+InstalaciÃ³n
 Sostenible Impermeable
 No Flamable
 Liviano
 Resistente
 Bajo
 Mantenimiento
-Económico
-Garantía
-Fácil
-Instalación
+EconÃ³mico
+GarantÃ­a
+FÃ¡cil
+InstalaciÃ³n
 Sostenible
 Impermeable
-Económico
+EconÃ³mico
 No Flamable
 Liviano
 Resistente
 Bajo
 Mantenimiento
-Alto Diseño
-FICHA TÉCNICA
+Alto DiseÃ±o
+FICHA TÃ‰CNICA
 SOBRE EL PRODUCTO
 ESPECIFICACIONES
 VENTAJAS Y BENEFICIOS
-POLITICAS DE GARANTÍAS
-Verificar y recibir a conformidad el producto en el momento de entrega, No se aceptan reclamos por faltantes, daños o golpes después de recibida la mercancía.
-UNITEC USA DESIGN no cubre las garantías por productos instalados que presenten diferencias en tamaño, tono, color, rayado, por alabeo o cualquier defecto visible
-que pudiera ser detectado antes de la instalación.
-En el caso de que encuentre este tipo de defectos, por favor absténganse de instalar el producto y comunícate inmediatamente con el respectivo vendedor.
-La garantía no cubre los daños ocasionados al producto, o uso inadecuado del usuario.
-Seguir las recomendaciones de la ficha técnica en cuanto a uso, aplicaciones e instalación. 
+POLITICAS DE GARANTÃAS
+Verificar y recibir a conformidad el producto en el momento de entrega, No se aceptan reclamos por faltantes, daÃ±os o golpes despuÃ©s de recibida la mercancÃ­a.
+UNITEC USA DESIGN no cubre las garantÃ­as por productos instalados que presenten diferencias en tamaÃ±o, tono, color, rayado, por alabeo o cualquier defecto visible
+que pudiera ser detectado antes de la instalaciÃ³n.
+En el caso de que encuentre este tipo de defectos, por favor abstÃ©nganse de instalar el producto y comunÃ­cate inmediatamente con el respectivo vendedor.
+La garantÃ­a no cubre los daÃ±os ocasionados al producto, o uso inadecuado del usuario.
+Seguir las recomendaciones de la ficha tÃ©cnica en cuanto a uso, aplicaciones e instalaciÃ³n. 
 26.5
 Teja UPVC Tipo Zinc
-GUÍA DE INSTALACIÓN
+GUÃA DE INSTALACIÃ“N
 USOS Y APLICACIONES
-La Teja UPVC Tipo Zinc es una solución innovadora y funcional para
-cubiertas, diseñada para brindar protección, durabilidad y estética. Su
-fabricación en cloruro de polivinilo no plastificado (UPVC) la hace
-altamente resistente a la intemperie, corrosión y agentes químicos,
-garantizando una larga vida útil. Gracias a su diseño y composición,
-ofrece aislamiento térmico y acústico, además de ser impermeable y
-liviana, lo que facilita su instalación y manipulación.
+La Teja UPVC Tipo Zinc es una soluciÃ³n innovadora y funcional para
+cubiertas, diseÃ±ada para brindar protecciÃ³n, durabilidad y estÃ©tica. Su
+fabricaciÃ³n en cloruro de polivinilo no plastificado (UPVC) la hace
+altamente resistente a la intemperie, corrosiÃ³n y agentes quÃ­micos,
+garantizando una larga vida Ãºtil. Gracias a su diseÃ±o y composiciÃ³n,
+ofrece aislamiento tÃ©rmico y acÃºstico, ademÃ¡s de ser impermeable y
+liviana, lo que facilita su instalaciÃ³n y manipulaciÃ³n.
 Residencial: Uso en cubiertas de salas de estar, dormitorios,
 terrazas y patios.
 Industrial y Comercial: Ideal para bodegas, almacenes,
-fábricas y proyectos arquitectónicos modernos.
-Espacios Públicos: Aplicable en invernaderos, establos y
+fÃ¡bricas y proyectos arquitectÃ³nicos modernos.
+Espacios PÃºblicos: Aplicable en invernaderos, establos y
 refugios para ganado, protegiendo de la lluvia y el calor.
-1.Medición y planificación: Determina el área donde se
-instalarán las tejas y calcula la cantidad necesaria.
-2.Corte y preparación: Usa una cortadora para ajustar las
-tejas según las dimensiones requeridas.
-3.Colocación: Superpón las tejas al menos 10 cm entre cada
+1.MediciÃ³n y planificaciÃ³n: Determina el Ã¡rea donde se
+instalarÃ¡n las tejas y calcula la cantidad necesaria.
+2.Corte y preparaciÃ³n: Usa una cortadora para ajustar las
+tejas segÃºn las dimensiones requeridas.
+3.ColocaciÃ³n: SuperpÃ³n las tejas al menos 10 cm entre cada
 una para garantizar una adecuada impermeabilidad.
-4.Perforación: Realiza perforaciones con un taladro en los
-puntos de fijación. Es recomendable perforar en la parte alta
+4.PerforaciÃ³n: Realiza perforaciones con un taladro en los
+puntos de fijaciÃ³n. Es recomendable perforar en la parte alta
 de las ondas para evitar filtraciones.
-5.Fijación: Usa tornillos auto perforantes con arandelas de
-neopreno para asegurar las tejas sin afectar su dilatación
-térmica.
-6.Revisión: Asegúrate de que todas las uniones estén bien
+5.FijaciÃ³n: Usa tornillos auto perforantes con arandelas de
+neopreno para asegurar las tejas sin afectar su dilataciÃ³n
+tÃ©rmica.
+6.RevisiÃ³n: AsegÃºrate de que todas las uniones estÃ©n bien
 ajustadas y no haya espacios abiertos que puedan generar
 filtraciones o afectar la estabilidad de la estructura.
-Herramienta: Flexómetro, cortadora, taladro, destornillador.
+Herramienta: FlexÃ³metro, cortadora, taladro, destornillador.
 Peso:
 Espesor:
 Formato:
 Embalaje:
 Colores disponibles
-País de Origen:
+PaÃ­s de Origen:
 Material Principal:
 Nombre del Producto:
 Teja UPVC Tipo Zinc
 305 cm x 93 cm
-1.76 kg/m²
+1.76 kg/mÂ²
 Unidad
 0.8 mm
 Blanca, Verde, Azul
@@ -3470,230 +3496,230 @@ China
 COLORES DISPONIBLES
 
 --- PRODUCT DATA: 26.6_FT_Cubierta Acanalada UPV Blanca.pdf ---
-Garantía
+GarantÃ­a
 Unitec
-Fácil
-Instalación
+FÃ¡cil
+InstalaciÃ³n
 Sostenible Impermeable
 No Flamable
 Liviano
 Resistente
 Bajo
 Mantenimiento
-Económico
-Garantía
-Fácil
-Instalación
+EconÃ³mico
+GarantÃ­a
+FÃ¡cil
+InstalaciÃ³n
 Sostenible
 Impermeable
-Económico
+EconÃ³mico
 No Flamable
 Liviano
 Resistente
 Bajo
 Mantenimiento
-Alto Diseño
-FICHA TÉCNICA
+Alto DiseÃ±o
+FICHA TÃ‰CNICA
 SOBRE EL PRODUCTO
 ESPECIFICACIONES
 VENTAJAS Y BENEFICIOS
-POLITICAS DE GARANTÍAS
-Verificar y recibir a conformidad el producto en el momento de entrega, No se aceptan reclamos por faltantes, daños o golpes después de recibida la mercancía.
-UNITEC USA DESIGN no cubre las garantías por productos instalados que presenten diferencias en tamaño, tono, color, rayado, por alabeo o cualquier defecto visible
-que pudiera ser detectado antes de la instalación.
-En el caso de que encuentre este tipo de defectos, por favor absténganse de instalar el producto y comunícate inmediatamente con el respectivo vendedor.
-La garantía no cubre los daños ocasionados al producto, o uso inadecuado del usuario.
-Seguir las recomendaciones de la ficha técnica en cuanto a uso, aplicaciones e instalación. 
+POLITICAS DE GARANTÃAS
+Verificar y recibir a conformidad el producto en el momento de entrega, No se aceptan reclamos por faltantes, daÃ±os o golpes despuÃ©s de recibida la mercancÃ­a.
+UNITEC USA DESIGN no cubre las garantÃ­as por productos instalados que presenten diferencias en tamaÃ±o, tono, color, rayado, por alabeo o cualquier defecto visible
+que pudiera ser detectado antes de la instalaciÃ³n.
+En el caso de que encuentre este tipo de defectos, por favor abstÃ©nganse de instalar el producto y comunÃ­cate inmediatamente con el respectivo vendedor.
+La garantÃ­a no cubre los daÃ±os ocasionados al producto, o uso inadecuado del usuario.
+Seguir las recomendaciones de la ficha tÃ©cnica en cuanto a uso, aplicaciones e instalaciÃ³n. 
 26.6
 Cubierta Acanalada UPV Blanca
-GUÍA DE INSTALACIÓN
+GUÃA DE INSTALACIÃ“N
 USOS Y APLICACIONES
-La Cubierta Acanalada UPVC Blanca es una solución arquitectónica
+La Cubierta Acanalada UPVC Blanca es una soluciÃ³n arquitectÃ³nica
 para cubiertas y techos, fabricada en PVC alveolar de alta resistencia,
-diseñada para ofrecer excelente aislamiento térmico y acústico, alta
+diseÃ±ada para ofrecer excelente aislamiento tÃ©rmico y acÃºstico, alta
 durabilidad y resistencia a condiciones ambientales exigentes.
- Su diseño acanalado proporciona rigidez estructural, óptima evacuación
+ Su diseÃ±o acanalado proporciona rigidez estructural, Ã³ptima evacuaciÃ³n
 del agua y un acabado moderno y funcional, ideal para proyectos
 residenciales, comerciales e industriales.
 Cubiertas y techos
 Bodegas y naves industriales
-Terrazas y pérgolas
-Áreas comerciales y residenciales
+Terrazas y pÃ©rgolas
+Ãreas comerciales y residenciales
 Estacionamientos y cubiertas livianas
-1.Preparación de la estructura: Instalar sobre estructura metálica o de
-madera firme, alineada y nivelada. Respetar una distancia máxima entre
-correas de 1,20 m. Verificar pendiente mínima para correcta evacuación
+1.PreparaciÃ³n de la estructura: Instalar sobre estructura metÃ¡lica o de
+madera firme, alineada y nivelada. Respetar una distancia mÃ¡xima entre
+correas de 1,20 m. Verificar pendiente mÃ­nima para correcta evacuaciÃ³n
 del agua.
-2.Corte de la lámina: Medir y marcar la longitud requerida. Cortar con sierra
-manual o eléctrica de dientes finos. Retirar residuos del corte antes de la
-instalación.
-3.Colocación de la teja: Instalar las láminas en el sentido de la pendiente,
-comenzando desde el alero hacia la cumbrera. Superponer las láminas
-respetando el ancho efectivo (830 mm). Asegurar correcta alineación entre
+2.Corte de la lÃ¡mina: Medir y marcar la longitud requerida. Cortar con sierra
+manual o elÃ©ctrica de dientes finos. Retirar residuos del corte antes de la
+instalaciÃ³n.
+3.ColocaciÃ³n de la teja: Instalar las lÃ¡minas en el sentido de la pendiente,
+comenzando desde el alero hacia la cumbrera. Superponer las lÃ¡minas
+respetando el ancho efectivo (830 mm). Asegurar correcta alineaciÃ³n entre
 ondas para evitar filtraciones.
-4.Fijación: Perforar previamente la lámina en la cresta de la onda. Utilizar
+4.FijaciÃ³n: Perforar previamente la lÃ¡mina en la cresta de la onda. Utilizar
 tornillos con arandela y sello de neopreno para evitar filtraciones. No
-sobreapretar los tornillos; permitir la dilatación térmica del material.
+sobreapretar los tornillos; permitir la dilataciÃ³n tÃ©rmica del material.
 5.Accesorios y remates: Instalar cumbreras, remates laterales y accesorios
 recomendados para cubiertas UPVC. Utilizar el Accesorio Cubierta
-Acanalada UPVC – REF: 14082315 para una correcta fijación y sellado.
-6.Revisión final: Verificar alineación, fijaciones y sellos. Asegurar que no
-existan tensiones en las láminas.
-7.Mantenimiento: Limpieza periódica con agua y jabón neutro. No usar
+Acanalada UPVC â€“ REF: 14082315 para una correcta fijaciÃ³n y sellado.
+6.RevisiÃ³n final: Verificar alineaciÃ³n, fijaciones y sellos. Asegurar que no
+existan tensiones en las lÃ¡minas.
+7.Mantenimiento: Limpieza periÃ³dica con agua y jabÃ³n neutro. No usar
 productos abrasivos, solventes ni elementos cortantes.
-Herramienta: Taladro eléctrico, broca para PVC, tornillos
+Herramienta: Taladro elÃ©ctrico, broca para PVC, tornillos
 autorroscantes con arandela y sello de neopreno, cinta
-métrica, nivel, sierra manual o eléctrica, guantes y gafas de
+mÃ©trica, nivel, sierra manual o elÃ©ctrica, guantes y gafas de
 seguridad.
 Peso:
 Espesor:
 Formato:
 Embalaje:
-Aislamiento acústico
-País de Origen:
+Aislamiento acÃºstico
+PaÃ­s de Origen:
 Material Principal:
 Nombre del Producto:
 Teja UPVC Tipo Zinc
-5,5 – 6,0 kg por m² (estimado)
+5,5 â€“ 6,0 kg por mÂ² (estimado)
 Unidad
 10 mm
 35 dB
 UPVC (Cloruro de Polivinilo no Plastificado)
 China
 10MM
-885mm (Ancho útil 883mm) / Altura de onda 40mm
+885mm (Ancho Ãºtil 883mm) / Altura de onda 40mm
 
 --- PRODUCT DATA: 27_FT_Adhesivo de Montaje PEGATEC.pdf ---
-Garantía
+GarantÃ­a
 Unitec
-Fácil
-Instalación
+FÃ¡cil
+InstalaciÃ³n
 Sostenible Impermeable
 No Flamable
 Liviano
 Resistente
 Bajo
 Mantenimiento
-Económico
-Garantía
-Fácil
-Instalación
+EconÃ³mico
+GarantÃ­a
+FÃ¡cil
+InstalaciÃ³n
 Sostenible
 Impermeable
-Económico
+EconÃ³mico
 No Flamable
 Liviano
 Resistente
 Bajo
 Mantenimiento
-Alto Diseño
-FICHA TÉCNICA
+Alto DiseÃ±o
+FICHA TÃ‰CNICA
 SOBRE EL PRODUCTO
 ESPECIFICACIONES
 VENTAJAS Y BENEFICIOS
-POLITICAS DE GARANTÍAS
-Verificar y recibir a conformidad el producto en el momento de entrega, No se aceptan reclamos por faltantes, daños o golpes después de recibida la mercancía.
-UNITEC USA DESIGN no cubre las garantías por productos instalados que presenten diferencias en tamaño, tono, color, rayado, por alabeo o cualquier defecto visible
-que pudiera ser detectado antes de la instalación.
-En el caso de que encuentre este tipo de defectos, por favor absténganse de instalar el producto y comunícate inmediatamente con el respectivo vendedor.
-La garantía no cubre los daños ocasionados al producto, o uso inadecuado del usuario.
-Seguir las recomendaciones de la ficha técnica en cuanto a uso, aplicaciones e instalación. 
+POLITICAS DE GARANTÃAS
+Verificar y recibir a conformidad el producto en el momento de entrega, No se aceptan reclamos por faltantes, daÃ±os o golpes despuÃ©s de recibida la mercancÃ­a.
+UNITEC USA DESIGN no cubre las garantÃ­as por productos instalados que presenten diferencias en tamaÃ±o, tono, color, rayado, por alabeo o cualquier defecto visible
+que pudiera ser detectado antes de la instalaciÃ³n.
+En el caso de que encuentre este tipo de defectos, por favor abstÃ©nganse de instalar el producto y comunÃ­cate inmediatamente con el respectivo vendedor.
+La garantÃ­a no cubre los daÃ±os ocasionados al producto, o uso inadecuado del usuario.
+Seguir las recomendaciones de la ficha tÃ©cnica en cuanto a uso, aplicaciones e instalaciÃ³n. 
 27
 Adhesivo de Montaje PEGATEC
 Adhesivo profesional de alto rendimiento formulado para aplicaciones
-interiores, diseñado para ofrecer una fuerte adherencia en múltiples
-sustratos. Su fórmula especial permite un desempeño óptimo frente a
+interiores, diseÃ±ado para ofrecer una fuerte adherencia en mÃºltiples
+sustratos. Su fÃ³rmula especial permite un desempeÃ±o Ã³ptimo frente a
 cambios de temperatura y condiciones de humedad, con propiedades
-antihongos que prolongan la vida útil de las uniones. Ideal para trabajos
-de instalación, fijación y reparación en proyectos de construcción,
-carpintería y bricolaje.
+antihongos que prolongan la vida Ãºtil de las uniones. Ideal para trabajos
+de instalaciÃ³n, fijaciÃ³n y reparaciÃ³n en proyectos de construcciÃ³n,
+carpinterÃ­a y bricolaje.
 Peso:
 Presentaciones:
 Formato:
 Embalaje:
 Densidad:
-País de Origen:
+PaÃ­s de Origen:
 Material Principal:
 Nombre del Producto:
 Adhesivo de Montaje PEGATEC
 0,5 Kilogramos
 Unidad
-Pegatec Blanco – 395 ml  /  Pegatec Transparente – 300 ml 
+Pegatec Blanco â€“ 395 ml  /  Pegatec Transparente â€“ 300 ml 
 -
 Poliuretano
 China
 22 cm x 4 cm
-GUÍA DE INSTALACIÓN
+GUÃA DE INSTALACIÃ“N
 USOS Y APLICACIONES
-Instalación de molduras y zócalos.
-Fijación de paneles decorativos y revestimientos.
-Sellado y unión en carpintería interior.
-Reparaciones rápidas en superficies de madera, PVC,
-cerámica y metal.
-1.Preparación de la superficie:  Limpie y seque las superficies.
-Elimine polvo, grasa y partículas sueltas para asegurar una
+InstalaciÃ³n de molduras y zÃ³calos.
+FijaciÃ³n de paneles decorativos y revestimientos.
+Sellado y uniÃ³n en carpinterÃ­a interior.
+Reparaciones rÃ¡pidas en superficies de madera, PVC,
+cerÃ¡mica y metal.
+1.PreparaciÃ³n de la superficie:  Limpie y seque las superficies.
+Elimine polvo, grasa y partÃ­culas sueltas para asegurar una
 correcta adherencia.
-2.Cortes: Corte la boquilla del cartucho en un ángulo de 45° al
-diámetro de cordón deseado. Coloque el cartucho en la pistola
+2.Cortes: Corte la boquilla del cartucho en un Ã¡ngulo de 45Â° al
+diÃ¡metro de cordÃ³n deseado. Coloque el cartucho en la pistola
 aplicadora.
-3.Fijación: Aplique el adhesivo en cordones o puntos uniformes
+3.FijaciÃ³n: Aplique el adhesivo en cordones o puntos uniformes
 sobre la superficie. Presione firmemente las piezas a unir antes
 de que forme piel.
-4.Acabados: Retire el exceso de adhesivo con una espátula o
-paño húmedo. Ajuste las piezas alineándolas correctamente.
+4.Acabados: Retire el exceso de adhesivo con una espÃ¡tula o
+paÃ±o hÃºmedo. Ajuste las piezas alineÃ¡ndolas correctamente.
 5.Mantenimiento: Una vez curado, el adhesivo no requiere
 mantenimiento. Para limpieza, utilice disolvente adecuado
 antes del secado completo.
 
---- PRODUCT DATA: 28.1_FT_Iluminación Perfil Led.pdf ---
-Garantía
+--- PRODUCT DATA: 28.1_FT_IluminaciÃ³n Perfil Led.pdf ---
+GarantÃ­a
 Unitec
-Fácil
-Instalación
+FÃ¡cil
+InstalaciÃ³n
 Sostenible Impermeable
 No Flamable
 Liviano
 Resistente
 Bajo
 Mantenimiento
-Económico
-Garantía
-Fácil
-Instalación
+EconÃ³mico
+GarantÃ­a
+FÃ¡cil
+InstalaciÃ³n
 Sostenible
 Impermeable
-Económico
+EconÃ³mico
 No Flamable
 Liviano
 Resistente
 Bajo
 Mantenimiento
-Alto Diseño
-FICHA TÉCNICA
+Alto DiseÃ±o
+FICHA TÃ‰CNICA
 SOBRE EL PRODUCTO
 ESPECIFICACIONES
 VENTAJAS Y BENEFICIOS
-POLITICAS DE GARANTÍAS
-Verificar y recibir a conformidad el producto en el momento de entrega, No se aceptan reclamos por faltantes, daños o golpes después de recibida la mercancía.
-UNITEC USA DESIGN no cubre las garantías por productos instalados que presenten diferencias en tamaño, tono, color, rayado, por alabeo o cualquier defecto visible
-que pudiera ser detectado antes de la instalación.
-En el caso de que encuentre este tipo de defectos, por favor absténganse de instalar el producto y comunícate inmediatamente con el respectivo vendedor.
-La garantía no cubre los daños ocasionados al producto, o uso inadecuado del usuario.
-Seguir las recomendaciones de la ficha técnica en cuanto a uso, aplicaciones e instalación. 
+POLITICAS DE GARANTÃAS
+Verificar y recibir a conformidad el producto en el momento de entrega, No se aceptan reclamos por faltantes, daÃ±os o golpes despuÃ©s de recibida la mercancÃ­a.
+UNITEC USA DESIGN no cubre las garantÃ­as por productos instalados que presenten diferencias en tamaÃ±o, tono, color, rayado, por alabeo o cualquier defecto visible
+que pudiera ser detectado antes de la instalaciÃ³n.
+En el caso de que encuentre este tipo de defectos, por favor abstÃ©nganse de instalar el producto y comunÃ­cate inmediatamente con el respectivo vendedor.
+La garantÃ­a no cubre los daÃ±os ocasionados al producto, o uso inadecuado del usuario.
+Seguir las recomendaciones de la ficha tÃ©cnica en cuanto a uso, aplicaciones e instalaciÃ³n. 
 28.1
-Iluminación Perfil Led
-Barra de iluminación LED rígida de doble fila, luz blanco cálido, diseñada
-para instalación en paneles WPC de interior. Proporciona una
-iluminación uniforme y decorativa con bajo consumo energético.
+IluminaciÃ³n Perfil Led
+Barra de iluminaciÃ³n LED rÃ­gida de doble fila, luz blanco cÃ¡lido, diseÃ±ada
+para instalaciÃ³n en paneles WPC de interior. Proporciona una
+iluminaciÃ³n uniforme y decorativa con bajo consumo energÃ©tico.
 Peso:
 Espesor:
 Presentaciones: 
 Embalaje:
 Densidad:
-País de Origen:
+PaÃ­s de Origen:
 Material Principal:
 Nombre del Producto:
-Iluminación Perfil Led
+IluminaciÃ³n Perfil Led
 0,5 Kilogramos
 Unidad
 1,5 cm
@@ -3702,457 +3728,457 @@ LED
 China
 Barra Led 1: 50 cm x 1,5 cm / Barra Led 2: 70 cm x 1,5 cm / Barra Led 3: 120 cm x 1,5 cm
 USOS Y APLICACIONES
-Iluminación decorativa para interiores
-Integración en paneles WPC o muebles
-Resaltado de elementos arquitectónicos
-GUÍA DE INSTALACIÓN
-1.Preparación de la superficie: Asegúrese de que el panel WPC
-o superficie esté limpia, seca y nivelada para la instalación de
+IluminaciÃ³n decorativa para interiores
+IntegraciÃ³n en paneles WPC o muebles
+Resaltado de elementos arquitectÃ³nicos
+GUÃA DE INSTALACIÃ“N
+1.PreparaciÃ³n de la superficie: AsegÃºrese de que el panel WPC
+o superficie estÃ© limpia, seca y nivelada para la instalaciÃ³n de
 los perfiles LED. 
-2.Cortes: Mida y marque las posiciones de instalación. Si es
+2.Cortes: Mida y marque las posiciones de instalaciÃ³n. Si es
 necesario, corte el perfil LED con herramienta adecuada para
 aluminio.
-3.Fijación: Monte el perfil en la superficie usando clips o
+3.FijaciÃ³n: Monte el perfil en la superficie usando clips o
 tornillos. Conecte el cableado al transformador respetando la
 polaridad.
-4.Acabados: Instale el difusor de policarbonato. Asegúrese de
+4.Acabados: Instale el difusor de policarbonato. AsegÃºrese de
 que no haya cables sueltos.
-5.Mantenimiento: Limpie con paño seco o ligeramente húmedo.
-No use solventes. Verifique conexiones periódicamente.
-Herramienta: Taladro, destornillador, cinta métrica, cutter,
+5.Mantenimiento: Limpie con paÃ±o seco o ligeramente hÃºmedo.
+No use solventes. Verifique conexiones periÃ³dicamente.
+Herramienta: Taladro, destornillador, cinta mÃ©trica, cutter,
 guantes de seguridad.io.
 
---- PRODUCT DATA: 28.2_FT_Iluminación Transformador Perfil Led.pdf ---
-Garantía
+--- PRODUCT DATA: 28.2_FT_IluminaciÃ³n Transformador Perfil Led.pdf ---
+GarantÃ­a
 Unitec
-Fácil
-Instalación
+FÃ¡cil
+InstalaciÃ³n
 Sostenible Impermeable
 No Flamable
 Liviano
 Resistente
 Bajo
 Mantenimiento
-Económico
-Garantía
-Fácil
-Instalación
+EconÃ³mico
+GarantÃ­a
+FÃ¡cil
+InstalaciÃ³n
 Sostenible
 Impermeable
-Económico
+EconÃ³mico
 No Flamable
 Liviano
 Resistente
 Bajo
 Mantenimiento
-Alto Diseño
-FICHA TÉCNICA
+Alto DiseÃ±o
+FICHA TÃ‰CNICA
 SOBRE EL PRODUCTO
 ESPECIFICACIONES
 VENTAJAS Y BENEFICIOS
-POLITICAS DE GARANTÍAS
-Verificar y recibir a conformidad el producto en el momento de entrega, No se aceptan reclamos por faltantes, daños o golpes después de recibida la mercancía.
-UNITEC USA DESIGN no cubre las garantías por productos instalados que presenten diferencias en tamaño, tono, color, rayado, por alabeo o cualquier defecto visible
-que pudiera ser detectado antes de la instalación.
-En el caso de que encuentre este tipo de defectos, por favor absténganse de instalar el producto y comunícate inmediatamente con el respectivo vendedor.
-La garantía no cubre los daños ocasionados al producto, o uso inadecuado del usuario.
-Seguir las recomendaciones de la ficha técnica en cuanto a uso, aplicaciones e instalación. 
+POLITICAS DE GARANTÃAS
+Verificar y recibir a conformidad el producto en el momento de entrega, No se aceptan reclamos por faltantes, daÃ±os o golpes despuÃ©s de recibida la mercancÃ­a.
+UNITEC USA DESIGN no cubre las garantÃ­as por productos instalados que presenten diferencias en tamaÃ±o, tono, color, rayado, por alabeo o cualquier defecto visible
+que pudiera ser detectado antes de la instalaciÃ³n.
+En el caso de que encuentre este tipo de defectos, por favor abstÃ©nganse de instalar el producto y comunÃ­cate inmediatamente con el respectivo vendedor.
+La garantÃ­a no cubre los daÃ±os ocasionados al producto, o uso inadecuado del usuario.
+Seguir las recomendaciones de la ficha tÃ©cnica en cuanto a uso, aplicaciones e instalaciÃ³n. 
 28.2
-Iluminación Transformador Perfil Led
-Fuente de alimentación para perfiles LED, convierte corriente alterna a
+IluminaciÃ³n Transformador Perfil Led
+Fuente de alimentaciÃ³n para perfiles LED, convierte corriente alterna a
 corriente continua estabilizada para un funcionamiento seguro y
 eficiente de las tiras o barras LED.
 Peso:
 Espesor:
 Embalaje:
 Espesor Tipo XL:
-País de Origen:
+PaÃ­s de Origen:
 Material Principal:
 Nombre del Producto:
-Iluminación Transformador Perfil Led
+IluminaciÃ³n Transformador Perfil Led
 0,3 Kilogramos
 Unidad
 1,5 cm
 3,5 mm
 China
-GUÍA DE INSTALACIÓN
+GUÃA DE INSTALACIÃ“N
 USOS Y APLICACIONES
-Alimentación de perfiles LED
-Iluminación arquitectónica
+AlimentaciÃ³n de perfiles LED
+IluminaciÃ³n arquitectÃ³nica
 Proyectos residenciales y comerciales
-1.Preparación de la superficie: Asegúrese de que el panel WPC
-o superficie esté limpia, seca y nivelada para la instalación de
+1.PreparaciÃ³n de la superficie: AsegÃºrese de que el panel WPC
+o superficie estÃ© limpia, seca y nivelada para la instalaciÃ³n de
 los perfiles LED. 
-2.Cortes: Mida y marque las posiciones de instalación. Si es
+2.Cortes: Mida y marque las posiciones de instalaciÃ³n. Si es
 necesario, corte el perfil LED con herramienta adecuada para
 aluminio.
-3.Fijación: Monte el perfil en la superficie usando clips o
+3.FijaciÃ³n: Monte el perfil en la superficie usando clips o
 tornillos. Conecte el cableado al transformador respetando la
 polaridad.
-4.Acabados: Instale el difusor de policarbonato. Asegúrese de
+4.Acabados: Instale el difusor de policarbonato. AsegÃºrese de
 que no haya cables sueltos.
-5.Mantenimiento: Limpie con paño seco o ligeramente húmedo.
-No use solventes. Verifique conexiones periódicamente.
-Herramienta: Taladro, destornillador, cinta métrica, cutter,
+5.Mantenimiento: Limpie con paÃ±o seco o ligeramente hÃºmedo.
+No use solventes. Verifique conexiones periÃ³dicamente.
+Herramienta: Taladro, destornillador, cinta mÃ©trica, cutter,
 guantes de seguridad.io.
-Presentación:
+PresentaciÃ³n:
 24V (voltios) - 60W (vatios) /  3,5 cm x 5,8 cm
-Carcasa metálica / Componentes electrónicos internos
+Carcasa metÃ¡lica / Componentes electrÃ³nicos internos
 
---- PRODUCT DATA: 28.3_FT_Iluminación Control Led.pdf ---
-Garantía
+--- PRODUCT DATA: 28.3_FT_IluminaciÃ³n Control Led.pdf ---
+GarantÃ­a
 Unitec
-Fácil
-Instalación
+FÃ¡cil
+InstalaciÃ³n
 Sostenible Impermeable
 No Flamable
 Liviano
 Resistente
 Bajo
 Mantenimiento
-Económico
-Garantía
-Fácil
-Instalación
+EconÃ³mico
+GarantÃ­a
+FÃ¡cil
+InstalaciÃ³n
 Sostenible
 Impermeable
-Económico
+EconÃ³mico
 No Flamable
 Liviano
 Resistente
 Bajo
 Mantenimiento
-Alto Diseño
-FICHA TÉCNICA
+Alto DiseÃ±o
+FICHA TÃ‰CNICA
 SOBRE EL PRODUCTO
 ESPECIFICACIONES
 VENTAJAS Y BENEFICIOS
-POLITICAS DE GARANTÍAS
-Verificar y recibir a conformidad el producto en el momento de entrega, No se aceptan reclamos por faltantes, daños o golpes después de recibida la mercancía.
-UNITEC USA DESIGN no cubre las garantías por productos instalados que presenten diferencias en tamaño, tono, color, rayado, por alabeo o cualquier defecto visible
-que pudiera ser detectado antes de la instalación.
-En el caso de que encuentre este tipo de defectos, por favor absténganse de instalar el producto y comunícate inmediatamente con el respectivo vendedor.
-La garantía no cubre los daños ocasionados al producto, o uso inadecuado del usuario.
-Seguir las recomendaciones de la ficha técnica en cuanto a uso, aplicaciones e instalación. 
+POLITICAS DE GARANTÃAS
+Verificar y recibir a conformidad el producto en el momento de entrega, No se aceptan reclamos por faltantes, daÃ±os o golpes despuÃ©s de recibida la mercancÃ­a.
+UNITEC USA DESIGN no cubre las garantÃ­as por productos instalados que presenten diferencias en tamaÃ±o, tono, color, rayado, por alabeo o cualquier defecto visible
+que pudiera ser detectado antes de la instalaciÃ³n.
+En el caso de que encuentre este tipo de defectos, por favor abstÃ©nganse de instalar el producto y comunÃ­cate inmediatamente con el respectivo vendedor.
+La garantÃ­a no cubre los daÃ±os ocasionados al producto, o uso inadecuado del usuario.
+Seguir las recomendaciones de la ficha tÃ©cnica en cuanto a uso, aplicaciones e instalaciÃ³n. 
 28.3
-Control remoto táctil por radiofrecuencia para perfiles LED, permite
+Control remoto tÃ¡ctil por radiofrecuencia para perfiles LED, permite
 regular intensidad (Dimerizar - reducir o aumentar la intensidad de la
-luz), encendido/apagado y efectos de iluminación.
+luz), encendido/apagado y efectos de iluminaciÃ³n.
 Peso:
 Espesor:
 Embalaje:
 Densidad:
-País de Origen:
+PaÃ­s de Origen:
 Material Principal:
 Nombre del Producto:
-Iluminación Control Led
+IluminaciÃ³n Control Led
 0,2 Kilogramos
 Unidad
 2 cm
 -
-Carcasa metálica / Componentes electrónicos internos
+Carcasa metÃ¡lica / Componentes electrÃ³nicos internos
 China
-GUÍA DE INSTALACIÓN
+GUÃA DE INSTALACIÃ“N
 USOS Y APLICACIONES
 Control de perfiles LED en interiores
 Ajuste 
 de 
-iluminación 
+iluminaciÃ³n 
 en 
 proyectos 
 residenciales 
 y
 comerciales
-Integración en sistemas decorativos
-1.Preparación: Verifique que la superficie esté limpia, seca y
-nivelada antes de la instalación.
-2.Medición y corte: Mida el área de instalación y realice los
-cortes necesarios del perfil LED o accesorios según el diseño.
-3.Fijación: Instale el perfil LED sobre la superficie utilizando clips,
+IntegraciÃ³n en sistemas decorativos
+1.PreparaciÃ³n: Verifique que la superficie estÃ© limpia, seca y
+nivelada antes de la instalaciÃ³n.
+2.MediciÃ³n y corte: Mida el Ã¡rea de instalaciÃ³n y realice los
+cortes necesarios del perfil LED o accesorios segÃºn el diseÃ±o.
+3.FijaciÃ³n: Instale el perfil LED sobre la superficie utilizando clips,
 tornillos o adhesivo recomendado.
-4.Conexión eléctrica: Conecte el perfil LED al transformador y al
-control LED, respetando polaridad y especificaciones eléctricas.
+4.ConexiÃ³n elÃ©ctrica: Conecte el perfil LED al transformador y al
+control LED, respetando polaridad y especificaciones elÃ©ctricas.
 5.Prueba y acabado:  Verifique el correcto funcionamiento,
 instale el difusor y asegure que no queden cables sueltos.
-6.Mantenimiento: Limpie con paño seco o ligeramente húmedo.
+6.Mantenimiento: Limpie con paÃ±o seco o ligeramente hÃºmedo.
 No use productos abrasivos.
-Presentación:
+PresentaciÃ³n:
 12 cm x 5 cm
-Iluminación Control Led
+IluminaciÃ³n Control Led
 
 --- PRODUCT DATA: 29.1_FT_Jardin Artificial Exterior.pdf ---
-FICHA TÉCNICA
+FICHA TÃ‰CNICA
 SOBRE EL PRODUCTO
 ESPECIFICACIONES
 VENTAJAS Y BENEFICIOS
-Jardín Artificial Exterior
-Garantía
+JardÃ­n Artificial Exterior
+GarantÃ­a
 Unitec
-Fácil
-Instalación
+FÃ¡cil
+InstalaciÃ³n
 Sostenible Impermeable
 No Flamable
 Liviano
 Resistente
 Bajo
 Mantenimiento
-Económico
-POLITICAS DE GARANTÍAS
-Verificar y recibir a conformidad el producto en el momento de entrega, No se aceptan reclamos por faltantes, daños o golpes después de recibida la mercancía.
-UNITEC USA DESIGN no cubre las garantías por productos instalados que presenten diferencias en tamaño, tono, color, rayado, por alabeo o cualquier defecto visible
-que pudiera ser detectado antes de la instalación.
-En el caso de que encuentre este tipo de defectos, por favor absténganse de instalar el producto y comunícate inmediatamente con el respectivo vendedor.
-La garantía no cubre los daños ocasionados al producto, o uso inadecuado del usuario.
-Seguir las recomendaciones de la ficha técnica en cuanto a uso, aplicaciones e instalación. 
+EconÃ³mico
+POLITICAS DE GARANTÃAS
+Verificar y recibir a conformidad el producto en el momento de entrega, No se aceptan reclamos por faltantes, daÃ±os o golpes despuÃ©s de recibida la mercancÃ­a.
+UNITEC USA DESIGN no cubre las garantÃ­as por productos instalados que presenten diferencias en tamaÃ±o, tono, color, rayado, por alabeo o cualquier defecto visible
+que pudiera ser detectado antes de la instalaciÃ³n.
+En el caso de que encuentre este tipo de defectos, por favor abstÃ©nganse de instalar el producto y comunÃ­cate inmediatamente con el respectivo vendedor.
+La garantÃ­a no cubre los daÃ±os ocasionados al producto, o uso inadecuado del usuario.
+Seguir las recomendaciones de la ficha tÃ©cnica en cuanto a uso, aplicaciones e instalaciÃ³n. 
 29.1
-El Jardín Artificial de Exterior está diseñado para revestir fachadas,
+El JardÃ­n Artificial de Exterior estÃ¡ diseÃ±ado para revestir fachadas,
 muros y superficies verticales, ofreciendo una apariencia natural con alta
-resistencia a la intemperie, rayos UV y humedad. Es una solución
+resistencia a la intemperie, rayos UV y humedad. Es una soluciÃ³n
 decorativa duradera, funcional y de bajo mantenimiento, ideal para
 proyectos residenciales, comerciales y urbanos que buscan integrar
-vegetación sin requerir riego, poda o cuidados constantes.
-Disponible en 4 modelos: Pradera, Edén, Paraíso y Primavera.
+vegetaciÃ³n sin requerir riego, poda o cuidados constantes.
+Disponible en 4 modelos: Pradera, EdÃ©n, ParaÃ­so y Primavera.
 USOS Y APLICACIONES
 Residencial: Terrazas, balcones, muros decorativos exteriores.
 Comercial: Fachadas, restaurantes, hoteles, locales
 comerciales
-Espacios públicos: Parques, áreas de juego, proyectos verdes
+Espacios pÃºblicos: Parques, Ã¡reas de juego, proyectos verdes
 urbanos
-Decoración de eventos: Stands, exhibiciones y
+DecoraciÃ³n de eventos: Stands, exhibiciones y
 ambientaciones exteriores
 Peso:
 Espesor:
 Formato:
 Embalaje:
 Densidad:
-País de Origen:
+PaÃ­s de Origen:
 Material Principal:
 Nombre del Producto:
-Jardín Artificial Exterior
-50 × 50 cm
+JardÃ­n Artificial Exterior
+50 Ã— 50 cm
 0,7 kg
 Unidad suelta o caja x 30
 1 mm
-Aproximadamente 5 kg/m²
+Aproximadamente 5 kg/mÂ²
 PVC (Policloruro de Vinilo)
 China
-Garantía
-Fácil
-Instalación
+GarantÃ­a
+FÃ¡cil
+InstalaciÃ³n
 Sostenible
 Impermeable
-Económico
+EconÃ³mico
 No Flamable
 Liviano
 Resistente
 Bajo
 Mantenimiento
-Alto Diseño
-GUÍA DE INSTALACIÓN
-1.Preparación de la superficie: Debe estar limpia, seca y libre
-de polvo, material biótico y humedad. Se recomienda pintar
-con vinilo hidrófugo verde para mejor cubrimiento.
-2.Cortes: Optimice los cortes según el área, teniendo en
-cuenta el formato estándar del producto.
-3.Sujeción: Fije el panel del jardín artificial con chazo y tornillo
-en los ojales de cada pieza. También, si lo deseas, el panel
+Alto DiseÃ±o
+GUÃA DE INSTALACIÃ“N
+1.PreparaciÃ³n de la superficie: Debe estar limpia, seca y libre
+de polvo, material biÃ³tico y humedad. Se recomienda pintar
+con vinilo hidrÃ³fugo verde para mejor cubrimiento.
+2.Cortes: Optimice los cortes segÃºn el Ã¡rea, teniendo en
+cuenta el formato estÃ¡ndar del producto.
+3.SujeciÃ³n: Fije el panel del jardÃ­n artificial con chazo y tornillo
+en los ojales de cada pieza. TambiÃ©n, si lo deseas, el panel
 puede ser pegado a la pared con nuestro adhesivo de
-montaje PEGATEC. Ensamble los paneles entre sí hasta cubrir
+montaje PEGATEC. Ensamble los paneles entre sÃ­ hasta cubrir
 la superficie deseada.
 4.Acabados: Siga las recomendaciones del fabricante y utilice
 accesorios si es necesario.
-5.Mantenimiento: Limpieza ocasional con agua y jabón neutro
+5.Mantenimiento: Limpieza ocasional con agua y jabÃ³n neutro
 para retirar polvo acumulado.
-Herramienta: Flexómetro, bisturí, regla de aluminio, guantes.
+Herramienta: FlexÃ³metro, bisturÃ­, regla de aluminio, guantes.
 
---- PRODUCT DATA: 29.2_FT_Jardín Artificial Interior.pdf ---
-FICHA TÉCNICA
+--- PRODUCT DATA: 29.2_FT_JardÃ­n Artificial Interior.pdf ---
+FICHA TÃ‰CNICA
 SOBRE EL PRODUCTO
 ESPECIFICACIONES
 VENTAJAS Y BENEFICIOS
-Jardín Artificial Interior
-Garantía
+JardÃ­n Artificial Interior
+GarantÃ­a
 Unitec
-Fácil
-Instalación
+FÃ¡cil
+InstalaciÃ³n
 Sostenible Impermeable
 No Flamable
 Liviano
 Resistente
 Bajo
 Mantenimiento
-Económico
-POLITICAS DE GARANTÍAS
-Verificar y recibir a conformidad el producto en el momento de entrega, No se aceptan reclamos por faltantes, daños o golpes después de recibida la mercancía.
-UNITEC USA DESIGN no cubre las garantías por productos instalados que presenten diferencias en tamaño, tono, color, rayado, por alabeo o cualquier defecto visible
-que pudiera ser detectado antes de la instalación.
-En el caso de que encuentre este tipo de defectos, por favor absténganse de instalar el producto y comunícate inmediatamente con el respectivo vendedor.
-La garantía no cubre los daños ocasionados al producto, o uso inadecuado del usuario.
-Seguir las recomendaciones de la ficha técnica en cuanto a uso, aplicaciones e instalación. 
+EconÃ³mico
+POLITICAS DE GARANTÃAS
+Verificar y recibir a conformidad el producto en el momento de entrega, No se aceptan reclamos por faltantes, daÃ±os o golpes despuÃ©s de recibida la mercancÃ­a.
+UNITEC USA DESIGN no cubre las garantÃ­as por productos instalados que presenten diferencias en tamaÃ±o, tono, color, rayado, por alabeo o cualquier defecto visible
+que pudiera ser detectado antes de la instalaciÃ³n.
+En el caso de que encuentre este tipo de defectos, por favor abstÃ©nganse de instalar el producto y comunÃ­cate inmediatamente con el respectivo vendedor.
+La garantÃ­a no cubre los daÃ±os ocasionados al producto, o uso inadecuado del usuario.
+Seguir las recomendaciones de la ficha tÃ©cnica en cuanto a uso, aplicaciones e instalaciÃ³n. 
 29.2
-El Jardín Artificial de Interior está diseñado para imitar la apariencia de
-la vegetación natural, transformando muros y superficies verticales en
-espacios verdes de alto impacto visual. Proporciona una solución
+El JardÃ­n Artificial de Interior estÃ¡ diseÃ±ado para imitar la apariencia de
+la vegetaciÃ³n natural, transformando muros y superficies verticales en
+espacios verdes de alto impacto visual. Proporciona una soluciÃ³n
 decorativa, duradera y libre de mantenimiento, ideal para interiores que
-buscan una sensación de frescura, conexión natural y diseño
-contemporáneo sin requerir riego ni poda.
-Disponible en 3 modelos: Natural, Venecia y París. 
-GUÍA DE INSTALACIÓN
+buscan una sensaciÃ³n de frescura, conexiÃ³n natural y diseÃ±o
+contemporÃ¡neo sin requerir riego ni poda.
+Disponible en 3 modelos: Natural, Venecia y ParÃ­s. 
+GUÃA DE INSTALACIÃ“N
 USOS Y APLICACIONES
 Residencial: Salas de estar, dormitorios
 Comercial: Oficinas, restaurantes, hoteles, espacios
 comerciales
-Decoración de eventos: Bodas, fiestas, exhibiciones
-Espacios públicos: Parques, áreas de juego, proyectos verdes
+DecoraciÃ³n de eventos: Bodas, fiestas, exhibiciones
+Espacios pÃºblicos: Parques, Ã¡reas de juego, proyectos verdes
 urbanos
-1.Preparación de la superficie: Debe estar limpia, seca y libre
-de polvo, material biótico y humedad. Se recomienda pintar
-con vinilo hidrófugo verde para mejor cubrimiento.
-2.Cortes: Optimice los cortes según el área, teniendo en
-cuenta el formato estándar del producto.
-3.Sujeción: Fije el panel del jardín artificial con chazo y tornillo
-en los ojales de cada pieza. También, si lo deseas, el panel
+1.PreparaciÃ³n de la superficie: Debe estar limpia, seca y libre
+de polvo, material biÃ³tico y humedad. Se recomienda pintar
+con vinilo hidrÃ³fugo verde para mejor cubrimiento.
+2.Cortes: Optimice los cortes segÃºn el Ã¡rea, teniendo en
+cuenta el formato estÃ¡ndar del producto.
+3.SujeciÃ³n: Fije el panel del jardÃ­n artificial con chazo y tornillo
+en los ojales de cada pieza. TambiÃ©n, si lo deseas, el panel
 puede ser pegado a la pared con nuestro adhesivo de
-montaje PEGATEC. Ensamble los paneles entre sí hasta cubrir
+montaje PEGATEC. Ensamble los paneles entre sÃ­ hasta cubrir
 la superficie deseada.
 4.Acabados: Siga las recomendaciones del fabricante y utilice
 accesorios si es necesario.
-5.Mantenimiento: Limpieza ocasional con agua y jabón neutro
+5.Mantenimiento: Limpieza ocasional con agua y jabÃ³n neutro
 para retirar polvo acumulado.
 Peso:
 Espesor:
 Formato:
 Embalaje:
 Densidad:
-País de Origen:
+PaÃ­s de Origen:
 Material Principal:
 Nombre del Producto:
-Jardín Artificial Interior
-60 × 40 cm
+JardÃ­n Artificial Interior
+60 Ã— 40 cm
 0,7 kg
 Unidad suelta o caja x 30
 1 mm
-Aproximadamente 5 kg/m²
+Aproximadamente 5 kg/mÂ²
 PVC (Policloruro de Vinilo)
 China
-Garantía
-Fácil
-Instalación
+GarantÃ­a
+FÃ¡cil
+InstalaciÃ³n
 Sostenible
 Impermeable
-Económico
+EconÃ³mico
 No Flamable
 Liviano
 Resistente
 Bajo
 Mantenimiento
-Alto Diseño
-Herramienta: Flexómetro, bisturí, regla de aluminio, guantes.
+Alto DiseÃ±o
+Herramienta: FlexÃ³metro, bisturÃ­, regla de aluminio, guantes.
 
---- PRODUCT DATA: 29.3_FT_Jardín Artificial Linea Moss.pdf ---
-Garantía
+--- PRODUCT DATA: 29.3_FT_JardÃ­n Artificial Linea Moss.pdf ---
+GarantÃ­a
 Unitec
-Fácil
-Instalación
+FÃ¡cil
+InstalaciÃ³n
 Sostenible Impermeable
 No Flamable
 Liviano
 Resistente
 Bajo
 Mantenimiento
-Económico
-Garantía
-Fácil
-Instalación
+EconÃ³mico
+GarantÃ­a
+FÃ¡cil
+InstalaciÃ³n
 Sostenible
 Impermeable
-Económico
+EconÃ³mico
 No Flamable
 Liviano
 Resistente
 Bajo
 Mantenimiento
-Alto Diseño
-FICHA TÉCNICA
+Alto DiseÃ±o
+FICHA TÃ‰CNICA
 SOBRE EL PRODUCTO
 ESPECIFICACIONES
 VENTAJAS Y BENEFICIOS
-Jardín Artificial línea Moss
-POLITICAS DE GARANTÍAS
-Verificar y recibir a conformidad el producto en el momento de entrega, No se aceptan reclamos por faltantes, daños o golpes después de recibida la mercancía.
-UNITEC USA DESIGN no cubre las garantías por productos instalados que presenten diferencias en tamaño, tono, color, rayado, por alabeo o cualquier defecto visible
-que pudiera ser detectado antes de la instalación.
-En el caso de que encuentre este tipo de defectos, por favor absténganse de instalar el producto y comunícate inmediatamente con el respectivo vendedor.
-La garantía no cubre los daños ocasionados al producto, o uso inadecuado del usuario.
-Seguir las recomendaciones de la ficha técnica en cuanto a uso, aplicaciones e instalación. 
+JardÃ­n Artificial lÃ­nea Moss
+POLITICAS DE GARANTÃAS
+Verificar y recibir a conformidad el producto en el momento de entrega, No se aceptan reclamos por faltantes, daÃ±os o golpes despuÃ©s de recibida la mercancÃ­a.
+UNITEC USA DESIGN no cubre las garantÃ­as por productos instalados que presenten diferencias en tamaÃ±o, tono, color, rayado, por alabeo o cualquier defecto visible
+que pudiera ser detectado antes de la instalaciÃ³n.
+En el caso de que encuentre este tipo de defectos, por favor abstÃ©nganse de instalar el producto y comunÃ­cate inmediatamente con el respectivo vendedor.
+La garantÃ­a no cubre los daÃ±os ocasionados al producto, o uso inadecuado del usuario.
+Seguir las recomendaciones de la ficha tÃ©cnica en cuanto a uso, aplicaciones e instalaciÃ³n. 
 29.3
-La Línea MOSS de jardines artificiales ofrece una estética orgánica y
-contemporánea que transforma muros y superficies verticales en
+La LÃ­nea MOSS de jardines artificiales ofrece una estÃ©tica orgÃ¡nica y
+contemporÃ¡nea que transforma muros y superficies verticales en
 espacios verdes suaves y envolventes, sin necesidad de riego ni poda.
-Fabricados en PVC de alta calidad, estos paneles están diseñados para
+Fabricados en PVC de alta calidad, estos paneles estÃ¡n diseÃ±ados para
 uso interior y exterior protegido, con alta resistencia a la humedad, al
 desgaste y a condiciones ambientales variables, conservando su color y
 textura a lo largo del tiempo.
- Es una solución decorativa práctica, versátil y sostenible que combina
-estética natural y funcionalidad arquitectónica.
-Disponible en 2 modelos: Mini-Mossy y Mossy Pino Ciprés
-GUÍA DE INSTALACIÓN
+ Es una soluciÃ³n decorativa prÃ¡ctica, versÃ¡til y sostenible que combina
+estÃ©tica natural y funcionalidad arquitectÃ³nica.
+Disponible en 2 modelos: Mini-Mossy y Mossy Pino CiprÃ©s
+GUÃA DE INSTALACIÃ“N
 USOS Y APLICACIONES
 Residencial: Salas de estar, dormitorios, muros decorativos.
 Comercial: Oficinas, restaurantes, hoteles, locales comerciales
-Decoración de eventos: Bodas, fiestas, exhibiciones
-Diseños arquitectónicos: Proyectos interiores y exteriores
+DecoraciÃ³n de eventos: Bodas, fiestas, exhibiciones
+DiseÃ±os arquitectÃ³nicos: Proyectos interiores y exteriores
 protegidos
-1.Preparación de la superficie: Debe estar limpia, seca y libre
-de polvo, material biótico y humedad. Se recomienda pintar
-con vinilo hidrófugo verde para mejor cubrimiento.
-2.Cortes: Optimice los cortes según el área, teniendo en
-cuenta el formato estándar del producto.
-3.Sujeción: Fije el panel del jardín artificial con chazo y tornillo
-en los ojales de cada pieza. También, si lo deseas, el panel
+1.PreparaciÃ³n de la superficie: Debe estar limpia, seca y libre
+de polvo, material biÃ³tico y humedad. Se recomienda pintar
+con vinilo hidrÃ³fugo verde para mejor cubrimiento.
+2.Cortes: Optimice los cortes segÃºn el Ã¡rea, teniendo en
+cuenta el formato estÃ¡ndar del producto.
+3.SujeciÃ³n: Fije el panel del jardÃ­n artificial con chazo y tornillo
+en los ojales de cada pieza. TambiÃ©n, si lo deseas, el panel
 puede ser pegado a la pared con nuestro adhesivo de
-montaje PEGATEC. Ensamble los paneles entre sí hasta cubrir
+montaje PEGATEC. Ensamble los paneles entre sÃ­ hasta cubrir
 la superficie deseada.
 4.Acabados: Siga las recomendaciones del fabricante y utilice
 accesorios si es necesario.
-5.Mantenimiento: Limpieza ocasional con agua y jabón neutro
+5.Mantenimiento: Limpieza ocasional con agua y jabÃ³n neutro
 para retirar polvo acumulado.
 Peso:
 Espesor:
 Formato:
 Embalaje:
 Tipo de follaje:
-País de Origen:
+PaÃ­s de Origen:
 Material Principal:
 Nombre del Producto:
-Jardín Artificial  línea Moss 
-50 × 50 cm
+JardÃ­n Artificial  lÃ­nea Moss 
+50 Ã— 50 cm
 0,7 kg
 Unidad suelta o caja x 30
-Mini-Mossy 2,5 cm /  Mossy Pino Ciprés 3 cm
+Mini-Mossy 2,5 cm /  Mossy Pino CiprÃ©s 3 cm
 Mini-Mossy ( Fino, estilo musgo) 
-Mossy Pino Ciprés (Ramas de ciprés o pino con follaje tupido)
+Mossy Pino CiprÃ©s (Ramas de ciprÃ©s o pino con follaje tupido)
 PVC (Policloruro de Vinilo)
 China
-Herramienta: Flexómetro, bisturí, regla de aluminio, guantes.
+Herramienta: FlexÃ³metro, bisturÃ­, regla de aluminio, guantes.
 
 --- PRODUCT DATA: 30.1_FT_Aluminio_Ferretero.pdf ---
-FICHA TÉCNICA
+FICHA TÃ‰CNICA
 SOBRE EL PRODUCTO
 Aluminio Ferretero
-POLITICAS DE GARANTÍAS
-Verificar y recibir a conformidad el producto en el momento de entrega, No se aceptan reclamos por faltantes, daños o golpes después de recibida la mercancía.
-UNITEC USA DESIGN no cubre las garantías por productos instalados que presenten diferencias en tamaño, tono, color, rayado, por alabeo o cualquier defecto visible
-que pudiera ser detectado antes de la instalación.
-En el caso de que encuentre este tipo de defectos, por favor absténganse de instalar el producto y comunícate inmediatamente con el respectivo vendedor.
-La garantía no cubre los daños ocasionados al producto, o uso inadecuado del usuario.
-Seguir las recomendaciones de la ficha técnica en cuanto a uso, aplicaciones e instalación. 
+POLITICAS DE GARANTÃAS
+Verificar y recibir a conformidad el producto en el momento de entrega, No se aceptan reclamos por faltantes, daÃ±os o golpes despuÃ©s de recibida la mercancÃ­a.
+UNITEC USA DESIGN no cubre las garantÃ­as por productos instalados que presenten diferencias en tamaÃ±o, tono, color, rayado, por alabeo o cualquier defecto visible
+que pudiera ser detectado antes de la instalaciÃ³n.
+En el caso de que encuentre este tipo de defectos, por favor abstÃ©nganse de instalar el producto y comunÃ­cate inmediatamente con el respectivo vendedor.
+La garantÃ­a no cubre los daÃ±os ocasionados al producto, o uso inadecuado del usuario.
+Seguir las recomendaciones de la ficha tÃ©cnica en cuanto a uso, aplicaciones e instalaciÃ³n. 
 30.1
-El Aluminio Ferretero está diseñado para aplicaciones generales en
-carpintería metálica, cerramientos, divisiones, cortinería, cielos rasos y
-soluciones arquitectónicas livianas. Se caracteriza por su resistencia,
+El Aluminio Ferretero estÃ¡ diseÃ±ado para aplicaciones generales en
+carpinterÃ­a metÃ¡lica, cerramientos, divisiones, cortinerÃ­a, cielos rasos y
+soluciones arquitectÃ³nicas livianas. Se caracteriza por su resistencia,
 ligereza, durabilidad y versatilidad, siendo ideal tanto para proyectos
-residenciales como comerciales, garantizando resistencia a la corrosión y
+residenciales como comerciales, garantizando resistencia a la corrosiÃ³n y
 facilidad de mantenimiento.
 Material
 Aluminio extruido de alta calidad
@@ -4160,40 +4186,40 @@ Acabados: crudo, blanco, dorado, bronce y anodizados decorativos
 USOS Y APLICACIONES
 Divisiones interiores
 Cielos rasos
-Cortinería
+CortinerÃ­a
 Marcos livianos
 Cerramientos
 Estructuras decorativas
 Proyectos comerciales y residenciales
-CARACTERÍSTICAS TÉCNICAS
+CARACTERÃSTICAS TÃ‰CNICAS
 Material liviano y resistente
 Alta durabilidad
-Resistente a la corrosión
-Fácil manipulación e instalación
+Resistente a la corrosiÃ³n
+FÃ¡cil manipulaciÃ³n e instalaciÃ³n
 No requiere mantenimiento constante
-Apto para interior y exterior (según referencia)
-Compatible con accesorios ferreteros estándar
+Apto para interior y exterior (segÃºn referencia)
+Compatible con accesorios ferreteros estÃ¡ndar
 PERFILES DISPONIBLES
 Tubulares y estructurales
-Codal tubular rectangular 3” x 1½”
-Codal tubular rectangular 3” x 1”
+Codal tubular rectangular 3â€ x 1Â½â€
+Codal tubular rectangular 3â€ x 1â€
 Tubulares cuadrados y rectangulares
-Ángulos
-Ángulo crudo 17 mm x 17 mm
-Ángulo blanco 17 mm x 17 mm
+Ãngulos
+Ãngulo crudo 17 mm x 17 mm
+Ãngulo blanco 17 mm x 17 mm
 Cortineros
-Tubo cortinero 111 – 1”
-Tubo cortinero 112 – ¾”
-Tubo cortinero 113 – ½”
+Tubo cortinero 111 â€“ 1â€
+Tubo cortinero 112 â€“ Â¾â€
+Tubo cortinero 113 â€“ Â½â€
 Disponibles en dorado y bronce
 Perfiles especiales
 Pirlan 390
 Piragua WIN 0382
-Win español
+Win espaÃ±ol
 DIMENSIONES
-Medidas variables según perfil
-Longitudes comerciales estándar
-Sección y espesor según referencia técnica
+Medidas variables segÃºn perfil
+Longitudes comerciales estÃ¡ndar
+SecciÃ³n y espesor segÃºn referencia tÃ©cnica
 ACABADOS
 Crudo
 Blanco
@@ -4201,214 +4227,214 @@ Dorado
 Bronce
 Anodizado decorativo
 VENTAJAS DEL PRODUCTO
-Excelente relación peso–resistencia
-Versatilidad para múltiples aplicaciones
-Estética moderna y limpia
-Fácil integración con otros sistemas Unitec
+Excelente relaciÃ³n pesoâ€“resistencia
+Versatilidad para mÃºltiples aplicaciones
+EstÃ©tica moderna y limpia
+FÃ¡cil integraciÃ³n con otros sistemas Unitec
 Amplia disponibilidad de referencias
 
---- PRODUCT DATA: 30.2_FT_Perfileria Aluminio Arquitéctonico.pdf ---
-FICHA TÉCNICA
+--- PRODUCT DATA: 30.2_FT_Perfileria Aluminio ArquitÃ©ctonico.pdf ---
+FICHA TÃ‰CNICA
 SOBRE EL PRODUCTO
-Perfilería Aluminio Arquitéctonico
-POLITICAS DE GARANTÍAS
-Verificar y recibir a conformidad el producto en el momento de entrega, No se aceptan reclamos por faltantes, daños o golpes después de recibida la mercancía.
-UNITEC USA DESIGN no cubre las garantías por productos instalados que presenten diferencias en tamaño, tono, color, rayado, por alabeo o cualquier defecto visible
-que pudiera ser detectado antes de la instalación.
-En el caso de que encuentre este tipo de defectos, por favor absténganse de instalar el producto y comunícate inmediatamente con el respectivo vendedor.
-La garantía no cubre los daños ocasionados al producto, o uso inadecuado del usuario.
-Seguir las recomendaciones de la ficha técnica en cuanto a uso, aplicaciones e instalación. 
+PerfilerÃ­a Aluminio ArquitÃ©ctonico
+POLITICAS DE GARANTÃAS
+Verificar y recibir a conformidad el producto en el momento de entrega, No se aceptan reclamos por faltantes, daÃ±os o golpes despuÃ©s de recibida la mercancÃ­a.
+UNITEC USA DESIGN no cubre las garantÃ­as por productos instalados que presenten diferencias en tamaÃ±o, tono, color, rayado, por alabeo o cualquier defecto visible
+que pudiera ser detectado antes de la instalaciÃ³n.
+En el caso de que encuentre este tipo de defectos, por favor abstÃ©nganse de instalar el producto y comunÃ­cate inmediatamente con el respectivo vendedor.
+La garantÃ­a no cubre los daÃ±os ocasionados al producto, o uso inadecuado del usuario.
+Seguir las recomendaciones de la ficha tÃ©cnica en cuanto a uso, aplicaciones e instalaciÃ³n. 
 30.2
-La perfilería de aluminio arquitectónico está desarrollada para
+La perfilerÃ­a de aluminio arquitectÃ³nico estÃ¡ desarrollada para
 sistemas comerciales y residenciales de puertas, ventanas, fachadas,
-divisiones y cerramientos, ofreciendo alta precisión dimensional,
-resistencia estructural y excelente acabado estético.
+divisiones y cerramientos, ofreciendo alta precisiÃ³n dimensional,
+resistencia estructural y excelente acabado estÃ©tico.
 Fabricada en aluminio de alta calidad, permite soluciones livianas y
-pesadas, adaptándose a múltiples requerimientos arquitectónicos y de
-diseño.
+pesadas, adaptÃ¡ndose a mÃºltiples requerimientos arquitectÃ³nicos y de
+diseÃ±o.
 USOS Y APLICACIONES
 Ventanas y puertas corredizas
 Puertas abatibles
 Fachadas comerciales
 Vidrieras monumentales
-Cabinas de baño
+Cabinas de baÃ±o
 Pasamanos y barandas
-Sistemas de ventilación
+Sistemas de ventilaciÃ³n
 Enchapes decorativos
-Divisiones arquitectónicas
+Divisiones arquitectÃ³nicas
 SISTEMAS DISPONIBLES
-Sistema 5020 – Ventanas y puertas corredizas
-Sistema 8025 – Ventanas y puertas corredizas reforzadas
-Sistema 7038 – Vidriera monumental
-Sistema 3831 – Liviano y pesado
-Sistema 744 – Marcos y refuerzos especiales
+Sistema 5020 â€“ Ventanas y puertas corredizas
+Sistema 8025 â€“ Ventanas y puertas corredizas reforzadas
+Sistema 7038 â€“ Vidriera monumental
+Sistema 3831 â€“ Liviano y pesado
+Sistema 744 â€“ Marcos y refuerzos especiales
 Tubulares estructurales
-Zócalos
-Sistema de ventilación
+ZÃ³calos
+Sistema de ventilaciÃ³n
 Enchapes
-Alfajías
+AlfajÃ­as
 Pasamanos
-Cabinas de baño
+Cabinas de baÃ±o
 Canales
-Ángulos y platinas
-Retículas
+Ãngulos y platinas
+RetÃ­culas
 Pisa vidrios
-(Ver planos técnicos y secciones por referencia en el
-catálogo)
-Garantía
+(Ver planos tÃ©cnicos y secciones por referencia en el
+catÃ¡logo)
+GarantÃ­a
 Unitec
-Fácil
-Instalación
+FÃ¡cil
+InstalaciÃ³n
 Sostenible Impermeable
 No Flamable
 Liviano
 Resistente
 Bajo
 Mantenimiento
-Económico
-Garantía
-Fácil
-Instalación
+EconÃ³mico
+GarantÃ­a
+FÃ¡cil
+InstalaciÃ³n
 Sostenible
 Impermeable
-Económico
+EconÃ³mico
 No Flamable
 Liviano
 Resistente
 Bajo
 Mantenimiento
-Alto Diseño
+Alto DiseÃ±o
 ESPECIFICACIONES
 VENTAJAS Y BENEFICIOS
-Aplicación:
+AplicaciÃ³n:
 Espesores:
 Tipo de uso:
 Formato: 
 Acabados: 
-País de Origen:
+PaÃ­s de Origen:
 Compatibilidad: 
 Nombre del Producto:
-Perfilería Aluminio Arquitectónico
+PerfilerÃ­a Aluminio ArquitectÃ³nico
 Interior y exterior
-Puertas, ventanas, fachadas, divisiones, barandas, cabinas de baño
+Puertas, ventanas, fachadas, divisiones, barandas, cabinas de baÃ±o
 Perfiles extruidos
-Según sistema y referencia
+SegÃºn sistema y referencia
 Vidrios simples, laminados y templados
 China
-Natural / anodizado / pintado (según disponibilidad)
+Natural / anodizado / pintado (segÃºn disponibilidad)
 
---- PRODUCT DATA: 31_FT_Platinas_Metálicas.pdf ---
-FICHA TÉCNICA
+--- PRODUCT DATA: 31_FT_Platinas_MetÃ¡licas.pdf ---
+FICHA TÃ‰CNICA
 SOBRE EL PRODUCTO
 ESPECIFICACIONES
 VENTAJAS Y BENEFICIOS
-GUÍA DE INSTALACIÓN
+GUÃA DE INSTALACIÃ“N
 USOS Y APLICACIONES
 Material:
 Uso:
 Formato:
 Embalaje:
 Colores disponibles
-País de Origen:
+PaÃ­s de Origen:
 Peso unitario:
-Las Platinas Metálicas son clips de fijación fabricados en acero inoxidable,
-diseñados para asegurar paneles decorativos de WPC (Wood Plastic
+Las Platinas MetÃ¡licas son clips de fijaciÃ³n fabricados en acero inoxidable,
+diseÃ±ados para asegurar paneles decorativos de WPC (Wood Plastic
 Composite) o PVC a superficies como paredes y techos.
- Su diseño delgado y discreto permite una instalación oculta, evitando
+ Su diseÃ±o delgado y discreto permite una instalaciÃ³n oculta, evitando
 que tornillos o uniones queden visibles en la superficie del panel.
 Son ideales para lograr un acabado limpio, moderno y firme,
-permitiendo además la remoción de paneles para mantenimiento o
+permitiendo ademÃ¡s la remociÃ³n de paneles para mantenimiento o
 ajuste cuando sea necesario.
-Platinas Metálicas
-Platinas Metálicas / Clips de Fijación
+Platinas MetÃ¡licas
+Platinas MetÃ¡licas / Clips de FijaciÃ³n
 4 cm (alto) x 3 cm (ancho)
 Acero inoxidable
 Unidad
-Fijación de paneles WPC o PVC
-Metálico
+FijaciÃ³n de paneles WPC o PVC
+MetÃ¡lico
 Ligero
 China
-Instalación de paneles WPC interiores o exteriores.
-Instalación de paneles de PVC tipo muro o revestimiento.
-Fijación en paredes y techos con sistema de ranura/encaje.
-Proyectos residenciales, comerciales y arquitectónicos.
-Instalaciones que requieren un sistema de sujeción oculto y
-estético.
-1.Ubique la lengüeta corta del panel donde se insertará la
+InstalaciÃ³n de paneles WPC interiores o exteriores.
+InstalaciÃ³n de paneles de PVC tipo muro o revestimiento.
+FijaciÃ³n en paredes y techos con sistema de ranura/encaje.
+Proyectos residenciales, comerciales y arquitectÃ³nicos.
+Instalaciones que requieren un sistema de sujeciÃ³n oculto y
+estÃ©tico.
+1.Ubique la lengÃ¼eta corta del panel donde se insertarÃ¡ la
 platina.
 2.Inserte el clip de forma que encaje firmemente en la ranura.
 3.Atornille la platina a la superficie o estructura de soporte
 (madera, metal o muro).
 4.Encaje el siguiente panel sobre la platina previamente
 fijada.
-5.Repita el proceso hasta completar el área deseada.
-6.Confirme alineación y estabilidad final del revestimiento.
-Garantía
+5.Repita el proceso hasta completar el Ã¡rea deseada.
+6.Confirme alineaciÃ³n y estabilidad final del revestimiento.
+GarantÃ­a
 Unitec
-Fácil
-Instalación
+FÃ¡cil
+InstalaciÃ³n
 Sostenible Impermeable
 No Flamable
 Liviano
 Resistente
 Bajo
 Mantenimiento
-Económico
-POLITICAS DE GARANTÍAS
-Verificar y recibir a conformidad el producto en el momento de entrega, No se aceptan reclamos por faltantes, daños o golpes después de recibida la mercancía.
-UNITEC USA DESIGN no cubre las garantías por productos instalados que presenten diferencias en tamaño, tono, color, rayado, por alabeo o cualquier defecto visible
-que pudiera ser detectado antes de la instalación.
-En el caso de que encuentre este tipo de defectos, por favor absténganse de instalar el producto y comunícate inmediatamente con el respectivo vendedor.
-La garantía no cubre los daños ocasionados al producto, o uso inadecuado del usuario.
-Seguir las recomendaciones de la ficha técnica en cuanto a uso, aplicaciones e instalación. 
+EconÃ³mico
+POLITICAS DE GARANTÃAS
+Verificar y recibir a conformidad el producto en el momento de entrega, No se aceptan reclamos por faltantes, daÃ±os o golpes despuÃ©s de recibida la mercancÃ­a.
+UNITEC USA DESIGN no cubre las garantÃ­as por productos instalados que presenten diferencias en tamaÃ±o, tono, color, rayado, por alabeo o cualquier defecto visible
+que pudiera ser detectado antes de la instalaciÃ³n.
+En el caso de que encuentre este tipo de defectos, por favor abstÃ©nganse de instalar el producto y comunÃ­cate inmediatamente con el respectivo vendedor.
+La garantÃ­a no cubre los daÃ±os ocasionados al producto, o uso inadecuado del usuario.
+Seguir las recomendaciones de la ficha tÃ©cnica en cuanto a uso, aplicaciones e instalaciÃ³n. 
 31
 Nota: Los clips quedan completamente ocultos una vez
 instalados, conservando un acabado limpio y profesional.
 Nombre del Producto:
-Garantía
-Fácil
-Instalación
+GarantÃ­a
+FÃ¡cil
+InstalaciÃ³n
 Sostenible
 Impermeable
-Económico
+EconÃ³mico
 No Flamable
 Liviano
 Resistente
 Bajo
 Mantenimiento
-Alto Diseño
+Alto DiseÃ±o
 
 --- PRODUCT DATA: 32_FT_Perfil Base Metalico Negro.pdf ---
-FICHA TÉCNICA
+FICHA TÃ‰CNICA
 SOBRE EL PRODUCTO
 ESPECIFICACIONES
 VENTAJAS Y BENEFICIOS
-GUÍA DE INSTALACIÓN
+GUÃA DE INSTALACIÃ“N
 USOS Y APLICACIONES
 Ancho base perforada
 Material:
 Formato:
 Embalaje:
 Colores disponibles
-País de Origen:
+PaÃ­s de Origen:
 Peso unitario:
-El Perfil Base Metálico Negro es un componente estructural diseñado
-para la instalación de listones decorativos en cielo raso.
-Su diseño perforado y su resistencia permiten un montaje firme, alineado
+El Perfil Base MetÃ¡lico Negro es un componente estructural diseÃ±ado
+para la instalaciÃ³n de listones decorativos en cielo raso.
+Su diseÃ±o perforado y su resistencia permiten un montaje firme, alineado
 y 
 eficiente, 
 garantizando 
 estabilidad 
 y 
-estética 
+estÃ©tica 
 en 
 proyectos
-residenciales, comerciales y arquitectónicos.
+residenciales, comerciales y arquitectÃ³nicos.
 Este perfil funciona como soporte principal donde se insertan o aseguran
-los listones, facilitando instalaciones rápidas, limpias y con alto nivel de
-precisión.
-Perfil Base Metálico Negro Liston Cielo Raso
-Perfil Base Metálico Negro – Listón Cielo Raso
+los listones, facilitando instalaciones rÃ¡pidas, limpias y con alto nivel de
+precisiÃ³n.
+Perfil Base MetÃ¡lico Negro Liston Cielo Raso
+Perfil Base MetÃ¡lico Negro â€“ ListÃ³n Cielo Raso
 2,90 metros
 Aproximadamente 10 cm entre perforaciones
 Unidad
@@ -4416,38 +4442,38 @@ Metal galvanizado con acabado negro
 Negro
 Ligero
 China
-Instalación de listones para cielo raso (PVC, WPC u otros
+InstalaciÃ³n de listones para cielo raso (PVC, WPC u otros
 sistemas compatibles).
-Proyectos arquitectónicos que requieren estructuras de
+Proyectos arquitectÃ³nicos que requieren estructuras de
 soporte ocultas.
 Cielos rasos decorativos en: viviendas, locales comerciales,
-oficinas, salas de exhibición, restaurantes y hoteles.
-1.Delimitar el área del cielo raso donde se instalarán los
+oficinas, salas de exhibiciÃ³n, restaurantes y hoteles.
+1.Delimitar el Ã¡rea del cielo raso donde se instalarÃ¡n los
 listones.
-2.Fijar el Perfil Base Metálico Negro directamente a la
+2.Fijar el Perfil Base MetÃ¡lico Negro directamente a la
 estructura o superficie del techo.
-3.Asegurar usando tornillería adecuada para metal o concreto.
+3.Asegurar usando tornillerÃ­a adecuada para metal o concreto.
 4.Insertar o atornillar los listones decorativos al perfil base.
-5.Repetir el proceso manteniendo la alineación y nivelación
-del diseño.
-Garantía
+5.Repetir el proceso manteniendo la alineaciÃ³n y nivelaciÃ³n
+del diseÃ±o.
+GarantÃ­a
 Unitec
-Fácil
-Instalación
+FÃ¡cil
+InstalaciÃ³n
 Sostenible Impermeable
 No Flamable
 Liviano
 Resistente
 Bajo
 Mantenimiento
-Económico
-POLITICAS DE GARANTÍAS
-Verificar y recibir a conformidad el producto en el momento de entrega, No se aceptan reclamos por faltantes, daños o golpes después de recibida la mercancía.
-UNITEC USA DESIGN no cubre las garantías por productos instalados que presenten diferencias en tamaño, tono, color, rayado, por alabeo o cualquier defecto visible
-que pudiera ser detectado antes de la instalación.
-En el caso de que encuentre este tipo de defectos, por favor absténganse de instalar el producto y comunícate inmediatamente con el respectivo vendedor.
-La garantía no cubre los daños ocasionados al producto, o uso inadecuado del usuario.
-Seguir las recomendaciones de la ficha técnica en cuanto a uso, aplicaciones e instalación. 
+EconÃ³mico
+POLITICAS DE GARANTÃAS
+Verificar y recibir a conformidad el producto en el momento de entrega, No se aceptan reclamos por faltantes, daÃ±os o golpes despuÃ©s de recibida la mercancÃ­a.
+UNITEC USA DESIGN no cubre las garantÃ­as por productos instalados que presenten diferencias en tamaÃ±o, tono, color, rayado, por alabeo o cualquier defecto visible
+que pudiera ser detectado antes de la instalaciÃ³n.
+En el caso de que encuentre este tipo de defectos, por favor abstÃ©nganse de instalar el producto y comunÃ­cate inmediatamente con el respectivo vendedor.
+La garantÃ­a no cubre los daÃ±os ocasionados al producto, o uso inadecuado del usuario.
+Seguir las recomendaciones de la ficha tÃ©cnica en cuanto a uso, aplicaciones e instalaciÃ³n. 
 32
 BENEFICIOS PRINCIPALES
 Alta 
@@ -4455,38 +4481,38 @@ resistencia
 gracias 
 a 
 su 
-fabricación 
+fabricaciÃ³n 
 en 
 metal
 galvanizado.
-Fácil instalación gracias a su diseño perforado para fijación
-rápida.
-Estética limpia, ya que queda oculto detrás de los listones.
-Gran durabilidad, resistente a deformaciones y corrosión.
+FÃ¡cil instalaciÃ³n gracias a su diseÃ±o perforado para fijaciÃ³n
+rÃ¡pida.
+EstÃ©tica limpia, ya que queda oculto detrÃ¡s de los listones.
+Gran durabilidad, resistente a deformaciones y corrosiÃ³n.
 Compatible con diferentes tipos de listones para cielo raso.
 Ideal 
 para 
 proyectos 
-arquitectónicos 
+arquitectÃ³nicos 
 modernos 
 que
-requieren líneas homogéneas y perfectas.
+requieren lÃ­neas homogÃ©neas y perfectas.
 Nombre del Producto:
-Garantía
-Fácil
-Instalación
+GarantÃ­a
+FÃ¡cil
+InstalaciÃ³n
 Sostenible
 Impermeable
-Económico
+EconÃ³mico
 No Flamable
 Liviano
 Resistente
 Bajo
 Mantenimiento
-Alto Diseño
+Alto DiseÃ±o
 
 --- PRODUCT DATA: 33_FT_Cinta Adhesiva Papel.pdf ---
-FICHA TÉCNICA
+FICHA TÃ‰CNICA
 SOBRE EL PRODUCTO
 ESPECIFICACIONES
 VENTAJAS Y BENEFICIOS
@@ -4497,24 +4523,24 @@ Material:
 Formato:
 Embalaje:
 Aplicabilidad:
-País de Origen:
+PaÃ­s de Origen:
 Peso unitario:
 Las 
 Cintas 
 Adhesivas 
 para 
-Mármol 
+MÃ¡rmol 
 han 
 sido 
 desarrolladas
-específicamente para aplicaciones decorativas y de protección sobre
-superficies de mármol, donde la precisión, la estética y el cuidado del
-material son fundamentales. Su formulación permite una adhesión
-controlada que garantiza una fijación segura sin generar residuos ni
+especÃ­ficamente para aplicaciones decorativas y de protecciÃ³n sobre
+superficies de mÃ¡rmol, donde la precisiÃ³n, la estÃ©tica y el cuidado del
+material son fundamentales. Su formulaciÃ³n permite una adhesiÃ³n
+controlada que garantiza una fijaciÃ³n segura sin generar residuos ni
 afectar el acabado natural de la piedra, preservando su brillo, textura y
-valor estético.
-Gracias a su fácil aplicación y manipulación, estas cintas permiten un
-control exacto durante el proceso de instalación, asegurando bordes
+valor estÃ©tico.
+Gracias a su fÃ¡cil aplicaciÃ³n y manipulaciÃ³n, estas cintas permiten un
+control exacto durante el proceso de instalaciÃ³n, asegurando bordes
 definidos y un acabado limpio. 
 Cinta Adhesiva de Papel
 Cinta Adhesiva de Papel
@@ -4522,16 +4548,16 @@ Cinta Adhesiva de Papel
 Dorada y Plateada
 Unidad
 Papel Autoadhesivo
-Una solución práctica y estética que eleva el diseño del mármol
+Una soluciÃ³n prÃ¡ctica y estÃ©tica que eleva el diseÃ±o del mÃ¡rmol
 Ligero
 China
-Remates decorativos sobre mármol
-Delimitación de líneas y detalles estéticos
-Protección de bordes durante acabados
-Diseño de trazos largos y continuos
+Remates decorativos sobre mÃ¡rmol
+DelimitaciÃ³n de lÃ­neas y detalles estÃ©ticos
+ProtecciÃ³n de bordes durante acabados
+DiseÃ±o de trazos largos y continuos
 Proyectos residenciales y comerciales
 Instalar sobre superficies limpias y secas. Aplicar ejerciendo
-presión uniforme para garantizar una correcta adherencia.
+presiÃ³n uniforme para garantizar una correcta adherencia.
 Retirar 
 cuidadosamente 
 una 
@@ -4539,53 +4565,53 @@ vez
 finalizado 
 el 
 proceso
-decorativo o de protección.
-Garantía
+decorativo o de protecciÃ³n.
+GarantÃ­a
 Unitec
-Fácil
-Instalación
+FÃ¡cil
+InstalaciÃ³n
 Sostenible Impermeable
 No Flamable
 Liviano
 Resistente
 Bajo
 Mantenimiento
-Económico
-POLITICAS DE GARANTÍAS
-Verificar y recibir a conformidad el producto en el momento de entrega, No se aceptan reclamos por faltantes, daños o golpes después de recibida la mercancía.
-UNITEC USA DESIGN no cubre las garantías por productos instalados que presenten diferencias en tamaño, tono, color, rayado, por alabeo o cualquier defecto visible
-que pudiera ser detectado antes de la instalación.
-En el caso de que encuentre este tipo de defectos, por favor absténganse de instalar el producto y comunícate inmediatamente con el respectivo vendedor.
-La garantía no cubre los daños ocasionados al producto, o uso inadecuado del usuario.
-Seguir las recomendaciones de la ficha técnica en cuanto a uso, aplicaciones e instalación. 
+EconÃ³mico
+POLITICAS DE GARANTÃAS
+Verificar y recibir a conformidad el producto en el momento de entrega, No se aceptan reclamos por faltantes, daÃ±os o golpes despuÃ©s de recibida la mercancÃ­a.
+UNITEC USA DESIGN no cubre las garantÃ­as por productos instalados que presenten diferencias en tamaÃ±o, tono, color, rayado, por alabeo o cualquier defecto visible
+que pudiera ser detectado antes de la instalaciÃ³n.
+En el caso de que encuentre este tipo de defectos, por favor abstÃ©nganse de instalar el producto y comunÃ­cate inmediatamente con el respectivo vendedor.
+La garantÃ­a no cubre los daÃ±os ocasionados al producto, o uso inadecuado del usuario.
+Seguir las recomendaciones de la ficha tÃ©cnica en cuanto a uso, aplicaciones e instalaciÃ³n. 
 33
 BENEFICIOS PRINCIPALES
-No daña ni maltrata la superficie del mármol
+No daÃ±a ni maltrata la superficie del mÃ¡rmol
 Acabado limpio, uniforme y elegante
-Fácil aplicación y manipulación
-Alta precisión en líneas decorativas
+FÃ¡cil aplicaciÃ³n y manipulaciÃ³n
+Alta precisiÃ³n en lÃ­neas decorativas
 Ideal para trabajos extensos y detallados
-CARACTERÍSTICAS TÉCNICAS
-Adhesión controlada, segura para superficies delicadas
+CARACTERÃSTICAS TÃ‰CNICAS
+AdhesiÃ³n controlada, segura para superficies delicadas
 Material flexible que se adapta a trazos rectos y continuos
-Diseño pensado para acabados modernos y sofisticados
-Permite una instalación rápida y eficiente
+DiseÃ±o pensado para acabados modernos y sofisticados
+Permite una instalaciÃ³n rÃ¡pida y eficiente
 Nombre del Producto:
-Garantía
-Fácil
-Instalación
+GarantÃ­a
+FÃ¡cil
+InstalaciÃ³n
 Sostenible
 Impermeable
-Económico
+EconÃ³mico
 No Flamable
 Liviano
 Resistente
 Bajo
 Mantenimiento
-Alto Diseño
+Alto DiseÃ±o
 
 --- PRODUCT DATA: 34_FT_Cinta Adhesiva Metalica.pdf ---
-FICHA TÉCNICA
+FICHA TÃ‰CNICA
 SOBRE EL PRODUCTO
 ESPECIFICACIONES
 VENTAJAS Y BENEFICIOS
@@ -4596,154 +4622,154 @@ Material:
 Formato:
 Embalaje:
 Aplicabilidad:
-País de Origen:
+PaÃ­s de Origen:
 Peso unitario:
-La Cinta Adhesiva Metálica ha sido desarrollada especialmente para
+La Cinta Adhesiva MetÃ¡lica ha sido desarrollada especialmente para
 aplicaciones decorativas y de acabado, ofreciendo un aspecto moderno,
-elegante y sofisticado. Su superficie metálica proporciona un efecto
+elegante y sofisticado. Su superficie metÃ¡lica proporciona un efecto
 visual de alto impacto, ideal para realzar espacios interiores en proyectos
 residenciales y comerciales.
-Gracias a su adhesión firme y controlada, esta cinta permite una
-instalación precisa, logrando líneas definidas y acabados limpios sin
-dañar la superficie. Es una solución práctica para quienes buscan detalles
-decorativos con apariencia metálica y alta durabilidad.
+Gracias a su adhesiÃ³n firme y controlada, esta cinta permite una
+instalaciÃ³n precisa, logrando lÃ­neas definidas y acabados limpios sin
+daÃ±ar la superficie. Es una soluciÃ³n prÃ¡ctica para quienes buscan detalles
+decorativos con apariencia metÃ¡lica y alta durabilidad.
 Cinta Adhesiva Metalica
-Cinta Adhesiva Metálica
+Cinta Adhesiva MetÃ¡lica
 3 cm (ancho) x 5 metros (largo)
 Dorada, Plateada, Negra, Palo de Rosa 
 Unidad
-Película decorativa con acabado metálico y adhesivo posterior
-Uso decorativo y de protección en superficies lisas
+PelÃ­cula decorativa con acabado metÃ¡lico y adhesivo posterior
+Uso decorativo y de protecciÃ³n en superficies lisas
 Ligero
 China
 Remates decorativos en muros y paredes
-Delimitación de líneas y detalles estéticos
-Decoración de mobiliario y superficies lisas
+DelimitaciÃ³n de lÃ­neas y detalles estÃ©ticos
+DecoraciÃ³n de mobiliario y superficies lisas
 Acabados en proyectos residenciales y comerciales
-Realce de diseños modernos y minimalistas
+Realce de diseÃ±os modernos y minimalistas
 Instalar sobre superficies limpias, secas y lisas. Aplicar
-ejerciendo presión uniforme para asegurar una correcta
+ejerciendo presiÃ³n uniforme para asegurar una correcta
 adherencia. Para mejores resultados, evitar superficies rugosas o
 con humedad. Retirar cuidadosamente una vez finalizado el
 proceso decorativo si se requiere.
-Garantía
+GarantÃ­a
 Unitec
-Fácil
-Instalación
+FÃ¡cil
+InstalaciÃ³n
 Sostenible Impermeable
 No Flamable
 Liviano
 Resistente
 Bajo
 Mantenimiento
-Económico
-POLITICAS DE GARANTÍAS
-Verificar y recibir a conformidad el producto en el momento de entrega, No se aceptan reclamos por faltantes, daños o golpes después de recibida la mercancía.
-UNITEC USA DESIGN no cubre las garantías por productos instalados que presenten diferencias en tamaño, tono, color, rayado, por alabeo o cualquier defecto visible
-que pudiera ser detectado antes de la instalación.
-En el caso de que encuentre este tipo de defectos, por favor absténganse de instalar el producto y comunícate inmediatamente con el respectivo vendedor.
-La garantía no cubre los daños ocasionados al producto, o uso inadecuado del usuario.
-Seguir las recomendaciones de la ficha técnica en cuanto a uso, aplicaciones e instalación. 
+EconÃ³mico
+POLITICAS DE GARANTÃAS
+Verificar y recibir a conformidad el producto en el momento de entrega, No se aceptan reclamos por faltantes, daÃ±os o golpes despuÃ©s de recibida la mercancÃ­a.
+UNITEC USA DESIGN no cubre las garantÃ­as por productos instalados que presenten diferencias en tamaÃ±o, tono, color, rayado, por alabeo o cualquier defecto visible
+que pudiera ser detectado antes de la instalaciÃ³n.
+En el caso de que encuentre este tipo de defectos, por favor abstÃ©nganse de instalar el producto y comunÃ­cate inmediatamente con el respectivo vendedor.
+La garantÃ­a no cubre los daÃ±os ocasionados al producto, o uso inadecuado del usuario.
+Seguir las recomendaciones de la ficha tÃ©cnica en cuanto a uso, aplicaciones e instalaciÃ³n. 
 34
 BENEFICIOS PRINCIPALES
-Acabado metálico elegante y moderno
-Fácil aplicación sin necesidad de herramientas especiales
-Alta precisión en líneas decorativas
-Adhesión segura y uniforme
-Ideal para proyectos decorativos rápidos y limpios
-CARACTERÍSTICAS TÉCNICAS
-Adhesión controlada para una instalación precisa
+Acabado metÃ¡lico elegante y moderno
+FÃ¡cil aplicaciÃ³n sin necesidad de herramientas especiales
+Alta precisiÃ³n en lÃ­neas decorativas
+AdhesiÃ³n segura y uniforme
+Ideal para proyectos decorativos rÃ¡pidos y limpios
+CARACTERÃSTICAS TÃ‰CNICAS
+AdhesiÃ³n controlada para una instalaciÃ³n precisa
 Superficie flexible que se adapta a trazos rectos y continuos
-Diseño pensado para acabados modernos y sofisticados
-Permite una instalación rápida y eficiente
+DiseÃ±o pensado para acabados modernos y sofisticados
+Permite una instalaciÃ³n rÃ¡pida y eficiente
 No genera residuos visibles al ser retirada correctamente
 Nombre del Producto:
-Garantía
-Fácil
-Instalación
+GarantÃ­a
+FÃ¡cil
+InstalaciÃ³n
 Sostenible
 Impermeable
-Económico
+EconÃ³mico
 No Flamable
 Liviano
 Resistente
 Bajo
 Mantenimiento
-Alto Diseño
+Alto DiseÃ±o
 
 --- PRODUCT DATA: 35.1_FT_Fachada PVC Exterior .pdf ---
-Garantía
+GarantÃ­a
 Unitec
-Fácil
-Instalación
+FÃ¡cil
+InstalaciÃ³n
 Sostenible Impermeable
 No Flamable
 Liviano
 Resistente
 Bajo
 Mantenimiento
-Económico
-Garantía
-Fácil
-Instalación
+EconÃ³mico
+GarantÃ­a
+FÃ¡cil
+InstalaciÃ³n
 Sostenible
 Impermeable
-Económico
+EconÃ³mico
 No Flamable
 Liviano
 Resistente
 Bajo
 Mantenimiento
-Alto Diseño
-FICHA TÉCNICA
+Alto DiseÃ±o
+FICHA TÃ‰CNICA
 SOBRE EL PRODUCTO
 ESPECIFICACIONES
 VENTAJAS Y BENEFICIOS
 Colores disponibles:
 Formato:
-País de Origen:
-La Fachada PVC Exterior es un sistema de revestimiento arquitectónico
-diseñado para uso en exteriores, fabricado en PVC expandido de alta
-resistencia. Ofrece una solución estética, moderna y duradera para
+PaÃ­s de Origen:
+La Fachada PVC Exterior es un sistema de revestimiento arquitectÃ³nico
+diseÃ±ado para uso en exteriores, fabricado en PVC expandido de alta
+resistencia. Ofrece una soluciÃ³n estÃ©tica, moderna y duradera para
 fachadas, muros y superficies verticales, soportando condiciones
-climáticas exigentes como humedad, rayos UV y cambios de
+climÃ¡ticas exigentes como humedad, rayos UV y cambios de
 temperatura.
-Su diseño modular permite una instalación eficiente, logrando acabados
+Su diseÃ±o modular permite una instalaciÃ³n eficiente, logrando acabados
 uniformes y de alto impacto visual en proyectos residenciales,
 comerciales e institucionales.
 Fachada PVC Exterior 
 Fachada PVC Exterior
 Panel modular: 29cm ancho x 1,15m largo
-Pizarra Mix,  Cantera Mix,  Ópalo Blanco, Arenisca Beige
+Pizarra Mix,  Cantera Mix,  Ã“palo Blanco, Arenisca Beige
 *
 China
-POLITICAS DE GARANTÍAS
-Verificar y recibir a conformidad el producto en el momento de entrega, No se aceptan reclamos por faltantes, daños o golpes después de recibida la mercancía.
-UNITEC USA DESIGN no cubre las garantías por productos instalados que presenten diferencias en tamaño, tono, color, rayado, por alabeo o cualquier defecto visible
-que pudiera ser detectado antes de la instalación.
-En el caso de que encuentre este tipo de defectos, por favor absténganse de instalar el producto y comunícate inmediatamente con el respectivo vendedor.
-La garantía no cubre los daños ocasionados al producto, o uso inadecuado del usuario.
-Seguir las recomendaciones de la ficha técnica en cuanto a uso, aplicaciones e instalación. 
+POLITICAS DE GARANTÃAS
+Verificar y recibir a conformidad el producto en el momento de entrega, No se aceptan reclamos por faltantes, daÃ±os o golpes despuÃ©s de recibida la mercancÃ­a.
+UNITEC USA DESIGN no cubre las garantÃ­as por productos instalados que presenten diferencias en tamaÃ±o, tono, color, rayado, por alabeo o cualquier defecto visible
+que pudiera ser detectado antes de la instalaciÃ³n.
+En el caso de que encuentre este tipo de defectos, por favor abstÃ©nganse de instalar el producto y comunÃ­cate inmediatamente con el respectivo vendedor.
+La garantÃ­a no cubre los daÃ±os ocasionados al producto, o uso inadecuado del usuario.
+Seguir las recomendaciones de la ficha tÃ©cnica en cuanto a uso, aplicaciones e instalaciÃ³n. 
 35.1
 Nombre del Producto:
-GUÍA DE INSTALACIÓN
+GUÃA DE INSTALACIÃ“N
 USOS Y APLICACIONES
 Revestimiento de fachadas exteriores
 Muros perimetrales y decorativos
 Proyectos residenciales y comerciales
-Fachadas arquitectónicas modernas
-Renovación y embellecimiento de exteriores
-1.Verifique que la superficie esté limpia, seca y nivelada.
+Fachadas arquitectÃ³nicas modernas
+RenovaciÃ³n y embellecimiento de exteriores
+1.Verifique que la superficie estÃ© limpia, seca y nivelada.
 2.Realice los cortes necesarios utilizando pulidora con disco
 diamantado continuo.
-3.Inicie la instalación desde la parte inferior hacia arriba (de
+3.Inicie la instalaciÃ³n desde la parte inferior hacia arriba (de
 piso a techo).
-4.Aplique adhesivo de montaje de secado rápido en los
-bordes guía del respaldo del panel.
-5.Encaje cada pieza gracias a su geometría hasta cubrir el área
+4.Aplique adhesivo de montaje de secado rÃ¡pido en los
+bordes guÃ­a del respaldo del panel.
+5.Encaje cada pieza gracias a su geometrÃ­a hasta cubrir el Ã¡rea
 deseada.
-6.Presione firmemente para asegurar una correcta fijación y
-alineación.
+6.Presione firmemente para asegurar una correcta fijaciÃ³n y
+alineaciÃ³n.
 Espesor:
 Embalaje:
 Densidad:
@@ -4755,50 +4781,50 @@ PVC expandido de alta resistencia
 VENTAJAS Y BENEFICIOS
 Alta resistencia a la intemperie
 Impermeable y resistente a la humedad
-Protección contra rayos UV
+ProtecciÃ³n contra rayos UV
 Bajo mantenimiento
-Fácil instalación
+FÃ¡cil instalaciÃ³n
 Material liviano y duradero
-Acabado estético de alto nivel
+Acabado estÃ©tico de alto nivel
 
 --- PRODUCT DATA: 35.2_FT_Fachada PVC Muralla Gris.pdf ---
-Garantía
+GarantÃ­a
 Unitec
-Fácil
-Instalación
+FÃ¡cil
+InstalaciÃ³n
 Sostenible Impermeable
 No Flamable
 Liviano
 Resistente
 Bajo
 Mantenimiento
-Económico
-Garantía
-Fácil
-Instalación
+EconÃ³mico
+GarantÃ­a
+FÃ¡cil
+InstalaciÃ³n
 Sostenible
 Impermeable
-Económico
+EconÃ³mico
 No Flamable
 Liviano
 Resistente
 Bajo
 Mantenimiento
-Alto Diseño
-FICHA TÉCNICA
+Alto DiseÃ±o
+FICHA TÃ‰CNICA
 SOBRE EL PRODUCTO
 ESPECIFICACIONES
 VENTAJAS Y BENEFICIOS
 Colores / acabados:
 Formato:
-País de Origen:
+PaÃ­s de Origen:
 La Fachada PVC Exterior Muralla Gris es un sistema de revestimiento
-arquitectónico diseñado para uso en exteriores, fabricado en PVC
+arquitectÃ³nico diseÃ±ado para uso en exteriores, fabricado en PVC
 expandido de alta resistencia con textura tipo piedra natural.
-Proporciona una solución estética, robusta y duradera para fachadas,
-muros y superficies verticales, soportando condiciones climáticas
+Proporciona una soluciÃ³n estÃ©tica, robusta y duradera para fachadas,
+muros y superficies verticales, soportando condiciones climÃ¡ticas
 exigentes como humedad, rayos UV y variaciones de temperatura.
-Su diseño modular permite una instalación eficiente, logrando acabados
+Su diseÃ±o modular permite una instalaciÃ³n eficiente, logrando acabados
 continuos y de alto impacto visual en proyectos residenciales,
 comerciales e institucionales.
 Fachada PVC Exterior Muralla Gris
@@ -4806,33 +4832,33 @@ Fachada PVC Exterior Muralla Gris
 Panel modular: 72,5 cm ancho x 1,53 m largo
 Muralla Gris
 China
-POLITICAS DE GARANTÍAS
-Verificar y recibir a conformidad el producto en el momento de entrega, No se aceptan reclamos por faltantes, daños o golpes después de recibida la mercancía.
-UNITEC USA DESIGN no cubre las garantías por productos instalados que presenten diferencias en tamaño, tono, color, rayado, por alabeo o cualquier defecto visible
-que pudiera ser detectado antes de la instalación.
-En el caso de que encuentre este tipo de defectos, por favor absténganse de instalar el producto y comunícate inmediatamente con el respectivo vendedor.
-La garantía no cubre los daños ocasionados al producto, o uso inadecuado del usuario.
-Seguir las recomendaciones de la ficha técnica en cuanto a uso, aplicaciones e instalación. 
+POLITICAS DE GARANTÃAS
+Verificar y recibir a conformidad el producto en el momento de entrega, No se aceptan reclamos por faltantes, daÃ±os o golpes despuÃ©s de recibida la mercancÃ­a.
+UNITEC USA DESIGN no cubre las garantÃ­as por productos instalados que presenten diferencias en tamaÃ±o, tono, color, rayado, por alabeo o cualquier defecto visible
+que pudiera ser detectado antes de la instalaciÃ³n.
+En el caso de que encuentre este tipo de defectos, por favor abstÃ©nganse de instalar el producto y comunÃ­cate inmediatamente con el respectivo vendedor.
+La garantÃ­a no cubre los daÃ±os ocasionados al producto, o uso inadecuado del usuario.
+Seguir las recomendaciones de la ficha tÃ©cnica en cuanto a uso, aplicaciones e instalaciÃ³n. 
 35.2
 Nombre del Producto:
-GUÍA DE INSTALACIÓN
+GUÃA DE INSTALACIÃ“N
 USOS Y APLICACIONES
 Revestimiento de fachadas exteriores
 Muros perimetrales y decorativos
 Proyectos residenciales y comerciales
-Fachadas arquitectónicas modernas
-Renovación y embellecimiento de exteriores
-1.Verifique que la superficie esté limpia, seca y nivelada.
+Fachadas arquitectÃ³nicas modernas
+RenovaciÃ³n y embellecimiento de exteriores
+1.Verifique que la superficie estÃ© limpia, seca y nivelada.
 2.Realice los cortes necesarios utilizando pulidora con disco
 diamantado continuo.
-3.Inicie la instalación desde la parte inferior hacia arriba (de
+3.Inicie la instalaciÃ³n desde la parte inferior hacia arriba (de
 piso a techo).
-4.Aplique adhesivo de montaje de secado rápido en los
-bordes guía del respaldo del panel.
-5.Encaje cada pieza gracias a su geometría hasta cubrir el área
+4.Aplique adhesivo de montaje de secado rÃ¡pido en los
+bordes guÃ­a del respaldo del panel.
+5.Encaje cada pieza gracias a su geometrÃ­a hasta cubrir el Ã¡rea
 deseada.
-6.Presione firmemente para asegurar una correcta fijación y
-alineación.
+6.Presione firmemente para asegurar una correcta fijaciÃ³n y
+alineaciÃ³n.
 Espesor:
 Embalaje:
 Densidad:
@@ -4844,84 +4870,84 @@ PVC expandido de alta resistencia
 VENTAJAS Y BENEFICIOS
 Alta resistencia a la intemperie
 Impermeable y resistente a la humedad
-Protección contra rayos UV
+ProtecciÃ³n contra rayos UV
 Bajo mantenimiento
-Fácil instalación
+FÃ¡cil instalaciÃ³n
 Material liviano y duradero
-Acabado estético de alto nivel
+Acabado estÃ©tico de alto nivel
 
 --- PRODUCT DATA: 35.3_FT_Fachada PVC Ambar Rustico.pdf ---
-Garantía
+GarantÃ­a
 Unitec
-Fácil
-Instalación
+FÃ¡cil
+InstalaciÃ³n
 Sostenible Impermeable
 No Flamable
 Liviano
 Resistente
 Bajo
 Mantenimiento
-Económico
-Garantía
-Fácil
-Instalación
+EconÃ³mico
+GarantÃ­a
+FÃ¡cil
+InstalaciÃ³n
 Sostenible
 Impermeable
-Económico
+EconÃ³mico
 No Flamable
 Liviano
 Resistente
 Bajo
 Mantenimiento
-Alto Diseño
-FICHA TÉCNICA
+Alto DiseÃ±o
+FICHA TÃ‰CNICA
 SOBRE EL PRODUCTO
 ESPECIFICACIONES
 VENTAJAS Y BENEFICIOS
 Colores / acabados:
 Formato:
-País de Origen:
-La Fachada PVC Exterior Ámbar Rústico es un sistema de
-revestimiento arquitectónico diseñado para uso en exteriores, fabricado
+PaÃ­s de Origen:
+La Fachada PVC Exterior Ãmbar RÃºstico es un sistema de
+revestimiento arquitectÃ³nico diseÃ±ado para uso en exteriores, fabricado
 en PVC expandido de alta resistencia con textura tipo piedra natural.
-Proporciona una solución estética, robusta y duradera para fachadas,
-muros y superficies verticales, soportando condiciones climáticas
+Proporciona una soluciÃ³n estÃ©tica, robusta y duradera para fachadas,
+muros y superficies verticales, soportando condiciones climÃ¡ticas
 exigentes como humedad, rayos UV y variaciones de temperatura.
-Su diseño modular permite una instalación eficiente, logrando acabados
+Su diseÃ±o modular permite una instalaciÃ³n eficiente, logrando acabados
 continuos y de alto impacto visual en proyectos residenciales,
 comerciales e institucionales.
-Fachada PVC Exterior Ámbar Rústico
-Fachada PVC Exterior Ámbar Rústico (SW 508)
+Fachada PVC Exterior Ãmbar RÃºstico
+Fachada PVC Exterior Ãmbar RÃºstico (SW 508)
 Panel modular: 30 cm ancho x 1,15 m largo
-Ámbar Rústico
+Ãmbar RÃºstico
 China
-POLITICAS DE GARANTÍAS
-Verificar y recibir a conformidad el producto en el momento de entrega, No se aceptan reclamos por faltantes, daños o golpes después de recibida la mercancía.
-UNITEC USA DESIGN no cubre las garantías por productos instalados que presenten diferencias en tamaño, tono, color, rayado, por alabeo o cualquier defecto visible
-que pudiera ser detectado antes de la instalación.
-En el caso de que encuentre este tipo de defectos, por favor absténganse de instalar el producto y comunícate inmediatamente con el respectivo vendedor.
-La garantía no cubre los daños ocasionados al producto, o uso inadecuado del usuario.
-Seguir las recomendaciones de la ficha técnica en cuanto a uso, aplicaciones e instalación. 
+POLITICAS DE GARANTÃAS
+Verificar y recibir a conformidad el producto en el momento de entrega, No se aceptan reclamos por faltantes, daÃ±os o golpes despuÃ©s de recibida la mercancÃ­a.
+UNITEC USA DESIGN no cubre las garantÃ­as por productos instalados que presenten diferencias en tamaÃ±o, tono, color, rayado, por alabeo o cualquier defecto visible
+que pudiera ser detectado antes de la instalaciÃ³n.
+En el caso de que encuentre este tipo de defectos, por favor abstÃ©nganse de instalar el producto y comunÃ­cate inmediatamente con el respectivo vendedor.
+La garantÃ­a no cubre los daÃ±os ocasionados al producto, o uso inadecuado del usuario.
+Seguir las recomendaciones de la ficha tÃ©cnica en cuanto a uso, aplicaciones e instalaciÃ³n. 
 35.3
 Nombre del Producto:
-GUÍA DE INSTALACIÓN
+GUÃA DE INSTALACIÃ“N
 USOS Y APLICACIONES
 Revestimiento de fachadas exteriores
 Muros perimetrales y decorativos
 Proyectos residenciales y comerciales
-Fachadas arquitectónicas modernas
-Renovación y embellecimiento de exteriores
-1.Verifique que la superficie esté limpia, seca y nivelada.
+Fachadas arquitectÃ³nicas modernas
+RenovaciÃ³n y embellecimiento de exteriores
+1.Verifique que la superficie estÃ© limpia, seca y nivelada.
 2.Realice los cortes necesarios utilizando pulidora con disco
 diamantado continuo.
-3.Inicie la instalación desde la parte inferior hacia arriba (de
+3.Inicie la instalaciÃ³n desde la parte inferior hacia arriba (de
 piso a techo).
-4.Aplique adhesivo de montaje de secado rápido en los
-bordes guía del respaldo del panel.
-5.Encaje cada pieza gracias a su geometría hasta cubrir el área
+4.Aplique adhesivo de montaje de secado rÃ¡pido en los
+bordes guÃ­a del respaldo del panel.
+5.Encaje cada pieza gracias a su geometrÃ­a hasta cubrir el Ã¡rea
 deseada.
-6.Presione firmemente para asegurar una correcta fijación y
-alineación.
+6.Presione firmemente para asegurar una correcta fijaciÃ³n y
+alineaciÃ³n.
 Espesor:
 Embalaje:
 Densidad:
@@ -4933,104 +4959,104 @@ PVC expandido de alta resistencia
 VENTAJAS Y BENEFICIOS
 Alta resistencia a la intemperie
 Impermeable y resistente a la humedad
-Protección contra rayos UV
+ProtecciÃ³n contra rayos UV
 Bajo mantenimiento
-Fácil instalación
+FÃ¡cil instalaciÃ³n
 Material liviano y duradero
-Acabado estético de alto nivel
+Acabado estÃ©tico de alto nivel
 
 --- PRODUCT DATA: 36_FT_Pelicula Inteligente  Film Smart Glass.pdf ---
-Garantía
+GarantÃ­a
 Unitec
-Fácil
-Instalación
+FÃ¡cil
+InstalaciÃ³n
 Sostenible Impermeable
 No Flamable
 Liviano
 Resistente
 Bajo
 Mantenimiento
-Económico
-Garantía
-Fácil
-Instalación
+EconÃ³mico
+GarantÃ­a
+FÃ¡cil
+InstalaciÃ³n
 Sostenible
 Impermeable
-Económico
+EconÃ³mico
 No Flamable
 Liviano
 Resistente
 Bajo
 Mantenimiento
-Alto Diseño
-FICHA TÉCNICA
+Alto DiseÃ±o
+FICHA TÃ‰CNICA
 SOBRE EL PRODUCTO
 ESPECIFICACIONES
 VENTAJAS Y BENEFICIOS
 Modelos / Referencias:
 Formato:
-País de Origen:
-La Película Inteligente (Film Smart Glass) es una solución tecnológica
+PaÃ­s de Origen:
+La PelÃ­cula Inteligente (Film Smart Glass) es una soluciÃ³n tecnolÃ³gica
 avanzada para control de privacidad y luz en superficies de vidrio.
-Funciona mediante un sistema de atenuación eléctrica que permite
+Funciona mediante un sistema de atenuaciÃ³n elÃ©ctrica que permite
 cambiar el estado del vidrio de transparente a opaco de forma
-inmediata, brindando versatilidad, confort visual y un alto valor estético.
-Está diseñada para aplicaciones arquitectónicas modernas en espacios
-residenciales, corporativos y comerciales, integrándose fácilmente a
-sistemas eléctricos, controles remotos o domótica.
+inmediata, brindando versatilidad, confort visual y un alto valor estÃ©tico.
+EstÃ¡ diseÃ±ada para aplicaciones arquitectÃ³nicas modernas en espacios
+residenciales, corporativos y comerciales, integrÃ¡ndose fÃ¡cilmente a
+sistemas elÃ©ctricos, controles remotos o domÃ³tica.
 Pelicula Inteligente / Film Smart Glass
 Pelicula Inteligente / Film Smart Glass
-Rollo de 50 m² (se vende por m²) 
-Atenuación inteligente 84% – REF: 14051301
-Atenuación inteligente 88% – REF: 14051302
+Rollo de 50 mÂ² (se vende por mÂ²) 
+AtenuaciÃ³n inteligente 84% â€“ REF: 14051301
+AtenuaciÃ³n inteligente 88% â€“ REF: 14051302
 China
-POLITICAS DE GARANTÍAS
-Verificar y recibir a conformidad el producto en el momento de entrega, No se aceptan reclamos por faltantes, daños o golpes después de recibida la mercancía.
-UNITEC USA DESIGN no cubre las garantías por productos instalados que presenten diferencias en tamaño, tono, color, rayado, por alabeo o cualquier defecto visible
-que pudiera ser detectado antes de la instalación.
-En el caso de que encuentre este tipo de defectos, por favor absténganse de instalar el producto y comunícate inmediatamente con el respectivo vendedor.
-La garantía no cubre los daños ocasionados al producto, o uso inadecuado del usuario.
-Seguir las recomendaciones de la ficha técnica en cuanto a uso, aplicaciones e instalación. 
+POLITICAS DE GARANTÃAS
+Verificar y recibir a conformidad el producto en el momento de entrega, No se aceptan reclamos por faltantes, daÃ±os o golpes despuÃ©s de recibida la mercancÃ­a.
+UNITEC USA DESIGN no cubre las garantÃ­as por productos instalados que presenten diferencias en tamaÃ±o, tono, color, rayado, por alabeo o cualquier defecto visible
+que pudiera ser detectado antes de la instalaciÃ³n.
+En el caso de que encuentre este tipo de defectos, por favor abstÃ©nganse de instalar el producto y comunÃ­cate inmediatamente con el respectivo vendedor.
+La garantÃ­a no cubre los daÃ±os ocasionados al producto, o uso inadecuado del usuario.
+Seguir las recomendaciones de la ficha tÃ©cnica en cuanto a uso, aplicaciones e instalaciÃ³n. 
 36
 Nombre del Producto:
-GUÍA DE INSTALACIÓN
+GUÃA DE INSTALACIÃ“N
 USOS Y APLICACIONES
 Divisiones de oficinas y salas de juntas
 Fachadas interiores y exteriores en vidrio
-Consultorios médicos y clínicas
+Consultorios mÃ©dicos y clÃ­nicas
 Hoteles, restaurantes y espacios comerciales
 Proyectos residenciales de alto nivel
 Vidrios decorativos y funcionales
-1.Limpie el vidrio con alcohol y paño sin pelusa (no usar amoniaco ni abrasivos).
-2.Corte la película según la medida requerida.
+1.Limpie el vidrio con alcohol y paÃ±o sin pelusa (no usar amoniaco ni abrasivos).
+2.Corte la pelÃ­cula segÃºn la medida requerida.
 3.Aplique pasta conductora de plata en la zona del bus bar.
-4.Coloque cinta de cobre adhesiva en los laterales para proteger la electrónica.
+4.Coloque cinta de cobre adhesiva en los laterales para proteger la electrÃ³nica.
 5.Conecte los cables rojo y negro a los bus bar y encapsule con silicona.
 6.Deje secar entre 12 y 24 horas.
-7.Retire el protector y adhiera la película al vidrio eliminando burbujas con espátula plástica.
-8.Conecte a la fuente y active el sistema mediante control o domótica.
-Alimentación eléctrica:
-Instalación:
+7.Retire el protector y adhiera la pelÃ­cula al vidrio eliminando burbujas con espÃ¡tula plÃ¡stica.
+8.Conecte a la fuente y active el sistema mediante control o domÃ³tica.
+AlimentaciÃ³n elÃ©ctrica:
+InstalaciÃ³n:
 Estado del vidrio:
 Material Principal:
-Aplicación directa sobre vidrio existente
-Requiere fuente de alimentación y sistema de control
+AplicaciÃ³n directa sobre vidrio existente
+Requiere fuente de alimentaciÃ³n y sistema de control
 Encendido: Transparente / Apagado: Opaco
-Película inteligente de tecnología PDLC (cristal líquido disperso en polímero)
+PelÃ­cula inteligente de tecnologÃ­a PDLC (cristal lÃ­quido disperso en polÃ­mero)
 VENTAJAS Y BENEFICIOS
-Control instantáneo de privacidad
-Diseño moderno y tecnológico
+Control instantÃ¡neo de privacidad
+DiseÃ±o moderno y tecnolÃ³gico
 Optimiza la entrada de luz natural
 No requiere cortinas ni persianas
 Mejora el confort visual
-Fácil integración eléctrica
-Solución elegante y de alto impacto arquitectónico
+FÃ¡cil integraciÃ³n elÃ©ctrica
+SoluciÃ³n elegante y de alto impacto arquitectÃ³nico
 Fuentes disponibles y cobertura:
-Fuente 50W – Área hasta 5 m² (REF: 14051307)
-Fuente 100W – Área hasta 12 m² (REF: 14051308)
-Fuente YG-927 200W – Área hasta 24 m² (REF: 14051309)
-Fuente HB50 220W – Área hasta 26 m² (REF: 14051303)
-FUENTES DE ALIMENTACIÓN
+Fuente 50W â€“ Ãrea hasta 5 mÂ² (REF: 14051307)
+Fuente 100W â€“ Ãrea hasta 12 mÂ² (REF: 14051308)
+Fuente YG-927 200W â€“ Ãrea hasta 24 mÂ² (REF: 14051309)
+Fuente HB50 220W â€“ Ãrea hasta 26 mÂ² (REF: 14051303)
+FUENTES DE ALIMENTACIÃ“N
 Pasta conductora de plata
 Cinta de cobre de alta temperatura
 Cables de alta temperatura (VDE / FCC)
@@ -5040,42 +5066,42 @@ Herramientas de corte y soldadura
 ACCESORIOS DISPONIBLES
 
 --- PRODUCT DATA: 37_FT_Panel WPC Plano.pdf ---
-Garantía
+GarantÃ­a
 Unitec
-Fácil
-Instalación
+FÃ¡cil
+InstalaciÃ³n
 Sostenible Impermeable
 No Flamable
 Liviano
 Resistente
 Bajo
 Mantenimiento
-Económico
-Garantía
-Fácil
-Instalación
+EconÃ³mico
+GarantÃ­a
+FÃ¡cil
+InstalaciÃ³n
 Sostenible
 Impermeable
-Económico
+EconÃ³mico
 No Flamable
 Liviano
 Resistente
 Bajo
 Mantenimiento
-Alto Diseño
-FICHA TÉCNICA
+Alto DiseÃ±o
+FICHA TÃ‰CNICA
 SOBRE EL PRODUCTO
 ESPECIFICACIONES
 VENTAJAS Y BENEFICIOS
-GUÍA DE INSTALACIÓN
+GUÃA DE INSTALACIÃ“N
 USOS Y APLICACIONES
 Colores disponibles:
 Material:
 Formato:
 Embalaje:
 Espesor: 
-País de Origen:
-Tipo de Diseño:
+PaÃ­s de Origen:
+Tipo de DiseÃ±o:
 Nogal Oscuro (30-237) / Roble Gris (30-247) / Madera Natural (30-147)
 Caja por 10 unidades
 WPC (Wood Plastic Composite)
@@ -5093,223 +5119,223 @@ showrooms.
 Interior: Uso exclusivo en interiores como revestimiento decorativo de
 pared o para realzar techas en PVC.
 Herramientas recomendadas:
-Flexómetro, nivel, lápiz, sierra caladora o circular, taladro,
+FlexÃ³metro, nivel, lÃ¡piz, sierra caladora o circular, taladro,
 tornillos o adhesivo de montaje.
-1.Verificar que la superficie esté limpia, seca y nivelada.
-2.Medir y cortar el panel según las dimensiones del proyecto.
+1.Verificar que la superficie estÃ© limpia, seca y nivelada.
+2.Medir y cortar el panel segÃºn las dimensiones del proyecto.
 3.Fijar el panel directamente a la pared con adhesivo de
-montaje o tornillería.
-4.Asegurar la correcta alineación para un acabado estético
+montaje o tornillerÃ­a.
+4.Asegurar la correcta alineaciÃ³n para un acabado estÃ©tico
 uniforme.
-5.Limpiar con paño seco o ligeramente húmedo una vez
+5.Limpiar con paÃ±o seco o ligeramente hÃºmedo una vez
 instalado.
-POLITICAS DE GARANTÍAS
-Verificar y recibir a conformidad el producto en el momento de entrega, No se aceptan reclamos por faltantes, daños o golpes después de recibida la mercancía.
-UNITEC USA DESIGN no cubre las garantías por productos instalados que presenten diferencias en tamaño, tono, color, rayado, por alabeo o cualquier defecto visible
-que pudiera ser detectado antes de la instalación.
-En el caso de que encuentre este tipo de defectos, por favor absténganse de instalar el producto y comunícate inmediatamente con el respectivo vendedor.
-La garantía no cubre los daños ocasionados al producto, o uso inadecuado del usuario.
-Seguir las recomendaciones de la ficha técnica en cuanto a uso, aplicaciones e instalación. 
+POLITICAS DE GARANTÃAS
+Verificar y recibir a conformidad el producto en el momento de entrega, No se aceptan reclamos por faltantes, daÃ±os o golpes despuÃ©s de recibida la mercancÃ­a.
+UNITEC USA DESIGN no cubre las garantÃ­as por productos instalados que presenten diferencias en tamaÃ±o, tono, color, rayado, por alabeo o cualquier defecto visible
+que pudiera ser detectado antes de la instalaciÃ³n.
+En el caso de que encuentre este tipo de defectos, por favor abstÃ©nganse de instalar el producto y comunÃ­cate inmediatamente con el respectivo vendedor.
+La garantÃ­a no cubre los daÃ±os ocasionados al producto, o uso inadecuado del usuario.
+Seguir las recomendaciones de la ficha tÃ©cnica en cuanto a uso, aplicaciones e instalaciÃ³n. 
 37
 BENEFICIOS PRINCIPALES
-Superficie lisa y uniforme y terminación acanalada
+Superficie lisa y uniforme y terminaciÃ³n acanalada
 Fabricado en material WPC de alta calidad
-Estética moderna y elegante
-Fácil instalación
+EstÃ©tica moderna y elegante
+FÃ¡cil instalaciÃ³n
 Bajo mantenimiento
 Alta durabilidad
 Acabado tipo madera natural
-Solución decorativa versátil
-Ideal para renovación y diseño de interiores
+SoluciÃ³n decorativa versÃ¡til
+Ideal para renovaciÃ³n y diseÃ±o de interiores
 Nombre del Producto:
 El Panel WPC Plano combina elegancia y resistencia en un acabado liso
 y moderno, ideal para aplicaciones decorativas en muros interiores.
-Está fabricado en WPC (Wood Plastic Composite), un material compuesto
-de madera y polímero que ofrece una excelente durabilidad, estabilidad
-y fácil mantenimiento. 
-Es un revestimiento decorativo de alto diseño, fabricado en material
-rígido de alta durabilidad, ideal para realzar techos en PVC o muros
+EstÃ¡ fabricado en WPC (Wood Plastic Composite), un material compuesto
+de madera y polÃ­mero que ofrece una excelente durabilidad, estabilidad
+y fÃ¡cil mantenimiento. 
+Es un revestimiento decorativo de alto diseÃ±o, fabricado en material
+rÃ­gido de alta durabilidad, ideal para realzar techos en PVC o muros
 interiores con un estilo moderno, lineal y elegante.
-Su diseño acanalado vertical aporta profundidad visual y sofisticación a
-los espacios, convirtiéndose en una solución práctica y estética para
+Su diseÃ±o acanalado vertical aporta profundidad visual y sofisticaciÃ³n a
+los espacios, convirtiÃ©ndose en una soluciÃ³n prÃ¡ctica y estÃ©tica para
 proyectos residenciales y comerciales.
 Panel WPC Plano
 Panel WPC Plano
 2,95 m (largo)  x 30 cm (ancho)
 
---- PRODUCT DATA: 38_FT_Angulos terminación WPC Interior.pdf ---
-Garantía
+--- PRODUCT DATA: 38_FT_Angulos terminaciÃ³n WPC Interior.pdf ---
+GarantÃ­a
 Unitec
-Fácil
-Instalación
+FÃ¡cil
+InstalaciÃ³n
 Sostenible Impermeable
 No Flamable
 Liviano
 Resistente
 Bajo
 Mantenimiento
-Económico
-Garantía
-Fácil
-Instalación
+EconÃ³mico
+GarantÃ­a
+FÃ¡cil
+InstalaciÃ³n
 Sostenible
 Impermeable
-Económico
+EconÃ³mico
 No Flamable
 Liviano
 Resistente
 Bajo
 Mantenimiento
-Alto Diseño
-FICHA TÉCNICA
+Alto DiseÃ±o
+FICHA TÃ‰CNICA
 SOBRE EL PRODUCTO
 ESPECIFICACIONES
 VENTAJAS Y BENEFICIOS
-RECOMENDACIONES DE INSTALACIÓN
+RECOMENDACIONES DE INSTALACIÃ“N
 USOS Y APLICACIONES
 Colores disponibles:
 Material:
 Formato:
 Embalaje:
 Espesor: 
-País de Origen:
-Tipo de instalación:
-Variedad según línea (blanco, negro, madera, tonos decorativos)
+PaÃ­s de Origen:
+Tipo de instalaciÃ³n:
+Variedad segÃºn lÃ­nea (blanco, negro, madera, tonos decorativos)
 Caja por 10 unidades
 WPC (Wood Plastic Composite)
-Definir según referencia
- Adhesivo de montaje o fijación mecánica
+Definir segÃºn referencia
+ Adhesivo de montaje o fijaciÃ³n mecÃ¡nica
 China
-Terminación de esquinas internas y externas
+TerminaciÃ³n de esquinas internas y externas
 Remate de bordes en muros revestidos con Wall Panel
 Acabados en instalaciones residenciales, comerciales e institucionales
-Uso en proyectos de diseño interior y remodelación
+Uso en proyectos de diseÃ±o interior y remodelaciÃ³n
 Instalar sobre superficies limpias, secas y niveladas
-Utilizar adhesivo adecuado o sistema de fijación recomendado
-Verificar alineación antes de fijación definitiva
+Utilizar adhesivo adecuado o sistema de fijaciÃ³n recomendado
+Verificar alineaciÃ³n antes de fijaciÃ³n definitiva
 Complementar con los accesorios del sistema Wall Panel
-POLITICAS DE GARANTÍAS
-Verificar y recibir a conformidad el producto en el momento de entrega, No se aceptan reclamos por faltantes, daños o golpes después de recibida la mercancía.
-UNITEC USA DESIGN no cubre las garantías por productos instalados que presenten diferencias en tamaño, tono, color, rayado, por alabeo o cualquier defecto visible
-que pudiera ser detectado antes de la instalación.
-En el caso de que encuentre este tipo de defectos, por favor absténganse de instalar el producto y comunícate inmediatamente con el respectivo vendedor.
-La garantía no cubre los daños ocasionados al producto, o uso inadecuado del usuario.
-Seguir las recomendaciones de la ficha técnica en cuanto a uso, aplicaciones e instalación. 
+POLITICAS DE GARANTÃAS
+Verificar y recibir a conformidad el producto en el momento de entrega, No se aceptan reclamos por faltantes, daÃ±os o golpes despuÃ©s de recibida la mercancÃ­a.
+UNITEC USA DESIGN no cubre las garantÃ­as por productos instalados que presenten diferencias en tamaÃ±o, tono, color, rayado, por alabeo o cualquier defecto visible
+que pudiera ser detectado antes de la instalaciÃ³n.
+En el caso de que encuentre este tipo de defectos, por favor abstÃ©nganse de instalar el producto y comunÃ­cate inmediatamente con el respectivo vendedor.
+La garantÃ­a no cubre los daÃ±os ocasionados al producto, o uso inadecuado del usuario.
+Seguir las recomendaciones de la ficha tÃ©cnica en cuanto a uso, aplicaciones e instalaciÃ³n. 
 38
-CARACTERÍSTICAS PRINCIPALES
+CARACTERÃSTICAS PRINCIPALES
 Alta durabilidad y resistencia al impacto
 No se deforma ni se agrieta
-Fácil instalación
+FÃ¡cil instalaciÃ³n
 Bajo mantenimiento
-Excelente acabado estético
+Excelente acabado estÃ©tico
 Compatible con sistemas Wall Panel
 Resistente a la humedad y al moho
 Nombre del Producto:
-Perfil de acabado diseñado para complementar la instalación de paneles
-tipo Wall Panel, proporcionando una terminación estética, uniforme y
+Perfil de acabado diseÃ±ado para complementar la instalaciÃ³n de paneles
+tipo Wall Panel, proporcionando una terminaciÃ³n estÃ©tica, uniforme y
 funcional en esquinas, bordes y remates. Garantiza un acabado limpio,
 protegiendo los cantos del panel y mejorando la durabilidad del sistema.
 Material
-PVC de alta resistencia / WPC (según línea del producto)
+PVC de alta resistencia / WPC (segÃºn lÃ­nea del producto)
 Resistente a la humedad y agentes ambientales
 Mantenimiento
-Limpieza con paño húmedo
+Limpieza con paÃ±o hÃºmedo
 No requiere tratamientos especiales
 Evitar el uso de productos abrasivos
-Angulos terminación WPC Interior
-Angulos terminación WPC Interior
+Angulos terminaciÃ³n WPC Interior
+Angulos terminaciÃ³n WPC Interior
 Ancho: 3 cms x 3 cms; Largo: 2,90 m
 VENTAJAS
-Mejora la presentación final del proyecto
+Mejora la presentaciÃ³n final del proyecto
 Protege los bordes del panel contra golpes y desgaste
-Aporta continuidad visual al diseño
-Instalación rápida y práctica
+Aporta continuidad visual al diseÃ±o
+InstalaciÃ³n rÃ¡pida y prÃ¡ctica
 
---- PRODUCT DATA: 39_FT_Perfiles para Lámina Mármol .pdf ---
-Garantía
+--- PRODUCT DATA: 39_FT_Perfiles para LÃ¡mina MÃ¡rmol .pdf ---
+GarantÃ­a
 Unitec
-Fácil
-Instalación
+FÃ¡cil
+InstalaciÃ³n
 Sostenible Impermeable
 No Flamable
 Liviano
 Resistente
 Bajo
 Mantenimiento
-Económico
-Garantía
-Fácil
-Instalación
+EconÃ³mico
+GarantÃ­a
+FÃ¡cil
+InstalaciÃ³n
 Sostenible
 Impermeable
-Económico
+EconÃ³mico
 No Flamable
 Liviano
 Resistente
 Bajo
 Mantenimiento
-Alto Diseño
-FICHA TÉCNICA
+Alto DiseÃ±o
+FICHA TÃ‰CNICA
 SOBRE EL PRODUCTO
 ESPECIFICACIONES
 VENTAJAS Y BENEFICIOS
 REFERENCIAS DISPONIBLES
 Material:
 Acabado:
-País de Origen:
+PaÃ­s de Origen:
 Longitud:
-Aluminio / Aleación metálica
+Aluminio / AleaciÃ³n metÃ¡lica
 Anodizado o pintado (Dorado / Plata)
-Entre 2.5 m y 3 m (según referencia)
+Entre 2.5 m y 3 m (segÃºn referencia)
 China
-REF: 14113201 – Ángulo en L 10 mm * 2.5 m (Dorado)
-REF: 14113202 – Ángulo en L 10 mm * 2.5 m (Plata)
-REF: 14121401 – Accesorio tipo T 0.8 mm * 3 m (Dorado)
-REF: 14121402 – Accesorio tipo T 0.8 mm * 3 m (Plata)
-Ángulo en J (Dorado / Plata)
-POLITICAS DE GARANTÍAS
-Verificar y recibir a conformidad el producto en el momento de entrega, No se aceptan reclamos por faltantes, daños o golpes después de recibida la mercancía.
-UNITEC USA DESIGN no cubre las garantías por productos instalados que presenten diferencias en tamaño, tono, color, rayado, por alabeo o cualquier defecto visible
-que pudiera ser detectado antes de la instalación.
-En el caso de que encuentre este tipo de defectos, por favor absténganse de instalar el producto y comunícate inmediatamente con el respectivo vendedor.
-La garantía no cubre los daños ocasionados al producto, o uso inadecuado del usuario.
-Seguir las recomendaciones de la ficha técnica en cuanto a uso, aplicaciones e instalación. 
+REF: 14113201 â€“ Ãngulo en L 10 mm * 2.5 m (Dorado)
+REF: 14113202 â€“ Ãngulo en L 10 mm * 2.5 m (Plata)
+REF: 14121401 â€“ Accesorio tipo T 0.8 mm * 3 m (Dorado)
+REF: 14121402 â€“ Accesorio tipo T 0.8 mm * 3 m (Plata)
+Ãngulo en J (Dorado / Plata)
+POLITICAS DE GARANTÃAS
+Verificar y recibir a conformidad el producto en el momento de entrega, No se aceptan reclamos por faltantes, daÃ±os o golpes despuÃ©s de recibida la mercancÃ­a.
+UNITEC USA DESIGN no cubre las garantÃ­as por productos instalados que presenten diferencias en tamaÃ±o, tono, color, rayado, por alabeo o cualquier defecto visible
+que pudiera ser detectado antes de la instalaciÃ³n.
+En el caso de que encuentre este tipo de defectos, por favor abstÃ©nganse de instalar el producto y comunÃ­cate inmediatamente con el respectivo vendedor.
+La garantÃ­a no cubre los daÃ±os ocasionados al producto, o uso inadecuado del usuario.
+Seguir las recomendaciones de la ficha tÃ©cnica en cuanto a uso, aplicaciones e instalaciÃ³n. 
 39
 USOS Y APLICACIONES
 Remate de esquinas externas e internas
-Unión entre láminas de mármol PVC
+UniÃ³n entre lÃ¡minas de mÃ¡rmol PVC
 Transiciones decorativas entre superficies
-Protección de bordes
-Aplicación en: recepciones, salas de estar, habitaciones,
-baños, oficinas y locales comerciales.
+ProtecciÃ³n de bordes
+AplicaciÃ³n en: recepciones, salas de estar, habitaciones,
+baÃ±os, oficinas y locales comerciales.
 Nombre del Producto:
-Los perfiles para lámina mármol PVC son accesorios decorativos
-diseñados para complementar la instalación de revestimientos tipo
-mármol en paredes interiores. Permiten lograr acabados profesionales
-en esquinas, uniones y remates, mejorando la estética y protección del
+Los perfiles para lÃ¡mina mÃ¡rmol PVC son accesorios decorativos
+diseÃ±ados para complementar la instalaciÃ³n de revestimientos tipo
+mÃ¡rmol en paredes interiores. Permiten lograr acabados profesionales
+en esquinas, uniones y remates, mejorando la estÃ©tica y protecciÃ³n del
 sistema.
-Fabricados en aluminio con acabados metálicos (dorado y plata), ofrecen
-alta resistencia, durabilidad y un diseño moderno ideal para espacios
+Fabricados en aluminio con acabados metÃ¡licos (dorado y plata), ofrecen
+alta resistencia, durabilidad y un diseÃ±o moderno ideal para espacios
 residenciales y comerciales.
-Perfiles para Lámina Mármol (PVC / Aluminio Decorativo)
-Perfiles para Lámina Mármol PVC
+Perfiles para LÃ¡mina MÃ¡rmol (PVC / Aluminio Decorativo)
+Perfiles para LÃ¡mina MÃ¡rmol PVC
 Espesor: 
-Presentación / Embalaje:
-0.8 mm – 10 mm (según tipo de perfil)
+PresentaciÃ³n / Embalaje:
+0.8 mm â€“ 10 mm (segÃºn tipo de perfil)
 Unidad
 Uso:
 Interior
-GUÍA DE INSTALACIÓN
+GUÃA DE INSTALACIÃ“N
 Herramientas recomendadas:
-Bisturí o sierra, regla metálica, nivel, adhesivo de montaje,
+BisturÃ­ o sierra, regla metÃ¡lica, nivel, adhesivo de montaje,
 guantes y gafas de seguridad.
-1.Preparación: Asegurar que la superficie esté limpia, seca y
+1.PreparaciÃ³n: Asegurar que la superficie estÃ© limpia, seca y
 nivelada.
-2.Medición y corte: Cortar el perfil según la longitud
+2.MediciÃ³n y corte: Cortar el perfil segÃºn la longitud
 requerida.
-3.Aplicación: Colocar adhesivo de montaje en la parte
+3.AplicaciÃ³n: Colocar adhesivo de montaje en la parte
 posterior del perfil.
-4.Instalación: Ubicar el perfil en la unión o borde deseado,
+4.InstalaciÃ³n: Ubicar el perfil en la uniÃ³n o borde deseado,
 alineando correctamente.
 5.Acabados: Ajustar y limpiar excesos de adhesivo para un
 acabado limpio.
@@ -5324,9 +5350,9 @@ acabado limpio.
 ================================================================================
 CATALOGS & RESOURCES
 ================================================================================
-1. Catálogo 2026 UNITEC USA DESIGN (Español): https://drive.google.com/file/d/1WB_oCvEs3k5uR0R7NHYKCtIn1PeW9UR9/view?usp=drive_link
+1. CatÃ¡logo 2026 UNITEC USA DESIGN (EspaÃ±ol): https://drive.google.com/file/d/1WB_oCvEs3k5uR0R7NHYKCtIn1PeW9UR9/view?usp=drive_link
 2. Product Catalog 2026 - Unitec (English): https://drive.google.com/file/d/14ZZe6FWDNPE34w_z1z6PpiPuUjYYJ_mj/view?usp=drive_link
-3. 001. Catálogo Building LATAM (español): https://drive.google.com/file/d/1NqJSJ2l4jzSLEE_WfL-bA3_gjasLjyTp/view?usp=drive_link
+3. 001. CatÃ¡logo Building LATAM (espaÃ±ol): https://drive.google.com/file/d/1NqJSJ2l4jzSLEE_WfL-bA3_gjasLjyTp/view?usp=drive_link
 4. 002. Product Catalog USA (English) Building Innovation: https://drive.google.com/file/d/1_CeSXJdX_uqHcsq6b2aNu_fNco4I8E1G/view?usp=drive_link
 
 ================================================================================
@@ -5413,7 +5439,7 @@ PRODUCT DATABASE (IMPORTED)
 ================================================================================
 FAQS & UNIT CONVERSIONS
 ================================================================================
-- 1 meter = 3.28 ft | 1 cm = 0.39 in | 1 m² = 10.76 ft².
+- 1 meter = 3.28 ft | 1 cm = 0.39 in | 1 mÂ² = 10.76 ftÂ².
 - Showroom visit: Call +1 (786) 968-5783 for an appointment in Doral, Miami.
 - Orders: Contact Johana Mesa (+1 786 968-5783) or Alexander Gomez (+57 311 3017763).
 - Discounts: Both bulk discounts and regular discounts are available.
@@ -5451,7 +5477,7 @@ CHECKOUT & PRICING RULES
      - Shipping cost (and name of carrier)
      - Grand total (subtotal + shipping)
   5. Ask the user for their Name and Email address.
-  6. Once provided, call the 'generate_checkout_payment_link' tool to generate a Stripe payment link for the grand total. The chat interface will automatically redirect the user to the Stripe Checkout or simulation modal, but you MUST ALSO provide a clickable markdown link in your response as a fallback: [Haz clic aquí para Pagar Seguro en Stripe]({link_generated_by_tool})
+  6. Once provided, call the 'generate_checkout_payment_link' tool to generate a Stripe payment link for the grand total. The chat interface will automatically redirect the user to the Stripe Checkout or simulation modal, but you MUST ALSO provide a clickable markdown link in your response as a fallback: [Haz clic aquÃ­ para Pagar Seguro en Stripe]({link_generated_by_tool})
 
 ================================================================================
 RESPONSE STYLE & GUIDELINES
@@ -5479,12 +5505,12 @@ export const getSystemInstruction = (language: Language = 'es', customGreeting?:
 
   // Set brand-specific identity and staff details based on brandId
   const brandName = brandId === 'unitec' ? "UNITEC USA DESIGN" : "BUILDING INNOVATION";
-  const brandTagline = brandId === 'unitec' ? "Importador Directo - Distribución Mayorista" : "¡Diseñamos el futuro! / We design the future!";
+  const brandTagline = brandId === 'unitec' ? "Importador Directo - DistribuciÃ³n Mayorista" : "Â¡DiseÃ±amos el futuro! / We design the future!";
   const brandLocation = brandId === 'unitec' ? "Colombia / Florida, USA (Immediate Stock)" : "Doral, Miami, FL 33166, USA";
   
   const staffDetails = brandId === 'unitec' 
     ? `
-- Yury Marcela Moreno (Ventas) | Tel: +57 310 457 8337
+- Camilo Andres Torres (Ventas) | Tel: +57 310 457 8337
 - Yuldor Stiven Avendano (Ejecutivo Comercial IDEO y Marketing online) | Tel: +57 310 576 9694
 - Henderson Patrick Arroyave (Ejecutivo Marketing Online) | Tel: +57 320 217 4854
 - Contacto General WhatsApp / Principal: +57 314 233 2147
@@ -5518,7 +5544,7 @@ ${customGreeting ? `- CUSTOM GREETING GUIDELINE: Refer or align with this custom
 # OBJECTIVE & KNOWLEDGE BASE
 - Guide clients toward perfect materials like WPC Wall Panels, SPC Waterproof flooring, synthetic vertical gardens, and high gloss laminates.
 - RefCodes: Utilize reference codes in your suggestions when recommending items.
-- Quote Conversions: Ask for their area in square meters (m²) and guide them step-by-step toward an immediate estimate. Close calls by sharing catalog links or routing them to the correct active staff listed above.
+- Quote Conversions: Ask for their area in square meters (mÂ²) and guide them step-by-step toward an immediate estimate. Close calls by sharing catalog links or routing them to the correct active staff listed above.
 
 # TECHNICAL INSTALLATION SYSTEM
 - PEGATEC adhesive: Recommended for interior panels and laminates.
@@ -5528,34 +5554,34 @@ ${customGreeting ? `- CUSTOM GREETING GUIDELINE: Refer or align with this custom
 1. IDENTIFY: Understand the customer's project area (living room, exterior deck, wall, etc.).
 2. HIGHLIGHT & SHOW: Pitch design advantages (100% waterproof, zero maintenance, high-end durability).
 3. ROUTE / CALL TO ACTION: Direct the conversation to the specific, designated contact details. ALWAYS include direct clickable WhatsApp links exactly in this format: https://wa.me/57XXXXXXXXX
-   * For UNITEC questions, refer to Yury Marcela Moreno (https://wa.me/573104578337), Yuldor Stiven Avendano (https://wa.me/573105769694), or Henderson Patrick Arroyave (https://wa.me/573202174854).
+   * For UNITEC questions, refer to Camilo Andres Torres (https://wa.me/573104578337), Yuldor Stiven Avendano (https://wa.me/573105769694), or Henderson Patrick Arroyave (https://wa.me/573202174854).
    * For BUILDING INNOVATION questions, refer to Johana Mesa (https://wa.me/17869685783) or Alexander Gomez (https://wa.me/573113017763).
 4. STRICT BRAND SEPARATION: You represent ONLY ${brandName}. You MUST NEVER mix, mention, or cross-reference products, details, or staff from ${brandId === 'unitec' ? 'Building Innovation' : 'Unitec USA'}. Ensure you only provide details and contact information for the current brand.
-5. FORMATTING MANDATE: You MUST use Markdown links [Name](URL) to create clickable links for WhatsApp or Catalogs (e.g., [Yuldor Stiven Avendaño](https://wa.me/573105769694)). However, DO NOT use markdown formatting for styling text (no bold text with **, no asterisks, no headers with #). Write plain, clean message strings.
+5. FORMATTING MANDATE: You MUST use Markdown links [Name](URL) to create clickable links for WhatsApp or Catalogs (e.g., [Yuldor Stiven AvendaÃ±o](https://wa.me/573105769694)). However, DO NOT use markdown formatting for styling text (no bold text with **, no asterisks, no headers with #). Write plain, clean message strings.
 6. TOOL EXECUTION & SYSTEM ERRORS: When calling ANY tool (extract_customer_info, book_appointment, etc.), the tools execute silently on the frontend. NEVER mention "backend endpoints", "sales pages", "APIs", or technical issues. Assume the tool executed perfectly and respond naturally to the customer.
 
 # DATA EXTRACTION & INTENT TRACKING
 - Always try to identify the user's intent ('Sales', 'Support', or 'Escalation').
-- Durante la conversación, encuentra un momento natural para preguntarle al cliente su nombre para registrarlo y brindarle una asesoría más personalizada (ej. "¿Con quién tengo el gusto?").
-- Si el cliente solicita una cotización o atención humana, pide también su número de teléfono (NUNCA pidas el correo electrónico).
-- INMEDIATAMENTE después de que el usuario mencione su nombre o teléfono, DEBES llamar silenciosamente a la herramienta 'extract_customer_info' para guardar sus datos en el sistema y que dejen de ser Anónimos.
+- Durante la conversaciÃ³n, encuentra un momento natural para preguntarle al cliente su nombre para registrarlo y brindarle una asesorÃ­a mÃ¡s personalizada (ej. "Â¿Con quiÃ©n tengo el gusto?").
+- Si el cliente solicita una cotizaciÃ³n o atenciÃ³n humana, pide tambiÃ©n su nÃºmero de telÃ©fono (NUNCA pidas el correo electrÃ³nico).
+- INMEDIATAMENTE despuÃ©s de que el usuario mencione su nombre o telÃ©fono, DEBES llamar silenciosamente a la herramienta 'extract_customer_info' para guardar sus datos en el sistema y que dejen de ser AnÃ³nimos.
 
-# REGLAS ESPECÍFICAS DEL NEGOCIO Y CHATBOT:
-- CATÁLOGO: Si el cliente solicita el catálogo, NO pidas su correo electrónico. Envíale el catálogo inmediatamente a través del chat. Una vez se envíe, asume que pasaron 5 minutos y envíale una pregunta de captación o interés para saber qué producto desea o cómo se puede seguir asesorando para cerrar la venta.
-- COTIZACIONES Y PRECIOS: Cuando la persona pregunte por una cotización e informe las medidas para calcular cuánto producto se gastaría, NO digas un total exacto; informa siempre que es un APROXIMADO. Si el cliente informa que es CLIENTE FINAL y quiere saber el valor de un producto, dale la información de la tabla de precios informando que es un APROXIMADO, que depende de las medidas y cantidades, y aclara que el valor informado es POR UNIDAD.
-- CONTACTAR HUMANO: Cuando el cliente diga contactar Humano, infórmale que enviaste la información al correo lidermarketingonline@espaciosimportados.com.co y que pronto se encargarán de contactarlo. Invoca internamente la herramienta 'email_conversation_to_admin' para notificar al equipo.
-- TIEMPO DE ESPERA Y CIERRE: Si el cliente no responde, asume un tiempo de espera. Envía un mensaje de seguimiento (ejemplo: "Señor/a [Nombre], ¿continúa en línea?"). Si sigue sin responder, envía el mensaje de abandono: "Veo que en este momento no has podido responder. Por ahora cerraré la conversación para no saturarte 😊 Cuando quieras retomar, solo escríbenos y con gusto continuamos desde donde quedamos 👋 ¡Que tengas un excelente día!"
-- UBICACIÓN / PUNTO FÍSICO: Si el cliente pregunta por la ubicación, dirección o punto físico, DEBES responder EXACTAMENTE con el siguiente texto:
-"Te cuento 👋
-Tenemos nuestro Centro de Experiencia en Itagüí, donde puedes ver los productos en vivo, recibir asesoría personalizada y te orientamos en instalación.
-📍 Centro Comercial IDEO – Local 274
-Te dejo la ubicación para que puedas visitarnos fácilmente:
-📍 https://share.google/C9nOJKjH5XgxlP5T1
-Si quieres, también podemos agendarte una visita o contactarte directamente con uno de nuestros comerciales 👇
+# REGLAS ESPECÃFICAS DEL NEGOCIO Y CHATBOT:
+- CATÃLOGO: Si el cliente solicita el catÃ¡logo, NO pidas su correo electrÃ³nico. EnvÃ­ale el catÃ¡logo inmediatamente a travÃ©s del chat. Una vez se envÃ­e, asume que pasaron 5 minutos y envÃ­ale una pregunta de captaciÃ³n o interÃ©s para saber quÃ© producto desea o cÃ³mo se puede seguir asesorando para cerrar la venta.
+- COTIZACIONES Y PRECIOS: Cuando la persona pregunte por una cotizaciÃ³n e informe las medidas para calcular cuÃ¡nto producto se gastarÃ­a, NO digas un total exacto; informa siempre que es un APROXIMADO. Si el cliente informa que es CLIENTE FINAL y quiere saber el valor de un producto, dale la informaciÃ³n de la tabla de precios informando que es un APROXIMADO, que depende de las medidas y cantidades, y aclara que el valor informado es POR UNIDAD.
+- CONTACTAR HUMANO: Cuando el cliente diga contactar Humano, infÃ³rmale que enviaste la informaciÃ³n al correo lidermarketingonline@espaciosimportados.com.co y que pronto se encargarÃ¡n de contactarlo. Invoca internamente la herramienta 'email_conversation_to_admin' para notificar al equipo.
+- TIEMPO DE ESPERA Y CIERRE: Si el cliente no responde, asume un tiempo de espera. EnvÃ­a un mensaje de seguimiento (ejemplo: "SeÃ±or/a [Nombre], Â¿continÃºa en lÃ­nea?"). Si sigue sin responder, envÃ­a el mensaje de abandono: "Veo que en este momento no has podido responder. Por ahora cerrarÃ© la conversaciÃ³n para no saturarte ðŸ˜Š Cuando quieras retomar, solo escrÃ­benos y con gusto continuamos desde donde quedamos ðŸ‘‹ Â¡Que tengas un excelente dÃ­a!"
+- UBICACIÃ“N / PUNTO FÃSICO: Si el cliente pregunta por la ubicaciÃ³n, direcciÃ³n o punto fÃ­sico, DEBES responder EXACTAMENTE con el siguiente texto:
+"Te cuento ðŸ‘‹
+Tenemos nuestro Centro de Experiencia en ItagÃ¼Ã­, donde puedes ver los productos en vivo, recibir asesorÃ­a personalizada y te orientamos en instalaciÃ³n.
+ðŸ“ Centro Comercial IDEO â€“ Local 274
+Te dejo la ubicaciÃ³n para que puedas visitarnos fÃ¡cilmente:
+ðŸ“ https://share.google/C9nOJKjH5XgxlP5T1
+Si quieres, tambiÃ©n podemos agendarte una visita o contactarte directamente con uno de nuestros comerciales ðŸ‘‡
 
-Señor/a para ciudades diferentes donde no tenemos punto físico realizamos envíos a nivel nacional y la atención es toda virtual con nuestros comerciales expertos.
+SeÃ±or/a para ciudades diferentes donde no tenemos punto fÃ­sico realizamos envÃ­os a nivel nacional y la atenciÃ³n es toda virtual con nuestros comerciales expertos.
 
-(Si el usuario informa contactar con comerciales, dar el dato del agente. De lo contrario, hacer una pregunta de productos de interés, de lo contrario el chat finalizará)."
+(Si el usuario informa contactar con comerciales, dar el dato del agente. De lo contrario, hacer una pregunta de productos de interÃ©s, de lo contrario el chat finalizarÃ¡)."
 
 CORE DATA:
 ${trainingData}
@@ -5630,61 +5656,63 @@ export const UI_TRANSLATIONS = {
   es: {
     chatPlaceholder: "Escribe tu mensaje...",
     send: "Enviar",
-    chatWelcome: "¡Hola! Bienvenido a Building Innovation. Puedo ayudarte con el catálogo, stock en Florida, guías de instalación o conectarte con ventas. ¿En qué puedo ayudarte hoy?",
+    chatWelcome: "Â¡Hola! Bienvenido a Building Innovation. Puedo ayudarte con el catÃ¡logo, stock en Florida, guÃ­as de instalaciÃ³n o conectarte con ventas. Â¿En quÃ© puedo ayudarte hoy?",
     voiceTitle: "Asistente de Voz IA",
-    tapToStart: "Toca el micrófono para iniciar",
+    tapToStart: "Toca el micrÃ³fono para iniciar",
     connecting: "Conectando...",
-    connected: "Conversación en Vivo",
-    connectionFailed: "Error de Conexión",
+    connected: "ConversaciÃ³n en Vivo",
+    connectionFailed: "Error de ConexiÃ³n",
     tryAsking: "Intenta preguntar",
-    startConversation: "Iniciar Conversación",
+    startConversation: "Iniciar ConversaciÃ³n",
     endCall: "Terminar Llamada",
-    secureConnection: "Conexión Segura Encriptada",
+    secureConnection: "ConexiÃ³n Segura Encriptada",
     navChat: "Chat",
     navCall: "Llamar",
     navServices: "Servicios",
     navInfo: "Info",
-    productCatalog: "Catálogo de Productos",
+    productCatalog: "CatÃ¡logo de Productos",
     details: "Detalles",
-    contactInfo: "Información de Contacto",
+    contactInfo: "InformaciÃ³n de Contacto",
     promotions: "Promociones Actuales",
-    businessHours: "Horario de Atención",
+    businessHours: "Horario de AtenciÃ³n",
     monFri: "Lunes - Viernes",
-    sat: "Sábado",
+    sat: "SÃ¡bado",
     sun: "Domingo",
     closed: "Cerrado",
     byAppt: "Cita Previa",
     suggestions: [
-      "¿Tienen stock en Florida?",
-      "Háblame de los Paneles WPC",
-      "¿Cómo instalo con PEGATEC?",
+      "Â¿Tienen stock en Florida?",
+      "HÃ¡blame de los Paneles WPC",
+      "Â¿CÃ³mo instalo con PEGATEC?",
       "Agendar una cita",
-      "Necesito cotización mayorista"
+      "Necesito cotizaciÃ³n mayorista"
     ],
-    bookingConfirmed: "¡Cita agendada! Se ha enviado una confirmación por correo/SMS.",
-    category: "Categoría",
+    bookingConfirmed: "Â¡Cita agendada! Se ha enviado una confirmaciÃ³n por correo/SMS.",
+    category: "CategorÃ­a",
     price: "Precio",
-    description: "Descripción",
+    description: "DescripciÃ³n",
     stockStatus: "Estado de Stock",
-    techSheet: "Ficha Técnica",
+    techSheet: "Ficha TÃ©cnica",
     styleTags: "Etiquetas de Estilo",
     back: "Volver",
     stockActive: "Stock en Florida Activo",
-    confirmed: "¡Confirmado!",
+    confirmed: "Â¡Confirmado!",
     appointmentDetails: "Detalles de la Cita",
-    greatThanks: "¡Genial, gracias!",
+    greatThanks: "Â¡Genial, gracias!",
     welcomeToSupport: "Bienvenido a Soporte",
-    howCanWeAssist: "¿Cómo podemos ayudarle con su proyecto de construcción hoy?",
+    howCanWeAssist: "Â¿CÃ³mo podemos ayudarle con su proyecto de construcciÃ³n hoy?",
     quickActions: [
   { id: 'stock', title: 'Consultar Stock', message: 'Quiero consultar el stock y disponibilidad de un producto.', iconName: 'Box' },
-  { id: 'quote', title: 'Cotizar', message: 'Quiero solicitar una cotización para un producto.', iconName: 'DollarSign' },
-  { id: 'install', title: 'Instalación', message: 'Necesito información sobre cómo instalar un producto.', iconName: 'Hammer' },
+  { id: 'quote', title: 'Cotizar', message: 'Quiero solicitar una cotizaciÃ³n para un producto.', iconName: 'DollarSign' },
+  { id: 'install', title: 'InstalaciÃ³n', message: 'Necesito informaciÃ³n sobre cÃ³mo instalar un producto.', iconName: 'Hammer' },
   { id: 'general', title: 'Consulta General', message: 'Tengo una consulta general sobre sus productos y servicios.', iconName: 'MessageCircle' },
-  { id: 'contact', title: 'Contactar Ventas', message: 'Por favor, comunícame con un representante de ventas.', iconName: 'BookOpen' },
-  { id: 'shipping', title: 'Envíos', message: 'Me gustaría saber cuáles son las opciones de envío y tiempos de entrega.', iconName: 'Truck' },
-  { id: 'specs', title: 'Ficha Técnica', message: 'Necesito las especificaciones técnicas de un producto.', iconName: 'FileText' },
-  { id: 'returns', title: 'Devoluciones', message: '¿Cuál es su política de devoluciones y cambios?', iconName: 'RefreshCcw' },
-      { id: 'discount', title: 'Descuento Mayorista', message: '¿Ofrecen descuentos para compras al por mayor?', iconName: 'Percent' },
+  { id: 'contact', title: 'Contactar Ventas', message: 'Por favor, comunÃ­came con un representante de ventas.', iconName: 'BookOpen' },
+  { id: 'shipping', title: 'EnvÃ­os', message: 'Me gustarÃ­a saber cuÃ¡les son las opciones de envÃ­o y tiempos de entrega.', iconName: 'Truck' },
+  { id: 'specs', title: 'Ficha TÃ©cnica', message: 'Necesito las especificaciones tÃ©cnicas de un producto.', iconName: 'FileText' },
+  { id: 'returns', title: 'Devoluciones', message: 'Â¿CuÃ¡l es su polÃ­tica de devoluciones y cambios?', iconName: 'RefreshCcw' },
+      { id: 'discount', title: 'Descuento Mayorista', message: 'Â¿Ofrecen descuentos para compras al por mayor?', iconName: 'Percent' },
     ],
   }
 };
+
+

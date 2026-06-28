@@ -1,4 +1,4 @@
-﻿export interface Product {
+export interface Product {
   id: string;
   category: string;
   subcategory?: string;
@@ -80,6 +80,16 @@ export interface BusinessConfig {
   promotions: string[];
   systemInstructionOverride?: string;
   customGreeting?: string;
+  // Website Redesign Config
+  heroImage?: string;
+  heroTitle?: string;
+  heroSubtitle?: string;
+  socialLinks?: {
+    facebook?: string;
+    instagram?: string;
+    linkedin?: string;
+  };
+  navLinks?: Array<{ label: string; href: string }>;
 }
 
 export interface CrmLog {
@@ -335,6 +345,7 @@ export interface CartItem {
   product: Product;
   quantity: number;
 }
+
 
 
 

@@ -57,7 +57,7 @@ const RetrainingAnalytics: React.FC<RetrainingAnalyticsProps> = ({ liveSessions 
   });
   const abortRef = useRef(false);
 
-  // ── Load sessions (completed + live) ──────────────────────
+  // -- Load sessions (completed + live) ----------------------
   const loadSessions = useCallback(async () => {
     setIsLoading(true);
     try {
@@ -76,7 +76,7 @@ const RetrainingAnalytics: React.FC<RetrainingAnalyticsProps> = ({ liveSessions 
 
   useEffect(() => { loadSessions(); }, [loadSessions]);
 
-  // ── Auto-summarize newly completed live sessions ──────────
+  // -- Auto-summarize newly completed live sessions ----------
   useEffect(() => {
     liveSessions
       .filter(s => s.status === "completed" && !s.summary && s.messages && s.messages.length > 0)
@@ -94,7 +94,7 @@ const RetrainingAnalytics: React.FC<RetrainingAnalyticsProps> = ({ liveSessions 
       });
   }, [liveSessions]);
 
-  // ── Manual single-session summarize ──────────────────────
+  // -- Manual single-session summarize ----------------------
   const handleGenerateSummary = async (session: ConversationSession) => {
     if (summarizingId) return;
     setSummarizingId(session.id);
@@ -111,7 +111,7 @@ const RetrainingAnalytics: React.FC<RetrainingAnalyticsProps> = ({ liveSessions 
     } finally { setSummarizingId(null); }
   };
 
-  // ── BACKFILL: pull every historical chat and summarize ────
+  // -- BACKFILL: pull every historical chat and summarize ----
   const handleBackfillAll = async () => {
     if (backfill.running) return;
     abortRef.current = false;
@@ -175,7 +175,7 @@ const RetrainingAnalytics: React.FC<RetrainingAnalyticsProps> = ({ liveSessions 
 
   const handleAbortBackfill = () => { abortRef.current = true; };
 
-  // ── Helpers ───────────────────────────────────────────────
+  // -- Helpers -----------------------------------------------
   const toggleSession = (id: string) => setExpandedSessions(prev => {
     const n = new Set(prev); n.has(id) ? n.delete(id) : n.add(id); return n;
   });
@@ -230,7 +230,7 @@ const RetrainingAnalytics: React.FC<RetrainingAnalyticsProps> = ({ liveSessions 
   return (
     <div className="h-full overflow-y-auto p-6 space-y-6">
 
-      {/* ── Header ── */}
+      {/* -- Header -- */}
       <div className="flex items-center justify-between flex-wrap gap-3">
         <div className="flex items-center gap-3">
           <div className="w-10 h-10 bg-gradient-to-br from-violet-600 to-purple-700 rounded-xl flex items-center justify-center shadow-lg">
@@ -259,7 +259,7 @@ const RetrainingAnalytics: React.FC<RetrainingAnalyticsProps> = ({ liveSessions 
               onClick={handleAbortBackfill}
               className="flex items-center gap-2 px-3 py-2 bg-red-600 text-white rounded-xl text-xs font-black hover:bg-red-700"
             >
-              ⛔ Detener
+              ? Detener
             </button>
           )}
           {unsummarizedCount > 0 && !backfill.running && (
@@ -285,14 +285,14 @@ const RetrainingAnalytics: React.FC<RetrainingAnalyticsProps> = ({ liveSessions 
         </div>
       </div>
 
-      {/* ── Backfill Progress Bar ── */}
+      {/* -- Backfill Progress Bar -- */}
       {(backfill.running || backfill.done) && (
         <div className={`rounded-2xl p-5 border ${backfill.done && !backfill.running ? "bg-emerald-50 border-emerald-200" : "bg-indigo-50 border-indigo-200"}`}>
           <div className="flex items-center justify-between mb-3">
             <div className="flex items-center gap-2">
               {backfill.running ? <Zap size={16} className="text-indigo-600 animate-pulse" /> : <CheckCircle2 size={16} className="text-emerald-600" />}
               <span className="text-sm font-black text-slate-800">
-                {backfill.running ? `Procesando historial... ${backfill.processed}/${backfill.total}` : `✅ Importación completa — ${backfill.succeeded} sesiones memorizadas`}
+                {backfill.running ? `Procesando historial... ${backfill.processed}/${backfill.total}` : `? Importación completa — ${backfill.succeeded} sesiones memorizadas`}
               </span>
             </div>
             <span className="text-xs font-bold text-slate-500">{backfillProgress}%</span>
@@ -309,7 +309,7 @@ const RetrainingAnalytics: React.FC<RetrainingAnalyticsProps> = ({ liveSessions 
             <p className="text-[10px] text-slate-500 mt-2">Analizando: <span className="font-bold">{backfill.currentName}</span></p>
           )}
           {backfill.done && backfill.total === 0 && (
-            <p className="text-xs text-emerald-700 mt-1">Todas las conversaciones ya están en la memoria permanente. 🎉</p>
+            <p className="text-xs text-emerald-700 mt-1">Todas las conversaciones ya están en la memoria permanente. ??</p>
           )}
           {(backfill.failed > 0) && (
             <p className="text-[10px] text-red-500 mt-1">{backfill.failed} sesión(es) fallaron (sin mensajes o error de API).</p>
@@ -317,7 +317,7 @@ const RetrainingAnalytics: React.FC<RetrainingAnalyticsProps> = ({ liveSessions 
         </div>
       )}
 
-      {/* ── Stats Bar ── */}
+      {/* -- Stats Bar -- */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
         {[
           { label: "Total Archivadas", value: allSessions.length, icon: MessageSquare, color: "text-blue-600", bg: "bg-blue-50" },
@@ -335,18 +335,18 @@ const RetrainingAnalytics: React.FC<RetrainingAnalyticsProps> = ({ liveSessions 
         ))}
       </div>
 
-      {/* ── View Switcher ── */}
+      {/* -- View Switcher -- */}
       <div className="flex gap-1 bg-slate-100 p-1 rounded-xl w-fit">
         {(["sessions", "qa", "daily"] as const).map(view => (
           <button key={view} onClick={() => setActiveView(view)}
             className={`px-4 py-2 rounded-lg text-xs font-bold transition-all ${activeView === view ? "bg-white text-slate-800 shadow-sm" : "text-slate-500 hover:text-slate-700"}`}
           >
-            {view === "sessions" ? "📜 Sesiones" : view === "qa" ? "💬 Banco Q&A" : "📊 Reporte Diario"}
+            {view === "sessions" ? "?? Sesiones" : view === "qa" ? "?? Banco Q&A" : "?? Reporte Diario"}
           </button>
         ))}
       </div>
 
-      {/* ══════════════ VIEW: SESSIONS ══════════════ */}
+      {/* -------------- VIEW: SESSIONS -------------- */}
       {activeView === "sessions" && (
         <div className="space-y-4">
           {days.length === 0 ? (
@@ -429,10 +429,10 @@ const RetrainingAnalytics: React.FC<RetrainingAnalyticsProps> = ({ liveSessions 
                                     {session.qaPairs.map((qa: any, i: number) => (
                                       <div key={i} className="bg-slate-50 rounded-xl p-3 border border-slate-100">
                                         <div className="flex items-start justify-between gap-2 mb-1">
-                                          <p className="text-xs font-bold text-slate-800">❓ {qa.question}</p>
+                                          <p className="text-xs font-bold text-slate-800">? {qa.question}</p>
                                           {qa.category && <span className={`text-[9px] px-1.5 py-0.5 rounded-full font-bold shrink-0 ${CATEGORY_COLORS[qa.category] || "bg-slate-100 text-slate-600"}`}>{qa.category}</span>}
                                         </div>
-                                        <p className="text-xs text-slate-600 leading-relaxed">💬 {qa.answer}</p>
+                                        <p className="text-xs text-slate-600 leading-relaxed">?? {qa.answer}</p>
                                       </div>
                                     ))}
                                   </div>
@@ -466,7 +466,7 @@ const RetrainingAnalytics: React.FC<RetrainingAnalyticsProps> = ({ liveSessions 
         </div>
       )}
 
-      {/* ══════════════ VIEW: BANCO Q&A ══════════════ */}
+      {/* -------------- VIEW: BANCO Q&A -------------- */}
       {activeView === "qa" && (
         <div className="space-y-4">
           <div className="flex items-center gap-3 flex-wrap">
@@ -489,10 +489,10 @@ const RetrainingAnalytics: React.FC<RetrainingAnalyticsProps> = ({ liveSessions 
               {filteredQA.map((qa, i) => (
                 <div key={i} className="bg-white rounded-xl border border-slate-200 p-4 hover:border-brand-200 transition-colors">
                   <div className="flex items-start justify-between gap-2 mb-2">
-                    <p className="text-xs font-bold text-slate-800 leading-relaxed">❓ {qa.question}</p>
+                    <p className="text-xs font-bold text-slate-800 leading-relaxed">? {qa.question}</p>
                     {qa.category && <span className={`text-[9px] px-1.5 py-0.5 rounded-full font-bold shrink-0 ${CATEGORY_COLORS[qa.category] || "bg-slate-100 text-slate-600"}`}>{qa.category}</span>}
                   </div>
-                  <p className="text-xs text-slate-600 leading-relaxed">💬 {qa.answer}</p>
+                  <p className="text-xs text-slate-600 leading-relaxed">?? {qa.answer}</p>
                   <p className="text-[9px] text-slate-400 mt-2">{new Date(qa.sessionDate).toLocaleDateString("es-CO")}</p>
                 </div>
               ))}
@@ -501,7 +501,7 @@ const RetrainingAnalytics: React.FC<RetrainingAnalyticsProps> = ({ liveSessions 
         </div>
       )}
 
-      {/* ══════════════ VIEW: REPORTE DIARIO ══════════════ */}
+      {/* -------------- VIEW: REPORTE DIARIO -------------- */}
       {activeView === "daily" && (
         <div className="space-y-4">
           {days.length === 0 ? (
@@ -581,6 +581,10 @@ const RetrainingAnalytics: React.FC<RetrainingAnalyticsProps> = ({ liveSessions 
 };
 
 export default RetrainingAnalytics;
+
+
+
+
 
 
 

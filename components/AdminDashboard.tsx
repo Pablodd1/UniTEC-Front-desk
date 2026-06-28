@@ -29,6 +29,7 @@ interface AdminDashboardProps {
   onToggleBrand?: (brand: 'unitec' | 'building') => void;
   onUpdateBackground?: (url: string) => void;
   language?: 'en' | 'es';
+  onBack?: () => void;
 }
 
 const GEMINI_VOICE_DESCRIPTIONS: Record<string, { gender: 'Male' | 'Female', style: string }> = {
@@ -45,7 +46,9 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({
     voiceProvider, setVoiceProvider,
     currentBrandId = 'unitec',
     onToggleBrand,
-    onUpdateBackground
+    onUpdateBackground,
+    onBack,
+    language
 }) => {
   const [activeSubTab, setActiveSubTab] = useState<'chats' | 'catalogs' | 'usage' | 'voice' | 'visuals' | 'training' | 'integrations' | 'deploy' | 'functionalities' | 'general' | 'conversations' | 'interventions' | 'analytics' | 'health' | 'retraining'>('chats');
   
@@ -274,7 +277,7 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({
           requestNotificationPermission().then(granted => {
             if (granted) showBrowserNotification('Intervencion Urgente', alert.reason || 'Cliente solicito atencion humana');
           });
-          const msg = '🚨 INTERVENCION URGENTE\n\nSesion: ' + alert.sessionId + '\nRazon: ' + (alert.reason || 'Cliente solicito hablar con alguien') + '\nHora: ' + new Date(alert.requestedAt).toLocaleTimeString('es') + '\n\nAbrir dashboard: ' + window.location.origin + '/?admin=true';
+          const msg = '?? INTERVENCION URGENTE\n\nSesion: ' + alert.sessionId + '\nRazon: ' + (alert.reason || 'Cliente solicito hablar con alguien') + '\nHora: ' + new Date(alert.requestedAt).toLocaleTimeString('es') + '\n\nAbrir dashboard: ' + window.location.origin + '/?admin=true';
           fetch('/api/notify-telegram', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
@@ -1673,7 +1676,7 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({
               <div key={alert.id} className="flex items-start gap-3 bg-red-600 text-white rounded-xl px-4 py-3 shadow-lg animate-pulse-once">
                 <AlertTriangle size={18} className="shrink-0 mt-0.5 text-red-200" />
                 <div className="flex-1 min-w-0">
-                  <p className="text-xs font-black uppercase tracking-wider text-red-100">🚨 Cliente necesita ayuda</p>
+                  <p className="text-xs font-black uppercase tracking-wider text-red-100">?? Cliente necesita ayuda</p>
                   <p className="text-sm font-medium truncate mt-0.5">{alert.reason || 'Solicitó hablar con un agente'}</p>
                   <p className="text-[10px] text-red-200 mt-0.5">Sesión: {alert.sessionId.slice(-12)} · {new Date(alert.requestedAt).toLocaleTimeString('es')}</p>
                 </div>
@@ -1682,7 +1685,7 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({
                     onClick={() => { setActiveSubTab('interventions'); setDismissedAlertIds(prev => { const next = new Set(prev); next.add(alert.id); return next; }); }}
                     className="px-3 py-1.5 bg-white text-red-600 rounded-lg text-[10px] font-black uppercase hover:bg-red-50 transition-colors"
                   >
-                    Atender →
+                    Atender ?
                   </button>
                   <button
                     onClick={() => setDismissedAlertIds(prev => { const next = new Set(prev); next.add(alert.id); return next; })}
@@ -1698,7 +1701,7 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({
         {/* Retention toast */}
         {retentionResult && retentionResult.archived > 0 && (
           <div className="flex items-center justify-between gap-2 px-4 py-2 bg-emerald-50 border-b border-emerald-200 shrink-0">
-            <span className="text-[11px] text-emerald-700 font-medium">🗄️ {retentionResult.archived} conversaciones archivadas y eliminadas automáticamente (política 30 días)</span>
+            <span className="text-[11px] text-emerald-700 font-medium">??? {retentionResult.archived} conversaciones archivadas y eliminadas automáticamente (política 30 días)</span>
             <button onClick={() => setRetentionResult(null)} className="text-emerald-500 hover:text-emerald-700"><X size={12} /></button>
           </div>
         )}
@@ -1706,7 +1709,17 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({
         <div className="bg-white border-b border-slate-200 px-6 pt-2 overflow-x-auto no-scrollbar shrink-0">
              {/* Header label row */}
              <div className="flex items-center justify-between pt-1 pb-0.5">
-               <span className="text-[9px] font-black uppercase tracking-[0.2em] text-slate-400">Mission Control</span>
+               <div className="flex items-center gap-4">
+                 {onBack && (
+                   <button 
+                     onClick={onBack}
+                     className="px-2.5 py-1 bg-slate-100 hover:bg-slate-200 text-slate-700 text-[10px] font-bold uppercase rounded-lg transition-colors flex items-center gap-1 border border-slate-200"
+                   >
+                     ← {language === 'en' ? 'Back to Site' : 'Volver a la Web'}
+                   </button>
+                 )}
+                 <span className="text-[9px] font-black uppercase tracking-[0.2em] text-slate-400">Mission Control</span>
+               </div>
                <span className="flex items-center gap-1.5">
                  <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span>
                  <span className="text-[9px] font-bold text-emerald-500 uppercase tracking-widest">Live</span>
@@ -1758,6 +1771,11 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({
 };
 
 export default AdminDashboard;
+
+
+
+
+
 
 
 

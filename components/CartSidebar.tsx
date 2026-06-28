@@ -11,12 +11,8 @@ interface CartSidebarProps {
 }
 
 const CartSidebar: React.FC<CartSidebarProps> = ({ isOpen, onClose, cart, setCart, language }) => {
-  const [zipCode, setZipCode] = useState('');
-  const [city, setCity] = useState('');
-  const [state, setState] = useState('');
-  
+  const [fullAddress, setFullAddress] = useState('');
   const [customerName, setCustomerName] = useState('');
-  const [customerEmail, setCustomerEmail] = useState('');
   
   const [shippingResult, setShippingResult] = useState<{ cost: number; carrier: string; days: number } | null>(null);
   const [isCalculatingShipping, setIsCalculatingShipping] = useState(false);
@@ -58,8 +54,8 @@ const CartSidebar: React.FC<CartSidebarProps> = ({ isOpen, onClose, cart, setCar
   };
 
   const handleCalculateShipping = async () => {
-    if (!zipCode || !city || !state) {
-      setError(language === 'en' ? 'Please fill all shipping fields' : 'Por favor completa todos los campos de envío');
+    if (!fullAddress) {
+      setError(language === 'en' ? 'Please provide your full address' : 'Por favor ingresa tu dirección completa');
       return;
     }
     setError('');
@@ -87,9 +83,9 @@ const CartSidebar: React.FC<CartSidebarProps> = ({ isOpen, onClose, cart, setCar
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          destinationZip: zipCode,
-          destinationCity: city,
-          destinationState: state,
+          destinationZip: '00000',
+          destinationCity: 'Bogota',
+          destinationState: 'Colombia',
           totalWeightKg,
           totalVolumeCbm
         })
@@ -107,8 +103,8 @@ const CartSidebar: React.FC<CartSidebarProps> = ({ isOpen, onClose, cart, setCar
   };
 
   const handleCheckout = async () => {
-    if (!customerName || !customerEmail) {
-      setError(language === 'en' ? 'Please provide name and email' : 'Por favor provee nombre y correo');
+    if (!customerName) {
+      setError(language === 'en' ? 'Please provide your name' : 'Por favor provee tu nombre');
       return;
     }
     if (!shippingResult) {
@@ -133,7 +129,7 @@ const CartSidebar: React.FC<CartSidebarProps> = ({ isOpen, onClose, cart, setCar
           shippingCost: shippingResult.cost,
           total: subtotal + shippingResult.cost,
           customerName,
-          customerEmail,
+          customerEmail: '',
           cartItems: cartItemsForApi
         })
       });
@@ -213,11 +209,20 @@ const CartSidebar: React.FC<CartSidebarProps> = ({ isOpen, onClose, cart, setCar
                 <Truck size={16} className="text-brand-500" />
                 {language === 'en' ? 'Calculate Shipping' : 'Calcular Envío'}
               </h4>
-              <div className="grid grid-cols-2 gap-3 mb-3">
-                <input type="text" placeholder="Zip" value={zipCode} onChange={e => setZipCode(e.target.value)} className="col-span-2 px-3 py-2 bg-slate-50 border border-slate-200 rounded-lg text-sm focus:border-brand-500 outline-none" />
-                <input type="text" placeholder="City" value={city} onChange={e => setCity(e.target.value)} className="px-3 py-2 bg-slate-50 border border-slate-200 rounded-lg text-sm focus:border-brand-500 outline-none" />
-                <input type="text" placeholder="State (e.g. FL)" value={state} onChange={e => setState(e.target.value)} className="px-3 py-2 bg-slate-50 border border-slate-200 rounded-lg text-sm focus:border-brand-500 outline-none" />
+              
+              <div className="space-y-3 mb-3">
+                <textarea 
+                  placeholder={language === 'en' ? 'Full Address, Neighborhood and Municipality' : 'Dirección completa, barrio y municipio'} 
+                  value={fullAddress} 
+                  onChange={e => setFullAddress(e.target.value)} 
+                  rows={3}
+                  className="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-lg text-sm focus:border-brand-500 outline-none resize-none" 
+                />
+                <p className="text-[10px] text-slate-500 italic font-semibold">
+                  ⚠️ {language === 'en' ? 'Shipping validation is subject to logistics.' : 'La validación del flete está sujeta a logística.'}
+                </p>
               </div>
+
               <button 
                 onClick={handleCalculateShipping}
                 disabled={isCalculatingShipping}
@@ -235,10 +240,11 @@ const CartSidebar: React.FC<CartSidebarProps> = ({ isOpen, onClose, cart, setCar
                 <CreditCard size={16} className="text-brand-500" />
                 {language === 'en' ? 'Checkout Details' : 'Detalles de Pago'}
               </h4>
+              
               <div className="space-y-3 mb-4">
                 <input type="text" placeholder={language === 'en' ? 'Full Name' : 'Nombre Completo'} value={customerName} onChange={e => setCustomerName(e.target.value)} className="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-lg text-sm focus:border-brand-500 outline-none" />
-                <input type="email" placeholder={language === 'en' ? 'Email' : 'Correo Electrónico'} value={customerEmail} onChange={e => setCustomerEmail(e.target.value)} className="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-lg text-sm focus:border-brand-500 outline-none" />
               </div>
+
             </div>
           )}
           
@@ -278,4 +284,5 @@ const CartSidebar: React.FC<CartSidebarProps> = ({ isOpen, onClose, cart, setCar
 };
 
 export default CartSidebar;
+
 

@@ -1,6 +1,39 @@
 import { getPrivacyMode } from './firestoreService';
 import { db } from '../firebase';
 import { collection, doc, setDoc, getDocs, getDoc, query, orderBy, onSnapshot, updateDoc, where, increment } from 'firebase/firestore';
+// --- OFFLINE-FIRST / FIREBASE API SUSPENSION RESILIENCY FALLBACK SYSTEM ---
+const getLocalSessions = (): ConversationSession[] => {
+  if (typeof window === 'undefined') return [];
+  try {
+    return JSON.parse(window.localStorage.getItem('unitec_conversations_fallback') || '[]');
+  } catch (e) {
+    return [];
+  }
+};
+
+const saveLocalSessions = (sessions: ConversationSession[]) => {
+  if (typeof window === 'undefined') return;
+  try {
+    window.localStorage.setItem('unitec_conversations_fallback', JSON.stringify(sessions));
+  } catch (e) {}
+};
+
+const getLocalInterventions = (): InterventionRequest[] => {
+  if (typeof window === 'undefined') return [];
+  try {
+    return JSON.parse(window.localStorage.getItem('unitec_interventions_fallback') || '[]');
+  } catch (e) {
+    return [];
+  }
+};
+
+const saveLocalInterventions = (ints: InterventionRequest[]) => {
+  if (typeof window === 'undefined') return;
+  try {
+    window.localStorage.setItem('unitec_interventions_fallback', JSON.stringify(ints));
+  } catch (e) {}
+};
+
 
 // PRIVACY MODE: Set to true to disable all Firestore chat saving
 // This ensures user conversations are NOT stored unless explicitly enabled
@@ -119,7 +152,7 @@ export const createConversation = async (
   
   if (getPrivacyMode()) {
     logPrivacy('createConversation');
-    return sessionId; // Return ID but don't save to Firestore
+    return sessionId;
   }
   
   const now = new Date().toISOString();
@@ -141,9 +174,20 @@ export const createConversation = async (
       productMentions: [],
       staffInteractions: 0,
     },
+    messages: []
   };
 
-  await setDoc(doc(db, COLLECTIONS.sessions, sessionId), session);
+  // Offline fallback saving
+  const local = getLocalSessions();
+  local.unshift(session);
+  saveLocalSessions(local);
+
+  try {
+    await setDoc(doc(db, COLLECTIONS.sessions, sessionId), session);
+  } catch (e) {
+    console.warn('Failed to write new conversation session to Firestore (key may be suspended):', e);
+  }
+  
   return sessionId;
 };
 
@@ -154,7 +198,7 @@ export const addMessage = async (
 ): Promise<void> => {
   if (getPrivacyMode()) {
     logPrivacy('addMessage');
-    return; // Don't save messages to Firestore
+    return;
   }
   
   const messageId = message.id || `msg_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
@@ -166,27 +210,54 @@ export const addMessage = async (
     timestamp: message.timestamp || now,
   };
 
-  await setDoc(
-    doc(db, COLLECTIONS.sessions, sessionId, COLLECTIONS.messages, messageId),
-    fullMessage
-  );
-
-  const sessionRef = doc(db, COLLECTIONS.sessions, sessionId);
-  const sessionSnap = await getDoc(sessionRef);
-  const updatePayload: any = {
-    lastUpdated: now,
-    lastMessage: message.text.substring(0, 200),
-    'analytics.messageCount': increment(1),
-  };
-
-  if (sessionSnap.exists()) {
-    const sessionData = sessionSnap.data() as ConversationSession;
-    if (sessionData.status === 'completed' || sessionData.status === 'abandoned') {
-      updatePayload.status = 'active';
+  // Update locally
+  const local = getLocalSessions();
+  const idx = local.findIndex(s => s.id === sessionId);
+  if (idx !== -1) {
+    if (!local[idx].messages) local[idx].messages = [];
+    if (!local[idx].messages?.some(m => m.id === messageId)) {
+      local[idx].messages?.push(fullMessage);
     }
+    local[idx].lastUpdated = now;
+    local[idx].lastMessage = message.text.substring(0, 200);
+    if (local[idx].analytics) {
+      local[idx].analytics.messageCount = (local[idx].analytics.messageCount || 0) + 1;
+    }
+    if (local[idx].status === 'completed' || local[idx].status === 'abandoned') {
+      local[idx].status = 'active';
+    }
+    saveLocalSessions(local);
   }
 
-  await updateDoc(sessionRef, updatePayload);
+  try {
+    await setDoc(
+      doc(db, COLLECTIONS.sessions, sessionId, COLLECTIONS.messages, messageId),
+      fullMessage
+    );
+  } catch (e) {
+    console.warn('Failed to write message to Firestore:', e);
+  }
+
+  try {
+    const sessionRef = doc(db, COLLECTIONS.sessions, sessionId);
+    const sessionSnap = await getDoc(sessionRef);
+    const updatePayload: any = {
+      lastUpdated: now,
+      lastMessage: message.text.substring(0, 200),
+      'analytics.messageCount': increment(1),
+    };
+
+    if (sessionSnap.exists()) {
+      const sessionData = sessionSnap.data() as ConversationSession;
+      if (sessionData.status === 'completed' || sessionData.status === 'abandoned') {
+        updatePayload.status = 'active';
+      }
+    }
+
+    await updateDoc(sessionRef, updatePayload);
+  } catch (e) {
+    console.warn('Failed to update session info in Firestore:', e);
+  }
 };
 
 // Update session status
@@ -200,33 +271,57 @@ export const updateSessionStatus = async (
     return;
   }
   
+  const now = new Date().toISOString();
   const update: any = {
     status,
-    lastUpdated: new Date().toISOString(),
+    lastUpdated: now,
   };
   if (assignedTo) {
     update.assignedTo = assignedTo;
   }
-  
-  // Calculate duration if session is ending
-  if (status === 'completed' || status === 'abandoned') {
-    try {
-      const sessionRef = doc(db, COLLECTIONS.sessions, sessionId);
-      const sessionSnap = await getDoc(sessionRef);
-      if (sessionSnap.exists()) {
-        const sessionData = sessionSnap.data() as ConversationSession;
-        if (sessionData.createdAt && !sessionData.duration) {
-          const startTime = new Date(sessionData.createdAt).getTime();
-          const endTime = Date.now();
-          update.duration = Math.floor((endTime - startTime) / 1000);
-        }
-      }
-    } catch (e) {
-      console.error('Error calculating duration:', e);
+
+  // Update locally
+  const local = getLocalSessions();
+  const idx = local.findIndex(s => s.id === sessionId);
+  if (idx !== -1) {
+    local[idx].status = status;
+    local[idx].lastUpdated = now;
+    if (assignedTo) {
+      local[idx].assignedTo = assignedTo;
     }
+    saveLocalSessions(local);
   }
-  
-  await updateDoc(doc(db, COLLECTIONS.sessions, sessionId), update);
+
+  try {
+    if (status === 'completed' || status === 'abandoned') {
+      try {
+        const sessionRef = doc(db, COLLECTIONS.sessions, sessionId);
+        const sessionSnap = await getDoc(sessionRef);
+        if (sessionSnap.exists()) {
+          const sessionData = sessionSnap.data() as ConversationSession;
+          if (sessionData.createdAt && !sessionData.duration) {
+            const startTime = new Date(sessionData.createdAt).getTime();
+            const endTime = Date.now();
+            update.duration = Math.floor((endTime - startTime) / 1000);
+            
+            // Update locally
+            const l2 = getLocalSessions();
+            const idx2 = l2.findIndex(s => s.id === sessionId);
+            if (idx2 !== -1) {
+              l2[idx2].duration = update.duration;
+              saveLocalSessions(l2);
+            }
+          }
+        }
+      } catch (e) {
+        console.error('Error calculating duration:', e);
+      }
+    }
+    
+    await updateDoc(doc(db, COLLECTIONS.sessions, sessionId), update);
+  } catch (e) {
+    console.warn('Failed to update session status in Firestore:', e);
+  }
 };
 
 // Request human intervention
@@ -239,7 +334,7 @@ export const requestIntervention = async (
   
   if (getPrivacyMode()) {
     logPrivacy('requestIntervention');
-    return interventionId; // Return ID but don't save
+    return interventionId;
   }
   
   const now = new Date().toISOString();
@@ -254,9 +349,17 @@ export const requestIntervention = async (
     priority,
   };
 
-  await setDoc(doc(db, COLLECTIONS.interventions, interventionId), intervention);
+  // Save locally
+  const localInts = getLocalInterventions();
+  localInts.unshift(intervention);
+  saveLocalInterventions(localInts);
+
+  try {
+    await setDoc(doc(db, COLLECTIONS.interventions, interventionId), intervention);
+  } catch (e) {
+    console.warn('Failed to request intervention in Firestore:', e);
+  }
   
-  // Update session status
   await updateSessionStatus(sessionId, 'human_requested');
   
   return interventionId;
@@ -272,17 +375,29 @@ export const acceptIntervention = async (
     return;
   }
   
-  await updateDoc(doc(db, COLLECTIONS.interventions, interventionId), {
-    status: 'accepted',
-    assignedStaffId: staffId,
-  });
-  
-  // Get session ID from intervention — direct doc lookup (avoid full collection scan)
-  const intSnap = await getDoc(doc(db, COLLECTIONS.interventions, interventionId));
-  
-  if (intSnap.exists()) {
-    const data = intSnap.data() as InterventionRequest;
-    await updateSessionStatus(data.sessionId, 'human_assigned', staffId);
+  // Update locally
+  const localInts = getLocalInterventions();
+  const idx = localInts.findIndex(i => i.id === interventionId);
+  if (idx !== -1) {
+    localInts[idx].status = 'accepted';
+    localInts[idx].assignedStaffId = staffId;
+    saveLocalInterventions(localInts);
+    await updateSessionStatus(localInts[idx].sessionId, 'human_assigned', staffId);
+  }
+
+  try {
+    await updateDoc(doc(db, COLLECTIONS.interventions, interventionId), {
+      status: 'accepted',
+      assignedStaffId: staffId,
+    });
+    
+    const intSnap = await getDoc(doc(db, COLLECTIONS.interventions, interventionId));
+    if (intSnap.exists()) {
+      const data = intSnap.data() as InterventionRequest;
+      await updateSessionStatus(data.sessionId, 'human_assigned', staffId);
+    }
+  } catch (e) {
+    console.warn('Failed to accept intervention in Firestore:', e);
   }
 };
 
@@ -320,18 +435,37 @@ export const subscribeToConversations = (
 ): (() => void) => {
   if (getPrivacyMode()) {
     logPrivacy('subscribeToConversations');
-    callback([]); // Return empty immediately
-    return () => {}; // No-op unsubscribe
+    callback([]);
+    return () => {};
   }
+  
+  // Return local storage fallback immediately
+  callback(getLocalSessions());
   
   const q = query(collection(db, COLLECTIONS.sessions), orderBy('lastUpdated', 'desc'));
   
-  return onSnapshot(q, (snapshot) => {
-    const sessions = snapshot.docs.map(doc => doc.data() as ConversationSession);
-    callback(sessions);
-  }, (error) => {
-    console.error('Error subscribing to conversations:', error);
-  });
+  try {
+    return onSnapshot(q, (snapshot) => {
+      const sessions = snapshot.docs.map(doc => doc.data() as ConversationSession);
+      const local = getLocalSessions();
+      const merged = [...sessions];
+      local.forEach(l => {
+        if (!merged.some(m => m.id === l.id)) {
+          merged.push(l);
+        }
+      });
+      merged.sort((a, b) => new Date(b.lastUpdated).getTime() - new Date(a.lastUpdated).getTime());
+      saveLocalSessions(merged);
+      callback(merged);
+    }, (error) => {
+      console.warn('Error subscribing to conversations, returning local sessions:', error);
+      callback(getLocalSessions());
+    });
+  } catch (e) {
+    console.warn('Failed to setup conversations snapshot subscription:', e);
+    callback(getLocalSessions());
+    return () => {};
+  }
 };
 
 // Subscribe to a single conversation
@@ -341,23 +475,34 @@ export const subscribeToConversation = (
 ): (() => void) => {
   if (getPrivacyMode()) {
     logPrivacy('subscribeToConversation');
-    callback(null); // Return null immediately
-    return () => {}; // No-op unsubscribe
+    callback(null);
+    return () => {};
   }
   
-  return onSnapshot(
-    doc(db, COLLECTIONS.sessions, sessionId),
-    (doc) => {
-      if (doc.exists()) {
-        callback(doc.data() as ConversationSession);
-      } else {
-        callback(null);
+  // Return local storage immediately
+  const local = getLocalSessions();
+  callback(local.find(s => s.id === sessionId) || null);
+  
+  try {
+    return onSnapshot(
+      doc(db, COLLECTIONS.sessions, sessionId),
+      (doc) => {
+        if (doc.exists()) {
+          callback(doc.data() as ConversationSession);
+        } else {
+          callback(null);
+        }
+      },
+      (error) => {
+        console.warn(`Error subscribing to conversation ${sessionId}:`, error);
+        callback(getLocalSessions().find(s => s.id === sessionId) || null);
       }
-    },
-    (error) => {
-      console.error(`Error subscribing to conversation ${sessionId}:`, error);
-    }
-  );
+    );
+  } catch (e) {
+    console.warn('Failed to setup single conversation snapshot:', e);
+    callback(getLocalSessions().find(s => s.id === sessionId) || null);
+    return () => {};
+  }
 };
 
 // Get messages for a session
@@ -383,8 +528,15 @@ export const subscribeToMessages = (
 ): (() => void) => {
   if (getPrivacyMode()) {
     logPrivacy('subscribeToMessages');
-    callback([]); // Return empty immediately
-    return () => {}; // No-op unsubscribe
+    callback([]);
+    return () => {};
+  }
+  
+  // Return local storage messages immediately
+  const localSessions = getLocalSessions();
+  const found = localSessions.find(s => s.id === sessionId);
+  if (found && found.messages) {
+    callback(found.messages);
   }
   
   const q = query(
@@ -392,12 +544,33 @@ export const subscribeToMessages = (
     orderBy('timestamp', 'asc')
   );
   
-  return onSnapshot(q, (snapshot) => {
-    const messages = snapshot.docs.map(doc => doc.data() as ConversationMessage);
-    callback(messages);
-  }, (error) => {
-    console.error(`Error subscribing to messages for ${sessionId}:`, error);
-  });
+  try {
+    return onSnapshot(q, (snapshot) => {
+      const messages = snapshot.docs.map(doc => doc.data() as ConversationMessage);
+      const local = getLocalSessions();
+      const idx = local.findIndex(s => s.id === sessionId);
+      if (idx !== -1) {
+        local[idx].messages = messages;
+        saveLocalSessions(local);
+      }
+      callback(messages);
+    }, (error) => {
+      console.warn(`Error subscribing to messages for ${sessionId}:`, error);
+      const local = getLocalSessions();
+      const f = local.find(s => s.id === sessionId);
+      if (f && f.messages) {
+        callback(f.messages);
+      }
+    });
+  } catch (e) {
+    console.warn('Failed to setup messages snapshot:', e);
+    const local = getLocalSessions();
+    const f = local.find(s => s.id === sessionId);
+    if (f && f.messages) {
+      callback(f.messages);
+    }
+    return () => {};
+  }
 };
 
 // Extract and update customer data from conversation
@@ -407,19 +580,36 @@ export const extractCustomerData = async (
 ): Promise<void> => {
   if (getPrivacyMode()) {
     logPrivacy('extractCustomerData');
-    return; // Don't save customer data
+    return;
   }
   
+  const now = new Date().toISOString();
   const update: any = {
     extractedData: data,
-    lastUpdated: new Date().toISOString(),
+    lastUpdated: now,
   };
   
   if (data?.name) update.customerName = data.name;
   if (data?.email) update.customerEmail = data.email;
   if (data?.phone) update.customerPhone = data.phone;
-  
-  await updateDoc(doc(db, COLLECTIONS.sessions, sessionId), update);
+
+  // Update locally
+  const local = getLocalSessions();
+  const idx = local.findIndex(s => s.id === sessionId);
+  if (idx !== -1) {
+    local[idx].extractedData = data;
+    local[idx].lastUpdated = now;
+    if (data?.name) local[idx].customerName = data.name;
+    if (data?.email) local[idx].customerEmail = data.email;
+    if (data?.phone) local[idx].customerPhone = data.phone;
+    saveLocalSessions(local);
+  }
+
+  try {
+    await updateDoc(doc(db, COLLECTIONS.sessions, sessionId), update);
+  } catch (e) {
+    console.warn('Failed to update customer data in Firestore:', e);
+  }
 };
 
 // Update conversation analytics
@@ -462,18 +652,29 @@ export const subscribeToInterventions = (
 ): (() => void) => {
   if (getPrivacyMode()) {
     logPrivacy('subscribeToInterventions');
-    callback([]); // Return empty immediately
-    return () => {}; // No-op unsubscribe
+    callback([]);
+    return () => {};
   }
+  
+  // Return local storage immediately
+  callback(getLocalInterventions());
   
   const q = query(collection(db, COLLECTIONS.interventions), orderBy('requestedAt', 'desc'));
   
-  return onSnapshot(q, (snapshot) => {
-    const interventions = snapshot.docs.map(doc => doc.data() as InterventionRequest);
-    callback(interventions);
-  }, (error) => {
-    console.error('Error subscribing to interventions:', error);
-  });
+  try {
+    return onSnapshot(q, (snapshot) => {
+      const interventions = snapshot.docs.map(doc => doc.data() as InterventionRequest);
+      saveLocalInterventions(interventions);
+      callback(interventions);
+    }, (error) => {
+      console.warn('Error subscribing to interventions, using local fallback:', error);
+      callback(getLocalInterventions());
+    });
+  } catch (e) {
+    console.warn('Failed to setup interventions snapshot subscription:', e);
+    callback(getLocalInterventions());
+    return () => {};
+  }
 };
 
 // Add a tag to a conversation

@@ -1,4 +1,4 @@
-import { db } from '../firebase';
+﻿import { db } from '../firebase';
 import { collection, query, getDoc, updateDoc, getDocs, doc, setDoc, deleteDoc } from 'firebase/firestore';
 import { getPrivacyMode } from './firestoreService';
 import { ConversationSession, ConversationMessage } from './conversationService';
@@ -39,7 +39,7 @@ async function generateSummaryWithGemini(
       .map(m => `${m.role === 'user' ? 'Cliente' : 'Bot'}: ${m.text.substring(0, 300)}`)
       .join('\n');
 
-    const prompt = `Eres un asistente que resume conversaciones de chatbot para archivo. Resume esta conversacion en 2-3 oraciones en espa�ol. Incluye: tema principal, si el cliente quiso hablar con humano, y resultado.\n\nCONVERSACION:\n${conversationText}\n\nRESUMEN:`;
+    const prompt = `Eres un asistente que resume conversaciones de chatbot para archivo. Resume esta conversacion en 2-3 oraciones en espaï¿½ol. Incluye: tema principal, si el cliente quiso hablar con humano, y resultado.\n\nCONVERSACION:\n${conversationText}\n\nRESUMEN:`;
 
     const res = await fetch(
       `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash-lite:generateContent?key=${apiKey}`,
@@ -70,11 +70,7 @@ function buildFallbackSummary(session: ConversationSession, messages: Conversati
   return `Conversacion de ${msgCount} mensajes sobre ${topics}. ${hadIntervention ? 'El cliente solicito atencion humana.' : 'Atendida por IA.'} Estado final: ${session.status}.`;
 }
 
-async function deleteSessionMessages(sessionId: string): Promise<void> {
-  const messagesRef = collection(db, 'conversations', sessionId, 'messages');
-  const snapshot = await getDocs(messagesRef);
-  await Promise.all(snapshot.docs.map(d => deleteDoc(doc(db, 'conversations', sessionId, 'messages', d.id))));
-}
+
 
 export interface RetentionResult {
   archived: number;
@@ -91,8 +87,8 @@ export const summarizeAndArchiveOldConversations = async (): Promise<RetentionRe
     const snapshot = await getDocs(collection(db, 'conversations'));
 
     const oldSessions = snapshot.docs
-      .map(d => d.data() as ConversationSession)
-      .filter(s => s.createdAt < cutoffDate && (s.status === 'completed' || s.status === 'abandoned'));
+      .map(d => d.data() as ConversationSession & { isArchived?: boolean })
+      .filter(s => !s.isArchived && s.createdAt < cutoffDate && (s.status === 'completed' || s.status === 'abandoned'));
 
     for (const session of oldSessions) {
       try {
@@ -121,9 +117,11 @@ export const summarizeAndArchiveOldConversations = async (): Promise<RetentionRe
 
         await setDoc(doc(db, 'conversation_archives', archive.id), archive);
         result.archived++;
-        await deleteSessionMessages(session.id);
-        await deleteDoc(doc(db, 'conversations', session.id));
-        result.deleted++;
+        // User requested full memory: DO NOT delete messages or session
+        // await deleteSessionMessages(session.id);
+        // await deleteDoc(doc(db, 'conversations', session.id));
+        await updateDoc(doc(db, 'conversations', session.id), { isArchived: true });
+        result.deleted++; // Keeping counter for backwards compatibility of RetentionResult
       } catch (e) {
         console.error(`[Retention] Failed to archive ${session.id}:`, e);
         result.errors++;
@@ -175,3 +173,6 @@ export const summarizeSessionNow = async (sessionId: string): Promise<void> => {
     console.error('[Retention] Failed to summarize concluded session:', e);
   }
 };
+
+
+
