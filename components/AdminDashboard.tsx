@@ -1,4 +1,5 @@
-// @ts-nocheck\n﻿import React, { useState, useEffect } from 'react';
+// @ts-nocheck
+import React, { useState, useEffect } from 'react';
 import { Plug, Phone, ShieldCheck, Database, Mic2, Save, RefreshCw, Check, Loader2, Volume2, TrendingUp, Zap, Gauge, Building2, Store, Brain, Code, Copy, ExternalLink, Rocket, ToggleRight, ToggleLeft, DollarSign, MessageSquare, Headphones, BarChart3, AlertTriangle, X } from 'lucide-react';
 import { EscalaConfig, VoiceName, VoiceProvider, BillingInvoice, ConversationSession, InterventionRequest, ConversationMessage } from '../types';
 import { playGeminiTTS } from '../services/geminiService';

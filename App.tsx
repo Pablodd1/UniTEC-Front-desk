@@ -17,7 +17,7 @@ import { auth, logOut } from './firebase';
 import { onAuthStateChanged } from 'firebase/auth';
 
 const App: React.FC = () => {
-  const isEmbedMode = new URLSearchParamás(window.location.search).get('embed') === 'true';
+  const isEmbedMode = new URLSearchParams(window.location.search).get('embed') === 'true';
 
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [isAuthReady, setIsAuthReady] = useState(false);
