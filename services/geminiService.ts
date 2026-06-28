@@ -107,9 +107,7 @@ export async function* sendMessageToGemini(
         if (done) break;
         buffer += decoder.decode(value, { stream: true });
         
-        // Gemini REST API streams an array of objects: [
- {
-  "candidates": ...
+        // Gemini REST API streams an array of objects: [ { "candidates": ...
         // We will just try to extract the text from the buffer as it grows
         // For a robust emergency fix, we'll just yield the text as we find it
         // A simpler way: just wait for the whole thing (it's fast enough) or regex the parts.
