@@ -1782,6 +1782,7 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({
                  </button>
                )})}
              </div>
+        </div>
         <div className="flex-1 overflow-y-auto p-4 md:p-8 no-scrollbar">
             <div className="max-w-7xl mx-auto">
                 {renderTabContent()}
