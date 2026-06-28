@@ -60,6 +60,8 @@ export default async function handler(req, res) {
   // ---- Rate limiting via simple token bucket (in-memory, per-deployment) ----
   // Production: replace with Vercel KV or Upstash Redis
   const keys = [
+    process.env.OPENROUTER_API_KEY,
+    process.env.OPENAI_API_KEY,
     process.env.GEMINI_API_KEY,
     process.env.GEMINI_BACKUP_KEY,
     process.env.GEMINI_BACKUP_KEY_2,
