@@ -30,12 +30,7 @@ const App: React.FC = () => {
   const [language, setLanguage] = useState<Language>('es');
   const [showAdminTab, setShowAdminTab] = useState(false);
   
-  const [currentBrandId, setCurrentBrandId] = useState<'unitec' | 'building'>(() => {
-    const brand = new URLSearchParams(window.location.search).get('brandId');
-    if (brand === 'building' || brand === 'unitec') return brand;
-    if (window.location.hostname.includes('buildinginnovation')) return 'building';
-    return 'unitec';
-  });
+  const [currentBrandId, setCurrentBrandId] = useState<'unitec' | 'building'>('building');
   const activeConfig = currentBrandId === 'unitec' ? UNITEC_CONFIG : BUILDING_INNOVATION_CONFIG;
 
   const [bgImage, setBgImage] = useState<string>(localStorage.getItem('unitec_custom_bg') || "https://images.unsplash.com/photo-1494412519320-aa613dfb7738?auto=format&fit=crop&q=80&w=1920");
@@ -280,7 +275,7 @@ const App: React.FC = () => {
   }
 
   return (
-    <div className="min-h-screen w-full bg-slate-50 overflow-y-auto">
+    <div className="h-screen w-full bg-slate-50 overflow-hidden flex flex-col">
       <WebsiteLayout 
         config={activeConfig}
         onOpenDashboard={() => setActiveTab(Tab.ADMIN_SETTINGS)}
