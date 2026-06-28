@@ -256,7 +256,7 @@ const App: React.FC = () => {
 
   if (activeTab === Tab.ADMIN_SETTINGS && !isEmbedMode) {
     return (
-      <div className="min-h-screen w-full bg-slate-50 flex flex-col font-sans">
+      <div className="min-h-[100dvh] w-full bg-slate-50 flex flex-col font-sans">
         <AdminDashboard 
             emergencyMode={emergencyMode}
             setEmergencyMode={setEmergencyMode}
@@ -275,7 +275,7 @@ const App: React.FC = () => {
   }
 
   return (
-    <div className="h-screen w-full bg-slate-50 overflow-hidden flex flex-col">
+    <div className="h-[100dvh] w-full bg-slate-50 overflow-hidden flex flex-col">
       <WebsiteLayout 
         config={activeConfig}
         onOpenDashboard={() => setActiveTab(Tab.ADMIN_SETTINGS)}

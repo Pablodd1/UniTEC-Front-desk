@@ -44,7 +44,7 @@ const WebsiteLayout: React.FC<WebsiteLayoutProps> = ({
   const cartItemsCount = cart.reduce((acc, item) => acc + item.quantity, 0);
 
   return (
-    <div className="h-full flex flex-col bg-slate-50 font-sans selection:bg-brand-500/30 overflow-hidden">
+    <div className="h-full flex-1 flex flex-col bg-slate-50 font-sans selection:bg-brand-500/30 overflow-hidden">
       {/* Sticky Navbar */}
       
 

@@ -63,7 +63,79 @@ export async function* sendMessageToGemini(
   }
 
   // Use OpenRouter endpoint (or OpenAI if key starts with sk-)
+  const isGemini = apiKey.startsWith('AIza');
   const isOpenAI = apiKey.startsWith('sk-') && !apiKey.startsWith('sk-or-');
+  
+  if (isGemini) {
+    // Fallback to Gemini REST API since SDK was removed
+    const geminiEndpoint = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:streamGenerateContent?key=${apiKey}`;
+    
+    // Convert to Gemini format
+    const geminiContents = [
+      { role: 'user', parts: [{ text: "System Instructions: " + instructions }] },
+      ...history.map(h => ({
+        role: h.role === 'model' ? 'model' : 'user',
+        parts: [{ text: h.parts?.[0]?.text || h.text || '' }]
+      }))
+    ];
+    
+    if (message) {
+      geminiContents.push({ role: 'user', parts: [{ text: message }] });
+    }
+
+    const response = await fetch(geminiEndpoint, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ contents: geminiContents })
+    });
+
+    if (!response.ok) {
+      const errText = await response.text().catch(() => '');
+      throw new Error(`Gemini API Error (${response.status}): ${errText}`);
+    }
+
+    // Simple JSON fallback for Gemini REST stream (it returns an array of JSON objects if not streamed properly, or SSE if using SSE)
+    // Actually streamGenerateContent returns a JSON array stream but fetch doesn't easily parse it unless we do manual chunking
+    const reader = response.body?.getReader();
+    const decoder = new TextDecoder('utf-8');
+    if (!reader) throw new Error('Failed to get stream reader');
+
+    let buffer = '';
+    try {
+      while (true) {
+        const { done, value } = await reader.read();
+        if (done) break;
+        buffer += decoder.decode(value, { stream: true });
+        
+        // Gemini REST API streams an array of objects: [
+ {
+  "candidates": ...
+        // We will just try to extract the text from the buffer as it grows
+        // For a robust emergency fix, we'll just yield the text as we find it
+        // A simpler way: just wait for the whole thing (it's fast enough) or regex the parts.
+        // But since it's a generator, we must yield.
+      }
+      
+      // Since parsing Gemini's weird JSON stream is complex in an emergency patch, 
+      // let's just parse the whole buffer at once to avoid stream chunking bugs.
+      const json = JSON.parse(buffer);
+      if (Array.isArray(json)) {
+        for (const chunk of json) {
+          const text = chunk.candidates?.[0]?.content?.parts?.[0]?.text;
+          if (text) {
+             yield { text, candidates: [{ content: { parts: [{ text }] } }] };
+          }
+        }
+      }
+    } catch (e) {
+      // If JSON parse fails, it might be an error response
+      console.error(e);
+      throw new Error("Failed to parse Gemini response");
+    }
+    return;
+  }
+
+  // OpenRouter / OpenAI path
   const endpoint = isOpenAI ? 'https://api.openai.com/v1/chat/completions' : 'https://openrouter.ai/api/v1/chat/completions';
   const model = isOpenAI ? 'gpt-4o-mini' : 'openai/gpt-4o-mini';
 
