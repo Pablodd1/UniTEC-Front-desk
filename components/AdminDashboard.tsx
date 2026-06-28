@@ -1725,11 +1725,13 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({
                  <span className="text-[9px] font-bold text-emerald-500 uppercase tracking-widest">Live</span>
                </span>
              </div>
-             <div className="flex items-end gap-0">
-               {/* CRM GROUP */}
+<div className="flex items-end gap-0">
+               {/* CRM & OPERATIONS GROUP */}
                {[
-                 { id: 'chats',    label: 'CRM',      icon: <MessageSquare size={13} /> },
-                 { id: 'catalogs', label: 'Catalogs', icon: <Copy size={13} /> },
+                 { id: 'chats',           label: 'Inbox',        icon: <MessageSquare size={13} /> },
+                 { id: 'conversations',   label: 'Live Monitor', icon: <Phone size={13} /> },
+                 { id: 'interventions',   label: 'Alerts',       icon: <span className="relative flex items-center gap-1"><Headphones size={13} />{pendingAlerts.length > 0 && <span className="absolute -top-1.5 -right-2 w-3.5 h-3.5 bg-red-500 rounded-full text-[8px] font-black text-white flex items-center justify-center animate-bounce">{pendingAlerts.length}</span>}</span> },
+                 { id: 'catalogs',        label: 'Catalogs',     icon: <Copy size={13} /> },
                ].map((t: any) => (
                  <button
                    key={t.id}
@@ -1739,28 +1741,47 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({
                    {t.icon}{t.label}
                  </button>
                ))}
-               {/* Divider */}
+               
                <div className="self-center mx-3 w-px h-5 bg-slate-200 shrink-0" />
-               {/* SYSTEM / OWNER GROUP */}
+               
+               {/* INSIGHTS GROUP */}
                {[
-                 { id: 'training',        label: 'AI Training',  icon: <Brain size={13} /> },
-                 { id: 'general',         label: 'Settings',     icon: <ShieldCheck size={13} /> },
-                   { id: 'integrations',    label: 'Integrations', icon: <Plug size={13} /> },
-                 { id: 'conversations',   label: 'Conversations',icon: <MessageSquare size={13} /> },
-                 { id: 'interventions',   label: 'Interventions', icon: <span className="relative flex items-center gap-1"><Headphones size={13} />{pendingAlerts.length > 0 && <span className="absolute -top-1.5 -right-2 w-3.5 h-3.5 bg-red-500 rounded-full text-[8px] font-black text-white flex items-center justify-center animate-bounce">{pendingAlerts.length}</span>}</span> },
-                 { id: 'analytics',       label: 'Analytics',    icon: <BarChart3 size={13} /> },
-                  { id: 'retraining',      label: 'Memoria IA',   icon: <Brain size={13} /> },
+                 { id: 'analytics',       label: 'Analytics',      icon: <BarChart3 size={13} /> },
+                 { id: 'usage',           label: 'Usage & Billing',icon: <DollarSign size={13} /> },
+                 { id: 'retraining',      label: 'Memoria IA',     icon: <Brain size={13} /> },
+                 { id: 'health',          label: 'API Health',     icon: <Check size={13} /> },
                ].map((t: any) => (
                  <button
                    key={t.id}
                    onClick={() => setActiveSubTab(t.id as any)}
-                   className={`py-3.5 px-3 text-[10px] font-bold uppercase tracking-widest border-b-2 flex items-center gap-1.5 transition-all whitespace-nowrap ${activeSubTab === t.id ? 'border-brand-600 text-brand-600' : 'border-transparent text-slate-400 hover:text-slate-600'}`}
+                   className={`py-3.5 px-3 text-[10px] font-bold uppercase tracking-widest border-b-2 flex items-center gap-1.5 transition-all whitespace-nowrap ${activeSubTab === t.id ? 'border-blue-500 text-blue-600' : 'border-transparent text-slate-400 hover:text-slate-600'}`}
                  >
                    {t.icon}{t.label}
                  </button>
                ))}
+               
+               <div className="self-center mx-3 w-px h-5 bg-slate-200 shrink-0" />
+
+               {/* SYSTEM / CONFIG GROUP */}
+               {[
+                 { id: 'general',         label: 'Settings',     icon: <ShieldCheck size={13} /> },
+                 { id: 'training',        label: 'Training',     icon: <Brain size={13} /> },
+                 { id: 'voice',           label: 'Voice Lab',    icon: <Mic2 size={13} /> },
+                 { id: 'visuals',         label: 'Visuals',      icon: <Zap size={13} /> },
+                 { id: 'integrations',    label: 'Integrations', icon: <Plug size={13} /> },
+                 { id: 'deploy',          label: 'Deploy',       icon: <Rocket size={13} /> },
+               ].map((t: any) => {
+                 const activeBrandColor = currentBrandId === 'building' ? 'border-indigo-600 text-indigo-600' : 'border-brand-600 text-brand-600';
+                 return (
+                 <button
+                   key={t.id}
+                   onClick={() => setActiveSubTab(t.id as any)}
+                   className={`py-3.5 px-3 text-[10px] font-bold uppercase tracking-widest border-b-2 flex items-center gap-1.5 transition-all whitespace-nowrap ${activeSubTab === t.id ? activeBrandColor : 'border-transparent text-slate-400 hover:text-slate-600'}`}
+                 >
+                   {t.icon}{t.label}
+                 </button>
+               )})}
              </div>
-        </div>
         <div className="flex-1 overflow-y-auto p-4 md:p-8 no-scrollbar">
             <div className="max-w-7xl mx-auto">
                 {renderTabContent()}

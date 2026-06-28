@@ -249,6 +249,7 @@ export const connectLiveSession = async (
         const utterance = new SpeechSynthesisUtterance(fullResponse);
         utterance.lang = language === 'en' ? 'en-US' : 'es-ES';
         utterance.onend = () => { if (isRecording && recognition) recognition.start(); };
+        setTimeout(() => { if (isRecording && !synth.speaking && recognition) { try { recognition.start(); } catch(e) {} } }, 3000);
         synth.speak(utterance);
         
       } catch (err: any) {
@@ -267,12 +268,13 @@ export const connectLiveSession = async (
     };
     
     setTimeout(() => {
-        const greeting = customGreeting || (language === 'en' ? "Hello! How can I help you today?" : "¡Hola! Bienvenido a Building Innovation.");
+        const greeting = customGreeting || (language === "en" ? "Hello! How can I help you today?" : (brandId === "unitec" ? "¡Hola! Bienvenido a UNITEC USA DESIGN." : "¡Hola! Bienvenido a Building Innovation."));
         callbacks.onMessage(greeting, null, false);
         messageHistory.push({ role: 'model', parts: [{text: greeting}] });
         const utterance = new SpeechSynthesisUtterance(greeting);
         utterance.lang = language === 'en' ? 'en-US' : 'es-ES';
         utterance.onend = () => { if (isRecording) recognition.start(); };
+        setTimeout(() => { if (isRecording && !synth.speaking && recognition) { try { recognition.start(); } catch(e) {} } }, 3000);
         synth.speak(utterance);
     }, 1000);
     

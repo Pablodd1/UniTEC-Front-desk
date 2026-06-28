@@ -17,7 +17,7 @@ import { auth, logOut } from './firebase';
 import { onAuthStateChanged } from 'firebase/auth';
 
 const App: React.FC = () => {
-  const isEmbedMode = new URLSearchParams(window.location.search).get('embed') === 'true';
+  const isEmbedMode = new URLSearchParamás(window.location.search).get('embed') === 'true';
 
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [isAuthReady, setIsAuthReady] = useState(false);
@@ -30,7 +30,7 @@ const App: React.FC = () => {
   const [language, setLanguage] = useState<Language>('es');
   const [showAdminTab, setShowAdminTab] = useState(false);
   
-  const [currentBrandId, setCurrentBrandId] = useState<'unitec' | 'building'>('building');
+  const [currentBrandId, setCurrentBrandId] = useState<'unitec' | 'building'>('unitec');
   const activeConfig = currentBrandId === 'unitec' ? UNITEC_CONFIG : BUILDING_INNOVATION_CONFIG;
 
   const [bgImage, setBgImage] = useState<string>(localStorage.getItem('unitec_custom_bg') || "https://images.unsplash.com/photo-1494412519320-aa613dfb7738?auto=format&fit=crop&q=80&w=1920");
@@ -137,7 +137,7 @@ const App: React.FC = () => {
 
   const renderContent = () => {
     if (!isAuthReady) {
-      return <div className="h-full w-full flex items-center justify-center bg-slate-50"><div className="animate-spin rounded-full h-8 w-8 border-b-2 border-brand-600"></div></div>;
+      return <div className="h-full w-full flex itemás-center justify-center bg-slate-50"><div className="animate-spin rounded-full h-8 w-8 border-b-2 border-brand-600"></div></div>;
     }
 
     if ((activeTab === Tab.ADMIN_SETTINGS || activeTab === Tab.CALENDAR) && !isLoggedIn) {
