@@ -1,4 +1,4 @@
-import { getApiKey } from './geminiService';
+﻿import { getApiKey } from './geminiService';
 import { db } from '../firebase';
 import { getDoc, doc } from 'firebase/firestore';
 
@@ -75,8 +75,14 @@ const checkGeminiStatus = async (): Promise<ServiceStatus> => {
       return { status: 'down', latency: 0, lastChecked: new Date().toISOString(), error: 'No API key configured' };
     }
     
-    const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models?key=${apiKey}`, {
+    const isOpenRouter = apiKey.startsWith('sk-') || apiKey.includes('openrouter');
+    const endpoint = isOpenRouter 
+      ? 'https://openrouter.ai/api/v1/models'
+      : `https://generativelanguage.googleapis.com/v1beta/models?key=${apiKey}`;
+    const headers = isOpenRouter ? { 'Authorization': `Bearer ${apiKey}` } : undefined;
+    const response = await fetch(endpoint, {
       method: 'GET',
+      headers: headers
     });
     
     const latency = Date.now() - start;
@@ -98,7 +104,7 @@ const checkFirebaseStatus = async (): Promise<ServiceStatus> => {
     return { status: 'up', latency: Date.now() - start, lastChecked: new Date().toISOString() };
   } catch (e: any) {
     if (e.message?.includes('offline') || e.message?.includes('network')) {
-      return { status: 'down', latency: Date.now() - start, lastChecked: new Date().toISOString(), error: e.message };
+      return { status: 'degraded', latency: Date.now() - start, lastChecked: new Date().toISOString(), error: 'Firebase is offline. Local storage fallback is active.' };
     }
     // Permission denied means it's working but we don't have access
     return { status: 'up', latency: Date.now() - start, lastChecked: new Date().toISOString() };
@@ -172,3 +178,5 @@ export const updateSystemMetrics = (metrics: Partial<SystemStatus['metrics']>): 
   const updated = { ...current, ...metrics };
   localStorage.setItem('unitec_system_metrics', JSON.stringify(updated));
 };
+
+

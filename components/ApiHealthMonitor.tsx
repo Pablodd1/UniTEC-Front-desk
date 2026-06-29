@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+﻿import React, { useEffect, useState } from 'react';
 import { Activity, CheckCircle, AlertTriangle, XCircle, Clock, RefreshCw } from 'lucide-react';
 import { SystemStatus, getSystemStatus } from '../services/healthService';
 
@@ -69,7 +69,7 @@ const ApiHealthMonitor: React.FC<ApiHealthMonitorProps> = ({ status }) => {
   }
 
   const services = [
-    { name: 'Gemini AI', key: 'gemini', description: 'AI model API' },
+    { name: 'Receptionist Core', key: 'gemini', description: 'Voice & Chat Engine' },
     { name: 'Firebase', key: 'firebase', description: 'Database & Auth' },
     { name: 'Twilio', key: 'twilio', description: 'Voice calls' },
     { name: 'Email Service', key: 'email', description: 'Notifications' },
@@ -197,3 +197,4 @@ const ApiHealthMonitor: React.FC<ApiHealthMonitorProps> = ({ status }) => {
 };
 
 export default ApiHealthMonitor;
+

@@ -1,4 +1,4 @@
-// @ts-nocheck
+﻿// @ts-nocheck
 import React, { useState, useEffect } from 'react';
 import { Plug, Phone, ShieldCheck, Database, Mic2, Save, RefreshCw, Check, Loader2, Volume2, TrendingUp, Zap, Gauge, Building2, Store, Brain, Code, Copy, ExternalLink, Rocket, ToggleRight, ToggleLeft, DollarSign, MessageSquare, Headphones, BarChart3, AlertTriangle, X } from 'lucide-react';
 import { EscalaConfig, VoiceName, VoiceProvider, BillingInvoice, ConversationSession, InterventionRequest, ConversationMessage } from '../types';
@@ -535,7 +535,7 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({
     // Save only non-sensitive config (privacy mode).
     try {
       await saveAppConfig({ 
-        // geminiApiKey deliberately NOT included â€” keys stay client+server only
+        // geminiApiKey deliberately NOT included Ã¢â‚¬â€ keys stay client+server only
       });
     } catch (e) {
       console.error("Failed to save config to Firestore:", e);
@@ -692,7 +692,7 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({
 
                     {/* Admin Dispatch Controls + Live Overwatch Grid */}
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                        {/* Ã°Å¸â€œÂ¬ ADMIN DISPATCH CONTROLS */}
+                        {/* ÃƒÂ°Ã…Â¸Ã¢â‚¬Å“Ã‚Â¬ ADMIN DISPATCH CONTROLS */}
                         <div className="bg-white rounded-2xl border border-slate-200 shadow-sm p-6 flex flex-col justify-between">
                             <div>
                                 <h3 className="text-xs font-black text-slate-800 uppercase tracking-wider mb-2 flex items-center gap-2">
@@ -740,7 +740,7 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({
                             </div>
                         </div>
 
-                        {/* Ã°Å¸â€Â´ LIVE TELEMETRY OVERWATCH TERMINAL */}
+                        {/* ÃƒÂ°Ã…Â¸Ã¢â‚¬ÂÃ‚Â´ LIVE TELEMETRY OVERWATCH TERMINAL */}
                         <div className="bg-slate-900 rounded-2xl border border-slate-800 p-6 flex flex-col justify-between">
                             <div className="flex flex-col h-full justify-between w-full">
                                 <div className="mb-3">
@@ -835,7 +835,7 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({
                                                 </div>
                                                 {details && (
                                                     <p className="text-[10px] text-slate-500 font-medium">
-                                                        {details.style} Ã¢â‚¬Â¢ {details.gender}
+                                                        {details.style} ÃƒÂ¢Ã¢â€šÂ¬Ã‚Â¢ {details.gender}
                                                     </p>
                                                 )}
                                             </button>
@@ -890,7 +890,7 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({
                                 <div className="w-6 h-6 rounded-full bg-brand-100 text-brand-600 flex items-center justify-center text-xs font-bold shrink-0 mt-0.5">3</div>
                                 <div className="flex-1">
                                     <p className="text-sm text-slate-700 font-bold">Set Environment Variables:</p>
-                                    <p className="text-xs text-slate-500 mt-1">In Vercel Dashboard Ã¢â€ â€™ Settings Ã¢â€ â€™ Environment Variables, add:</p>
+                                    <p className="text-xs text-slate-500 mt-1">In Vercel Dashboard ÃƒÂ¢Ã¢â‚¬Â Ã¢â‚¬â„¢ Settings ÃƒÂ¢Ã¢â‚¬Â Ã¢â‚¬â„¢ Environment Variables, add:</p>
                                     <div className="mt-2 space-y-2">
                                         <div className="p-3 bg-slate-50 rounded-xl border border-slate-200 flex items-center justify-between">
                                             <code className="text-xs font-mono text-brand-700">VITE_API_KEY</code>
@@ -957,8 +957,8 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({
                                     <Copy size={24} />
                                 </div>
                                 <div>
-                                    <h3 className="text-lg font-bold text-slate-800">GestiÃƒÂ³n de CatÃƒÂ¡logos y Archivos</h3>
-                                    <p className="text-xs text-slate-500">Controla los archivos que la IA puede enviar por correo electrÃƒÂ³nico.</p>
+                                    <h3 className="text-lg font-bold text-slate-800">GestiÃƒÆ’Ã‚Â³n de CatÃƒÆ’Ã‚Â¡logos y Archivos</h3>
+                                    <p className="text-xs text-slate-500">Controla los archivos que la IA puede enviar por correo electrÃƒÆ’Ã‚Â³nico.</p>
                                 </div>
                             </div>
                         </div>
@@ -967,15 +967,15 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({
                             <div className="bg-slate-50 p-6 rounded-xl border border-slate-200">
                                 <h4 className="text-sm font-bold text-slate-800 mb-2">Instrucciones para la IA</h4>
                                 <p className="text-xs text-slate-600 leading-relaxed mb-4">
-                                    La IA estÃƒÂ¡ configurada para usar la herramienta <code className="bg-slate-200 px-1 rounded text-brand-700">send_email</code> cuando un cliente solicita un catÃƒÂ¡logo, PDF o ficha tÃƒÂ©cnica y proporciona su correo electrÃƒÂ³nico.
+                                    La IA estÃƒÆ’Ã‚Â¡ configurada para usar la herramienta <code className="bg-slate-200 px-1 rounded text-brand-700">send_email</code> cuando un cliente solicita un catÃƒÆ’Ã‚Â¡logo, PDF o ficha tÃƒÆ’Ã‚Â©cnica y proporciona su correo electrÃƒÆ’Ã‚Â³nico.
                                 </p>
                                 <p className="text-xs text-slate-600 leading-relaxed">
-                                    Para modificar los enlaces de los catÃƒÂ¡logos que la IA envÃƒÂ­a, actualiza la secciÃƒÂ³n <strong>"CATALOGS & RESOURCES"</strong> en la pestaÃƒÂ±a <strong>Base de Conocimiento</strong>. La IA leerÃƒÂ¡ esos enlaces y los incluirÃƒÂ¡ en el correo.
+                                    Para modificar los enlaces de los catÃƒÆ’Ã‚Â¡logos que la IA envÃƒÆ’Ã‚Â­a, actualiza la secciÃƒÆ’Ã‚Â³n <strong>"CATALOGS & RESOURCES"</strong> en la pestaÃƒÆ’Ã‚Â±a <strong>Base de Conocimiento</strong>. La IA leerÃƒÆ’Ã‚Â¡ esos enlaces y los incluirÃƒÆ’Ã‚Â¡ en el correo.
                                 </p>
                             </div>
 
                             <div>
-                                <h4 className="text-xs font-black text-slate-400 uppercase tracking-widest mb-4">CatÃƒÂ¡logos Activos (Ejemplo)</h4>
+                                <h4 className="text-xs font-black text-slate-400 uppercase tracking-widest mb-4">CatÃƒÆ’Ã‚Â¡logos Activos (Ejemplo)</h4>
                                 <div className="space-y-3">
                                     <div className="flex items-center justify-between p-4 bg-white border border-slate-100 rounded-xl shadow-sm">
                                         <div className="flex items-center gap-3">
@@ -983,8 +983,8 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({
                                                 <span className="text-[10px] font-bold">PDF</span>
                                             </div>
                                             <div>
-                                                <p className="text-sm font-bold text-slate-800">CatÃƒÂ¡logo 2026 UNITEC USA DESIGN</p>
-                                                <p className="text-[10px] text-slate-400">EspaÃƒÂ±ol Ã¢â‚¬Â¢ General</p>
+                                                <p className="text-sm font-bold text-slate-800">CatÃƒÆ’Ã‚Â¡logo 2026 UNITEC USA DESIGN</p>
+                                                <p className="text-[10px] text-slate-400">EspaÃƒÆ’Ã‚Â±ol ÃƒÂ¢Ã¢â€šÂ¬Ã‚Â¢ General</p>
                                             </div>
                                         </div>
                                         <span className="px-2 py-1 bg-emerald-50 text-emerald-600 text-[10px] font-bold uppercase rounded-md">Activo</span>
@@ -996,7 +996,7 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({
                                             </div>
                                             <div>
                                                 <p className="text-sm font-bold text-slate-800">Product Catalog 2026 - Unitec</p>
-                                                <p className="text-[10px] text-slate-400">English Ã¢â‚¬Â¢ General</p>
+                                                <p className="text-[10px] text-slate-400">English ÃƒÂ¢Ã¢â€šÂ¬Ã‚Â¢ General</p>
                                             </div>
                                         </div>
                                         <span className="px-2 py-1 bg-emerald-50 text-emerald-600 text-[10px] font-bold uppercase rounded-md">Activo</span>
@@ -1422,7 +1422,7 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({
                                     value={escalaConfig.apiKey}
                                     onChange={e => setEscalaConfig(p => ({ ...p, apiKey: e.target.value }))}
                                     className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-sm focus:ring-2 focus:ring-brand-500 outline-none"
-                                    placeholder="Ã¢â‚¬Â¢Ã¢â‚¬Â¢Ã¢â‚¬Â¢Ã¢â‚¬Â¢Ã¢â‚¬Â¢Ã¢â‚¬Â¢Ã¢â‚¬Â¢Ã¢â‚¬Â¢Ã¢â‚¬Â¢Ã¢â‚¬Â¢Ã¢â‚¬Â¢Ã¢â‚¬Â¢Ã¢â‚¬Â¢Ã¢â‚¬Â¢Ã¢â‚¬Â¢Ã¢â‚¬Â¢"
+                                    placeholder="ÃƒÂ¢Ã¢â€šÂ¬Ã‚Â¢ÃƒÂ¢Ã¢â€šÂ¬Ã‚Â¢ÃƒÂ¢Ã¢â€šÂ¬Ã‚Â¢ÃƒÂ¢Ã¢â€šÂ¬Ã‚Â¢ÃƒÂ¢Ã¢â€šÂ¬Ã‚Â¢ÃƒÂ¢Ã¢â€šÂ¬Ã‚Â¢ÃƒÂ¢Ã¢â€šÂ¬Ã‚Â¢ÃƒÂ¢Ã¢â€šÂ¬Ã‚Â¢ÃƒÂ¢Ã¢â€šÂ¬Ã‚Â¢ÃƒÂ¢Ã¢â€šÂ¬Ã‚Â¢ÃƒÂ¢Ã¢â€šÂ¬Ã‚Â¢ÃƒÂ¢Ã¢â€šÂ¬Ã‚Â¢ÃƒÂ¢Ã¢â€šÂ¬Ã‚Â¢ÃƒÂ¢Ã¢â€šÂ¬Ã‚Â¢ÃƒÂ¢Ã¢â€šÂ¬Ã‚Â¢ÃƒÂ¢Ã¢â€šÂ¬Ã‚Â¢"
                                 />
                             </div>
                         </div>
@@ -1475,7 +1475,7 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({
                                       value={twilioConfig.authToken}
                                       onChange={e => setTwilioConfig(p => ({ ...p, authToken: e.target.value }))}
                                       className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-sm focus:ring-2 focus:ring-brand-500 outline-none"
-                                      placeholder="Ã¢â‚¬Â¢Ã¢â‚¬Â¢Ã¢â‚¬Â¢Ã¢â‚¬Â¢Ã¢â‚¬Â¢Ã¢â‚¬Â¢Ã¢â‚¬Â¢Ã¢â‚¬Â¢Ã¢â‚¬Â¢Ã¢â‚¬Â¢Ã¢â‚¬Â¢Ã¢â‚¬Â¢"
+                                      placeholder="ÃƒÂ¢Ã¢â€šÂ¬Ã‚Â¢ÃƒÂ¢Ã¢â€šÂ¬Ã‚Â¢ÃƒÂ¢Ã¢â€šÂ¬Ã‚Â¢ÃƒÂ¢Ã¢â€šÂ¬Ã‚Â¢ÃƒÂ¢Ã¢â€šÂ¬Ã‚Â¢ÃƒÂ¢Ã¢â€šÂ¬Ã‚Â¢ÃƒÂ¢Ã¢â€šÂ¬Ã‚Â¢ÃƒÂ¢Ã¢â€šÂ¬Ã‚Â¢ÃƒÂ¢Ã¢â€šÂ¬Ã‚Â¢ÃƒÂ¢Ã¢â€šÂ¬Ã‚Â¢ÃƒÂ¢Ã¢â€šÂ¬Ã‚Â¢ÃƒÂ¢Ã¢â€šÂ¬Ã‚Â¢"
                                   />
                               </div>
                               <div className="space-y-2">
@@ -1678,8 +1678,8 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({
                 <AlertTriangle size={18} className="shrink-0 mt-0.5 text-red-200" />
                 <div className="flex-1 min-w-0">
                   <p className="text-xs font-black uppercase tracking-wider text-red-100">?? Cliente necesita ayuda</p>
-                  <p className="text-sm font-medium truncate mt-0.5">{alert.reason || 'Solicitó hablar con un agente'}</p>
-                  <p className="text-[10px] text-red-200 mt-0.5">Sesión: {alert.sessionId.slice(-12)} · {new Date(alert.requestedAt).toLocaleTimeString('es')}</p>
+                  <p className="text-sm font-medium truncate mt-0.5">{alert.reason || 'SolicitÃ³ hablar con un agente'}</p>
+                  <p className="text-[10px] text-red-200 mt-0.5">SesiÃ³n: {alert.sessionId.slice(-12)} Â· {new Date(alert.requestedAt).toLocaleTimeString('es')}</p>
                 </div>
                 <div className="flex gap-2 shrink-0">
                   <button
@@ -1702,7 +1702,7 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({
         {/* Retention toast */}
         {retentionResult && retentionResult.archived > 0 && (
           <div className="flex items-center justify-between gap-2 px-4 py-2 bg-emerald-50 border-b border-emerald-200 shrink-0">
-            <span className="text-[11px] text-emerald-700 font-medium">??? {retentionResult.archived} conversaciones archivadas y eliminadas automáticamente (política 30 días)</span>
+            <span className="text-[11px] text-emerald-700 font-medium">??? {retentionResult.archived} conversaciones archivadas y eliminadas automÃ¡ticamente (polÃ­tica 30 dÃ­as)</span>
             <button onClick={() => setRetentionResult(null)} className="text-emerald-500 hover:text-emerald-700"><X size={12} /></button>
           </div>
         )}
@@ -1716,7 +1716,7 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({
                      onClick={onBack}
                      className="px-2.5 py-1 bg-slate-100 hover:bg-slate-200 text-slate-700 text-[10px] font-bold uppercase rounded-lg transition-colors flex items-center gap-1 border border-slate-200"
                    >
-                     ← {language === 'en' ? 'Back to Site' : 'Volver a la Web'}
+                     â† {language === 'en' ? 'Back to Site' : 'Volver a la Web'}
                    </button>
                  )}
                  <span className="text-[9px] font-black uppercase tracking-[0.2em] text-slate-400">Mission Control</span>
@@ -1749,7 +1749,7 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({
                {[
                  { id: 'analytics',       label: 'Analytics',      icon: <BarChart3 size={13} /> },
                  { id: 'usage',           label: 'Usage & Billing',icon: <DollarSign size={13} /> },
-                 { id: 'retraining',      label: 'Memoria IA',     icon: <Brain size={13} /> },
+                 { id: 'retraining',      label: 'Memoria',     icon: <Brain size={13} /> },
                  { id: 'health',          label: 'API Health',     icon: <Check size={13} /> },
                ].map((t: any) => (
                  <button
@@ -1794,6 +1794,7 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({
 };
 
 export default AdminDashboard;
+
 
 
 

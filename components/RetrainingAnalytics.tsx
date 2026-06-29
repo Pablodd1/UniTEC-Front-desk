@@ -239,7 +239,7 @@ const RetrainingAnalytics: React.FC<RetrainingAnalyticsProps> = ({ liveSessions 
           <div>
             <h2 className="text-lg font-black text-slate-800">Memoria Permanente</h2>
             <p className="text-xs text-slate-500">
-              {allSessions.length} conversaciones · {allQAPairs.length} pares Q&A · {allSessions.filter(s=>!!s.summary).length} resumidas por IA
+              {allSessions.length} conversaciones · {allQAPairs.length} pares Q&A · {allSessions.filter(s=>!!s.summary).length} resumidas
             </p>
           </div>
         </div>
@@ -321,7 +321,7 @@ const RetrainingAnalytics: React.FC<RetrainingAnalyticsProps> = ({ liveSessions 
       <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
         {[
           { label: "Total Archivadas", value: allSessions.length, icon: MessageSquare, color: "text-blue-600", bg: "bg-blue-50" },
-          { label: "Con Resumen IA",   value: allSessions.filter(s=>!!s.summary).length, icon: Brain, color: "text-violet-600", bg: "bg-violet-50" },
+          { label: "Con Resumen",   value: allSessions.filter(s=>!!s.summary).length, icon: Brain, color: "text-violet-600", bg: "bg-violet-50" },
           { label: "Pares Q&A",        value: allQAPairs.length, icon: Tag, color: "text-emerald-600", bg: "bg-emerald-50" },
           { label: "Sin Resumir",      value: unsummarizedCount, icon: AlertCircle, color: "text-orange-600", bg: "bg-orange-50" },
         ].map(stat => (
@@ -368,7 +368,7 @@ const RetrainingAnalytics: React.FC<RetrainingAnalyticsProps> = ({ liveSessions 
                       <Calendar size={16} className="text-brand-600" />
                       <span className="font-bold text-slate-800 text-sm">{day}</span>
                       <span className="text-[10px] bg-blue-100 text-blue-700 px-2 py-0.5 rounded-full font-bold">{sessions.length} chats</span>
-                      <span className="text-[10px] bg-violet-100 text-violet-700 px-2 py-0.5 rounded-full font-bold">{withSummary}/{sessions.length} IA</span>
+                      <span className="text-[10px] bg-violet-100 text-violet-700 px-2 py-0.5 rounded-full font-bold">{withSummary}/{sessions.length} Resumidas</span>
                       <span className="text-[10px] bg-emerald-100 text-emerald-700 px-2 py-0.5 rounded-full font-bold">{totalQA} Q&A</span>
                     </div>
                     {isOpen ? <ChevronUp size={16} className="text-slate-400" /> : <ChevronDown size={16} className="text-slate-400" />}
@@ -388,7 +388,7 @@ const RetrainingAnalytics: React.FC<RetrainingAnalyticsProps> = ({ liveSessions 
                                   <span className="font-bold text-slate-800 text-sm truncate">{session.customerName || "Visitante Anónimo"}</span>
                                   <span className={`text-[9px] px-1.5 py-0.5 rounded-full font-black uppercase ${session.brandId === "unitec" ? "bg-blue-100 text-blue-600" : "bg-green-100 text-green-600"}`}>{session.brandId}</span>
                                   <span className={`text-[9px] px-1.5 py-0.5 rounded-full font-black flex items-center gap-1 ${hasSummary ? "bg-violet-100 text-violet-600" : "bg-orange-100 text-orange-600"}`}>
-                                    {hasSummary ? <><CheckCircle2 size={8}/> IA Resumida</> : <><Clock size={8}/> Sin resumen</>}
+                                    {hasSummary ? <><CheckCircle2 size={8}/> Resumida</> : <><Clock size={8}/> Sin resumen</>}
                                   </span>
                                   <span className={`text-[9px] px-1.5 py-0.5 rounded-full font-black ${session.status === "completed" ? "bg-slate-100 text-slate-500" : session.status === "active" ? "bg-green-100 text-green-600" : "bg-orange-100 text-orange-600"}`}>{session.status}</span>
                                 </div>
@@ -402,7 +402,7 @@ const RetrainingAnalytics: React.FC<RetrainingAnalyticsProps> = ({ liveSessions 
                                   <button onClick={() => handleGenerateSummary(session)} disabled={!!summarizingId}
                                     className="flex items-center gap-1 px-2 py-1.5 bg-violet-600 text-white rounded-lg text-[10px] font-bold hover:bg-violet-700 disabled:opacity-50">
                                     {summarizingId === session.id ? <RefreshCw size={10} className="animate-spin" /> : <Sparkles size={10} />}
-                                    {summarizingId === session.id ? "Analizando..." : "Resumir IA"}
+                                    {summarizingId === session.id ? "Analizando..." : "Resumir"}
                                   </button>
                                 )}
                                 <button onClick={() => toggleSession(session.id)} className="p-1.5 hover:bg-slate-100 rounded-lg">
@@ -417,7 +417,7 @@ const RetrainingAnalytics: React.FC<RetrainingAnalyticsProps> = ({ liveSessions 
                                   <div className="bg-violet-50 border border-violet-100 rounded-xl p-4">
                                     <div className="flex items-center gap-2 mb-2">
                                       <Brain size={14} className="text-violet-600" />
-                                      <span className="text-[10px] font-black text-violet-600 uppercase tracking-wider">Resumen IA</span>
+                                      <span className="text-[10px] font-black text-violet-600 uppercase tracking-wider">Resumen</span>
                                       {session.summaryGeneratedAt && <span className="text-[9px] text-violet-400 ml-auto">{new Date(session.summaryGeneratedAt).toLocaleString("es-CO")}</span>}
                                     </div>
                                     <p className="text-sm text-slate-700 leading-relaxed">{session.summary}</p>
@@ -562,7 +562,7 @@ const RetrainingAnalytics: React.FC<RetrainingAnalyticsProps> = ({ liveSessions 
                     </div>
                   </div>
                   <div className="mt-4 p-3 bg-slate-50 rounded-xl flex items-center justify-between">
-                    <span className="text-xs text-slate-500">Cobertura IA</span>
+                    <span className="text-xs text-slate-500">Cobertura</span>
                     <div className="flex items-center gap-2">
                       <div className="w-24 bg-slate-200 rounded-full h-1.5">
                         <div className="bg-violet-500 h-full rounded-full" style={{ width: `${sessions.length > 0 ? (withSummary/sessions.length)*100 : 0}%` }} />
@@ -581,6 +581,7 @@ const RetrainingAnalytics: React.FC<RetrainingAnalyticsProps> = ({ liveSessions 
 };
 
 export default RetrainingAnalytics;
+
 
 
 

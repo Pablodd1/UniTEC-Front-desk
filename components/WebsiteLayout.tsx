@@ -1,4 +1,4 @@
-// @ts-nocheck\n﻿import React from 'react';
+﻿// @ts-nocheck\nï»¿import React from 'react';
 import { BusinessConfig, CartItem, Language, Tab } from '../types';
 import { Facebook, Instagram, Linkedin, Settings, ShoppingBag } from 'lucide-react';
 import { motion } from 'framer-motion';
@@ -64,7 +64,7 @@ const WebsiteLayout: React.FC<WebsiteLayoutProps> = ({
                     : 'text-slate-500 hover:text-slate-800 hover:bg-slate-50'
                 }`}
               >
-                💬 {language === 'en' ? 'Chat Assistant' : 'Asistente de Chat'}
+                ðŸ’¬ {language === 'en' ? 'Chat Assistant' : 'Asistente de Chat'}
               </button>
               <button
                 onClick={() => onTabChange(Tab.CALL)}
@@ -74,7 +74,7 @@ const WebsiteLayout: React.FC<WebsiteLayoutProps> = ({
                     : 'text-slate-500 hover:text-slate-800 hover:bg-slate-50'
                 }`}
               >
-                🎤 {language === 'en' ? 'Voice Call (AI)' : 'Llamada de Voz (IA)'}
+                ðŸŽ¤ {language === 'en' ? 'Voice Call (AI)' : 'Llamada de Voz (IA)'}
               </button>
             </div>
           )}
@@ -92,6 +92,7 @@ const WebsiteLayout: React.FC<WebsiteLayoutProps> = ({
 };
 
 export default WebsiteLayout;
+
 
 
 
