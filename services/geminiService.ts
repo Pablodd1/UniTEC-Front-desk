@@ -1,4 +1,4 @@
-// @ts-nocheck\n﻿
+﻿// @ts-nocheck\nï»¿
 // geminiService.ts handles interactions with the Google GenAI SDK
 import { GoogleGenAI, LiveServerMessage, Modality, GenerateContentResponse } from "@google/genai";
 import { getSystemInstruction, TOOLS, PRODUCTS } from "../constants";
@@ -20,7 +20,15 @@ export async function getApiKey(): Promise<string> {
     }
   } catch (e) {}
   
-  return (typeof process !== 'undefined' && process.env) ? (process.env.OPENROUTER_API_KEY || process.env.OPENAI_API_KEY || process.env.GEMINI_API_KEY || '') : '';
+  if (typeof process !== 'undefined' && process.env) {
+    const pKey = process.env.OPENROUTER_API_KEY || process.env.OPENAI_API_KEY || process.env.GEMINI_API_KEY || process.env.API_KEY;
+    if (pKey) return pKey;
+  }
+  if (typeof import.meta !== 'undefined' && import.meta.env) {
+    const metaKey = import.meta.env.VITE_OPENROUTER_API_KEY || import.meta.env.VITE_GEMINI_API_KEY || import.meta.env.VITE_API_KEY;
+    if (metaKey) return metaKey;
+  }
+  return '';
 }
 
 export const resetApiKeyCache = (): void => {};
@@ -268,7 +276,7 @@ export const connectLiveSession = async (
     };
     
     setTimeout(() => {
-        const greeting = customGreeting || (language === "en" ? "Hello! How can I help you today?" : (brandId === "unitec" ? "¡Hola! Bienvenido a UNITEC USA DESIGN." : "¡Hola! Bienvenido a Building Innovation."));
+        const greeting = customGreeting || (language === "en" ? "Hello! How can I help you today?" : (brandId === "unitec" ? "Â¡Hola! Bienvenido a UNITEC USA DESIGN." : "Â¡Hola! Bienvenido a Building Innovation."));
         callbacks.onMessage(greeting, null, false);
         messageHistory.push({ role: 'model', parts: [{text: greeting}] });
         const utterance = new SpeechSynthesisUtterance(greeting);
@@ -298,3 +306,4 @@ export async function generateConversationSummary(messages: any[], brandId = 'bu
   return { summary: "Conversation ended.", qaPairs: [] };
 }
 export async function generateEmbedding(text: string) { return null; }
+

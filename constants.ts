@@ -5597,7 +5597,7 @@ export const UI_TRANSLATIONS = {
     chatPlaceholder: "Type your message...",
     send: "Send",
     chatWelcome: "Hello! Welcome to Building Innovation. I can help you with our product catalog, stock in Florida, installation guides, or connect you with our sales team. How can I assist you today?",
-    voiceTitle: "AI Voice Assistant",
+    voiceTitle: "Voice Receptionist",
     tapToStart: "Tap the microphone to start",
     connecting: "Connecting securely...",
     connected: "Live Conversation",
@@ -5657,7 +5657,7 @@ export const UI_TRANSLATIONS = {
     chatPlaceholder: "Escribe tu mensaje...",
     send: "Enviar",
     chatWelcome: "Â¡Hola! Bienvenido a Building Innovation. Puedo ayudarte con el catÃ¡logo, stock en Florida, guÃ­as de instalaciÃ³n o conectarte con ventas. Â¿En quÃ© puedo ayudarte hoy?",
-    voiceTitle: "Asistente de Voz IA",
+    voiceTitle: "Recepcionista de Voz",
     tapToStart: "Toca el micrÃ³fono para iniciar",
     connecting: "Conectando...",
     connected: "ConversaciÃ³n en Vivo",
@@ -5714,5 +5714,6 @@ export const UI_TRANSLATIONS = {
     ],
   }
 };
+
 
 
