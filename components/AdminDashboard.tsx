@@ -1767,11 +1767,7 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({
                {[
                  { id: 'general',         label: 'Settings',     icon: <ShieldCheck size={13} /> },
                  { id: 'training',        label: 'Training',     icon: <Brain size={13} /> },
-                 { id: 'voice',           label: 'Voice Lab',    icon: <Mic2 size={13} /> },
-                 { id: 'visuals',         label: 'Visuals',      icon: <Zap size={13} /> },
-                 { id: 'integrations',    label: 'Integrations', icon: <Plug size={13} /> },
-                 { id: 'deploy',          label: 'Deploy',       icon: <Rocket size={13} /> },
-               ].map((t: any) => {
+                ].map((t: any) => {
                  const activeBrandColor = currentBrandId === 'building' ? 'border-indigo-600 text-indigo-600' : 'border-brand-600 text-brand-600';
                  return (
                  <button
@@ -1794,6 +1790,11 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({
 };
 
 export default AdminDashboard;
+
+
+
+
+
 
 
 
