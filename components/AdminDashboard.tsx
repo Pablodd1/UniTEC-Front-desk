@@ -276,7 +276,7 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({
           seenInterventionIdsRef.current.add(alert.id);
           playNotificationSound();
           requestNotificationPermission().then(granted => {
-            if (granted) showBrowserNotification('Intervencion Urgente', alert.reason || 'Cliente solicito atencion humana');
+            if (granted) showBrowserNotification('Intervencion Urgente', alert.reason || 'Cliente solicitó atención del personal');
           });
           const msg = '?? INTERVENCION URGENTE\n\nSesion: ' + alert.sessionId + '\nRazon: ' + (alert.reason || 'Cliente solicito hablar con alguien') + '\nHora: ' + new Date(alert.requestedAt).toLocaleTimeString('es') + '\n\nAbrir dashboard: ' + window.location.origin + '/?admin=true';
           fetch('/api/notify-telegram', {
@@ -1790,6 +1790,7 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({
 };
 
 export default AdminDashboard;
+
 
 
 

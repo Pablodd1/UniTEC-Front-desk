@@ -255,6 +255,13 @@ const App: React.FC = () => {
   }
 
   if (activeTab === Tab.ADMIN_SETTINGS && !isEmbedMode) {
+    if (!isLoggedIn) {
+      return (
+        <div className="min-h-[100dvh] w-full bg-slate-50 flex flex-col font-sans justify-center items-center p-4">
+          <LoginScreen config={activeConfig} onLogin={() => setIsLoggedIn(true)} />
+        </div>
+      );
+    }
     return (
       <div className="min-h-[100dvh] w-full bg-slate-50 flex flex-col font-sans">
         <AdminDashboard 

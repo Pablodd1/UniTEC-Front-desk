@@ -261,7 +261,7 @@ const ChatTab: React.FC<ChatTabProps> = ({ quickActions, initialMessage, emergen
   useEffect(() => {
     if (messages.length === 1 && messages[0].id === 'welcome') {
         const welcomeText = initialMessage 
-          ? (brandId === 'unitec' ? "Â¡Hola! Bienvenido a UNITEC USA DESIGN" : "Â¡Hola! Bienvenido a Building Innovation")
+          ? (brandId === 'unitec' ? "¡Hola! Bienvenido a UNITEC USA DESIGN" : "¡Hola! Bienvenido a Building Innovation")
           : (customGreeting || t.chatWelcome);
         setMessages([{
             id: 'welcome',
@@ -313,8 +313,8 @@ const ChatTab: React.FC<ChatTabProps> = ({ quickActions, initialMessage, emergen
       summarizeSessionNow(conversationId).catch(console.error);
       
       const closingText = language === 'en'
-        ? "It looks like you aren't able to respond right now. I'll close the chat and save our conversation to keep things clean. Feel free to message again whenever you're ready! ðŸ˜Š"
-        : "Veo que en este momento no has podido responder. Por ahora cerrarÃ© la conversaciÃ³n y guardarÃ© nuestro progreso para no saturarte ðŸ˜Š Cuando quieras retomar, solo escrÃ­benos y con gusto continuamos desde donde quedamos ðŸ™Œ Â¡Que tengas un excelente dÃ­a!";
+        ? "It looks like you aren't able to respond right now. I'll close the chat and save our conversation to keep things clean. Feel free to message again whenever you're ready! 😊"
+        : "Veo que en este momento no has podido responder. Por ahora cerraré la conversación y guardaré nuestro progreso para no saturarte 😊 Cuando quieras retomar, solo escríbenos y con gusto continuamos desde donde quedamos 🙌 ¡Que tengas un excelente día!";
 
       setMessages(prev => [...prev, {
         id: `idle_abandon_${Date.now()}`,
@@ -449,7 +449,7 @@ const ChatTab: React.FC<ChatTabProps> = ({ quickActions, initialMessage, emergen
       const isConfigError = error.message?.includes('API_KEY_MISSING') || error.message?.includes('API key not valid');
       
       if (isConfigError) {
-        setError(language === 'en' ? "Configuration Error: API Key is missing." : "Error de ConfiguraciÃ³n: Falta la API Key.");
+        setError(language === 'en' ? "Configuration Error: API Key is missing." : "Error de Configuración: Falta la API Key.");
       } else {
         const isLocalKeyUsed = typeof window !== 'undefined' && !!window.localStorage.getItem('unitec_gemini_api_key');
         // Log detailed error for diagnostics (never shown to customer)
@@ -458,7 +458,7 @@ const ChatTab: React.FC<ChatTabProps> = ({ quickActions, initialMessage, emergen
         // Friendly message for customers â€” no raw technical details
         let errorText = language === 'en'
           ? 'âš ï¸ Oops! I had a temporary connection hiccup. Please send your message again â€” I\'m ready to help!'
-          : 'âš ï¸ Ups, tuve un problema de conexiÃ³n momentÃ¡neo. Por favor, envÃ­a tu mensaje de nuevo â€” Â¡estoy aquÃ­ para ayudarte!';
+          : 'âš ï¸ Ups, tuve un problema de conexión momentáneo. Por favor, envía tu mensaje de nuevo â€” ¡estoy aquí para ayudarte!';
         
         if (isLocalKeyUsed) {
           // Only admins see the API key hint, hidden in console
@@ -509,7 +509,7 @@ const ChatTab: React.FC<ChatTabProps> = ({ quickActions, initialMessage, emergen
         role: 'model',
         text: language === 'en' 
           ? 'I have notified our team. A representative will join this conversation shortly.' 
-          : 'He notificado a nuestro equipo. Un representante se unirÃ¡ a esta conversaciÃ³n en breve.',
+          : 'He notificado a nuestro equipo. Un representante se unirá a esta conversación en breve.',
         timestamp: new Date()
       }]);
       
@@ -522,7 +522,7 @@ const ChatTab: React.FC<ChatTabProps> = ({ quickActions, initialMessage, emergen
         role: 'model',
         text: language === 'en'
           ? 'Unable to connect to staff. Please try again or call us directly.'
-          : 'No se puede conectar con el personal. Por favor intÃ©ntalo de nuevo o llÃ¡manos directamente.',
+          : 'No se puede conectar con el personal. Por favor inténtalo de nuevo o llámanos directamente.',
         timestamp: new Date()
       }]);
     } finally {
@@ -567,7 +567,7 @@ const ChatTab: React.FC<ChatTabProps> = ({ quickActions, initialMessage, emergen
                 <div className="w-20 h-20 bg-blue-100 text-blue-600 rounded-full flex items-center justify-center mx-auto mb-6 ring-8 ring-blue-50">
                     <CheckCircle2 size={40} />
                 </div>
-                <h3 className="text-xl font-black text-slate-900 mb-2 uppercase tracking-tight">{language === 'en' ? 'Email Sent!' : 'Â¡Correo Enviado!'}</h3>
+                <h3 className="text-xl font-black text-slate-900 mb-2 uppercase tracking-tight">{language === 'en' ? 'Email Sent!' : '¡Correo Enviado!'}</h3>
                 <p className="text-slate-500 text-sm mb-6 leading-relaxed">
                     {language === 'en' ? 'The requested files have been sent.' : 'Los archivos solicitados han sido enviados.'}
                 </p>
@@ -602,7 +602,7 @@ const ChatTab: React.FC<ChatTabProps> = ({ quickActions, initialMessage, emergen
                 <p className="text-slate-500 text-sm mb-6 leading-relaxed">
                   {language === 'en' 
                     ? 'Thank you for your order! Your payment has been processed securely via Stripe.' 
-                    : 'Â¡Gracias por su compra! Su pago ha sido procesado de forma segura a travÃ©s de Stripe.'}
+                    : '¡Gracias por su compra! Su pago ha sido procesado de forma segura a través de Stripe.'}
                 </p>
                 <div className="bg-slate-50 rounded-2xl p-4 mb-8 border border-slate-100 text-left">
                   <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1">{language === 'en' ? 'Amount Paid' : 'Monto Pagado'}</p>
@@ -618,7 +618,7 @@ const ChatTab: React.FC<ChatTabProps> = ({ quickActions, initialMessage, emergen
                       role: 'user',
                       text: language === 'en' 
                         ? 'I have completed my payment. Thank you!' 
-                        : 'Ya realicÃ© mi pago. Â¡Muchas gracias!',
+                        : 'Ya realicé mi pago. ¡Muchas gracias!',
                       timestamp: new Date()
                     }]);
                   }}
@@ -649,7 +649,7 @@ const ChatTab: React.FC<ChatTabProps> = ({ quickActions, initialMessage, emergen
 
                 <div className="space-y-4">
                   <div>
-                    <label className="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1.5">{language === 'en' ? 'Email Address' : 'Correo ElectrÃ³nico'}</label>
+                    <label className="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1.5">{language === 'en' ? 'Email Address' : 'Correo Electrónico'}</label>
                     <input 
                       type="email" 
                       value={paymentEmail} 
@@ -660,7 +660,7 @@ const ChatTab: React.FC<ChatTabProps> = ({ quickActions, initialMessage, emergen
                   </div>
                   
                   <div>
-                    <label className="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1.5">{language === 'en' ? 'Card Information' : 'InformaciÃ³n de Tarjeta'}</label>
+                    <label className="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1.5">{language === 'en' ? 'Card Information' : 'Información de Tarjeta'}</label>
                     <div className="relative">
                       <input 
                         type="text" 
@@ -749,37 +749,37 @@ const ChatTab: React.FC<ChatTabProps> = ({ quickActions, initialMessage, emergen
               </div>
               <div>
                 <h3 className="text-[17px] font-black text-slate-800 leading-tight">Asistente {brandId === 'unitec' ? 'UNITEC USA DESIGN' : 'Building Innovation'}</h3>
-                <p className="text-xs font-semibold text-emerald-600 uppercase tracking-wider mt-0.5">FÃ¡cil de usar / En lÃ­nea</p>
+                <p className="text-xs font-semibold text-emerald-600 uppercase tracking-wider mt-0.5">Fácil de usar / En línea</p>
               </div>
             </div>
             
             <p className="text-[13.5px] text-slate-600 leading-relaxed mb-4">
-              <strong>Â¡Hola! Bienvenido.</strong> Hemos diseÃ±ado este chat para que sea tan fÃ¡cil y familiar como usar <strong>WhatsApp</strong>. No necesitas saber tecnologÃ­a para usarlo:
+              <strong>¡Hola! Bienvenido.</strong> Hemos diseñado este chat para que sea tan fácil y familiar como usar <strong>WhatsApp</strong>. No necesitas saber tecnología para usarlo:
             </p>
             
             <div className="space-y-3 bg-[#f0f9ff]/70 border border-blue-100 rounded-2xl p-4 mb-4">
               <div className="flex gap-3">
-                <span className="text-[15px] shrink-0">ðŸ’¬</span>
+                <span className="text-[15px] shrink-0">💬</span>
                 <p className="text-xs text-slate-600 leading-normal">
-                  <strong>Escribe o Presiona:</strong> Puedes escribir tu mensaje en la parte inferior o simplemente presionar uno de los botones de opciones rÃ¡pidas.
+                  <strong>Escribe o Presiona:</strong> Puedes escribir tu mensaje en la parte inferior o simplemente presionar uno de los botones de opciones rápidas.
                 </p>
               </div>
               <div className="flex gap-3">
-                <span className="text-[15px] shrink-0">âš¡</span>
+                <span className="text-[15px] shrink-0">⚡</span>
                 <p className="text-xs text-slate-600 leading-normal">
-                  <strong>Respuesta InstantÃ¡nea:</strong> Nuestro asistente inteligente te responderÃ¡ de inmediato sobre productos, stock y cotizaciones.
+                  <strong>Respuesta Instantánea:</strong> Nuestro asistente inteligente te responderá de inmediato sobre productos, stock y cotizaciones.
                 </p>
               </div>
               <div className="flex gap-3">
-                <span className="text-[15px] shrink-0">ðŸ‘¤</span>
+                <span className="text-[15px] shrink-0">👤</span>
                 <p className="text-xs text-slate-600 leading-normal">
-                  <strong>AtenciÃ³n Humana:</strong> Si necesitas ayuda adicional, un asesor de nuestro equipo podrÃ¡ continuar la conversaciÃ³n.
+                  <strong>Atención del Personal:</strong> Si necesitas ayuda adicional, un asesor de nuestro equipo podrá continuar la conversación.
                 </p>
               </div>
             </div>
 
             <div className="text-center pt-2">
-              <span className="text-[11px] font-bold text-slate-400 uppercase tracking-wider">ðŸ‘‡ Toca un botÃ³n de abajo o escribe un mensaje para comenzar</span>
+              <span className="text-[11px] font-bold text-slate-400 uppercase tracking-wider">👇 Toca un botón de abajo o escribe un mensaje para comenzar</span>
             </div>
           </div>
 
@@ -886,7 +886,7 @@ const ChatTab: React.FC<ChatTabProps> = ({ quickActions, initialMessage, emergen
             className="flex items-center gap-2 w-full justify-center py-2 bg-amber-50 text-amber-700 rounded-xl text-xs font-medium hover:bg-amber-100 transition-colors border border-amber-200"
           >
             <Headphones size={14} />
-            Para ayuda aÃºn mÃ¡s personalizada / Talk to a human
+            Para ayuda aún más personalizada / Conectar con el Personal (Talk to staff)
           </button>
         </div>
       )}
@@ -902,7 +902,7 @@ const ChatTab: React.FC<ChatTabProps> = ({ quickActions, initialMessage, emergen
               {language === 'en' ? 'Request Staff' : 'Solicitar Asistencia'}
             </h3>
             <p className="text-slate-500 text-sm mb-6 leading-relaxed">
-              {language === 'en' ? 'Our team will join this conversation shortly.' : 'Nuestro equipo se unirÃ¡ a esta conversaciÃ³n en breve.'}
+              {language === 'en' ? 'Our team will join this conversation shortly.' : 'Nuestro equipo se unirá a esta conversación en breve.'}
             </p>
             <div className="bg-slate-50 rounded-2xl p-4 mb-6 border border-slate-100">
               <textarea
@@ -963,6 +963,7 @@ const ChatTab: React.FC<ChatTabProps> = ({ quickActions, initialMessage, emergen
 };
 
 export default ChatTab;
+
 
 
 

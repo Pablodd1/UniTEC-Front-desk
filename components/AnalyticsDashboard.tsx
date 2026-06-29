@@ -221,7 +221,7 @@ const AnalyticsDashboard: React.FC<AnalyticsDashboardProps> = ({ sessions }) => 
         <div className="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm">
           <div className="flex items-center gap-2 mb-2">
             <div className="p-2 bg-orange-50 rounded-lg"><Phone size={14} className="text-orange-600" /></div>
-            <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Humano Solicitado</span>
+            <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Asistencia del Personal</span>
           </div>
           <p className="text-2xl font-black text-slate-800">{humanRequested + humanAssigned}</p>
         </div>
@@ -399,6 +399,7 @@ const AnalyticsDashboard: React.FC<AnalyticsDashboardProps> = ({ sessions }) => 
 };
 
 export default AnalyticsDashboard;
+
 
 
 

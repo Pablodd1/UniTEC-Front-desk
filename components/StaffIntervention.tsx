@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+﻿import React, { useState, useEffect } from 'react';
 import { Phone, Headphones, AlertTriangle, CheckCircle, Clock } from 'lucide-react';
 import { 
   ConversationSession, 
@@ -88,7 +88,7 @@ const StaffIntervention: React.FC<StaffInterventionProps> = ({ sessions, onCallC
     <div className="h-full flex flex-col">
       <div className="bg-white border-b border-slate-200 p-4">
         <h3 className="text-lg font-bold text-slate-800">Staff Intervention Center</h3>
-        <p className="text-sm text-slate-500">Manage customer requests for human assistance</p>
+        <p className="text-sm text-slate-500">Manage customer requests for staff assistance</p>
       </div>
 
       {/* Tabs */}
@@ -219,3 +219,4 @@ const StaffIntervention: React.FC<StaffInterventionProps> = ({ sessions, onCallC
 };
 
 export default StaffIntervention;
+

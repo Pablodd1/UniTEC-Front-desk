@@ -532,7 +532,7 @@ const RetrainingAnalytics: React.FC<RetrainingAnalyticsProps> = ({ liveSessions 
                     <div className="flex gap-2 flex-wrap">
                       <span className="text-[10px] bg-blue-100 text-blue-700 px-2 py-1 rounded-full font-bold">{sessions.length} sesiones</span>
                       <span className="text-[10px] bg-slate-100 text-slate-700 px-2 py-1 rounded-full font-bold">{totalMsg} mensajes</span>
-                      <span className="text-[10px] bg-orange-100 text-orange-700 px-2 py-1 rounded-full font-bold">{humanHandoffs} handoffs humanos</span>
+                      <span className="text-[10px] bg-orange-100 text-orange-700 px-2 py-1 rounded-full font-bold">{humanHandoffs} transferencias al personal</span>
                     </div>
                   </div>
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -581,6 +581,7 @@ const RetrainingAnalytics: React.FC<RetrainingAnalyticsProps> = ({ liveSessions 
 };
 
 export default RetrainingAnalytics;
+
 
 
 

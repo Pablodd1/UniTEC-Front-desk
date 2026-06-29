@@ -89,18 +89,12 @@ const ConversationMonitor: React.FC<ConversationMonitorProps> = ({
 
   // Sound notification setup
   useEffect(() => {
-    if (typeof window !== 'undefined') {
-      audioRef.current = new Audio('/notification-sound.mp3');
-      audioRef.current.volume = 0.3;
-    }
+    // AudioContext beep from soundService is used directly to avoid 404 errors
   }, []);
 
   const playSound = useCallback(() => {
-    if (soundEnabled && audioRef.current) {
-      audioRef.current.play().catch(() => {
-        // Audio play failed, use fallback
-        playNotificationSound();
-      });
+    if (soundEnabled) {
+      playNotificationSound();
     }
   }, [soundEnabled]);
 

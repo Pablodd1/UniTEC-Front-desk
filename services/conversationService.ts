@@ -577,6 +577,47 @@ export const getConversations = async (
   return snapshot.docs.map(doc => doc.data() as ConversationSession);
 };
 
+interface ActiveSubscription {
+  type: 'conversations' | 'conversation' | 'messages' | 'interventions';
+  sessionId?: string;
+  callback: Function;
+}
+
+const activeSubs: ActiveSubscription[] = [];
+
+if (typeof window !== 'undefined') {
+  window.addEventListener('storage', (event) => {
+    if (event.key === 'unitec_conversations_fallback') {
+      try {
+        const local = JSON.parse(event.newValue || '[]');
+        activeSubs.forEach(sub => {
+          if (sub.type === 'conversations') {
+            sub.callback(local);
+          } else if (sub.type === 'conversation') {
+            sub.callback(local.find((s) => s.id === sub.sessionId) || null);
+          } else if (sub.type === 'messages') {
+            const found = local.find((s) => s.id === sub.sessionId);
+            sub.callback(found?.messages || []);
+          }
+        });
+      } catch (e) {
+        console.error('Failed to parse updated localStorage sessions:', e);
+      }
+    } else if (event.key === 'unitec_interventions_fallback') {
+      try {
+        const local = JSON.parse(event.newValue || '[]');
+        activeSubs.forEach(sub => {
+          if (sub.type === 'interventions') {
+            sub.callback(local);
+          }
+        });
+      } catch (e) {
+        console.error('Failed to parse updated localStorage interventions:', e);
+      }
+    }
+  });
+}
+
 // Subscribe to real-time conversation updates
 export const subscribeToConversations = (
   callback: (sessions: ConversationSession[]) => void
@@ -590,10 +631,14 @@ export const subscribeToConversations = (
   // Return local storage fallback immediately
   callback(getLocalSessions());
   
+  const subRecord = { type: 'conversations', callback };
+  activeSubs.push(subRecord);
+  
   const q = query(collection(db, COLLECTIONS.sessions), orderBy('lastUpdated', 'desc'));
   
+  let unsubSnapshot = () => {};
   try {
-    return onSnapshot(q, (snapshot) => {
+    unsubSnapshot = onSnapshot(q, (snapshot) => {
       const sessions = snapshot.docs.map(doc => doc.data() as ConversationSession);
       const local = getLocalSessions();
       const merged = [...sessions];
@@ -611,9 +656,13 @@ export const subscribeToConversations = (
     });
   } catch (e) {
     console.warn('Failed to setup conversations snapshot subscription:', e);
-    callback(getLocalSessions());
-    return () => {};
   }
+  
+  return () => {
+    unsubSnapshot();
+    const idx = activeSubs.indexOf(subRecord);
+    if (idx !== -1) activeSubs.splice(idx, 1);
+  };
 };
 
 // Subscribe to a single conversation
@@ -631,8 +680,12 @@ export const subscribeToConversation = (
   const local = getLocalSessions();
   callback(local.find(s => s.id === sessionId) || null);
   
+  const subRecord = { type: 'conversation', sessionId, callback };
+  activeSubs.push(subRecord);
+  
+  let unsubSnapshot = () => {};
   try {
-    return onSnapshot(
+    unsubSnapshot = onSnapshot(
       doc(db, COLLECTIONS.sessions, sessionId),
       (doc) => {
         if (doc.exists()) {
@@ -648,9 +701,13 @@ export const subscribeToConversation = (
     );
   } catch (e) {
     console.warn('Failed to setup single conversation snapshot:', e);
-    callback(getLocalSessions().find(s => s.id === sessionId) || null);
-    return () => {};
   }
+  
+  return () => {
+    unsubSnapshot();
+    const idx = activeSubs.indexOf(subRecord);
+    if (idx !== -1) activeSubs.splice(idx, 1);
+  };
 };
 
 // Get messages for a session
@@ -687,13 +744,17 @@ export const subscribeToMessages = (
     callback(found.messages);
   }
   
+  const subRecord = { type: 'messages', sessionId, callback };
+  activeSubs.push(subRecord);
+  
   const q = query(
     collection(db, COLLECTIONS.sessions, sessionId, COLLECTIONS.messages),
     orderBy('timestamp', 'asc')
   );
   
+  let unsubSnapshot = () => {};
   try {
-    return onSnapshot(q, (snapshot) => {
+    unsubSnapshot = onSnapshot(q, (snapshot) => {
       const messages = snapshot.docs.map(doc => doc.data() as ConversationMessage);
       const local = getLocalSessions();
       const idx = local.findIndex(s => s.id === sessionId);
@@ -712,13 +773,13 @@ export const subscribeToMessages = (
     });
   } catch (e) {
     console.warn('Failed to setup messages snapshot:', e);
-    const local = getLocalSessions();
-    const f = local.find(s => s.id === sessionId);
-    if (f && f.messages) {
-      callback(f.messages);
-    }
-    return () => {};
   }
+  
+  return () => {
+    unsubSnapshot();
+    const idx = activeSubs.indexOf(subRecord);
+    if (idx !== -1) activeSubs.splice(idx, 1);
+  };
 };
 
 // Extract and update customer data from conversation
@@ -807,10 +868,14 @@ export const subscribeToInterventions = (
   // Return local storage immediately
   callback(getLocalInterventions());
   
+  const subRecord = { type: 'interventions', callback };
+  activeSubs.push(subRecord);
+  
   const q = query(collection(db, COLLECTIONS.interventions), orderBy('requestedAt', 'desc'));
   
+  let unsubSnapshot = () => {};
   try {
-    return onSnapshot(q, (snapshot) => {
+    unsubSnapshot = onSnapshot(q, (snapshot) => {
       const interventions = snapshot.docs.map(doc => doc.data() as InterventionRequest);
       saveLocalInterventions(interventions);
       callback(interventions);
@@ -820,9 +885,13 @@ export const subscribeToInterventions = (
     });
   } catch (e) {
     console.warn('Failed to setup interventions snapshot subscription:', e);
-    callback(getLocalInterventions());
-    return () => {};
   }
+  
+  return () => {
+    unsubSnapshot();
+    const idx = activeSubs.indexOf(subRecord);
+    if (idx !== -1) activeSubs.splice(idx, 1);
+  };
 };
 
 // Add a tag to a conversation
