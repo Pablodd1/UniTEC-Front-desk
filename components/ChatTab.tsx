@@ -78,7 +78,7 @@ const ChatTab: React.FC<ChatTabProps> = ({ quickActions, initialMessage, emergen
   const [showPaymentSimulation, setShowPaymentSimulation] = useState(false);
   const [paymentAmount, setPaymentAmount] = useState<number>(0);
   const [paymentName, setPaymentName] = useState('');
-  const [paymentEmail, setPaymentEmail] = useState('');
+  const [paymentEmail, setPaymentEmail] = useState('no-email@unitec.com');
   const [isPaying, setIsPaying] = useState(false);
   const [paymentSuccess, setPaymentSuccess] = useState(false);
 
@@ -110,7 +110,7 @@ const ChatTab: React.FC<ChatTabProps> = ({ quickActions, initialMessage, emergen
         const params = new URLSearchParams(hash.substring(hash.indexOf('?')));
         setPaymentAmount(parseFloat(params.get('amount') || '0'));
         setPaymentName(decodeURIComponent(params.get('name') || ''));
-        setPaymentEmail(decodeURIComponent(params.get('email') || ''));
+        setPaymentEmail(decodeURIComponent(params.get('email') || 'no-email@unitec.com'));
         setShowPaymentSimulation(true);
         // Clear hash
         window.history.replaceState(null, '', ' ');
@@ -313,8 +313,8 @@ const ChatTab: React.FC<ChatTabProps> = ({ quickActions, initialMessage, emergen
       summarizeSessionNow(conversationId).catch(console.error);
       
       const closingText = language === 'en'
-        ? "It looks like you aren't able to respond right now. I'll close the chat and save our conversation to keep things clean. Feel free to message again whenever you're ready! 😊"
-        : "Veo que en este momento no has podido responder. Por ahora cerraré la conversación y guardaré nuestro progreso para no saturarte 😊 Cuando quieras retomar, solo escríbenos y con gusto continuamos desde donde quedamos 🙌 ¡Que tengas un excelente día!";
+        ? "It looks like you aren't able to respond right now. I'll close the chat and save our conversation to keep things clean. Feel free to message again whenever you're ready! "
+        : "Veo que en este momento no has podido responder. Por ahora cerraré la conversación y guardaré nuestro progreso para no saturarte  Cuando quieras retomar, solo escríbenos y con gusto continuamos desde donde quedamos  ¡Que tengas un excelente día!";
 
       setMessages(prev => [...prev, {
         id: `idle_abandon_${Date.now()}`,
@@ -648,7 +648,7 @@ const ChatTab: React.FC<ChatTabProps> = ({ quickActions, initialMessage, emergen
                 </div>
 
                 <div className="space-y-4">
-                  <div>
+                  <div className="hidden">
                     <label className="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1.5">{language === 'en' ? 'Email Address' : 'Correo Electrónico'}</label>
                     <input 
                       type="email" 
@@ -759,19 +759,19 @@ const ChatTab: React.FC<ChatTabProps> = ({ quickActions, initialMessage, emergen
             
             <div className="space-y-3 bg-[#f0f9ff]/70 border border-blue-100 rounded-2xl p-4 mb-4">
               <div className="flex gap-3">
-                <span className="text-[15px] shrink-0">💬</span>
+                <span className="text-[15px] shrink-0">- </span>
                 <p className="text-xs text-slate-600 leading-normal">
                   <strong>Escribe o Presiona:</strong> Puedes escribir tu mensaje en la parte inferior o simplemente presionar uno de los botones de opciones rápidas.
                 </p>
               </div>
               <div className="flex gap-3">
-                <span className="text-[15px] shrink-0">⚡</span>
+                <span className="text-[15px] shrink-0">- </span>
                 <p className="text-xs text-slate-600 leading-normal">
                   <strong>Respuesta Instantánea:</strong> Nuestro asistente inteligente te responderá de inmediato sobre productos, stock y cotizaciones.
                 </p>
               </div>
               <div className="flex gap-3">
-                <span className="text-[15px] shrink-0">👤</span>
+                <span className="text-[15px] shrink-0">- </span>
                 <p className="text-xs text-slate-600 leading-normal">
                   <strong>Atención del Personal:</strong> Si necesitas ayuda adicional, un asesor de nuestro equipo podrá continuar la conversación.
                 </p>
@@ -779,7 +779,7 @@ const ChatTab: React.FC<ChatTabProps> = ({ quickActions, initialMessage, emergen
             </div>
 
             <div className="text-center pt-2">
-              <span className="text-[11px] font-bold text-slate-400 uppercase tracking-wider">👇 Toca un botón de abajo o escribe un mensaje para comenzar</span>
+              <span className="text-[11px] font-bold text-slate-400 uppercase tracking-wider">Toca un botón de abajo o escribe un mensaje para comenzar</span>
             </div>
           </div>
 

@@ -100,12 +100,9 @@ const CallTab: React.FC<CallTabProps> = ({ emergencyMode, language, voiceName, c
     setStatus('connecting');
     
     // ===== NEW: Initialize conversation session for this call =====
-    try {
-      const convId = await createConversation(brandId || 'unitec', language, 'phone');
-      setConversationId(convId);
-    } catch (e) {
-      console.warn('Failed to create conversation for call:', e);
-    }
+    createConversation(brandId || 'unitec', language, 'phone')
+      .then(convId => setConversationId(convId))
+      .catch(e => console.warn('Failed to create conversation for call:', e));
 
     try {
         const session = await connectLiveSession({

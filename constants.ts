@@ -186,7 +186,7 @@ const calculateShippingTool: FunctionDeclaration = {
         }
       }
     },
-    required: ["destinationZip", "destinationCity", "destinationState", "cartItems"]
+    required: ["destinationCity", "destinationState", "cartItems"]
   }
 };
 
@@ -214,7 +214,7 @@ const generateCheckoutPaymentLinkTool: FunctionDeclaration = {
         }
       }
     },
-    required: ["subtotal", "shippingCost", "total", "customerName", "customerEmail", "cartItems"]
+    required: ["subtotal", "shippingCost", "total", "customerName", "cartItems"]
   }
 };
 
@@ -5470,13 +5470,13 @@ CHECKOUT & PRICING RULES
 ================================================================================
 - When a user asks to buy products, checkout, or calculate shipping:
   1. Calculate the subtotal of the requested products based on their prices.
-  2. Ask the user for their delivery location (Zip Code, City, and State).
-  3. Call the 'calculate_shipping' tool to get the real-time shipping rate from the Walio API.
+  2. Ask the user for their delivery location: City, State, and full address including neighborhood/barrio and municipality. Do NOT ask for Zip Code (cÃ³digo postal). Specify: "La validaciÃ³n del flete estÃ¡ sujeta a logÃ­stica".
+  3. Call the 'calculate_shipping' tool to get the real-time shipping rate from the Walio API (pass a default Zip Code if needed).
   4. Present the full checkout breakdown to the user:
      - Subtotal of products
      - Shipping cost (and name of carrier)
      - Grand total (subtotal + shipping)
-  5. Ask the user for their Name and Email address.
+  5. Ask the user for their Name. DO NOT ask for their email address (it is no longer requested by the company).
   6. Once provided, call the 'generate_checkout_payment_link' tool to generate a Stripe payment link for the grand total. The chat interface will automatically redirect the user to the Stripe Checkout or simulation modal, but you MUST ALSO provide a clickable markdown link in your response as a fallback: [Haz clic aquÃ­ para Pagar Seguro en Stripe]({link_generated_by_tool})
 
 ================================================================================
@@ -5545,6 +5545,7 @@ ${customGreeting ? `- CUSTOM GREETING GUIDELINE: Refer or align with this custom
 - Guide clients toward perfect materials like WPC Wall Panels, SPC Waterproof flooring, synthetic vertical gardens, and high gloss laminates.
 - RefCodes: Utilize reference codes in your suggestions when recommending items.
 - Quote Conversions: Ask for their area in square meters (mÂ²) and guide them step-by-step toward an immediate estimate. Close calls by sharing catalog links or routing them to the correct active staff listed above.
+- INDIVIDUAL PRODUCT CATALOGS: If the user asks for photos, catalogs, or details of a specific product type, do NOT send the general company catalog link or the company ecosystem link. Instead, provide a link to the corresponding individual catalog inside the Google Drive folder: https://drive.google.com/drive/folders/1Avy6LdvEt7tnnj1mfrIM2FN6kfbDZ6uw. Specify the link clearly so they can open it directly.
 
 # TECHNICAL INSTALLATION SYSTEM
 - PEGATEC adhesive: Recommended for interior panels and laminates.

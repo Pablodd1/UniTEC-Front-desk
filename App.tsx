@@ -49,6 +49,40 @@ const App: React.FC = () => {
   }, []);
 
   useEffect(() => {
+    const detectCountryAndSetBrand = async () => {
+      const urlBrand = new URLSearchParams(window.location.search).get('brandId');
+      if (urlBrand === 'unitec' || urlBrand === 'building') {
+        setCurrentBrandId(urlBrand as 'unitec' | 'building');
+        return;
+      }
+      try {
+        const response = await fetch('https://ipapi.co/json/');
+        if (response.ok) {
+          const data = await response.json();
+          if (data.country === 'CO' || data.country_name?.toLowerCase() === 'colombia') {
+            console.log("Colombia detected, setting brand to unitec");
+            setCurrentBrandId('unitec');
+          } else {
+            if (window.location.hostname.includes('buildinginnovation')) {
+              setCurrentBrandId('building');
+            } else {
+              setCurrentBrandId('unitec');
+            }
+          }
+        }
+      } catch (err) {
+        console.warn("Country detection error, fallback to hostname:", err);
+        if (window.location.hostname.includes('buildinginnovation')) {
+          setCurrentBrandId('building');
+        } else {
+          setCurrentBrandId('unitec');
+        }
+      }
+    };
+    detectCountryAndSetBrand();
+  }, []);
+
+  useEffect(() => {
     resetChatSession();
   }, [emergencyMode, language, currentBrandId]);
 
