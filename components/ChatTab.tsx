@@ -131,26 +131,10 @@ const ChatTab: React.FC<ChatTabProps> = ({ quickActions, initialMessage, emergen
       try {
         const storageKey = `unitec_chat_conversation_id_${brandId || 'unitec'}`;
         const historyKey = `unitec_chat_history_${brandId || 'unitec'}`;
-        const savedId = typeof window !== 'undefined' ? localStorage.getItem(storageKey) : null;
-        
-        if (savedId) {
-          try {
-            // Verify if the session still exists in Firestore (has not been erased/deleted by admin)
-            const sessionRef = doc(db, 'conversations', savedId);
-            const sessionSnap = await getDoc(sessionRef);
-            if (sessionSnap.exists()) {
-              setConversationId(savedId);
-              return;
-            }
-          } catch (err) {
-            console.warn('Failed to verify existing session in Firestore:', err);
-          }
-          
-          // If it doesn't exist, it was deleted/erased by admin, so clear local state
-          if (typeof window !== 'undefined') {
-            localStorage.removeItem(storageKey);
-            localStorage.removeItem(historyKey);
-          }
+        // PRIVACY FIX: Always start fresh for every new chat load
+        if (typeof window !== 'undefined') {
+          localStorage.removeItem(storageKey);
+          localStorage.removeItem(historyKey);
         }
 
         const id = await createConversation(
@@ -529,6 +513,34 @@ const ChatTab: React.FC<ChatTabProps> = ({ quickActions, initialMessage, emergen
       setIsRequestingIntervention(false);
     }
   };
+
+
+  // ===== Save & Summarize on Unload (Modal Close) =====
+  const convRef = useRef(conversationId);
+  const msgsRef = useRef(messages);
+  
+  useEffect(() => {
+    convRef.current = conversationId;
+    msgsRef.current = messages;
+  }, [conversationId, messages]);
+
+  useEffect(() => {
+    const handleUnload = () => {
+      const cid = convRef.current;
+      const msgs = msgsRef.current;
+      if (cid && msgs.length > 1) {
+        // We use navigator.sendBeacon or fire-and-forget
+        updateSessionStatus(cid, 'completed').catch(() => {});
+        summarizeSessionNow(cid).catch(() => {});
+      }
+    };
+    
+    window.addEventListener('unload', handleUnload);
+    return () => {
+      window.removeEventListener('unload', handleUnload);
+      handleUnload(); // Also trigger when the component unmounts
+    };
+  }, []);
 
   return (
     <div className="flex-1 flex flex-col min-h-0 relative">
