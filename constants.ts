@@ -81,12 +81,12 @@ export const BUSINESS_CONFIG = BUILDING_INNOVATION_CONFIG;
 export const QUICK_ACTIONS: QuickAction[] = [
   { id: 'stock', title: 'Consultar Stock', message: 'Quiero consultar el stock y disponibilidad de un producto.', iconName: 'Box' },
   { id: 'quote', title: 'Cotizar', message: 'Quiero solicitar una cotizaciÃ³n para un producto.', iconName: 'DollarSign' },
-  { id: 'install', title: 'InstalaciÃ³n', message: 'Necesito informaciÃ³n sobre cÃ³mo instalar un producto.', iconName: 'Hammer' },
+  { id: 'install', title: 'InstalaciÃ³n', message: 'Necesito informaciÃ³n sobre como instalar un producto.', iconName: 'Hammer' },
   { id: 'general', title: 'Consulta General', message: 'Tengo una consulta general sobre sus productos y servicios.', iconName: 'MessageCircle' },
   { id: 'contact', title: 'Contactar Ventas', message: 'Por favor, comunÃ­came con un representante de ventas.', iconName: 'BookOpen' },
   { id: 'shipping', title: 'EnvÃ­os', message: 'Me gustarÃ­a saber cuÃ¡les son las opciones de envÃ­o y tiempos de entrega.', iconName: 'Truck' },
   { id: 'specs', title: 'Ficha TÃ©cnica', message: 'Necesito las especificaciones tÃ©cnicas de un producto.', iconName: 'FileText' },
-  { id: 'returns', title: 'Devoluciones', message: 'Â¿CuÃ¡l es su polÃ­tica de devoluciones y cambios?', iconName: 'RefreshCcw' },
+  { id: 'returns', title: 'Devoluciones', message: 'Â¿CuÃ¡l es su politica de devoluciones y cambios?', iconName: 'RefreshCcw' },
   { id: 'discount', title: 'Descuento Mayorista', message: 'Â¿Ofrecen descuentos para compras al por mayor?', iconName: 'Percent' },
 ];
 
@@ -454,8 +454,8 @@ de seguridad, adhesivo de montaje.
 LÃ¡mina mÃ¡rmol es un decorativo en PVC, la marca UNITEC U.S.A. trae la
 soluciÃ³n ideal para el revestimiento de paredes interiores, ya que ofrece
 un valor estÃ©tico Ãºnico para hogares, oficinas y comercios. Sus
-propiedades tÃ©cnicas brindan un acabado de la mÃ¡s alta calidad.
-AdemÃ¡s, es de fÃ¡cil lavado y resistente contra la humedad.
+propiedades tÃ©cnicas brindan un acabado de la mas alta calidad.
+Ademas, es de fÃ¡cil lavado y resistente contra la humedad.
 SOBRE EL PRODUCTO
 Peso:
 Espesor:
@@ -554,7 +554,7 @@ presiÃ³n no superior a los 100 PSI, adopta las medidas de
 seguridad necesarias para evitar daÃ±os.
 Herramienta: Sierra de corte, guantes y gafas de seguridad,
 adhesivo de montaje.
-PARED PU ARQUNITEC, mÃ¡s conocida como piedra sintÃ©tica de
+PARED PU ARQUNITEC, mas conocida como piedra sintÃ©tica de
 poliuretano o PU STONE, es un material para acabados constructivos de
 uso interior y exterior. Es liviano, flexible y maleable, capaz de adaptarse
 a cualquier superficie y ambiente, su apariencia logra imitar la piedra
@@ -606,16 +606,16 @@ GUÃA DE INSTALACIÃ“N
 USOS Y APLICACIONES
 1.PreparaciÃ³n de la superficie: Verifica que el muro estÃ© limpio,
 seco y nivelado. Si hay imperfecciones, corrige con masilla y lija.
-2.Cortes: Marca una lÃ­nea base en la parte inferior para alinear la
+2.Cortes: Marca una linea base en la parte inferior para alinear la
 primera lama. Corta las piezas con una sierra manual,
 ingleteadora o caladora si necesitas empalmes.
 3.SujeciÃ³n: Aplica adhesivo de montaje tipo poliuretano o
 silicona neutra en zigzag por detrÃ¡s de la lama.
 4.Acabados: Revisa uniones, esquinas y nivelaciÃ³n. Usa perfiles
-de remate si deseas un acabado mÃ¡s limpio en bordes y
+de remate si deseas un acabado mas limpio en bordes y
 esquinas.
 5.Mantenimiento: Revisa uniones, esquinas y nivelaciÃ³n. Usa
-perfiles de remate si deseas un acabado mÃ¡s limpio en bordes y
+perfiles de remate si deseas un acabado mas limpio en bordes y
 esquinas.
 Herramienta: Metro, nivel, cÃºter o sierra, adhesivo de montaje o
 tornillos, escuadra.
@@ -726,7 +726,7 @@ horneadas e irradiadas utilizando un sistema de peinado con control de
 temperatura especialmente diseÃ±ado.
  Dado que tienen la apariencia de una baldosa al principio de su
 nacimiento, se las conoce comÃºnmente como baldosas blandas.
-AdemÃ¡s, debido a su propio peso ligero, relativamente delgado, tambiÃ©n
+Ademas, debido a su propio peso ligero, relativamente delgado, tambien
 es relativamente conveniente para transportar.
 Disponible en los siguientes colores:
 Peso:
@@ -809,7 +809,7 @@ DiseÃ±o interior:
 1.PreparaciÃ³n de la superficie: La pared debe estar limpia, lisa,
 seca y libre de polvo, grasa u hongos.
 2.Cortes: Determine la distribuciÃ³n de los paneles sobre la
-superficie. Marque las lÃ­neas guÃ­as con lÃ¡piz y nivel.
+superficie. Marque las lineas guÃ­as con lÃ¡piz y nivel.
 3.FijaciÃ³n: Aplique adhesivo tipo montaje (no corrosivo) en
 forma de â€œSâ€ o puntos sobre la parte posterior del panel.
 Presione firmemente contra la pared por al menos 30 segundos.
@@ -928,7 +928,7 @@ DiseÃ±o interior:
 1.PreparaciÃ³n de la superficie: La pared debe estar limpia, lisa, seca y
 libre de polvo, grasa u hongos.
 2.Cortes: Determine la distribuciÃ³n de los paneles sobre la superficie.
-Marque las lÃ­neas guÃ­as con lÃ¡piz y nivel.
+Marque las lineas guÃ­as con lÃ¡piz y nivel.
 3.FijaciÃ³n: Aplique adhesivo tipo montaje (no corrosivo) en forma de â€œSâ€
 o puntos sobre la parte posterior del panel. Presione firmemente
 contra la pared por al menos 30 segundos.
@@ -992,7 +992,7 @@ de polvo, material biÃ³tico y humedad.
 2.Cortes: De acuerdo al Ã¡rea, optimice los cortes del producto
 teniendo en cuenta su medida estÃ¡ndar.
 3.SujeciÃ³n: Aplique adhesivo de montaje al respaldo del
-producto en lÃ­neas horizontales cada 30 cms y conecta cada
+producto en lineas horizontales cada 30 cms y conecta cada
 pieza con su sistema machimbrado hasta cubrir la superficie
 deseada.
 4.Acabados: Sigue las recomendaciones del fabricante con los
@@ -1045,7 +1045,7 @@ natural, aportando un acabado moderno, elegante y arquitectÃ³nico.
 Fabricada en PVC de alta resistencia, la Fachada DECK ofrece excelente
 desempeÃ±o frente a la humedad, la radiaciÃ³n solar y los cambios
 climÃ¡ticos, proporcionando durabilidad, estabilidad dimensional y bajo
-mantenimiento. AdemÃ¡s de su valor estÃ©tico, contribuye al aislamiento
+mantenimiento. Ademas de su valor estÃ©tico, contribuye al aislamiento
 tÃ©rmico y a la protecciÃ³n de la estructura frente a las inclemencias del
 tiempo. Disponible en los siguientes colores:
 Fachada DECK
@@ -1178,7 +1178,7 @@ USOS Y APLICACIONES
 portantes o panelerÃ­a) debe estar nivelada, firme y seca.
 Verifique la correcta alineaciÃ³n de la perfilerÃ­a antes de iniciar la
 instalaciÃ³n.
-2.Cortes: Determinar las lÃ­neas de fijaciÃ³n y ubicaciÃ³n de los
+2.Cortes: Determinar las lineas de fijaciÃ³n y ubicaciÃ³n de los
 paneles. Cortar a medida utilizando herramientas adecuadas,
 asegurando cortes rectos y precisos.
 3.FijaciÃ³n: Empezar por el primer panel en esquina o punto de
@@ -1376,7 +1376,7 @@ de
 manipulaciÃ³n,
 convirtiÃ©ndolo en una soluciÃ³n ideal para aplicaciones de diseÃ±o interior,
 exhibiciones, revestimientos decorativos y proyectos creativos.  
-Disponible en mÃºltiples lÃ­neas especializadas, diseÃ±adas para responder
+Disponible en mÃºltiples lineas especializadas, diseÃ±adas para responder
 a diferentes conceptos estÃ©ticos y necesidades de diseÃ±o: Aurora Boreal,
 Zen, Espejo, Gotas de Agua y Pastel.
 Gracias a su bajo peso, fÃ¡cil corte, rÃ¡pida instalaciÃ³n y amplia variedad de
@@ -1549,7 +1549,7 @@ libre de polvo, material biÃ³tico y humedad.
 2.Cortes: De acuerdo al Ã¡rea, optimice los cortes del producto
 teniendo en cuenta su medida estÃ¡ndar.
 3.SujeciÃ³n: Aplique adhesivo de montaje al respaldo del
-producto en lÃ­neas horizontales cada 30 cms y conecta cada
+producto en lineas horizontales cada 30 cms y conecta cada
 pieza con su sistema machimbrado hasta cubrir la superficie
 deseada.
 4.Acabados: Sigue las recomendaciones del fabricante con los
@@ -2484,7 +2484,7 @@ montaje, cinta mÃ©trica, caladora de dientes finos, guantes, paÃ±o
 suave.
 El Panel AcrÃ­lico MÃ¡rmol es un revestimiento decorativo de alto brillo
 fabricado en resina acrÃ­lica de alta densidad, diseÃ±ado para reproducir
-fielmente la estÃ©tica del mÃ¡rmol natural con una soluciÃ³n mÃ¡s liviana,
+fielmente la estÃ©tica del mÃ¡rmol natural con una soluciÃ³n mas liviana,
 resistente y fÃ¡cil de instalar.
 Su acabado translÃºcido y efecto profundo aportan elegancia,
 luminosidad y sofisticaciÃ³n a los espacios, convirtiÃ©ndose en una
@@ -2663,7 +2663,7 @@ GUÃA DE INSTALACIÃ“N
 1.PreparaciÃ³n de la superficie: La pared debe estar seca, limpia, lisa y
 nivelada. Si existen imperfecciones mayores, se recomienda resanar o
 alisar previamente para garantizar una correcta alineaciÃ³n de los listones.
-2.Trazado y cortes: Marque las lÃ­neas guÃ­a sobre el muro para asegurar una
+2.Trazado y cortes: Marque las lineas guÃ­a sobre el muro para asegurar una
 instalaciÃ³n recta y continua. Corte los listones a la medida requerida
 utilizando herramientas manuales o elÃ©ctricas adecuadas.
 3.FijaciÃ³n del listÃ³n: El listÃ³n PVC estructural puede fijarse de dos maneras:
@@ -2676,7 +2676,7 @@ presione firmemente contra el muro.
 del KIT TAPONES LISTÃ“N PVC ESTRUCTURAL 10 CM en los extremos visibles
 del perfil. Asegure el ajuste presionando suavemente hasta lograr un cierre
 limpio y alineado. El uso de los tapones garantiza un acabado estÃ©tico,
-uniforme y seguro, ademÃ¡s de proteger el interior del perfil.
+uniforme y seguro, ademas de proteger el interior del perfil.
 7.Acabados: Revise la alineaciÃ³n final de los listones.  En esquinas o
 terminaciones, puede complementar con perfiles decorativos si el diseÃ±o
 lo requiere. No es necesario pintar ni sellar el producto.
@@ -3112,7 +3112,7 @@ pendiente adecuada para la evacuaciÃ³n del agua.
 2.Corte: Marque las medidas requeridas sobre la lÃ¡mina. Realice los cortes
 utilizando tijera para lÃ¡mina plÃ¡stica o herramienta de disco fino, evitando
 generar rebabas o deformaciones en el material.
-3.ColocaciÃ³n: Coloque las lÃ¡minas en sentido contrario a la direcciÃ³n del viento
+3.ColocaciÃ³n: Coloque las lÃ¡minas en sentido contrario a la direccion del viento
 dominante, iniciando desde el alero hacia la cumbrera. Asegure el correcto
 traslape lateral y longitudinal para evitar filtraciones.
 4.SujeciÃ³n: Fije las lÃ¡minas perforando previamente en la cresta de la teja. Utilice
@@ -3203,7 +3203,7 @@ pendiente adecuada para la evacuaciÃ³n del agua.
 2.Corte: Marque las medidas requeridas sobre la lÃ¡mina. Realice los cortes
 utilizando tijera para lÃ¡mina plÃ¡stica o herramienta de disco fino, evitando
 generar rebabas o deformaciones en el material.
-3.ColocaciÃ³n: Coloque las lÃ¡minas en sentido contrario a la direcciÃ³n del viento
+3.ColocaciÃ³n: Coloque las lÃ¡minas en sentido contrario a la direccion del viento
 dominante, iniciando desde el alero hacia la cumbrera. Asegure el correcto
 traslape lateral y longitudinal para evitar filtraciones.
 4.SujeciÃ³n: Fije las lÃ¡minas perforando previamente en la cresta de la teja. Utilice
@@ -3264,7 +3264,7 @@ Seguir las recomendaciones de la ficha tÃ©cnica en cuanto a uso, aplicaciones 
 Cubierta Termoacustica UPVC Blanca O.B
 USOS Y APLICACIONES
 Panel de UPVC con perfil de onda baja, idÃ³neo para cubiertas
-residenciales o comerciales donde se busque un acabado mÃ¡s discreto y
+residenciales o comerciales donde se busque un acabado mas discreto y
 menor altura de onda.
 Tejados de vivienda urbana
 Cubiertas comerciales ligeras
@@ -3294,7 +3294,7 @@ pendiente adecuada para la evacuaciÃ³n del agua.
 2.Corte: Marque las medidas requeridas sobre la lÃ¡mina. Realice los cortes
 utilizando tijera para lÃ¡mina plÃ¡stica o herramienta de disco fino, evitando
 generar rebabas o deformaciones en el material.
-3.ColocaciÃ³n: Coloque las lÃ¡minas en sentido contrario a la direcciÃ³n del viento
+3.ColocaciÃ³n: Coloque las lÃ¡minas en sentido contrario a la direccion del viento
 dominante, iniciando desde el alero hacia la cumbrera. Asegure el correcto
 traslape lateral y longitudinal para evitar filtraciones.
 4.SujeciÃ³n: Fije las lÃ¡minas perforando previamente en la cresta de la teja. Utilice
@@ -3386,7 +3386,7 @@ pendiente adecuada para la evacuaciÃ³n del agua.
 2.Corte: Marque las medidas requeridas sobre la lÃ¡mina. Realice los cortes
 utilizando tijera para lÃ¡mina plÃ¡stica o herramienta de disco fino, evitando
 generar rebabas o deformaciones en el material.
-3.ColocaciÃ³n: Coloque las lÃ¡minas en sentido contrario a la direcciÃ³n del viento
+3.ColocaciÃ³n: Coloque las lÃ¡minas en sentido contrario a la direccion del viento
 dominante, iniciando desde el alero hacia la cumbrera. Asegure el correcto
 traslape lateral y longitudinal para evitar filtraciones.
 4.SujeciÃ³n: Fije las lÃ¡minas perforando previamente en la cresta de la teja. Utilice
@@ -3452,7 +3452,7 @@ cubiertas, diseÃ±ada para brindar protecciÃ³n, durabilidad y estÃ©tica. Su
 fabricaciÃ³n en cloruro de polivinilo no plastificado (UPVC) la hace
 altamente resistente a la intemperie, corrosiÃ³n y agentes quÃ­micos,
 garantizando una larga vida Ãºtil. Gracias a su diseÃ±o y composiciÃ³n,
-ofrece aislamiento tÃ©rmico y acÃºstico, ademÃ¡s de ser impermeable y
+ofrece aislamiento tÃ©rmico y acÃºstico, ademas de ser impermeable y
 liviana, lo que facilita su instalaciÃ³n y manipulaciÃ³n.
 Residencial: Uso en cubiertas de salas de estar, dormitorios,
 terrazas y patios.
@@ -4103,7 +4103,7 @@ FICHA TÃ‰CNICA
 SOBRE EL PRODUCTO
 ESPECIFICACIONES
 VENTAJAS Y BENEFICIOS
-JardÃ­n Artificial lÃ­nea Moss
+JardÃ­n Artificial linea Moss
 POLITICAS DE GARANTÃAS
 Verificar y recibir a conformidad el producto en el momento de entrega, No se aceptan reclamos por faltantes, daÃ±os o golpes despuÃ©s de recibida la mercancÃ­a.
 UNITEC USA DESIGN no cubre las garantÃ­as por productos instalados que presenten diferencias en tamaÃ±o, tono, color, rayado, por alabeo o cualquier defecto visible
@@ -4151,7 +4151,7 @@ Tipo de follaje:
 PaÃ­s de Origen:
 Material Principal:
 Nombre del Producto:
-JardÃ­n Artificial  lÃ­nea Moss 
+JardÃ­n Artificial  linea Moss 
 50 Ã— 50 cm
 0,7 kg
 Unidad suelta o caja x 30
@@ -4343,7 +4343,7 @@ Composite) o PVC a superficies como paredes y techos.
  Su diseÃ±o delgado y discreto permite una instalaciÃ³n oculta, evitando
 que tornillos o uniones queden visibles en la superficie del panel.
 Son ideales para lograr un acabado limpio, moderno y firme,
-permitiendo ademÃ¡s la remociÃ³n de paneles para mantenimiento o
+permitiendo ademas la remociÃ³n de paneles para mantenimiento o
 ajuste cuando sea necesario.
 Platinas MetÃ¡licas
 Platinas MetÃ¡licas / Clips de FijaciÃ³n
@@ -4496,7 +4496,7 @@ proyectos
 arquitectÃ³nicos 
 modernos 
 que
-requieren lÃ­neas homogÃ©neas y perfectas.
+requieren lineas homogÃ©neas y perfectas.
 Nombre del Producto:
 GarantÃ­a
 FÃ¡cil
@@ -4552,7 +4552,7 @@ Una soluciÃ³n prÃ¡ctica y estÃ©tica que eleva el diseÃ±o del mÃ¡rmol
 Ligero
 China
 Remates decorativos sobre mÃ¡rmol
-DelimitaciÃ³n de lÃ­neas y detalles estÃ©ticos
+DelimitaciÃ³n de lineas y detalles estÃ©ticos
 ProtecciÃ³n de bordes durante acabados
 DiseÃ±o de trazos largos y continuos
 Proyectos residenciales y comerciales
@@ -4589,7 +4589,7 @@ BENEFICIOS PRINCIPALES
 No daÃ±a ni maltrata la superficie del mÃ¡rmol
 Acabado limpio, uniforme y elegante
 FÃ¡cil aplicaciÃ³n y manipulaciÃ³n
-Alta precisiÃ³n en lÃ­neas decorativas
+Alta precisiÃ³n en lineas decorativas
 Ideal para trabajos extensos y detallados
 CARACTERÃSTICAS TÃ‰CNICAS
 AdhesiÃ³n controlada, segura para superficies delicadas
@@ -4630,7 +4630,7 @@ elegante y sofisticado. Su superficie metÃ¡lica proporciona un efecto
 visual de alto impacto, ideal para realzar espacios interiores en proyectos
 residenciales y comerciales.
 Gracias a su adhesiÃ³n firme y controlada, esta cinta permite una
-instalaciÃ³n precisa, logrando lÃ­neas definidas y acabados limpios sin
+instalaciÃ³n precisa, logrando lineas definidas y acabados limpios sin
 daÃ±ar la superficie. Es una soluciÃ³n prÃ¡ctica para quienes buscan detalles
 decorativos con apariencia metÃ¡lica y alta durabilidad.
 Cinta Adhesiva Metalica
@@ -4643,7 +4643,7 @@ Uso decorativo y de protecciÃ³n en superficies lisas
 Ligero
 China
 Remates decorativos en muros y paredes
-DelimitaciÃ³n de lÃ­neas y detalles estÃ©ticos
+DelimitaciÃ³n de lineas y detalles estÃ©ticos
 DecoraciÃ³n de mobiliario y superficies lisas
 Acabados en proyectos residenciales y comerciales
 Realce de diseÃ±os modernos y minimalistas
@@ -4674,7 +4674,7 @@ Seguir las recomendaciones de la ficha tÃ©cnica en cuanto a uso, aplicaciones 
 BENEFICIOS PRINCIPALES
 Acabado metÃ¡lico elegante y moderno
 FÃ¡cil aplicaciÃ³n sin necesidad de herramientas especiales
-Alta precisiÃ³n en lÃ­neas decorativas
+Alta precisiÃ³n en lineas decorativas
 AdhesiÃ³n segura y uniforme
 Ideal para proyectos decorativos rÃ¡pidos y limpios
 CARACTERÃSTICAS TÃ‰CNICAS
@@ -5200,7 +5200,7 @@ Embalaje:
 Espesor: 
 PaÃ­s de Origen:
 Tipo de instalaciÃ³n:
-Variedad segÃºn lÃ­nea (blanco, negro, madera, tonos decorativos)
+Variedad segÃºn linea (blanco, negro, madera, tonos decorativos)
 Caja por 10 unidades
 WPC (Wood Plastic Composite)
 Definir segÃºn referencia
@@ -5236,7 +5236,7 @@ tipo Wall Panel, proporcionando una terminaciÃ³n estÃ©tica, uniforme y
 funcional en esquinas, bordes y remates. Garantiza un acabado limpio,
 protegiendo los cantos del panel y mejorando la durabilidad del sistema.
 Material
-PVC de alta resistencia / WPC (segÃºn lÃ­nea del producto)
+PVC de alta resistencia / WPC (segÃºn linea del producto)
 Resistente a la humedad y agentes ambientales
 Mantenimiento
 Limpieza con paÃ±o hÃºmedo
@@ -5563,24 +5563,24 @@ ${customGreeting ? `- CUSTOM GREETING GUIDELINE: Refer or align with this custom
 
 # DATA EXTRACTION & INTENT TRACKING
 - Always try to identify the user's intent ('Sales', 'Support', or 'Escalation').
-- Durante la conversaciÃ³n, encuentra un momento natural para preguntarle al cliente su nombre para registrarlo y brindarle una asesorÃ­a mÃ¡s personalizada (ej. "Â¿Con quiÃ©n tengo el gusto?").
-- Si el cliente solicita una cotizaciÃ³n o atenciÃ³n humana, pide tambiÃ©n su nÃºmero de telÃ©fono (NUNCA pidas el correo electrÃ³nico).
+- Durante la conversacion, encuentra un momento natural para preguntarle al cliente su nombre para registrarlo y brindarle una asesoria mas personalizada (ej. "Â¿Con quien tengo el gusto?").
+- Si el cliente solicita una cotizaciÃ³n o atenciÃ³n humana, pide tambien su nÃºmero de telÃ©fono (NUNCA pidas el correo electrÃ³nico).
 - INMEDIATAMENTE despuÃ©s de que el usuario mencione su nombre o telÃ©fono, DEBES llamar silenciosamente a la herramienta 'extract_customer_info' para guardar sus datos en el sistema y que dejen de ser AnÃ³nimos.
 
 # REGLAS ESPECÃFICAS DEL NEGOCIO Y CHATBOT:
-- CATÃLOGO: Si el cliente solicita el catÃ¡logo, NO pidas su correo electrÃ³nico. EnvÃ­ale el catÃ¡logo inmediatamente a travÃ©s del chat. Una vez se envÃ­e, asume que pasaron 5 minutos y envÃ­ale una pregunta de captaciÃ³n o interÃ©s para saber quÃ© producto desea o cÃ³mo se puede seguir asesorando para cerrar la venta.
+- CATÃLOGO: Si el cliente solicita el catÃ¡logo, NO pidas su correo electrÃ³nico. EnvÃ­ale el catÃ¡logo inmediatamente a travÃ©s del chat. Una vez se envÃ­e, asume que pasaron 5 minutos y envÃ­ale una pregunta de captaciÃ³n o interÃ©s para saber quÃ© producto desea o como se puede seguir asesorando para cerrar la venta.
 - COTIZACIONES Y PRECIOS: Cuando la persona pregunte por una cotizaciÃ³n e informe las medidas para calcular cuÃ¡nto producto se gastarÃ­a, NO digas un total exacto; informa siempre que es un APROXIMADO. Si el cliente informa que es CLIENTE FINAL y quiere saber el valor de un producto, dale la informaciÃ³n de la tabla de precios informando que es un APROXIMADO, que depende de las medidas y cantidades, y aclara que el valor informado es POR UNIDAD.
 - CONTACTAR HUMANO: Cuando el cliente diga contactar Humano, infÃ³rmale que enviaste la informaciÃ³n al correo lidermarketingonline@espaciosimportados.com.co y que pronto se encargarÃ¡n de contactarlo. Invoca internamente la herramienta 'email_conversation_to_admin' para notificar al equipo.
-- TIEMPO DE ESPERA Y CIERRE: Si el cliente no responde, asume un tiempo de espera. EnvÃ­a un mensaje de seguimiento (ejemplo: "SeÃ±or/a [Nombre], Â¿continÃºa en lÃ­nea?"). Si sigue sin responder, envÃ­a el mensaje de abandono: "Veo que en este momento no has podido responder. Por ahora cerrarÃ© la conversaciÃ³n para no saturarte ðŸ˜Š Cuando quieras retomar, solo escrÃ­benos y con gusto continuamos desde donde quedamos ðŸ‘‹ Â¡Que tengas un excelente dÃ­a!"
-- UBICACIÃ“N / PUNTO FÃSICO: Si el cliente pregunta por la ubicaciÃ³n, direcciÃ³n o punto fÃ­sico, DEBES responder EXACTAMENTE con el siguiente texto:
+- TIEMPO DE ESPERA Y CIERRE: Si el cliente no responde, asume un tiempo de espera. EnvÃ­a un mensaje de seguimiento (ejemplo: "SeÃ±or/a [Nombre], Â¿continÃºa en linea?"). Si sigue sin responder, envÃ­a el mensaje de abandono: "Veo que en este momento no has podido responder. Por ahora cerrarÃ© la conversacion para no saturarte ðŸ˜Š Cuando quieras retomar, solo escribenos y con gusto continuamos desde donde quedamos ðŸ‘‹ Â¡Que tengas un excelente dÃ­a!"
+- UBICACIÃ“N / PUNTO FÃSICO: Si el cliente pregunta por la ubicaciÃ³n, direccion o punto fisico, DEBES responder EXACTAMENTE con el siguiente texto:
 "Te cuento ðŸ‘‹
-Tenemos nuestro Centro de Experiencia en ItagÃ¼Ã­, donde puedes ver los productos en vivo, recibir asesorÃ­a personalizada y te orientamos en instalaciÃ³n.
+Tenemos nuestro Centro de Experiencia en Itagui, donde puedes ver los productos en vivo, recibir asesoria personalizada y te orientamos en instalaciÃ³n.
 ðŸ“ Centro Comercial IDEO â€“ Local 274
 Te dejo la ubicaciÃ³n para que puedas visitarnos fÃ¡cilmente:
 ðŸ“ https://share.google/C9nOJKjH5XgxlP5T1
-Si quieres, tambiÃ©n podemos agendarte una visita o contactarte directamente con uno de nuestros comerciales ðŸ‘‡
+Si quieres, tambien podemos agendarte una visita o contactarte directamente con uno de nuestros comerciales ðŸ‘‡
 
-SeÃ±or/a para ciudades diferentes donde no tenemos punto fÃ­sico realizamos envÃ­os a nivel nacional y la atenciÃ³n es toda virtual con nuestros comerciales expertos.
+SeÃ±or/a para ciudades diferentes donde no tenemos punto fisico realizamos envÃ­os a nivel nacional y la atenciÃ³n es toda virtual con nuestros comerciales expertos.
 
 (Si el usuario informa contactar con comerciales, dar el dato del agente. De lo contrario, hacer una pregunta de productos de interÃ©s, de lo contrario el chat finalizarÃ¡)."
 
@@ -5705,12 +5705,12 @@ export const UI_TRANSLATIONS = {
     quickActions: [
   { id: 'stock', title: 'Consultar Stock', message: 'Quiero consultar el stock y disponibilidad de un producto.', iconName: 'Box' },
   { id: 'quote', title: 'Cotizar', message: 'Quiero solicitar una cotizaciÃ³n para un producto.', iconName: 'DollarSign' },
-  { id: 'install', title: 'InstalaciÃ³n', message: 'Necesito informaciÃ³n sobre cÃ³mo instalar un producto.', iconName: 'Hammer' },
+  { id: 'install', title: 'InstalaciÃ³n', message: 'Necesito informaciÃ³n sobre como instalar un producto.', iconName: 'Hammer' },
   { id: 'general', title: 'Consulta General', message: 'Tengo una consulta general sobre sus productos y servicios.', iconName: 'MessageCircle' },
   { id: 'contact', title: 'Contactar Ventas', message: 'Por favor, comunÃ­came con un representante de ventas.', iconName: 'BookOpen' },
   { id: 'shipping', title: 'EnvÃ­os', message: 'Me gustarÃ­a saber cuÃ¡les son las opciones de envÃ­o y tiempos de entrega.', iconName: 'Truck' },
   { id: 'specs', title: 'Ficha TÃ©cnica', message: 'Necesito las especificaciones tÃ©cnicas de un producto.', iconName: 'FileText' },
-  { id: 'returns', title: 'Devoluciones', message: 'Â¿CuÃ¡l es su polÃ­tica de devoluciones y cambios?', iconName: 'RefreshCcw' },
+  { id: 'returns', title: 'Devoluciones', message: 'Â¿CuÃ¡l es su politica de devoluciones y cambios?', iconName: 'RefreshCcw' },
       { id: 'discount', title: 'Descuento Mayorista', message: 'Â¿Ofrecen descuentos para compras al por mayor?', iconName: 'Percent' },
     ],
   }

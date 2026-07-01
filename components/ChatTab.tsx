@@ -717,7 +717,7 @@ const ChatTab: React.FC<ChatTabProps> = ({ quickActions, initialMessage, emergen
                   </button>
 
                   <p className="text-[10px] text-slate-400 text-center mt-4">
-                    ðŸ”’ {language === 'en' ? 'Secured by Stripe â€¢ Powered by Walio' : 'Seguridad por Stripe â€¢ Potenciado por Walio'}
+                    {language === 'en' ? 'Secured by Stripe -  Powered by Walio' : 'Seguridad por Stripe -  Potenciado por Walio'}
                   </p>
                 </div>
               </div>

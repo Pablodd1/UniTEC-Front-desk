@@ -64,7 +64,7 @@ const WebsiteLayout: React.FC<WebsiteLayoutProps> = ({
                     : 'text-slate-500 hover:text-slate-800 hover:bg-slate-50'
                 }`}
               >
-                ðŸ’¬ {language === 'en' ? 'Chat Assistant' : 'Asistente de Chat'}
+                {language === 'en' ? 'Chat Assistant' : 'Asistente de Chat'}
               </button>
               <button
                 onClick={() => onTabChange(Tab.CALL)}
@@ -74,7 +74,7 @@ const WebsiteLayout: React.FC<WebsiteLayoutProps> = ({
                     : 'text-slate-500 hover:text-slate-800 hover:bg-slate-50'
                 }`}
               >
-                ðŸŽ¤ {language === 'en' ? 'Voice Call (AI)' : 'Llamada de Voz (IA)'}
+                {language === 'en' ? 'Voice Call (AI)' : 'Llamada de Voz (IA)'}
               </button>
             </div>
           )}
