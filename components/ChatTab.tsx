@@ -46,11 +46,11 @@ const ChatTab: React.FC<ChatTabProps> = ({ quickActions, initialMessage, emergen
     const welcomeText = initialMessage || customGreeting || (
       brandId === 'unitec'
         ? (language === 'en'
-            ? "Hello! Welcome to UNITEC USA DESIGN. I can help you with our product catalog, wholesale stock in Florida, or connect you with our sales team. How can I assist you today?"
-            : "¡Hola! Bienvenido a UNITEC USA DESIGN. Puedo ayudarte con nuestro catálogo de perfiles y paneles de PVC, stock mayorista en Florida, o conectarte con nuestro equipo de ventas. ¿En qué puedo ayudarte hoy?")
+            ? "Hello! Welcome to UNITEC USA DESIGN. I can help you with our product catalog, wholesale stock in Florida, or connect you with our sales team. How can I assist you today—
+            : "¡Hola! Bienvenido a UNITEC USA DESIGN. Puedo ayudarte con nuestro catálogo de perfiles y paneles de PVC, stock mayorista en Florida, o conectarte con nuestro equipo de ventas. ¿En qué puedo ayudarte hoy—)
         : (language === 'en'
-            ? "Hello! Welcome to Building Innovation. I can help you with our product catalog, stock in Miami, installation guides, or connect you with our sales team. How can I assist you today?"
-            : "¡Hola! Bienvenido a Building Innovation. Puedo ayudarte con el catálogo de materiales, stock en Miami, guías de instalación o conectarte con ventas. ¿En qué puedo ayudarte hoy?")
+            ? "Hello! Welcome to Building Innovation. I can help you with our product catalog, stock in Miami, installation guides, or connect you with our sales team. How can I assist you today—
+            : "¡Hola! Bienvenido a Building Innovation. Puedo ayudarte con el catálogo de materiales, stock en Miami, guías de instalación o conectarte con ventas. ¿En qué puedo ayudarte hoy—)
     );
     return [
       {
@@ -441,8 +441,8 @@ const ChatTab: React.FC<ChatTabProps> = ({ quickActions, initialMessage, emergen
         
         // Friendly message for customers â€” no raw technical details
         let errorText = language === 'en'
-          ? 'âš ï¸ Oops! I had a temporary connection hiccup. Please send your message again â€” I\'m ready to help!'
-          : 'âš ï¸ Ups, tuve un problema de conexión momentáneo. Por favor, envía tu mensaje de nuevo â€” ¡estoy aquí para ayudarte!';
+          ? '⚠️ Oops! I had a temporary connection hiccup. Please send your message again â€” I\'m ready to help!'
+          : '⚠️ Ups, tuve un problema de conexión momentáneo. Por favor, envía tu mensaje de nuevo â€” ¡¡estoy aquíí para ayudarte!';
         
         if (isLocalKeyUsed) {
           // Only admins see the API key hint, hidden in console
