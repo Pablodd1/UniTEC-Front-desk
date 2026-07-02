@@ -9,24 +9,30 @@ import { trackUsage } from "./usageService";
 
 
 // EMERGENCY OVERRIDE: Using OpenRouter / OpenAI compatible API instead of Gemini
+let cachedApiKey = '';
 export async function getApiKey(): Promise<string> {
+  if (cachedApiKey) return cachedApiKey;
+
   const localKey = typeof window !== 'undefined' ? window.localStorage.getItem('unitec_gemini_api_key') : null;
   if (localKey) return localKey;
   try {
     const res = await fetch('/api/gemini-key');
     if (res.ok) {
       const data = await res.json();
-      if (data.apiKey) return data.apiKey;
+      if (data.apiKey) {
+        cachedApiKey = data.apiKey;
+        return cachedApiKey;
+      }
     }
   } catch (e) {}
   
   if (typeof process !== 'undefined' && process.env) {
     const pKey = process.env.OPENROUTER_API_KEY || process.env.OPENAI_API_KEY || process.env.GEMINI_API_KEY || process.env.API_KEY;
-    if (pKey) return pKey;
+    if (pKey) { cachedApiKey = pKey; return pKey; }
   }
   if (typeof import.meta !== 'undefined' && import.meta.env) {
     const metaKey = import.meta.env.VITE_OPENROUTER_API_KEY || import.meta.env.VITE_GEMINI_API_KEY || import.meta.env.VITE_API_KEY;
-    if (metaKey) return metaKey;
+    if (metaKey) { cachedApiKey = metaKey; return metaKey; }
   }
   return '';
 }
