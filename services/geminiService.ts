@@ -151,6 +151,86 @@ export async function* sendMessageToGemini(
   const endpoint = isOpenAI ? 'https://api.openai.com/v1/chat/completions' : 'https://openrouter.ai/api/v1/chat/completions';
   const model = isOpenAI ? 'gpt-4o-mini' : 'openai/gpt-4o-mini';
 
+  let response;
+  let lastError;
+  const maxRetries = 3;
+  
+  for (let attempt = 0; attempt < maxRetries; attempt++) {
+    try {
+      response = await fetch(endpoint, {
+        method: 'POST',
+        headers: {
+          'Authorization': Bearer \,
+          'Content-Type': 'application/json',
+          'HTTP-Referer': typeof window !== 'undefined' ? window.location.href : 'http://localhost:5173',
+          'X-Title': 'Building Innovation Chatbot'
+        },
+        body: JSON.stringify({
+          model: model,
+          messages: messages,
+          stream: true
+        })
+      });
+      
+      if (response.ok) break;
+      
+      const errText = await response.text().catch(() => '');
+      lastError = new Error(API Error (\): \);
+    } catch (err) {
+      lastError = err;
+    }
+    
+    if (attempt < maxRetries - 1) {
+      // Exponential backoff: 1s, 2s
+      await new Promise(resolve => setTimeout(resolve, 1000 * Math.pow(2, attempt)));
+    }
+  }
+
+  if (!response || !response.ok) {
+    throw lastError || new Error("Failed to connect after retries");
+  }
+
+  const reader = response.body?.getReader();
+    const decoder = new TextDecoder('utf-8');
+    if (!reader) throw new Error('Failed to get stream reader');
+
+    let buffer = '';
+    try {
+      while (true) {
+        const { done, value } = await reader.read();
+        if (done) break;
+        buffer += decoder.decode(value, { stream: true });
+        
+        // Gemini REST API streams an array of objects: [ { "candidates": ...
+        // We will just try to extract the text from the buffer as it grows
+        // For a robust emergency fix, we'll just yield the text as we find it
+        // A simpler way: just wait for the whole thing (it's fast enough) or regex the parts.
+        // But since it's a generator, we must yield.
+      }
+      
+      // Since parsing Gemini's weird JSON stream is complex in an emergency patch, 
+      // let's just parse the whole buffer at once to avoid stream chunking bugs.
+      const json = JSON.parse(buffer);
+      if (Array.isArray(json)) {
+        for (const chunk of json) {
+          const text = chunk.candidates?.[0]?.content?.parts?.[0]?.text;
+          if (text) {
+             yield { text, candidates: [{ content: { parts: [{ text }] } }] };
+          }
+        }
+      }
+    } catch (e) {
+      // If JSON parse fails, it might be an error response
+      console.error(e);
+      throw new Error("Failed to parse Gemini response");
+    }
+    return;
+  }
+
+  // OpenRouter / OpenAI path
+  const endpoint = isOpenAI ? 'https://api.openai.com/v1/chat/completions' : 'https://openrouter.ai/api/v1/chat/completions';
+  const model = isOpenAI ? 'gpt-4o-mini' : 'openai/gpt-4o-mini';
+
   const response = await fetch(endpoint, {
     method: 'POST',
     headers: {
