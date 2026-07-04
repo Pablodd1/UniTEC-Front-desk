@@ -1,22 +1,28 @@
-﻿// @ts-nocheck\nï»¿
-// geminiService.ts handles interactions with the Google GenAI SDK
+// @ts-nocheck
+// geminiService.ts — Handles all AI API communication
+// Provider: OpenRouter (primary) | Gemini REST (fallback if AIza key)
+// Architecture: API key fetched once + cached in module scope, 3-attempt retry with exponential backoff
+
 import { GoogleGenAI, LiveServerMessage, Modality, GenerateContentResponse } from "@google/genai";
 import { getSystemInstruction, TOOLS, PRODUCTS } from "../constants";
 import { decodeAudioData, decode, encode, pcmToWavBlob } from "../utils/audioUtils";
 import { Language, VoiceName } from "../types";
 import { trackUsage } from "./usageService";
 
-
-
-// EMERGENCY OVERRIDE: Using OpenRouter / OpenAI compatible API instead of Gemini
+// ─── API Key Cache ─────────────────────────────────────────────────────────
+// Cached in module memory so we only call /api/gemini-key once per page load.
 let cachedApiKey = '';
+
 export async function getApiKey(): Promise<string> {
   if (cachedApiKey) return cachedApiKey;
 
+  // 1. Admin override via localStorage (Admin Settings panel)
   const localKey = typeof window !== 'undefined' ? window.localStorage.getItem('unitec_gemini_api_key') : null;
-  if (localKey) return localKey;
+  if (localKey) { cachedApiKey = localKey; return localKey; }
+
+  // 2. Secure server endpoint (Vercel function) — primary path in production
   try {
-    const res = await fetch('/api/gemini-key');
+    const res = await fetch('/api/gemini-key', { cache: 'no-store' });
     if (res.ok) {
       const data = await res.json();
       if (data.apiKey) {
@@ -24,8 +30,9 @@ export async function getApiKey(): Promise<string> {
         return cachedApiKey;
       }
     }
-  } catch (e) {}
-  
+  } catch (_) { /* server unreachable — fall through */ }
+
+  // 3. Build-time env vars (development fallback)
   if (typeof process !== 'undefined' && process.env) {
     const pKey = process.env.OPENROUTER_API_KEY || process.env.OPENAI_API_KEY || process.env.GEMINI_API_KEY || process.env.API_KEY;
     if (pKey) { cachedApiKey = pKey; return pKey; }
@@ -37,11 +44,12 @@ export async function getApiKey(): Promise<string> {
   return '';
 }
 
-export const resetApiKeyCache = (): void => {};
+/** Call this to force re-fetch on next message (e.g. after admin saves a new key). */
+export const resetApiKeyCache = (): void => { cachedApiKey = ''; };
 export const resetChatSession = () => {};
 
+// ─── TTS ────────────────────────────────────────────────────────────────────
 export async function playGeminiTTS(text: string, voiceName: string = 'Kore') {
-  // TTS polyfill: we can just use Web Speech API here since we removed Gemini
   const synth = window.speechSynthesis;
   const utterance = new SpeechSynthesisUtterance(text);
   utterance.lang = 'es-ES';
@@ -49,6 +57,12 @@ export async function playGeminiTTS(text: string, voiceName: string = 'Kore') {
   return new Promise(resolve => { utterance.onend = resolve; });
 }
 
+// ─── Helpers ────────────────────────────────────────────────────────────────
+const sleep = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
+
+const RETRY_DELAYS = [1000, 2000]; // ms between attempts 1→2 and 2→3
+
+// ─── Main chat generator ────────────────────────────────────────────────────
 export async function* sendMessageToGemini(
   message: string,
   history: any[] = [],
@@ -58,44 +72,30 @@ export async function* sendMessageToGemini(
   customGreeting?: string,
   brandId: any = 'building'
 ): AsyncGenerator<any, void, unknown> {
-  
-  const apiKey = await getApiKey();
-  let instructions = getSystemInstruction(language, customGreeting, brandId);
-  if (emergencyMode) instructions += "\n\n[SYSTEM OVERRIDE: EMERGENCY MODE ACTIVE]. Respond concisely.";
 
-  // Convert Gemini history format to OpenAI format
-  const messages = [
-    { role: 'system', content: instructions },
-    ...history.map(h => ({
-      role: h.role === 'model' ? 'assistant' : 'user',
-      content: h.parts?.[0]?.text || ''
-    }))
-  ];
-  
-  if (message) {
-    messages.push({ role: 'user', content: message });
+  const apiKey = await getApiKey();
+
+  if (!apiKey) {
+    throw new Error('API_KEY_MISSING');
   }
 
-  // Use OpenRouter endpoint (or OpenAI if key starts with sk-)
+  let instructions = getSystemInstruction(language, customGreeting, brandId);
+  if (emergencyMode) instructions += '\n\n[SYSTEM OVERRIDE: EMERGENCY MODE ACTIVE]. Respond concisely.';
+
+  // ── Gemini REST path (if key starts with AIza) ───────────────────────────
   const isGemini = apiKey.startsWith('AIza');
-  const isOpenAI = apiKey.startsWith('sk-') && !apiKey.startsWith('sk-or-');
-  
+
   if (isGemini) {
-    // Fallback to Gemini REST API since SDK was removed
     const geminiEndpoint = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:streamGenerateContent?key=${apiKey}`;
-    
-    // Convert to Gemini format
+
     const geminiContents = [
-      { role: 'user', parts: [{ text: "System Instructions: " + instructions }] },
+      { role: 'user', parts: [{ text: 'System Instructions: ' + instructions }] },
       ...history.map(h => ({
         role: h.role === 'model' ? 'model' : 'user',
         parts: [{ text: h.parts?.[0]?.text || h.text || '' }]
       }))
     ];
-    
-    if (message) {
-      geminiContents.push({ role: 'user', parts: [{ text: message }] });
-    }
+    if (message) geminiContents.push({ role: 'user', parts: [{ text: message }] });
 
     const response = await fetch(geminiEndpoint, {
       method: 'POST',
@@ -108,8 +108,6 @@ export async function* sendMessageToGemini(
       throw new Error(`Gemini API Error (${response.status}): ${errText}`);
     }
 
-    // Simple JSON fallback for Gemini REST stream (it returns an array of JSON objects if not streamed properly, or SSE if using SSE)
-    // Actually streamGenerateContent returns a JSON array stream but fetch doesn't easily parse it unless we do manual chunking
     const reader = response.body?.getReader();
     const decoder = new TextDecoder('utf-8');
     if (!reader) throw new Error('Failed to get stream reader');
@@ -120,137 +118,73 @@ export async function* sendMessageToGemini(
         const { done, value } = await reader.read();
         if (done) break;
         buffer += decoder.decode(value, { stream: true });
-        
-        // Gemini REST API streams an array of objects: [ { "candidates": ...
-        // We will just try to extract the text from the buffer as it grows
-        // For a robust emergency fix, we'll just yield the text as we find it
-        // A simpler way: just wait for the whole thing (it's fast enough) or regex the parts.
-        // But since it's a generator, we must yield.
       }
-      
-      // Since parsing Gemini's weird JSON stream is complex in an emergency patch, 
-      // let's just parse the whole buffer at once to avoid stream chunking bugs.
       const json = JSON.parse(buffer);
       if (Array.isArray(json)) {
         for (const chunk of json) {
           const text = chunk.candidates?.[0]?.content?.parts?.[0]?.text;
-          if (text) {
-             yield { text, candidates: [{ content: { parts: [{ text }] } }] };
-          }
+          if (text) yield { text, candidates: [{ content: { parts: [{ text }] } }] };
         }
       }
     } catch (e) {
-      // If JSON parse fails, it might be an error response
-      console.error(e);
-      throw new Error("Failed to parse Gemini response");
+      console.error('Gemini parse error:', e);
+      throw new Error('Failed to parse Gemini response');
+    } finally {
+      reader.releaseLock();
     }
     return;
   }
 
-  // OpenRouter / OpenAI path
-  const endpoint = isOpenAI ? 'https://api.openai.com/v1/chat/completions' : 'https://openrouter.ai/api/v1/chat/completions';
+  // ── OpenRouter / OpenAI path ─────────────────────────────────────────────
+  const isOpenAI = apiKey.startsWith('sk-') && !apiKey.startsWith('sk-or-');
+  const endpoint = isOpenAI
+    ? 'https://api.openai.com/v1/chat/completions'
+    : 'https://openrouter.ai/api/v1/chat/completions';
   const model = isOpenAI ? 'gpt-4o-mini' : 'openai/gpt-4o-mini';
 
-  let response;
-  let lastError;
-  const maxRetries = 3;
-  
-  for (let attempt = 0; attempt < maxRetries; attempt++) {
+  const messages = [
+    { role: 'system', content: instructions },
+    ...history.map(h => ({
+      role: h.role === 'model' ? 'assistant' : 'user',
+      content: h.parts?.[0]?.text || ''
+    }))
+  ];
+  if (message) messages.push({ role: 'user', content: message });
+
+  // 3-attempt retry with exponential backoff
+  let response: Response | undefined;
+  let lastError: Error | undefined;
+
+  for (let attempt = 0; attempt < 3; attempt++) {
     try {
       response = await fetch(endpoint, {
         method: 'POST',
         headers: {
-          'Authorization': Bearer \,
+          'Authorization': `Bearer ${apiKey}`,
           'Content-Type': 'application/json',
-          'HTTP-Referer': typeof window !== 'undefined' ? window.location.href : 'http://localhost:5173',
-          'X-Title': 'Building Innovation Chatbot'
+          'HTTP-Referer': typeof window !== 'undefined' ? window.location.href : 'https://unitec-front-desk.vercel.app',
+          'X-Title': 'UNITEC Chatbot'
         },
-        body: JSON.stringify({
-          model: model,
-          messages: messages,
-          stream: true
-        })
+        body: JSON.stringify({ model, messages, stream: true })
       });
-      
-      if (response.ok) break;
-      
+
+      if (response.ok) break; // success — exit retry loop
+
       const errText = await response.text().catch(() => '');
-      lastError = new Error(API Error (\): \);
-    } catch (err) {
+      lastError = new Error(`API Error (${response.status}): ${errText}`);
+    } catch (err: any) {
       lastError = err;
+      response = undefined;
     }
-    
-    if (attempt < maxRetries - 1) {
-      // Exponential backoff: 1s, 2s
-      await new Promise(resolve => setTimeout(resolve, 1000 * Math.pow(2, attempt)));
-    }
+
+    if (attempt < 2) await sleep(RETRY_DELAYS[attempt]);
   }
 
   if (!response || !response.ok) {
-    throw lastError || new Error("Failed to connect after retries");
+    throw lastError || new Error('Failed to connect to AI after 3 attempts');
   }
 
-  const reader = response.body?.getReader();
-    const decoder = new TextDecoder('utf-8');
-    if (!reader) throw new Error('Failed to get stream reader');
-
-    let buffer = '';
-    try {
-      while (true) {
-        const { done, value } = await reader.read();
-        if (done) break;
-        buffer += decoder.decode(value, { stream: true });
-        
-        // Gemini REST API streams an array of objects: [ { "candidates": ...
-        // We will just try to extract the text from the buffer as it grows
-        // For a robust emergency fix, we'll just yield the text as we find it
-        // A simpler way: just wait for the whole thing (it's fast enough) or regex the parts.
-        // But since it's a generator, we must yield.
-      }
-      
-      // Since parsing Gemini's weird JSON stream is complex in an emergency patch, 
-      // let's just parse the whole buffer at once to avoid stream chunking bugs.
-      const json = JSON.parse(buffer);
-      if (Array.isArray(json)) {
-        for (const chunk of json) {
-          const text = chunk.candidates?.[0]?.content?.parts?.[0]?.text;
-          if (text) {
-             yield { text, candidates: [{ content: { parts: [{ text }] } }] };
-          }
-        }
-      }
-    } catch (e) {
-      // If JSON parse fails, it might be an error response
-      console.error(e);
-      throw new Error("Failed to parse Gemini response");
-    }
-    return;
-  }
-
-  // OpenRouter / OpenAI path
-  const endpoint = isOpenAI ? 'https://api.openai.com/v1/chat/completions' : 'https://openrouter.ai/api/v1/chat/completions';
-  const model = isOpenAI ? 'gpt-4o-mini' : 'openai/gpt-4o-mini';
-
-  const response = await fetch(endpoint, {
-    method: 'POST',
-    headers: {
-      'Authorization': `Bearer ${apiKey}`,
-      'Content-Type': 'application/json',
-      'HTTP-Referer': typeof window !== 'undefined' ? window.location.href : 'http://localhost:5173',
-      'X-Title': 'Building Innovation Chatbot'
-    },
-    body: JSON.stringify({
-      model: model,
-      messages: messages,
-      stream: true
-    })
-  });
-
-  if (!response.ok) {
-    const errText = await response.text().catch(() => '');
-    throw new Error(`API Error (${response.status}): ${errText}`);
-  }
-
+  // ── SSE stream parsing ───────────────────────────────────────────────────
   const reader = response.body?.getReader();
   const decoder = new TextDecoder('utf-8');
   if (!reader) throw new Error('Failed to get stream reader');
@@ -277,7 +211,7 @@ export async function* sendMessageToGemini(
                 candidates: [{ content: { parts: [{ text: chunkText }] } }]
               };
             }
-          } catch (e) {}
+          } catch (_) { /* skip malformed SSE chunk */ }
         }
       }
     }
@@ -286,27 +220,26 @@ export async function* sendMessageToGemini(
   }
 }
 
+// ─── Voice / Live Session ────────────────────────────────────────────────────
 export const connectLiveSession = async (
-    callbacks: any, 
-    emergencyMode: boolean = false, 
-    language: any = 'es',
-    voiceName: string = 'Kore',
-    customGreeting?: string,
-    brandId: any = 'building'
+  callbacks: any,
+  emergencyMode: boolean = false,
+  language: any = 'es',
+  voiceName: string = 'Kore',
+  customGreeting?: string,
+  brandId: any = 'building'
 ) => {
-  // Web Speech API + OpenRouter Voice Fallback
   let isRecording = true;
   let recognition: any = null;
-  let synth = window.speechSynthesis;
-  let messageHistory: any[] = [];
-  let instructions = getSystemInstruction(language, customGreeting, brandId);
-  
-  // Request microphone permission explicitly so browser shows permission dialog
+  const synth = window.speechSynthesis;
+  const messageHistory: any[] = [];
+  const instructions = getSystemInstruction(language, customGreeting, brandId);
+
   try {
     const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
     stream.getTracks().forEach(t => t.stop());
-  } catch (permErr) {
-    callbacks.onError(new Error("Microphone permission denied. Please allow access and try again."));
+  } catch {
+    callbacks.onError(new Error('Microphone permission denied. Please allow access and try again.'));
     return { disconnect: async () => {}, getAudioBlob: () => new Blob(), stream: null };
   }
 
@@ -317,63 +250,61 @@ export const connectLiveSession = async (
     recognition.continuous = false;
     recognition.interimResults = false;
     recognition.lang = language === 'en' ? 'en-US' : 'es-ES';
-    
+
     recognition.onstart = () => {
       const interval = setInterval(() => {
         if (!isRecording) clearInterval(interval);
         if (callbacks.onAudioData) callbacks.onAudioData(new Uint8Array(64).fill(128));
       }, 100);
     };
-    
+
     recognition.onresult = async (event: any) => {
       const transcript = event.results[0][0].transcript;
       callbacks.onMessage(transcript, null, false);
-      messageHistory.push({ role: 'user', parts: [{text: transcript}] });
-      
+      messageHistory.push({ role: 'user', parts: [{ text: transcript }] });
+
       try {
         const stream = sendMessageToGemini(transcript, messageHistory, false, language, undefined, customGreeting, brandId);
         let fullResponse = '';
-        for await (const chunk of stream) {
-           fullResponse += chunk.text || '';
-        }
-        
+        for await (const chunk of stream) { fullResponse += chunk.text || ''; }
+
         callbacks.onMessage(fullResponse, null, false);
-        messageHistory.push({ role: 'model', parts: [{text: fullResponse}] });
-        
+        messageHistory.push({ role: 'model', parts: [{ text: fullResponse }] });
+
         const utterance = new SpeechSynthesisUtterance(fullResponse);
         utterance.lang = language === 'en' ? 'en-US' : 'es-ES';
         utterance.onend = () => { if (isRecording && recognition) recognition.start(); };
-        setTimeout(() => { if (isRecording && !synth.speaking && recognition) { try { recognition.start(); } catch(e) {} } }, 3000);
+        setTimeout(() => { if (isRecording && !synth.speaking && recognition) { try { recognition.start(); } catch (_) {} } }, 3000);
         synth.speak(utterance);
-        
       } catch (err: any) {
         callbacks.onError(err);
       }
     };
-    
-    recognition.onerror = (e: any) => {
-      if (isRecording) {
-         setTimeout(() => { if (isRecording && recognition) recognition.start(); }, 1000);
-      }
+
+    recognition.onerror = () => {
+      if (isRecording) setTimeout(() => { if (isRecording && recognition) recognition.start(); }, 1000);
     };
-    
+
     recognition.onend = () => {
-       if (isRecording && !synth.speaking) recognition.start();
+      if (isRecording && !synth.speaking) recognition.start();
     };
-    
+
+    const greeting = customGreeting || (language === 'en'
+      ? 'Hello! How can I help you today?'
+      : brandId === 'unitec' ? '¡Hola! Bienvenido a UNITEC USA DESIGN.' : '¡Hola! Bienvenido a Building Innovation.');
+
     setTimeout(() => {
-        const greeting = customGreeting || (language === "en" ? "Hello! How can I help you today?" : (brandId === "unitec" ? "Â¡Hola! Bienvenido a UNITEC USA DESIGN." : "Â¡Hola! Bienvenido a Building Innovation."));
-        callbacks.onMessage(greeting, null, false);
-        messageHistory.push({ role: 'model', parts: [{text: greeting}] });
-        const utterance = new SpeechSynthesisUtterance(greeting);
-        utterance.lang = language === 'en' ? 'en-US' : 'es-ES';
-        utterance.onend = () => { if (isRecording) recognition.start(); };
-        setTimeout(() => { if (isRecording && !synth.speaking && recognition) { try { recognition.start(); } catch(e) {} } }, 3000);
-        synth.speak(utterance);
+      callbacks.onMessage(greeting, null, false);
+      messageHistory.push({ role: 'model', parts: [{ text: greeting }] });
+      const utterance = new SpeechSynthesisUtterance(greeting);
+      utterance.lang = language === 'en' ? 'en-US' : 'es-ES';
+      utterance.onend = () => { if (isRecording) recognition.start(); };
+      setTimeout(() => { if (isRecording && !synth.speaking && recognition) { try { recognition.start(); } catch (_) {} } }, 3000);
+      synth.speak(utterance);
     }, 1000);
-    
+
   } else {
-    setTimeout(() => callbacks.onError(new Error("Web Speech API not supported in this browser.")), 100);
+    setTimeout(() => callbacks.onError(new Error('Web Speech API not supported in this browser.')), 100);
   }
 
   return {
@@ -388,8 +319,8 @@ export const connectLiveSession = async (
   };
 };
 
+// ─── Utility stubs (keep for import compatibility) ────────────────────────────
 export async function generateConversationSummary(messages: any[], brandId = 'building') {
-  return { summary: "Conversation ended.", qaPairs: [] };
+  return { summary: 'Conversation ended.', qaPairs: [] };
 }
 export async function generateEmbedding(text: string) { return null; }
-
