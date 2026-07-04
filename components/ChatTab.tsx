@@ -1,4 +1,4 @@
-﻿import { summarizeSessionNow } from '../services/retentionService';
+﻿﻿﻿import { summarizeSessionNow } from '../services/retentionService';
 
 import React, { useState, useRef, useEffect } from 'react';
 import { db } from '../firebase';
@@ -439,10 +439,10 @@ const ChatTab: React.FC<ChatTabProps> = ({ quickActions, initialMessage, emergen
         // Log detailed error for diagnostics (never shown to customer)
         console.error('Gemini API error detail:', error.message || String(error));
         
-        // Friendly message for customers â€” no raw technical details
+        // Friendly message for customers - no technical details
         let errorText = language === 'en'
-          ? '⚠️ Oops! I had a temporary connection hiccup. Please send your message again â€” I\'m ready to help!'
-          : '⚠️ Ups, tuve un problema de conexión momentáneo. Por favor, envía tu mensaje de nuevo â€” ¡¡estoy aquíí para ayudarte!';
+          ? 'Oops! I had a temporary hiccup. Please send your message again, I am ready to help!'
+          : 'Ups, tuve un problema momentaneo. Por favor, envia tu mensaje de nuevo, estoy aqui para ayudarte!';
         
         if (isLocalKeyUsed) {
           // Only admins see the API key hint, hidden in console
