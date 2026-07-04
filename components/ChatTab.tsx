@@ -1,11 +1,11 @@
-﻿﻿﻿import { summarizeSessionNow } from '../services/retentionService';
+﻿﻿﻿﻿import { summarizeSessionNow } from '../services/retentionService';
 
 import React, { useState, useRef, useEffect } from 'react';
 import { db } from '../firebase';
 import { doc, getDoc } from 'firebase/firestore';
 import { Message, QuickAction, Language } from '../types';
 import { saveChatSession } from '../services/firestoreService';
-import { sendMessageToGemini } from '../services/geminiService';
+import { sendMessageToGemini, resetApiKeyCache } from '../services/geminiService';
 import { createConversation, addMessage, requestIntervention, extractCustomerData, updateSessionStatus, subscribeToConversation, subscribeToMessages } from '../services/conversationService';
 import { notifyStaffIntervention } from '../services/notificationService';
 import { Send, User, Box, DollarSign, Hammer, BookOpen, CheckCircle2, Truck, FileText, RefreshCcw, Percent, Headphones, CreditCard, Lock, MessageSquare } from 'lucide-react';
@@ -438,6 +438,7 @@ const ChatTab: React.FC<ChatTabProps> = ({ quickActions, initialMessage, emergen
         const isLocalKeyUsed = typeof window !== 'undefined' && !!window.localStorage.getItem('unitec_gemini_api_key');
         // Log detailed error for diagnostics (never shown to customer)
         console.error('Gemini API error detail:', error.message || String(error));
+        resetApiKeyCache(); // Force fresh key fetch on next message (self-healing)
         
         // Friendly message for customers - no technical details
         let errorText = language === 'en'
