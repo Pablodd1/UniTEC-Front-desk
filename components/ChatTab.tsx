@@ -427,6 +427,14 @@ const ChatTab: React.FC<ChatTabProps> = ({ quickActions, initialMessage, emergen
           msg.id === botMsgId ? { ...msg, text: fullText } : msg
         ));
       }
+      // Simulate tool execution since the API doesn't support function calls
+      if (fullText.includes('email_conversation_to_admin') || fullText.includes('transferencia electrónica')) {
+          if (conversationId) {
+             console.log("Auto-triggering staff intervention based on AI output");
+             requestIntervention(conversationId, 'Asistencia solicitada por el Chatbot automáticamente', 'high').catch(console.warn);
+             notifyStaffIntervention(conversationId, 'Asistencia solicitada por el Chatbot automáticamente', 'high').catch(console.warn);
+          }
+      }
         } catch (error: any) {
       console.error("Chat error:", error);
       

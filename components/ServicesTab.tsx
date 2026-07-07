@@ -75,8 +75,8 @@ const ServicesTab: React.FC<ServicesTabProps> = ({ language, onConsultProduct, o
                   className="bg-white rounded-2xl p-4 border border-slate-200 text-left hover:border-brand-500 hover:shadow-lg transition-all group flex flex-col h-full"
                 >
                   <div className="h-24 bg-slate-100 rounded-xl mb-3 flex items-center justify-center overflow-hidden">
-                    {false ? (
-                      <img src={''} alt={product.name} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" />
+                    {product.image_url ? (
+                      <img src={product.image_url.includes('drive.google.com/file/d/') ? `https://drive.google.com/uc?export=view&id=${product.image_url.split('/d/')[1].split('/')[0]}` : product.image_url} alt={product.name} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" onError={(e) => { e.currentTarget.style.display = 'none'; }} />
                     ) : (
                       <div className="text-xs text-slate-400 font-medium">No Image</div>
                     )}
@@ -113,8 +113,8 @@ const ServicesTab: React.FC<ServicesTabProps> = ({ language, onConsultProduct, o
                   className="bg-white rounded-2xl p-4 border border-slate-200 text-left hover:border-brand-500 hover:shadow-lg transition-all group flex flex-col h-full"
                 >
                   <div className="h-24 bg-slate-100 rounded-xl mb-3 flex items-center justify-center overflow-hidden">
-                    {false ? (
-                      <img src={''} alt={product.name} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" />
+                    {product.image_url ? (
+                      <img src={product.image_url.includes('drive.google.com/file/d/') ? `https://drive.google.com/uc?export=view&id=${product.image_url.split('/d/')[1].split('/')[0]}` : product.image_url} alt={product.name} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" onError={(e) => { e.currentTarget.style.display = 'none'; }} />
                     ) : (
                       <div className="text-xs text-slate-400 font-medium">No Image</div>
                     )}
@@ -148,5 +148,6 @@ const ServicesTab: React.FC<ServicesTabProps> = ({ language, onConsultProduct, o
 };
 
 export default ServicesTab;
+
 
 

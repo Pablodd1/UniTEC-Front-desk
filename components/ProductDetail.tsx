@@ -31,11 +31,12 @@ const ProductDetail: React.FC<ProductDetailProps> = ({ product, language, onBack
       <div className="flex-1 overflow-y-auto">
         {/* Product Image Area */}
         <div className="bg-slate-50 aspect-square w-full flex items-center justify-center p-8 relative">
-          {false ? (
+          {product.image_url ? (
             <img 
-              src={''} 
+              src={product.image_url.includes('drive.google.com/file/d/') ? `https://drive.google.com/uc?export=view&id=${product.image_url.split('/d/')[1].split('/')[0]}` : product.image_url} 
               alt={product.name}
               className="w-full h-full object-contain mix-blend-multiply"
+              onError={(e) => { e.currentTarget.style.display = 'none'; }}
             />
           ) : (
             <div className="text-slate-400 flex flex-col items-center">
@@ -160,5 +161,6 @@ const ProductDetail: React.FC<ProductDetailProps> = ({ product, language, onBack
 };
 
 export default ProductDetail;
+
 
 
