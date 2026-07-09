@@ -24,7 +24,7 @@ interface ChatTabProps {
   brandId?: 'unitec' | 'building';
 }
 
-const ChatTab: React.FC<ChatTabProps> = ({ quickActions, initialMessage, emergencyMode, language, customGreeting, brandId }) => {
+const ChatTab: React.FC<ChatTabProps> = ({ quickActions, initialMessage, emergencyMode, language, customGreeting, bgImage, brandId }) => {
   const t = UI_TRANSLATIONS[language];
   
   const [messages, setMessages] = useState<Message[]>(() => {
@@ -984,6 +984,8 @@ const ChatTab: React.FC<ChatTabProps> = ({ quickActions, initialMessage, emergen
 };
 
 export default ChatTab;
+
+
 
 
 

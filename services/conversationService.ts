@@ -140,19 +140,7 @@ const getLocalSessions = (): ConversationSession[] => {
   if (typeof window === 'undefined') return [];
   try {
     const raw = window.localStorage.getItem('unitec_conversations_fallback');
-    if (!raw || raw === '[]') {
-      window.localStorage.setItem('unitec_conversations_fallback', JSON.stringify(SEED_SESSIONS));
-      const seedMetrics = {
-        totalConversations: 48,
-        activeConversations: 0,
-        pendingInterventions: 0,
-        avgResponseTime: 1.25,
-        errorRate: 0.05,
-        uptime: 99.92,
-      };
-      window.localStorage.setItem('unitec_system_metrics', JSON.stringify(seedMetrics));
-      return SEED_SESSIONS;
-    }
+    if (!raw || raw === '[]') return [];
     return JSON.parse(raw);
   } catch (e) {
     return [];
@@ -1153,6 +1141,7 @@ export const getAllSessionsForBackfill = async (): Promise<ConversationSession[]
   const snapshot = await getDocs(q);
   return snapshot.docs.map(d => d.data() as ConversationSession);
 };
+
 
 
 
