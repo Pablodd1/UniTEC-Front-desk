@@ -135,22 +135,23 @@ service cloud.firestore {
       allow read, write: if isOwner(userId);
     }
     
-    // -- Conversations: public create (visitors), authenticated read/write (admin), public update (visitors) --
+    // -- Conversations: public create & get (visitors), authenticated list & write (admin), public update (visitors) --
     match /conversations/{sessionId} {
-      allow get: if isStaff();
+      allow get: if true;
       allow list: if isStaff();
       allow create: if isValidConversation();
       allow update: if isStaff() || (!isAuthenticated() && request.resource.data.id == resource.data.id);
       allow delete: if isAdmin();
+      
+      // -- Messages subcollection: public read & create, authenticated update/delete --
+      match /messages/{messageId} {
+        allow read: if true;
+        allow create: if isValidMessage();
+        allow update: if isStaff();
+        allow delete: if isAdmin();
+      }
     }
-    
-    // -- Messages subcollection: authenticated read, public create --
-    match /conversations/{sessionId}/messages/{messageId} {
-      allow read: if isStaff();
-      allow create: if isValidMessage();
-      allow update: if isStaff();
-      allow delete: if isAdmin();
-    }
+
     
     // -- Interventions: authenticated access, public create --
     match /interventions/{interventionId} {
