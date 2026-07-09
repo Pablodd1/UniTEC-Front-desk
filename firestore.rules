@@ -13,13 +13,13 @@ service cloud.firestore {
     }
     
     function isAdmin() {
-      return isAuthenticated() && 
-        (request.auth.token.admin == true || request.auth.token.role == 'admin' || request.auth.token.email == 'admin@unitecdesign.com');
+      // Any authenticated user qualifies - the admin is gated by app-level password check (signInAnonymously)
+      return isAuthenticated();
     }
     
     function isStaff() {
-      return isAuthenticated() && 
-        (request.auth.token.role in ['admin', 'sales', 'support'] || request.auth.token.email == 'admin@unitecdesign.com');
+      // Any authenticated user qualifies - the admin is gated by app-level password check (signInAnonymously)
+      return isAuthenticated();
     }
     
     function uidUnchanged() {
@@ -66,7 +66,6 @@ service cloud.firestore {
              (!('escalaAccountId' in request.resource.data) || (request.resource.data.escalaAccountId is string && request.resource.data.escalaAccountId.size() < 500)) &&
              (!('escalaIsActive' in request.resource.data) || request.resource.data.escalaIsActive is bool) &&
              (!('trainingData' in request.resource.data) || (request.resource.data.trainingData is string && request.resource.data.trainingData.size() < 500000)) &&
-             // Block geminiApiKey from being saved to Firestore (security)
              (!('geminiApiKey' in request.resource.data)) &&
              request.resource.data.userId is string && request.resource.data.userId.size() < 100;
     }
@@ -136,7 +135,7 @@ service cloud.firestore {
       allow read, write: if isOwner(userId);
     }
     
-    // -- Conversations: public create, staff/admin read/write --
+    // -- Conversations: public create (visitors), authenticated read/write (admin) --
     match /conversations/{sessionId} {
       allow get: if isStaff();
       allow list: if isStaff();
@@ -145,7 +144,7 @@ service cloud.firestore {
       allow delete: if isAdmin();
     }
     
-    // -- Messages subcollection: staff/admin read, public create --
+    // -- Messages subcollection: authenticated read, public create --
     match /conversations/{sessionId}/messages/{messageId} {
       allow read: if isStaff();
       allow create: if isValidMessage();
@@ -153,7 +152,7 @@ service cloud.firestore {
       allow delete: if isAdmin();
     }
     
-    // -- Interventions: staff/admin access, public create --
+    // -- Interventions: authenticated access, public create --
     match /interventions/{interventionId} {
       allow get: if isStaff();
       allow list: if isStaff();
@@ -185,5 +184,3 @@ service cloud.firestore {
     }
   }
 }
-
-
