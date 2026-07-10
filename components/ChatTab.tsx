@@ -1,4 +1,4 @@
-﻿﻿﻿﻿﻿import { summarizeSessionNow } from '../services/retentionService';
+﻿import { summarizeSessionNow } from '../services/retentionService';
 
 import React, { useState, useRef, useEffect } from 'react';
 import { db } from '../firebase';
@@ -8,6 +8,7 @@ import { saveChatSession } from '../services/firestoreService';
 import { sendMessageToGemini, resetApiKeyCache } from '../services/geminiService';
 import { createConversation, addMessage, requestIntervention, extractCustomerData, updateSessionStatus, subscribeToConversation, subscribeToMessages } from '../services/conversationService';
 import { notifyStaffIntervention } from '../services/notificationService';
+import { sendTwilioWhatsApp } from '../services/twilioWhatsappService';
 import { Send, User, Box, DollarSign, Hammer, BookOpen, CheckCircle2, Truck, FileText, RefreshCcw, Percent, Headphones, CreditCard, Lock, MessageSquare } from 'lucide-react';
 import { GenerateContentResponse } from '@google/genai';
 import { UI_TRANSLATIONS } from '../constants';
@@ -27,6 +28,19 @@ interface ChatTabProps {
 const ChatTab: React.FC<ChatTabProps> = ({ quickActions, initialMessage, emergencyMode, language, customGreeting, bgImage, brandId }) => {
   const t = UI_TRANSLATIONS[language];
   
+  const [onboardingStage, setOnboardingStage] = useState<'name' | 'phone' | 'ready'>(() => {
+    if (typeof window !== 'undefined') {
+      try {
+        const historyKey = `unitec_chat_history_${brandId || 'unitec'}`;
+        const saved = localStorage.getItem(historyKey);
+        if (saved && JSON.parse(saved).length > 1) {
+          return 'ready';
+        }
+      } catch (e) {}
+    }
+    return 'name';
+  });
+
   const [messages, setMessages] = useState<Message[]>(() => {
     if (typeof window !== 'undefined') {
       try {
@@ -43,15 +57,11 @@ const ChatTab: React.FC<ChatTabProps> = ({ quickActions, initialMessage, emergen
       }
     }
     
-    const welcomeText = initialMessage || customGreeting || (
-      brandId === 'unitec'
-        ? (language === 'en'
-            ? "Hello! Welcome to UNITEC USA DESIGN. I can help you with our product catalog, wholesale stock in Florida, or connect you with our sales team. How can I assist you today?"
-            : "¡Hola! Bienvenido a UNITEC USA DESIGN. Puedo ayudarte con nuestro catálogo de perfiles y paneles de PVC, stock mayorista en Florida, o conectarte con nuestro equipo de ventas. ¿En qué puedo ayudarte hoy?")
-        : (language === 'en'
-            ? "Hello! Welcome to Building Innovation. I can help you with our product catalog, stock in Miami, installation guides, or connect you with our sales team. How can I assist you today?"
-            : "¡Hola! Bienvenido a Building Innovation. Puedo ayudarte con el catálogo de materiales, stock en Miami, guías de instalación o conectarte con ventas. ¿En qué puedo ayudarte hoy?")
-    );
+    const brandName = brandId === 'unitec' ? 'UNITEC USA DESIGN' : 'Building Innovation';
+    const welcomeText = language === 'en'
+      ? `Hello! Welcome to ${brandName}. Could you please start by telling me your name?`
+      : `¡Hola! Bienvenido a ${brandName}. Para iniciar, ¿podría decirme cuál es su nombre?`;
+
     return [
       {
         id: 'welcome',
@@ -244,9 +254,10 @@ const ChatTab: React.FC<ChatTabProps> = ({ quickActions, initialMessage, emergen
   // Update welcome message when language or customGreeting changes, but only if it's the only message
   useEffect(() => {
     if (messages.length === 1 && messages[0].id === 'welcome') {
-        const welcomeText = initialMessage 
-          ? (brandId === 'unitec' ? "¡Hola! Bienvenido a UNITEC USA DESIGN" : "¡Hola! Bienvenido a Building Innovation")
-          : (customGreeting || t.chatWelcome);
+        const brandName = brandId === 'unitec' ? 'UNITEC USA DESIGN' : 'Building Innovation';
+        const welcomeText = language === 'en'
+          ? `Hello! Welcome to ${brandName}. Could you please start by telling me your name?`
+          : `¡Hola! Bienvenido a ${brandName}. Para iniciar, ¿podría decirme cuál es su nombre?`;
         setMessages([{
             id: 'welcome',
             role: 'model',
@@ -325,6 +336,43 @@ const ChatTab: React.FC<ChatTabProps> = ({ quickActions, initialMessage, emergen
     scrollToBottom(behavior);
   }, [messages, isLoading]);
 
+  const checkAndTriggerWhatsAppAlert = async (textText: string) => {
+    const lowercaseText = textText.toLowerCase();
+    const alertKeywords = [
+      'price', 'precio', 'costo', 'valor', 'valores',
+      'cotiz', 'presupuesto',
+      'urgent', 'urgencia', 'emergencia',
+      'staff', 'asesor', 'humano', 'contacto', 'atencion', 'atención'
+    ];
+    
+    const hasKeyword = alertKeywords.some(keyword => lowercaseText.includes(keyword));
+    if (hasKeyword) {
+      console.log('Alert keyword detected in user message. Triggering Twilio WhatsApp alert...');
+      const name = extractedPii?.name || 'Cliente';
+      const phone = extractedPii?.phone || 'No proporcionado';
+      const email = extractedPii?.email || 'No proporcionado';
+      
+      const adminMessage = `🔔 *Alerta de Chatbot*\n\n` +
+        `El cliente *${name}* ha enviado un mensaje de interés:\n` +
+        `"${textText}"\n\n` +
+        `*Datos de Contacto:*\n` +
+        `- Teléfono: ${phone}\n` +
+        `- Email: ${email}\n` +
+        `- Conversación ID: ${conversationId || 'N/A'}`;
+        
+      try {
+        const res = await sendTwilioWhatsApp(adminMessage);
+        if (res.success) {
+          console.log('Twilio WhatsApp alert sent successfully to +573142332147. Message SID:', res.messageSid);
+        } else {
+          console.warn('Failed to send Twilio WhatsApp alert:', res.error);
+        }
+      } catch (e) {
+        console.error('Error sending Twilio WhatsApp alert:', e);
+      }
+    }
+  };
+
   const handleSendMessage = async (text: string) => {
     if (!text.trim() || isLoading) return;
     
@@ -341,6 +389,63 @@ const ChatTab: React.FC<ChatTabProps> = ({ quickActions, initialMessage, emergen
     setMessages(prev => [...prev, userMsg]);
     setInputText('');
 
+    if (onboardingStage === 'name') {
+      const name = text.trim();
+      setExtractedPii(prev => {
+        const merged = { ...prev, name };
+        if (conversationId) {
+          extractCustomerData(conversationId, merged).catch(console.warn);
+        }
+        return merged;
+      });
+      
+      setOnboardingStage('phone');
+      
+      const phonePrompt = language === 'en'
+        ? `Nice to meet you, ${name}! Optionally, could you provide your phone number so we can stay in touch? (Type "skip" or "no" to continue without phone)`
+        : `¡Un gusto conocerle, ${name}! Opcionalmente, ¿podría facilitarnos su número de teléfono para estar en contacto? (Escriba "no" o "saltar" para continuar sin teléfono)`;
+        
+      setMessages(prev => [...prev, {
+        id: Date.now().toString(),
+        role: 'model',
+        text: phonePrompt,
+        timestamp: new Date()
+      }]);
+      return;
+    }
+
+    if (onboardingStage === 'phone') {
+      const phoneInput = text.trim().toLowerCase();
+      const skipTerms = ['no', 'skip', 'saltar', 'n', 'no gracias', 'no thanks', 'skip phone', 'saltar telefono'];
+      const isSkip = skipTerms.includes(phoneInput);
+      
+      const updatedPii = { ...extractedPii };
+      if (!isSkip) {
+        updatedPii.phone = text.trim();
+        setExtractedPii(prev => {
+          const merged = { ...prev, phone: text.trim() };
+          if (conversationId) {
+            extractCustomerData(conversationId, merged).catch(console.warn);
+          }
+          return merged;
+        });
+      }
+      
+      setOnboardingStage('ready');
+      
+      const startingText = language === 'en'
+        ? `Thank you! I am ready to help you. How can I assist you today?`
+        : `¡Muchas gracias! Ya estoy listo para ayudarle. ¿En qué le puedo colaborar hoy?`;
+        
+      setMessages(prev => [...prev, {
+        id: Date.now().toString(),
+        role: 'model',
+        text: startingText,
+        timestamp: new Date()
+      }]);
+      return;
+    }
+
     if (sessionStatus === 'human_assigned') {
       try {
         if (conversationId) {
@@ -349,6 +454,7 @@ const ChatTab: React.FC<ChatTabProps> = ({ quickActions, initialMessage, emergen
             role: 'user',
             text: userMsg.text,
           });
+          checkAndTriggerWhatsAppAlert(text);
         }
       } catch (e) {
         console.warn('Failed to save user message during takeover:', e);
@@ -359,6 +465,7 @@ const ChatTab: React.FC<ChatTabProps> = ({ quickActions, initialMessage, emergen
     setIsLoading(true);
 
     try {
+      checkAndTriggerWhatsAppAlert(text);
       // Prepare history for Gemini
       const history = messages.slice(1).map(m => ({
         role: m.role as 'user' | 'model',
@@ -885,7 +992,7 @@ const ChatTab: React.FC<ChatTabProps> = ({ quickActions, initialMessage, emergen
       {/* Input Area and Quick Actions remain the same... */}
       <div className="px-4 py-2 bg-white/50 backdrop-blur-sm border-t border-gray-50">
          <div className="flex gap-2 overflow-x-auto no-scrollbar pb-2 pt-1">
-            {quickActions.map(action => (
+            {onboardingStage === 'ready' && quickActions.map(action => (
               <button
                 key={action.id}
                 onClick={() => handleSendMessage(action.message)}
@@ -900,7 +1007,7 @@ const ChatTab: React.FC<ChatTabProps> = ({ quickActions, initialMessage, emergen
       </div>
 
       {/* NEW: Request Human Intervention Button */}
-      {brandId !== 'building' && sessionStatus === 'active' && !showInterventionRequest && (
+      {brandId !== 'building' && sessionStatus === 'active' && !showInterventionRequest && onboardingStage === 'ready' && (
         <div className="px-4 pb-2 bg-white border-t border-gray-50">
           <button
             onClick={() => setShowInterventionRequest(true)}
