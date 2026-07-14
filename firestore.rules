@@ -131,6 +131,10 @@ service cloud.firestore {
       allow delete: if isOwner(userId);
     }
 
+    match /config/main {
+      allow read, write: if isAuthenticated();
+    }
+
     match /users/{userId}/chatSessions/{sessionId} {
       allow read, write: if isOwner(userId);
     }

@@ -21,6 +21,8 @@ export interface AppConfig {
   escalaIsActive?: boolean;
   trainingData?: string;
   geminiApiKey?: string;
+  telegramBotToken?: string;
+  telegramChatId?: string;
   userId: string;
 }
 
@@ -78,6 +80,43 @@ export const saveAppConfig = async (config: Partial<AppConfig>): Promise<void> =
     await setDoc(docRef, { ...config, userId }, { merge: true });
   } catch (error) {
     handleFirestoreError(error, OperationType.WRITE, path);
+  }
+};
+
+// Shared global Telegram Config stored at root /config/main
+export interface TelegramConfig {
+  botToken: string;
+  chatId: string;
+}
+
+export const getTelegramConfig = async (): Promise<TelegramConfig> => {
+  const path = 'config/main';
+  try {
+    const docRef = doc(db, path);
+    const docSnap = await getDoc(docRef);
+    if (docSnap.exists()) {
+      const data = docSnap.data();
+      return {
+        botToken: data.telegramBotToken || '',
+        chatId: data.telegramChatId || '',
+      };
+    }
+  } catch (error) {
+    console.error('Failed to get Telegram config:', error);
+  }
+  return { botToken: '', chatId: '' };
+};
+
+export const saveTelegramConfig = async (config: TelegramConfig): Promise<void> => {
+  const path = 'config/main';
+  try {
+    const docRef = doc(db, path);
+    await setDoc(docRef, {
+      telegramBotToken: config.botToken,
+      telegramChatId: config.chatId,
+    }, { merge: true });
+  } catch (error) {
+    console.error('Failed to save Telegram config:', error);
   }
 };
 

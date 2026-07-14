@@ -1,4 +1,4 @@
-﻿// @ts-nocheck
+// @ts-nocheck
 import React, { useState, useEffect } from 'react';
 import { Plug, Phone, ShieldCheck, Database, Mic2, Save, RefreshCw, Check, Loader2, Volume2, TrendingUp, Zap, Gauge, Building2, Store, Brain, Code, Copy, ExternalLink, Rocket, ToggleRight, ToggleLeft, DollarSign, MessageSquare, Headphones, BarChart3, AlertTriangle, X } from 'lucide-react';
 import { EscalaConfig, VoiceName, VoiceProvider, BillingInvoice, ConversationSession, InterventionRequest, ConversationMessage } from '../types';
@@ -6,7 +6,7 @@ import { playGeminiTTS } from '../services/geminiService';
 import { getEscalaConfig, saveEscalaConfig, testEscalaConnection } from '../services/escalaService';
 import { getUsageStats, getProfitEstimate, generateInvoice, trackUsage } from '../services/usageService';
 import { generateImage, editImage } from '../services/imageService';
-import { getAppConfig, saveAppConfig, getCrmLogs, CrmLog, getAllChatSessions } from '../services/firestoreService';
+import { getAppConfig, saveAppConfig, getCrmLogs, CrmLog, getAllChatSessions, getTelegramConfig, saveTelegramConfig } from '../services/firestoreService';
 import { db } from '../firebase';
 import { doc, writeBatch } from 'firebase/firestore';
 import { DEFAULT_TRAINING_DATA } from '../constants';
@@ -83,6 +83,10 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({
   const [escalaConfig, setEscalaConfig] = useState<EscalaConfig>({ apiKey: '', accountId: '', isActive: false });
   const [twilioConfig, setTwilioConfig] = useState({ accountSid: '', authToken: '', phoneNumber: '', isActive: false });
   const [isTestingEscala, setIsTestingEscala] = useState(false);
+  // Telegram Analytics report state
+  const [telegramBotToken, setTelegramBotToken] = useState('');
+  const [telegramChatId, setTelegramChatId] = useState('');
+  const [isSavingTelegram, setIsSavingTelegram] = useState(false);
   // Gemini API Key & Privacy Mode State
   const [geminiApiKey, setGeminiApiKey] = useState('');
   const [privacyMode, setPrivacyMode] = useState(() => {
@@ -220,9 +224,13 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({
         }
       }
 
+      const tg = await getTelegramConfig();
+      setTelegramBotToken(tg.botToken);
+      setTelegramChatId(tg.chatId);
+
       const logs = await getCrmLogs();
       setCrmLogs(logs);
-          };
+    };
     loadData();
 
     // NEW: Subscribe to real-time conversations and interventions
@@ -546,7 +554,22 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({
       if (typeof window !== 'undefined') {
         window.location.reload();
       }
-    }, 800);
+    }, 1000);
+  };
+
+  const handleSaveTelegram = async () => {
+    setIsSavingTelegram(true);
+    try {
+      await saveTelegramConfig({
+        botToken: telegramBotToken.trim(),
+        chatId: telegramChatId.trim(),
+      });
+    } catch (e) {
+      console.error("Failed to save Telegram config to Firestore:", e);
+    }
+    setTimeout(() => {
+      setIsSavingTelegram(false);
+    }, 8000);
   };
 
   const currentVoiceList = [...geminiVoices];
@@ -1541,6 +1564,67 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({
                                   >
                                       {isSavingGemini ? <Loader2 size={14} className="animate-spin" /> : <Save size={14} />}
                                       Save Gemini Settings
+                                  </button>
+                              </div>
+                          </div>
+                      </div>
+
+                      {/* NEW: Telegram Daily Analytics Report Settings */}
+                      <div className="bg-white p-8 rounded-2xl border border-slate-200 shadow-sm relative mt-8 animate-in fade-in slide-in-from-bottom-2 duration-300">
+                          <div className="flex items-center justify-between mb-8">
+                              <div className="flex items-center gap-4">
+                                  <div className="w-12 h-12 bg-sky-50 text-sky-600 rounded-2xl flex items-center justify-center shrink-0 animate-pulse">
+                                      <BarChart3 size={24} />
+                                  </div>
+                                  <div>
+                                      <h3 className="text-lg font-bold text-slate-800">Telegram Daily Reports</h3>
+                                      <p className="text-xs text-slate-500">Configure credentials for automated 9:00 AM daily analytics.</p>
+                                  </div>
+                              </div>
+                          </div>
+                          
+                          <div className="space-y-6">
+                              <div className="p-4 rounded-xl border bg-sky-50/50 border-sky-100 text-xs text-slate-600 space-y-2">
+                                  <p className="font-bold text-sky-900">Setup Instructions & Requirements:</p>
+                                  <ol className="list-decimal pl-5 space-y-1 text-slate-700">
+                                      <li>Search for <strong>@BotFather</strong> in Telegram and send the command <code>/newbot</code> to create your bot.</li>
+                                      <li>Copy the generated <strong>Bot API Token</strong> and paste it below.</li>
+                                      <li>Create a Telegram Group, add your bot as an administrator, and search for <strong>@userinfobot</strong> to get the group's <strong>Chat ID</strong>.</li>
+                                      <li>Ensure the Group Chat ID starts with a minus sign (e.g. <code>-100xxxxxxxxx</code>) and paste it below.</li>
+                                  </ol>
+                              </div>
+
+                              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                  <div className="space-y-2">
+                                      <label className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Telegram Bot Token</label>
+                                      <input 
+                                          type="password" 
+                                          value={telegramBotToken}
+                                          onChange={e => setTelegramBotToken(e.target.value)}
+                                          className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-sm focus:ring-2 focus:ring-brand-500 outline-none"
+                                          placeholder="123456789:ABCdefGhIJKlmNoPQRsT..."
+                                      />
+                                  </div>
+                                  <div className="space-y-2">
+                                      <label className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Telegram Chat ID</label>
+                                      <input 
+                                          type="text" 
+                                          value={telegramChatId}
+                                          onChange={e => setTelegramChatId(e.target.value)}
+                                          className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-sm focus:ring-2 focus:ring-brand-500 outline-none"
+                                          placeholder="-100xxxxxxxxxx"
+                                      />
+                                  </div>
+                              </div>
+                              
+                              <div className="flex gap-3 pt-2">
+                                  <button 
+                                      onClick={handleSaveTelegram} 
+                                      disabled={isSavingTelegram}
+                                      className="px-8 py-2.5 bg-brand-600 text-white rounded-xl text-xs font-bold shadow-lg hover:bg-brand-700 flex items-center gap-2"
+                                  >
+                                      {isSavingTelegram ? <Loader2 size={14} className="animate-spin" /> : <Save size={14} />}
+                                      {isSavingTelegram ? 'Saving Telegram Setup...' : 'Save Telegram Config'}
                                   </button>
                               </div>
                           </div>

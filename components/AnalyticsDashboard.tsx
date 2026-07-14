@@ -1,5 +1,5 @@
-﻿import React, { useState, useEffect } from 'react';
-import { Users, MessageSquare, BarChart3, Phone, XCircle, Zap, AlertTriangle, Activity } from 'lucide-react';
+import React, { useState, useEffect } from 'react';
+import { Users, MessageSquare, BarChart3, Phone, XCircle, Zap, AlertTriangle, Activity, Download, FileJson } from 'lucide-react';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, PieChart, Pie, Cell } from 'recharts';
 import { ConversationSession } from '../services/conversationService';
 
@@ -16,6 +16,57 @@ const AnalyticsDashboard: React.FC<AnalyticsDashboardProps> = ({ sessions }) => 
     const t = setInterval(() => setLiveTime(new Date()), 30000);
     return () => clearInterval(t);
   }, []);
+
+  const exportToCSV = () => {
+    const headers = [
+      'Session ID', 'Created At', 'Last Updated', 'Brand', 'Language', 
+      'Status', 'Source', 'Message Count', 'Customer Name', 'Customer Phone', 
+      'Customer Email', 'Intent Category', 'Sentiment Score', 'Topics'
+    ];
+
+    const rows = filteredSessions.map(s => [
+      s.id,
+      s.createdAt,
+      s.lastUpdated,
+      s.brandId,
+      s.language,
+      s.status,
+      s.source,
+      s.analytics?.messageCount || 0,
+      s.customerName || s.extractedData?.name || '',
+      s.customerPhone || s.extractedData?.phone || '',
+      s.customerEmail || s.extractedData?.email || '',
+      s.intentCategory || '',
+      s.sentimentScore || 0,
+      (s.topics || []).join('; ')
+    ]);
+
+    const csvContent = [
+      headers.join(','),
+      ...rows.map(e => e.map(val => `"${String(val).replace(/"/g, '""')}"`).join(','))
+    ].join('\n');
+
+    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.setAttribute('href', url);
+    link.setAttribute('download', `unitec_chat_analytics_${timeFilter}_${Date.now()}.csv`);
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  };
+
+  const exportToJSON = () => {
+    const jsonString = `data:text/json;charset=utf-8,${encodeURIComponent(
+      JSON.stringify(filteredSessions, null, 2)
+    )}`;
+    const link = document.createElement('a');
+    link.setAttribute('href', jsonString);
+    link.setAttribute('download', `unitec_chat_transcripts_${timeFilter}_${Date.now()}.json`);
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  };
 
   const now = new Date();
   const todayStart = new Date(now.getFullYear(), now.getMonth(), now.getDate()).getTime();
@@ -186,19 +237,41 @@ const AnalyticsDashboard: React.FC<AnalyticsDashboardProps> = ({ sessions }) => 
         </div>
       </div>
 
-      {/* Time filter for historical */}
-      <div className="flex items-center justify-between">
-        <h2 className="font-black text-slate-800 text-base">Histórico</h2>
-        <div className="flex gap-1 bg-slate-100 rounded-xl p-1">
-          {(['today', 'week', 'month', 'all'] as const).map(f => (
-            <button
-              key={f}
-              onClick={() => setTimeFilter(f)}
-              className={`px-3 py-1.5 text-[10px] font-bold uppercase rounded-lg transition-all ${timeFilter === f ? 'bg-white text-brand-600 shadow-sm' : 'text-slate-500 hover:text-slate-700'}`}
+      {/* Time filter and export options for historical */}
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 p-4 bg-slate-50 rounded-2xl border border-slate-100">
+        <div>
+          <h2 className="font-bold text-slate-800 text-sm uppercase tracking-wider">Histórico de Análisis</h2>
+          <p className="text-xs text-slate-500 mt-0.5">Filtre y exporte los datos de conversaciones.</p>
+        </div>
+        <div className="flex flex-wrap items-center gap-3">
+          <div className="flex gap-1 bg-slate-200/60 rounded-xl p-1">
+            {(['today', 'week', 'month', 'all'] as const).map(f => (
+              <button
+                key={f}
+                onClick={() => setTimeFilter(f)}
+                className={`px-3 py-1.5 text-[10px] font-bold uppercase rounded-lg transition-all ${timeFilter === f ? 'bg-white text-brand-600 shadow-sm' : 'text-slate-500 hover:text-slate-700'}`}
+              >
+                {f === 'today' ? 'Hoy' : f === 'week' ? '7 días' : f === 'month' ? '30 días' : 'Todo'}
+              </button>
+            ))}
+          </div>
+
+          <div className="flex gap-2">
+            <button 
+              onClick={exportToCSV}
+              className="flex items-center gap-1.5 px-3.5 py-2 bg-emerald-600 text-white rounded-xl text-[10px] font-bold uppercase shadow-md hover:bg-emerald-700 transition-colors"
             >
-              {f === 'today' ? 'Hoy' : f === 'week' ? '7 días' : f === 'month' ? '30 días' : 'Todo'}
+              <Download size={12} />
+              Exportar CSV
             </button>
-          ))}
+            <button 
+              onClick={exportToJSON}
+              className="flex items-center gap-1.5 px-3.5 py-2 bg-blue-600 text-white rounded-xl text-[10px] font-bold uppercase shadow-md hover:bg-blue-700 transition-colors"
+            >
+              <FileJson size={12} />
+              Exportar Transcripts
+            </button>
+          </div>
         </div>
       </div>
 
