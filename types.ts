@@ -204,6 +204,7 @@ export interface ConversationSession {
     projectType?: string;
     budget?: string;
     timeline?: string;
+    profession?: string;
   };
   analytics?: {
     messageCount: number;

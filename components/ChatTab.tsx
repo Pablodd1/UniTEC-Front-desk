@@ -1,4 +1,4 @@
-﻿import { summarizeSessionNow } from '../services/retentionService';
+import { summarizeSessionNow } from '../services/retentionService';
 
 import React, { useState, useRef, useEffect } from 'react';
 import { db } from '../firebase';
@@ -28,7 +28,7 @@ interface ChatTabProps {
 const ChatTab: React.FC<ChatTabProps> = ({ quickActions, initialMessage, emergencyMode, language, customGreeting, bgImage, brandId }) => {
   const t = UI_TRANSLATIONS[language];
   
-  const [onboardingStage, setOnboardingStage] = useState<'name' | 'phone' | 'ready'>(() => {
+  const [onboardingStage, setOnboardingStage] = useState<'name' | 'phone' | 'profession' | 'ready'>(() => {
     if (typeof window !== 'undefined') {
       try {
         const historyKey = `unitec_chat_history_${brandId || 'unitec'}`;
@@ -57,10 +57,10 @@ const ChatTab: React.FC<ChatTabProps> = ({ quickActions, initialMessage, emergen
       }
     }
     
-    const brandName = brandId === 'unitec' ? 'UNITEC USA DESIGN' : 'Building Innovation';
+    const brandName = brandId === 'unitec' ? 'Unitec USA Design' : 'Building Innovation';
     const welcomeText = language === 'en'
-      ? `Hello! Welcome to ${brandName}. Could you please start by telling me your name?`
-      : `¡Hola! Bienvenido a ${brandName}. Para iniciar, ¿podría decirme cuál es su nombre?`;
+      ? `Hello, 👋 Welcome to ${brandName}, your partner in constructive solutions and alternatives.\n\nMy name is Decky👷 and I will be here accompanying you to browse our portfolio of more than 500 products and choose the best constructive options aligned with your project.\n\nBefore continuing, I would like to know you. Tell me, what is your name?`
+      : `Hola, 👋 Bienvenido a ${brandName}, tu aliado en soluciones y alternativas constructivas.\n\nMi nombre es Decky👷 y estaré por este medio acompañándote a recorrer nuestro portafolio de más de 500 productos y a escoger las mejores opciones constructivas alineadas a tu proyecto.\n\nAntes de continuar quisiera conocerte. Cuéntame, ¿cómo te llamas?`;
 
     return [
       {
@@ -101,7 +101,7 @@ const ChatTab: React.FC<ChatTabProps> = ({ quickActions, initialMessage, emergen
   
   const [showEmailConfirmation, setShowEmailConfirmation] = useState(false);
   const [emailSentTo, setEmailSentTo] = useState<string | null>(null);
-  const [extractedPii, setExtractedPii] = useState<{name?: string, phone?: string, email?: string} | null>(null);
+  const [extractedPii, setExtractedPii] = useState<{name?: string, phone?: string, email?: string, profession?: string} | null>(null);
   const [intentCategory, setIntentCategory] = useState<string | null>(null);
   
   // ===== NEW: Conversation Tracking =====
@@ -402,8 +402,8 @@ const ChatTab: React.FC<ChatTabProps> = ({ quickActions, initialMessage, emergen
       setOnboardingStage('phone');
       
       const phonePrompt = language === 'en'
-        ? `Nice to meet you, ${name}! Optionally, could you provide your phone number so we can stay in touch? (Type "skip" or "no" to continue without phone)`
-        : `¡Un gusto conocerle, ${name}! Opcionalmente, ¿podría facilitarnos su número de teléfono para estar en contacto? (Escriba "no" o "saltar" para continuar sin teléfono)`;
+        ? `Nice to meet you, ${name}! What is your phone number? (Type "skip" to continue)`
+        : `¡Un gusto conocerte, ${name}! Cuéntame, ¿cuál es tu número telefónico? (Escribe "saltar" si prefieres no compartirlo)`;
         
       setMessages(prev => [...prev, {
         id: Date.now().toString(),
@@ -431,11 +431,60 @@ const ChatTab: React.FC<ChatTabProps> = ({ quickActions, initialMessage, emergen
         });
       }
       
+      setOnboardingStage('profession');
+      
+      const professionPrompt = language === 'en'
+        ? `Great! Lastly, what is your profession or role? Please choose one of the options below:\n\n1. Architect\n2. Builder\n3. Designer\n4. Distributor\n5. End Customer\n6. Other`
+        : `¡Perfecto! Por último, ¿cuál es tu profesión? Elige una opción:\n\n1. Arquitecto\n2. Constructor\n3. Diseñador\n4. Distribuidor\n5. Cliente Final\n6. Otro`;
+        
+      setMessages(prev => [...prev, {
+        id: Date.now().toString(),
+        role: 'model',
+        text: professionPrompt,
+        timestamp: new Date()
+      }]);
+      return;
+    }
+
+    if (onboardingStage === 'profession') {
+      const selection = text.trim();
+      let profession = selection;
+      
+      if (language === 'en') {
+        const mapping: Record<string, string> = {
+          '1': 'Architect',
+          '2': 'Builder',
+          '3': 'Designer',
+          '4': 'Distributor',
+          '5': 'End Customer',
+          '6': 'Other'
+        };
+        if (mapping[selection]) profession = mapping[selection];
+      } else {
+        const mapping: Record<string, string> = {
+          '1': 'Arquitecto',
+          '2': 'Constructor',
+          '3': 'Diseñador',
+          '4': 'Distribuidor',
+          '5': 'Cliente Final',
+          '6': 'Otro'
+        };
+        if (mapping[selection]) profession = mapping[selection];
+      }
+
+      setExtractedPii(prev => {
+        const merged = { ...prev, profession };
+        if (conversationId) {
+          extractCustomerData(conversationId, merged).catch(console.warn);
+        }
+        return merged;
+      });
+      
       setOnboardingStage('ready');
       
       const startingText = language === 'en'
-        ? `Thank you! I am ready to help you. How can I assist you today?`
-        : `¡Muchas gracias! Ya estoy listo para ayudarle. ¿En qué le puedo colaborar hoy?`;
+        ? `Perfect, now it is much easier for me to help you with everything you need. How can I assist you today?`
+        : `Perfecto, ahora para mí es mucho más fácil ayudarte con todo lo que me indicas que se ajuste a tus necesidades. ¿En qué puedo ayudarte hoy?`;
         
       setMessages(prev => [...prev, {
         id: Date.now().toString(),

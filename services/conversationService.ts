@@ -1,4 +1,4 @@
-﻿import { getPrivacyMode } from './firestoreService';
+import { getPrivacyMode } from './firestoreService';
 import { db } from '../firebase';
 import { collection, doc, setDoc, getDocs, getDoc, query, orderBy, onSnapshot, updateDoc, where, increment } from 'firebase/firestore';
 
@@ -227,6 +227,7 @@ export interface ConversationSession {
     projectType?: string;
     budget?: string;
     timeline?: string;
+    profession?: string;
   };
   analytics?: {
     messageCount: number;
