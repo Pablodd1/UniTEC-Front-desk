@@ -86,6 +86,14 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({
   // Telegram Analytics report state
   const [telegramBotToken, setTelegramBotToken] = useState('');
   const [telegramChatId, setTelegramChatId] = useState('');
+  const [telegramReportTime, setTelegramReportTime] = useState('09:00');
+  const [analyticsPreferences, setAnalyticsPreferences] = useState({
+    includeTraffic: true,
+    includeSentiment: true,
+    includeIntents: true,
+    includeDemographics: true,
+    includeAIExecutiveSummary: true,
+  });
   const [isSavingTelegram, setIsSavingTelegram] = useState(false);
   // Gemini API Key & Privacy Mode State
   const [geminiApiKey, setGeminiApiKey] = useState('');
@@ -227,6 +235,8 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({
       const tg = await getTelegramConfig();
       setTelegramBotToken(tg.botToken);
       setTelegramChatId(tg.chatId);
+      if (tg.reportTime) setTelegramReportTime(tg.reportTime);
+      if (tg.analyticsPreferences) setAnalyticsPreferences(tg.analyticsPreferences);
 
       const logs = await getCrmLogs();
       setCrmLogs(logs);
@@ -563,13 +573,15 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({
       await saveTelegramConfig({
         botToken: telegramBotToken.trim(),
         chatId: telegramChatId.trim(),
+        reportTime: telegramReportTime,
+        analyticsPreferences: analyticsPreferences,
       });
     } catch (e) {
       console.error("Failed to save Telegram config to Firestore:", e);
     }
     setTimeout(() => {
       setIsSavingTelegram(false);
-    }, 8000);
+    }, 1500);
   };
 
   const currentVoiceList = [...geminiVoices];
@@ -980,8 +992,8 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({
                                     <Copy size={24} />
                                 </div>
                                 <div>
-                                    <h3 className="text-lg font-bold text-slate-800">GestiÃƒÆ’Ã‚Â³n de CatÃƒÆ’Ã‚Â¡logos y Archivos</h3>
-                                    <p className="text-xs text-slate-500">Controla los archivos que la IA puede enviar por correo electrÃƒÆ’Ã‚Â³nico.</p>
+                                    <h3 className="text-lg font-bold text-slate-800">Gestión de Catálogos y Archivos</h3>
+                                    <p className="text-xs text-slate-500">Controla los archivos que la IA puede enviar por correo electrónico.</p>
                                 </div>
                             </div>
                         </div>
@@ -990,15 +1002,15 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({
                             <div className="bg-slate-50 p-6 rounded-xl border border-slate-200">
                                 <h4 className="text-sm font-bold text-slate-800 mb-2">Instrucciones para la IA</h4>
                                 <p className="text-xs text-slate-600 leading-relaxed mb-4">
-                                    La IA estÃƒÆ’Ã‚Â¡ configurada para usar la herramienta <code className="bg-slate-200 px-1 rounded text-brand-700">send_email</code> cuando un cliente solicita un catÃƒÆ’Ã‚Â¡logo, PDF o ficha tÃƒÆ’Ã‚Â©cnica y proporciona su correo electrÃƒÆ’Ã‚Â³nico.
+                                    La IA está configurada para usar la herramienta <code className="bg-slate-200 px-1 rounded text-brand-700">send_email</code> cuando un cliente solicita un catálogo, PDF o ficha técnica y proporciona su correo electrónico.
                                 </p>
                                 <p className="text-xs text-slate-600 leading-relaxed">
-                                    Para modificar los enlaces de los catÃƒÆ’Ã‚Â¡logos que la IA envÃƒÆ’Ã‚Â­a, actualiza la secciÃƒÆ’Ã‚Â³n <strong>"CATALOGS & RESOURCES"</strong> en la pestaÃƒÆ’Ã‚Â±a <strong>Base de Conocimiento</strong>. La IA leerÃƒÆ’Ã‚Â¡ esos enlaces y los incluirÃƒÆ’Ã‚Â¡ en el correo.
+                                    Para modificar los enlaces de los catálogos que la IA envía, actualiza la sección <strong>"CATALOGS & RESOURCES"</strong> en la pestaña <strong>Base de Conocimiento</strong>. La IA leerá esos enlaces y los incluirá en el correo.
                                 </p>
                             </div>
 
                             <div>
-                                <h4 className="text-xs font-black text-slate-400 uppercase tracking-widest mb-4">CatÃƒÆ’Ã‚Â¡logos Activos (Ejemplo)</h4>
+                                <h4 className="text-xs font-black text-slate-400 uppercase tracking-widest mb-4">Catálogos Activos (Ejemplo)</h4>
                                 <div className="space-y-3">
                                     <div className="flex items-center justify-between p-4 bg-white border border-slate-100 rounded-xl shadow-sm">
                                         <div className="flex items-center gap-3">
@@ -1006,8 +1018,8 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({
                                                 <span className="text-[10px] font-bold">PDF</span>
                                             </div>
                                             <div>
-                                                <p className="text-sm font-bold text-slate-800">CatÃƒÆ’Ã‚Â¡logo 2026 UNITEC USA DESIGN</p>
-                                                <p className="text-[10px] text-slate-400">EspaÃƒÆ’Ã‚Â±ol ÃƒÂ¢Ã¢â€šÂ¬Ã‚Â¢ General</p>
+                                                <p className="text-sm font-bold text-slate-800">Catálogo 2026 UNITEC USA DESIGN</p>
+                                                <p className="text-[10px] text-slate-400">Español • General</p>
                                             </div>
                                         </div>
                                         <span className="px-2 py-1 bg-emerald-50 text-emerald-600 text-[10px] font-bold uppercase rounded-md">Activo</span>
@@ -1606,14 +1618,86 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({
                                       />
                                   </div>
                                   <div className="space-y-2">
-                                      <label className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Telegram Chat ID</label>
+                                      <label className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Telegram Chat IDs (comma-separated for multiple)</label>
                                       <input 
                                           type="text" 
                                           value={telegramChatId}
                                           onChange={e => setTelegramChatId(e.target.value)}
                                           className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-sm focus:ring-2 focus:ring-brand-500 outline-none"
-                                          placeholder="-100xxxxxxxxxx"
+                                          placeholder="-100xxxxxxxxxx, -100yyyyyyyyyy"
                                       />
+                                  </div>
+                              </div>
+
+                              <div className="grid grid-cols-1 md:grid-cols-2 gap-6 pt-2">
+                                  <div className="space-y-2">
+                                      <label className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Report Delivery Time (Colombia Time)</label>
+                                      <select 
+                                          value={telegramReportTime}
+                                          onChange={e => setTelegramReportTime(e.target.value)}
+                                          className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-sm focus:ring-2 focus:ring-brand-500 outline-none"
+                                      >
+                                          {Array.from({ length: 24 }).map((_, i) => {
+                                              const hr = i.toString().padStart(2, '0');
+                                              return (
+                                                  <option key={hr} value={`${hr}:00`}>
+                                                      {hr === '12' ? '12:00 PM (Noon)' : hr === '00' ? '12:00 AM (Midnight)' : parseInt(hr) > 12 ? `${parseInt(hr) - 12}:00 PM` : `${hr}:00 AM`}
+                                                  </option>
+                                              );
+                                          })}
+                                      </select>
+                                      <p className="text-[10px] text-slate-400 italic">Cron checks hourly; report is dispatched once daily at the selected hour.</p>
+                                  </div>
+
+                                  <div className="space-y-3">
+                                      <label className="text-[10px] font-bold text-slate-400 uppercase tracking-widest block">Included Analytics Modules</label>
+                                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                                          <label className="flex items-center gap-2 text-xs text-slate-600 cursor-pointer">
+                                              <input 
+                                                  type="checkbox" 
+                                                  checked={analyticsPreferences.includeTraffic}
+                                                  onChange={e => setAnalyticsPreferences(prev => ({ ...prev, includeTraffic: e.target.checked }))}
+                                                  className="rounded border-slate-300 text-brand-600 focus:ring-brand-500"
+                                              />
+                                              Traffic Trends
+                                          </label>
+                                          <label className="flex items-center gap-2 text-xs text-slate-600 cursor-pointer">
+                                              <input 
+                                                  type="checkbox" 
+                                                  checked={analyticsPreferences.includeSentiment}
+                                                  onChange={e => setAnalyticsPreferences(prev => ({ ...prev, includeSentiment: e.target.checked }))}
+                                                  className="rounded border-slate-300 text-brand-600 focus:ring-brand-500"
+                                              />
+                                              Sentiment Analysis
+                                          </label>
+                                          <label className="flex items-center gap-2 text-xs text-slate-600 cursor-pointer">
+                                              <input 
+                                                  type="checkbox" 
+                                                  checked={analyticsPreferences.includeIntents}
+                                                  onChange={e => setAnalyticsPreferences(prev => ({ ...prev, includeIntents: e.target.checked }))}
+                                                  className="rounded border-slate-300 text-brand-600 focus:ring-brand-500"
+                                              />
+                                              Top Intentions
+                                          </label>
+                                          <label className="flex items-center gap-2 text-xs text-slate-600 cursor-pointer">
+                                              <input 
+                                                  type="checkbox" 
+                                                  checked={analyticsPreferences.includeDemographics}
+                                                  onChange={e => setAnalyticsPreferences(prev => ({ ...prev, includeDemographics: e.target.checked }))}
+                                                  className="rounded border-slate-300 text-brand-600 focus:ring-brand-500"
+                                              />
+                                              User Demographics
+                                          </label>
+                                          <label className="flex items-center gap-2 text-xs text-slate-600 cursor-pointer col-span-2">
+                                              <input 
+                                                  type="checkbox" 
+                                                  checked={analyticsPreferences.includeAIExecutiveSummary}
+                                                  onChange={e => setAnalyticsPreferences(prev => ({ ...prev, includeAIExecutiveSummary: e.target.checked }))}
+                                                  className="rounded border-slate-300 text-brand-600 focus:ring-brand-500"
+                                              />
+                                              AI Executive Summary (via Gemini)
+                                          </label>
+                                      </div>
                                   </div>
                               </div>
                               

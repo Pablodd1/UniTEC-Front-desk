@@ -87,6 +87,14 @@ export const saveAppConfig = async (config: Partial<AppConfig>): Promise<void> =
 export interface TelegramConfig {
   botToken: string;
   chatId: string;
+  reportTime?: string;
+  analyticsPreferences?: {
+    includeTraffic: boolean;
+    includeSentiment: boolean;
+    includeIntents: boolean;
+    includeDemographics: boolean;
+    includeAIExecutiveSummary: boolean;
+  };
 }
 
 export const getTelegramConfig = async (): Promise<TelegramConfig> => {
@@ -99,12 +107,31 @@ export const getTelegramConfig = async (): Promise<TelegramConfig> => {
       return {
         botToken: data.telegramBotToken || '',
         chatId: data.telegramChatId || '',
+        reportTime: data.telegramReportTime || '09:00',
+        analyticsPreferences: data.telegramAnalyticsPreferences || {
+          includeTraffic: true,
+          includeSentiment: true,
+          includeIntents: true,
+          includeDemographics: true,
+          includeAIExecutiveSummary: true,
+        }
       };
     }
   } catch (error) {
     console.error('Failed to get Telegram config:', error);
   }
-  return { botToken: '', chatId: '' };
+  return { 
+    botToken: '', 
+    chatId: '', 
+    reportTime: '09:00',
+    analyticsPreferences: {
+      includeTraffic: true,
+      includeSentiment: true,
+      includeIntents: true,
+      includeDemographics: true,
+      includeAIExecutiveSummary: true,
+    }
+  };
 };
 
 export const saveTelegramConfig = async (config: TelegramConfig): Promise<void> => {
@@ -114,6 +141,14 @@ export const saveTelegramConfig = async (config: TelegramConfig): Promise<void> 
     await setDoc(docRef, {
       telegramBotToken: config.botToken,
       telegramChatId: config.chatId,
+      telegramReportTime: config.reportTime || '09:00',
+      telegramAnalyticsPreferences: config.analyticsPreferences || {
+        includeTraffic: true,
+        includeSentiment: true,
+        includeIntents: true,
+        includeDemographics: true,
+        includeAIExecutiveSummary: true,
+      }
     }, { merge: true });
   } catch (error) {
     console.error('Failed to save Telegram config:', error);

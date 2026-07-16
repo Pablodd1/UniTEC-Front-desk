@@ -2,6 +2,43 @@ import { createRequire } from 'module';
 const require = createRequire(import.meta.url);
 const firebaseConfig = require('../firebase-applet-config.json');
 
+async function generateAIExecutiveSummary(sessions, apiKey) {
+  if (!apiKey || sessions.length === 0) return '';
+  
+  // Format details for the AI
+  const condensed = sessions.map(s => ({
+    name: s.customerName || s.extractedData?.name || 'Anónimo',
+    profession: s.extractedData?.profession || 'No especificada',
+    intent: s.intentCategory || 'Consulta General',
+    sentiment: s.sentimentScore > 0.3 ? 'Positivo' : s.sentimentScore < -0.3 ? 'Negativo' : 'Neutral',
+    lastMessage: s.lastMessage || ''
+  })).slice(0, 20);
+
+  try {
+    const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        contents: [{
+          parts: [{
+            text: `Eres un director de tecnología (CTO) y analista de datos. A continuación tienes las interacciones de los clientes con el chatbot de Unitec USA Design de las últimas 24 horas:\n\n${JSON.stringify(condensed)}\n\nEscribe un resumen ejecutivo muy conciso de 2 o 3 frases en español. Describe los temas de interés recurrentes, si hay problemas o si todo va bien, y ofrece una recomendación rápida para el equipo de ventas.`
+          }]
+        }]
+      })
+    });
+
+    if (response.ok) {
+      const resData = await response.json();
+      return resData.candidates?.[0]?.content?.parts?.[0]?.text?.trim() || '';
+    } else {
+      console.warn("Gemini API call failed:", await response.text());
+    }
+  } catch (e) {
+    console.error("Error generating executive summary with Gemini:", e);
+  }
+  return '';
+}
+
 export default async function handler(req, res) {
   res.setHeader('Access-Control-Allow-Origin', '*');
   res.setHeader('Access-Control-Allow-Methods', 'GET,POST,OPTIONS');
@@ -37,20 +74,87 @@ export default async function handler(req, res) {
 
     let telegramBotToken = process.env.TELEGRAM_BOT_TOKEN || '';
     let telegramChatId = process.env.TELEGRAM_CHAT_ID || '';
+    let telegramReportTime = '09:00';
+    let lastAnalyticsReportDate = '';
+    let analyticsPreferences = {
+      includeTraffic: true,
+      includeSentiment: true,
+      includeIntents: true,
+      includeDemographics: true,
+      includeAIExecutiveSummary: true
+    };
 
     if (configRes.ok) {
       const configData = await configRes.json();
-      if (configData.fields) {
-        if (configData.fields.telegramBotToken?.stringValue) {
-          telegramBotToken = configData.fields.telegramBotToken.stringValue;
-        }
-        if (configData.fields.telegramChatId?.stringValue) {
-          telegramChatId = configData.fields.telegramChatId.stringValue;
-        }
+      const fields = configData.fields || {};
+      
+      if (fields.telegramBotToken?.stringValue) {
+        telegramBotToken = fields.telegramBotToken.stringValue;
+      }
+      if (fields.telegramChatId?.stringValue) {
+        telegramChatId = fields.telegramChatId.stringValue;
+      }
+      if (fields.telegramReportTime?.stringValue) {
+        telegramReportTime = fields.telegramReportTime.stringValue;
+      }
+      if (fields.lastAnalyticsReportDate?.stringValue) {
+        lastAnalyticsReportDate = fields.lastAnalyticsReportDate.stringValue;
+      }
+      if (fields.telegramAnalyticsPreferences?.mapValue?.fields) {
+        const p = fields.telegramAnalyticsPreferences.mapValue.fields;
+        analyticsPreferences = {
+          includeTraffic: p.includeTraffic ? p.includeTraffic.booleanValue : true,
+          includeSentiment: p.includeSentiment ? p.includeSentiment.booleanValue : true,
+          includeIntents: p.includeIntents ? p.includeIntents.booleanValue : true,
+          includeDemographics: p.includeDemographics ? p.includeDemographics.booleanValue : true,
+          includeAIExecutiveSummary: p.includeAIExecutiveSummary ? p.includeAIExecutiveSummary.booleanValue : true
+        };
       }
     }
 
-    // 3. Fetch all conversations from Firestore REST API
+    // 3. Time Check (Colombia Time - America/Bogota) & Deduplication
+    const isForce = req.query.force === 'true' || req.body?.force === true;
+    const nowBogota = new Date(new Date().toLocaleString('en-US', { timeZone: 'America/Bogota' }));
+    
+    if (!isForce) {
+      const reportHour = parseInt(telegramReportTime.split(':')[0], 10);
+      const currentHour = nowBogota.getHours();
+      
+      if (currentHour !== reportHour) {
+        return res.status(200).json({ 
+          success: true, 
+          message: `Skipped: current hour (${currentHour}) does not match target report hour (${reportHour}) in Colombia.` 
+        });
+      }
+
+      const todayStr = nowBogota.toISOString().split('T')[0];
+      if (lastAnalyticsReportDate === todayStr) {
+        return res.status(200).json({ 
+          success: true, 
+          message: `Skipped: daily report already sent today (${todayStr}).` 
+        });
+      }
+
+      // Record daily report timestamp in Firestore
+      try {
+        await fetch(`https://firestore.googleapis.com/v1/${configPath}?updateMask.fieldPaths=lastAnalyticsReportDate`, {
+          method: 'PATCH',
+          headers: {
+            'Authorization': `Bearer ${idToken}`,
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({
+            fields: {
+              lastAnalyticsReportDate: { stringValue: todayStr }
+            }
+          })
+        });
+      } catch (dbErr) {
+        console.warn("Failed to set lastAnalyticsReportDate:", dbErr);
+      }
+    }
+
+    // 4. Fetch all conversations from Firestore REST API
     const conversationsUrl = `https://firestore.googleapis.com/v1/projects/${projectId}/databases/(default)/documents/conversations?pageSize=300`;
     const convRes = await fetch(conversationsUrl, {
       headers: { 'Authorization': `Bearer ${idToken}` }
@@ -64,7 +168,7 @@ export default async function handler(req, res) {
     const convData = await convRes.json();
     const documents = convData.documents || [];
 
-    // Parse documents into easy-to-use JS objects
+    // Parse Firestore REST API document format
     const parsedSessions = documents.map(doc => {
       const fields = doc.fields || {};
       
@@ -100,69 +204,125 @@ export default async function handler(req, res) {
       };
     });
 
-    // 4. Filter for sessions from the last 24 hours
+    // 5. Filter for sessions from the last 24 hours
     const last24hMs = 24 * 60 * 60 * 1000;
-    const now = new Date();
     const last24hSessions = parsedSessions.filter(s => {
       const updatedTime = new Date(s.lastUpdated).getTime();
-      return (now.getTime() - updatedTime) <= last24hMs;
+      return (nowBogota.getTime() - updatedTime) <= last24hMs;
     });
 
     let reportText = '';
-    let reportSubject = `Reporte Diario de Chatbot - ${now.toLocaleDateString('es-CO')}`;
+    let reportSubject = `Reporte de Analítica de Chatbot - ${nowBogota.toLocaleDateString('es-CO')}`;
 
     if (last24hSessions.length === 0) {
-      reportText = `📊 <b>Reporte Diario de Chatbot (9:00 AM)</b>\n\nNo se registraron interacciones en las últimas 24 horas. ¡El sistema sigue funcionando correctamente!`;
+      reportText = `📊 <b>Reporte Diario de Chatbot</b>\n\nNo se registraron interacciones en las últimas 24 horas. ¡El sistema sigue operativo!`;
     } else {
-      // 5. Aggregate Analytics Metrics
       const totalNew = last24hSessions.length;
       const unitecCount = last24hSessions.filter(s => s.brandId === 'unitec').length;
       const buildingCount = last24hSessions.filter(s => s.brandId === 'building').length;
-      
       const activeStatus = last24hSessions.filter(s => s.status === 'active').length;
       const completedStatus = last24hSessions.filter(s => s.status === 'completed').length;
       const interventionCount = last24hSessions.filter(s => s.status === 'human_requested' || s.status === 'human_assigned').length;
 
-      // Sentiment breakdown
-      let positive = 0, neutral = 0, negative = 0;
-      last24hSessions.forEach(s => {
-        if (s.sentimentScore > 0.3) positive++;
-        else if (s.sentimentScore < -0.3) negative++;
-        else neutral++;
-      });
+      reportText = `📊 <b>Reporte Diario de Chatbot</b>\n` +
+                   `📅 Fecha: <b>${nowBogota.toLocaleDateString('es-CO')}</b>\n` +
+                   `⏰ Hora de ejecución: <b>${telegramReportTime} (COL)</b>\n\n`;
 
-      // Customer logs list formatted for Telegram
+      // MODULE: Traffic
+      if (analyticsPreferences.includeTraffic) {
+        // Traffic trends by hour
+        const hourlyCounts = {};
+        last24hSessions.forEach(s => {
+          const bogotaTime = new Date(new Date(s.createdAt).toLocaleString('en-US', { timeZone: 'America/Bogota' }));
+          const hr = bogotaTime.getHours();
+          hourlyCounts[hr] = (hourlyCounts[hr] || 0) + 1;
+        });
+
+        let peakHour = -1;
+        let maxCount = 0;
+        for (const [h, count] of Object.entries(hourlyCounts)) {
+          if (count > maxCount) {
+            maxCount = count;
+            peakHour = parseInt(h, 10);
+          }
+        }
+        const peakHourStr = peakHour !== -1 ? `${peakHour.toString().padStart(2, '0')}:00 - ${(peakHour+1).toString().padStart(2, '0')}:00` : 'N/A';
+
+        reportText += `📈 <b>Métricas de Tráfico:</b>\n` +
+                     `• Nuevas Sesiones: <b>${totalNew}</b> (UNITEC: <b>${unitecCount}</b> | Building: <b>${buildingCount}</b>)\n` +
+                     `• Activas: <b>${activeStatus}</b> | Completadas: <b>${completedStatus}</b> | Intervenidas: <b>${interventionCount}</b>\n` +
+                     `• Hora Pico: <b>${peakHourStr}</b>\n\n`;
+      }
+
+      // MODULE: Sentiment
+      if (analyticsPreferences.includeSentiment) {
+        let positive = 0, neutral = 0, negative = 0;
+        last24hSessions.forEach(s => {
+          if (s.sentimentScore > 0.3) positive++;
+          else if (s.sentimentScore < -0.3) negative++;
+          else neutral++;
+        });
+        reportText += `🧠 <b>Análisis de Sentimiento:</b>\n` +
+                     `🟢 Positivo: <b>${positive}</b> | 🟡 Neutral: <b>${neutral}</b> | 🔴 Negativo: <b>${negative}</b>\n\n`;
+      }
+
+      // MODULE: Intentions
+      if (analyticsPreferences.includeIntents) {
+        const intentCounts = {};
+        last24hSessions.forEach(s => {
+          const intent = s.intentCategory || 'General / Desconocido';
+          intentCounts[intent] = (intentCounts[intent] || 0) + 1;
+        });
+        const topIntentsList = Object.entries(intentCounts)
+          .sort((a, b) => b[1] - a[1])
+          .slice(0, 3)
+          .map(([intent, count]) => `  • ${intent}: <b>${count}</b>`)
+          .join('\n');
+
+        reportText += `🎯 <b>Principales Intenciones:</b>\n${topIntentsList || '  Ninguna registrada'}\n\n`;
+      }
+
+      // MODULE: Demographics
+      if (analyticsPreferences.includeDemographics) {
+        const profCounts = {};
+        last24hSessions.forEach(s => {
+          const prof = s.extractedData?.profession || 'No especificado';
+          profCounts[prof] = (profCounts[prof] || 0) + 1;
+        });
+        const demographicsList = Object.entries(profCounts)
+          .sort((a, b) => b[1] - a[1])
+          .map(([prof, count]) => `  • ${prof}: <b>${count}</b>`)
+          .join('\n');
+
+        reportText += `👥 <b>Perfil de Profesiones:</b>\n${demographicsList || '  Ninguno registrado'}\n\n`;
+      }
+
+      // MODULE: AI Executive Summary
+      if (analyticsPreferences.includeAIExecutiveSummary) {
+        const geminiKeyToUse = process.env.GEMINI_API_KEY || process.env.VITE_GEMINI_API_KEY;
+        const summary = await generateAIExecutiveSummary(last24hSessions, geminiKeyToUse);
+        if (summary) {
+          reportText += `📝 <b>Resumen Ejecutivo (IA):</b>\n<i>${summary}</i>\n\n`;
+        }
+      }
+
+      // Add a small footer list of last interactions (limit to 5 for brevity)
       let customerListHtml = '';
-      last24hSessions.slice(0, 15).forEach((s, idx) => {
-        const name = s.customerName || s.extractedData?.name || 'Visitante Anónimo';
+      last24hSessions.slice(0, 5).forEach((s, idx) => {
+        const name = s.customerName || s.extractedData?.name || 'Cliente Anónimo';
         const phone = s.customerPhone || s.extractedData?.phone || 'No provisto';
-        const profession = s.extractedData?.profession || 'No provisto';
         const lastMsg = s.lastMessage || 'Sin mensajes';
-        const brand = s.brandId === 'unitec' ? 'UNITEC' : 'BUILDING';
-        
-        customerListHtml += `${idx + 1}. <b>${name}</b> (${brand})\n` +
-          `   📱 Tel: <code>${phone}</code>\n` +
-          `   💼 Profesión: <b>${profession}</b>\n` +
-          `   💬 Último: <i>"${lastMsg.slice(0, 120)}"</i>\n\n`;
+        customerListHtml += `  ${idx + 1}. <b>${name}</b> (Tel: <code>${phone}</code>): <i>"${lastMsg.slice(0, 60)}..."</i>\n`;
       });
 
-      // 6. Build the rich HTML report message
-      reportText = `📊 <b>Reporte Diario de Chatbot (9:00 AM)</b>\n` +
-        `📅 Fecha: <b>${now.toLocaleDateString('es-CO')}</b>\n\n` +
-        `📈 <b>Métricas de Interacción (Últimas 24h):</b>\n` +
-        `• Nuevas Sesiones: <b>${totalNew}</b>\n` +
-        `• UNITEC USA: <b>${unitecCount}</b>\n` +
-        `• Building Innovation: <b>${buildingCount}</b>\n` +
-        `• Activas: <b>${activeStatus}</b> | Completadas: <b>${completedStatus}</b>\n` +
-        `• Intervenciones Humano: <b>${interventionCount}</b>\n\n` +
-        `🧠 <b>Análisis de Sentimiento:</b>\n` +
-        `🟢 Positivo: <b>${positive}</b> | 🟡 Neutral: <b>${neutral}</b> | 🔴 Negativo: <b>${negative}</b>\n\n` +
-        `👥 <b>Últimas Interacciones de Clientes:</b>\n` +
-        `${customerListHtml}` +
-        `🔗 <i>Acceda al Panel de Administración para exportar el histórico detallado.</i>`;
+      if (customerListHtml) {
+        reportText += `👥 <b>Últimas Interacciones:</b>\n${customerListHtml}\n`;
+      }
+
+      reportText += `🔗 <i>Acceda al Panel de Administración para ver más detalles.</i>`;
     }
 
-    // 7. Dispatch to Telegram Group/Channel (Splits and loops over comma separated Chat IDs)
+    // 6. Dispatch to Telegram Group/Channel
     if (telegramBotToken && telegramChatId) {
       const chatIds = telegramChatId.split(',').map(id => id.trim()).filter(Boolean);
       for (const chatId of chatIds) {
@@ -183,7 +343,7 @@ export default async function handler(req, res) {
       }
     }
 
-    // 8. Dispatch Daily Email via Resend if API Key is configured
+    // 7. Dispatch Daily Email via Resend if API Key is configured
     const RESEND_API_KEY = process.env.RESEND_API_KEY;
     const ADMIN_EMAIL = process.env.ADMIN_EMAIL || 'lidermarketingonline@espaciosimportados.com.co';
     if (RESEND_API_KEY) {
