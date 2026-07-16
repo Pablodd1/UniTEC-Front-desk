@@ -119,7 +119,8 @@ const AnalyticsDashboard: React.FC<AnalyticsDashboardProps> = ({ sessions }) => 
   };
 
   const intentDistribution = filteredSessions.reduce((acc, s) => {
-    const intent = s.intentCategory || 'unknown';
+    let intent = s.intentCategory || 'Desconocido';
+    if (intent === 'unknown') intent = 'Desconocido';
     acc[intent] = (acc[intent] || 0) + 1;
     return acc;
   }, {} as Record<string, number>);
@@ -161,8 +162,8 @@ const AnalyticsDashboard: React.FC<AnalyticsDashboardProps> = ({ sessions }) => 
           <div className="flex items-center justify-between mb-5">
             <div className="flex items-center gap-3">
               <div className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
-              <span className="text-[11px] font-black uppercase tracking-[0.2em] text-slate-300">Today Live</span>
-              <span className="px-2 py-0.5 bg-red-500 rounded-full text-[9px] font-black uppercase tracking-wider text-white animate-pulse">? LIVE</span>
+              <span className="text-[11px] font-black uppercase tracking-[0.2em] text-slate-300">Actividad de hoy</span>
+              <span className="px-2 py-0.5 bg-red-500 rounded-full text-[9px] font-black uppercase tracking-wider text-white animate-pulse">En vivo</span>
             </div>
             <span className="text-[10px] text-slate-400">{now.toLocaleTimeString('es', { hour: '2-digit', minute: '2-digit' })} · Actualizado cada 30s</span>
           </div>
@@ -221,7 +222,7 @@ const AnalyticsDashboard: React.FC<AnalyticsDashboardProps> = ({ sessions }) => 
         <div className="flex items-center justify-between mb-4">
           <h3 className="font-bold text-slate-800">Ingesta por hora · Hoy</h3>
           <span className="flex items-center gap-1.5 text-[10px] font-bold text-emerald-600 bg-emerald-50 px-2 py-1 rounded-full">
-            <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />LIVE
+            <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />EN VIVO
           </span>
         </div>
         <div className="h-44">

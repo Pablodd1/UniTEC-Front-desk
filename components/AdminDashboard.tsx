@@ -1934,6 +1934,7 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({
                {/* SYSTEM / CONFIG GROUP */}
                {[
                  { id: 'general',         label: 'Settings',     icon: <ShieldCheck size={13} /> },
+                 { id: 'integrations',    label: 'Integrations', icon: <Plug size={13} /> },
                  { id: 'training',        label: 'Training',     icon: <Brain size={13} /> },
                 ].map((t: any) => {
                  const activeBrandColor = currentBrandId === 'building' ? 'border-indigo-600 text-indigo-600' : 'border-brand-600 text-brand-600';
