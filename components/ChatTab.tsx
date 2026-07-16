@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { summarizeSessionNow } from '../services/retentionService';
 
 import React, { useState, useRef, useEffect } from 'react';

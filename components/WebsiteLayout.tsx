@@ -1,4 +1,5 @@
-﻿// @ts-nocheck\nï»¿import React from 'react';
+// @ts-nocheck
+import React, { useState, useEffect } from 'react';
 import { BusinessConfig, CartItem, Language, Tab } from '../types';
 import { Facebook, Instagram, Linkedin, Settings, ShoppingBag } from 'lucide-react';
 import { motion } from 'framer-motion';
