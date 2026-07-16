@@ -251,13 +251,14 @@ const ChatTab: React.FC<ChatTabProps> = ({ quickActions, initialMessage, emergen
     }
   }, [messages, sessionStatus, isLoading]);
 
-  // Update welcome message when language or customGreeting changes, but only if it's the only message
+  // Update welcome message when language or brandId changes, but only if it's the only message
   useEffect(() => {
     if (messages.length === 1 && messages[0].id === 'welcome') {
-        const brandName = brandId === 'unitec' ? 'UNITEC USA DESIGN' : 'Building Innovation';
+        const brandName = brandId === 'unitec' ? 'Unitec USA Design' : 'Building Innovation';
         const welcomeText = language === 'en'
-          ? `Hello! Welcome to ${brandName}. Could you please start by telling me your name?`
-          : `¡Hola! Bienvenido a ${brandName}. Para iniciar, ¿podría decirme cuál es su nombre?`;
+          ? `Hello, 👋 Welcome to ${brandName}, your partner in constructive solutions and alternatives.\n\nMy name is Decky👷 and I will be here accompanying you to browse our portfolio of more than 500 products and choose the best constructive options aligned with your project.\n\nBefore continuing, I would like to know you. Tell me, what is your name?`
+          : `Hola, 👋 Bienvenido a ${brandName}, tu aliado en soluciones y alternativas constructivas.\n\nMi nombre es Decky👷 y estaré por este medio acompañándote a recorrer nuestro portafolio de más de 500 productos y a escoger las mejores opciones constructivas alineadas a tu proyecto.\n\nAntes de continuar quisiera conocerte. Cuéntame, ¿cómo te llamas?`;
+        
         setMessages([{
             id: 'welcome',
             role: 'model',
@@ -265,8 +266,7 @@ const ChatTab: React.FC<ChatTabProps> = ({ quickActions, initialMessage, emergen
             timestamp: new Date()
         }]);
     }
-  }, [language, customGreeting, t.chatWelcome, initialMessage, brandId]);
-
+  }, [language, brandId]);
 
 
   useEffect(() => {
