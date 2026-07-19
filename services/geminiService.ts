@@ -62,7 +62,27 @@ const sleep = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
 
 const RETRY_DELAYS = [1000, 2000]; // ms between attempts 1→2 and 2→3
 
-// ─── Main chat generator ────────────────────────────────────────────────────
+const performCatalogSearch = async (query: string, brandId: string) => {
+    try {
+        const req = await fetch('/products.json');
+        const products = await req.json();
+        const lowerQ = query.toLowerCase();
+        return products.filter(p => 
+            p.name.toLowerCase().includes(lowerQ) || 
+            p.id.toLowerCase().includes(lowerQ) ||
+            p.category.toLowerCase().includes(lowerQ)
+        ).slice(0, 10).map(p => ({
+            id: p.id,
+            name: p.name,
+            price: brandId === 'unitec' ? p.price_cop : p.price_usd,
+            stock_status: p.stock_status,
+            description: p.description
+        }));
+    } catch (e) {
+        return { error: "Catalog unavailable" };
+    }
+};
+
 export async function* sendMessageToGemini(
   message: string,
   history: any[] = [],
@@ -74,149 +94,133 @@ export async function* sendMessageToGemini(
 ): AsyncGenerator<any, void, unknown> {
 
   const apiKey = await getApiKey();
-
-  if (!apiKey) {
-    throw new Error('API_KEY_MISSING');
-  }
+  if (!apiKey) throw new Error('API_KEY_MISSING');
 
   let instructions = getSystemInstruction(language, customGreeting, brandId);
   if (emergencyMode) instructions += '\n\n[SYSTEM OVERRIDE: EMERGENCY MODE ACTIVE]. Respond concisely.';
 
-  // ── Gemini REST path (if key starts with AIza) ───────────────────────────
   const isGemini = apiKey.startsWith('AIza');
+  
+  if (!isGemini) {
+      throw new Error('Only Gemini API keys (AIza...) are supported.');
+  }
 
-  if (isGemini) {
-    const geminiEndpoint = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:streamGenerateContent?key=${apiKey}`;
-
-    const geminiContents = [
-      { role: 'user', parts: [{ text: 'System Instructions: ' + instructions }] },
+  const geminiContents = [
       ...history.map(h => ({
         role: h.role === 'model' ? 'model' : 'user',
-        parts: [{ text: h.parts?.[0]?.text || h.text || '' }]
+        parts: h.parts || [{ text: h.text || '' }]
       }))
-    ];
-    if (message) geminiContents.push({ role: 'user', parts: [{ text: message }] });
+  ];
+  if (message) geminiContents.push({ role: 'user', parts: [{ text: message }] });
 
-    const response = await fetch(geminiEndpoint, {
+  const bodyPayload = {
+      contents: geminiContents,
+      systemInstruction: { parts: [{ text: instructions }] },
+      tools: [{ functionDeclarations: TOOLS }]
+  };
+
+  const geminiEndpoint = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:streamGenerateContent?key=${apiKey}`;
+
+  let response = await fetch(geminiEndpoint, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ contents: geminiContents })
-    });
+      body: JSON.stringify(bodyPayload)
+  });
 
-    if (!response.ok) {
-      const errText = await response.text().catch(() => '');
-      throw new Error(`Gemini API Error (${response.status}): ${errText}`);
-    }
-
-    const reader = response.body?.getReader();
-    const decoder = new TextDecoder('utf-8');
-    if (!reader) throw new Error('Failed to get stream reader');
-
-    let buffer = '';
-    try {
-      while (true) {
-        const { done, value } = await reader.read();
-        if (done) break;
-        buffer += decoder.decode(value, { stream: true });
-      }
-      const json = JSON.parse(buffer);
-      if (Array.isArray(json)) {
-        for (const chunk of json) {
-          const text = chunk.candidates?.[0]?.content?.parts?.[0]?.text;
-          if (text) yield { text, candidates: [{ content: { parts: [{ text }] } }] };
-        }
-      }
-    } catch (e) {
-      console.error('Gemini parse error:', e);
-      throw new Error('Failed to parse Gemini response');
-    } finally {
-      reader.releaseLock();
-    }
-    return;
+  if (!response.ok) {
+      throw new Error(`Gemini API Error: ${await response.text()}`);
   }
 
-  // ── OpenRouter / OpenAI path ─────────────────────────────────────────────
-  const isOpenAI = apiKey.startsWith('sk-') && !apiKey.startsWith('sk-or-');
-  const endpoint = isOpenAI
-    ? 'https://api.openai.com/v1/chat/completions'
-    : 'https://openrouter.ai/api/v1/chat/completions';
-  const model = isOpenAI ? 'gpt-4o-mini' : 'openai/gpt-4o-mini';
-
-  const messages = [
-    { role: 'system', content: instructions },
-    ...history.map(h => ({
-      role: h.role === 'model' ? 'assistant' : 'user',
-      content: h.parts?.[0]?.text || ''
-    }))
-  ];
-  if (message) messages.push({ role: 'user', content: message });
-
-  // 3-attempt retry with exponential backoff
-  let response: Response | undefined;
-  let lastError: Error | undefined;
-
-  for (let attempt = 0; attempt < 3; attempt++) {
-    try {
-      response = await fetch(endpoint, {
-        method: 'POST',
-        headers: {
-          'Authorization': `Bearer ${apiKey}`,
-          'Content-Type': 'application/json',
-          'HTTP-Referer': typeof window !== 'undefined' ? window.location.href : 'https://unitec-front-desk.vercel.app',
-          'X-Title': 'UNITEC Chatbot'
-        },
-        body: JSON.stringify({ model, messages, stream: true })
-      });
-
-      if (response.ok) break; // success — exit retry loop
-
-      const errText = await response.text().catch(() => '');
-      lastError = new Error(`API Error (${response.status}): ${errText}`);
-    } catch (err: any) {
-      lastError = err;
-      response = undefined;
-    }
-
-    if (attempt < 2) await sleep(RETRY_DELAYS[attempt]);
-  }
-
-  if (!response || !response.ok) {
-    throw lastError || new Error('Failed to connect to AI after 3 attempts');
-  }
-
-  // ── SSE stream parsing ───────────────────────────────────────────────────
   const reader = response.body?.getReader();
   const decoder = new TextDecoder('utf-8');
-  if (!reader) throw new Error('Failed to get stream reader');
-
   let buffer = '';
-  try {
-    while (true) {
-      const { done, value } = await reader.read();
-      if (done) break;
-      buffer += decoder.decode(value, { stream: true });
-      const lines = buffer.split('\n');
-      buffer = lines.pop() || '';
 
-      for (const line of lines) {
-        const trimmed = line.trim();
-        if (!trimmed || trimmed === 'data: [DONE]') continue;
-        if (trimmed.startsWith('data: ')) {
-          try {
-            const json = JSON.parse(trimmed.slice(6));
-            const chunkText = json.choices?.[0]?.delta?.content || '';
-            if (chunkText) {
-              yield {
-                text: chunkText,
-                candidates: [{ content: { parts: [{ text: chunkText }] } }]
-              };
+  try {
+      while (true) {
+        const { done, value } = await reader!.read();
+        if (done) break;
+        buffer += decoder.decode(value, { stream: true });
+        
+        const lines = buffer.split('\n');
+        buffer = lines.pop() || '';
+
+        for (const line of lines) {
+            const trimmed = line.trim();
+            if (!trimmed || trimmed === 'data: [DONE]') continue;
+            if (trimmed.startsWith('data: ')) {
+                try {
+                    const json = JSON.parse(trimmed.slice(6));
+                    const part = json.candidates?.[0]?.content?.parts?.[0];
+                    if (part) {
+                        if (part.text) {
+                            yield { text: part.text, candidates: json.candidates };
+                        }
+                        if (part.functionCall) {
+                            const args = part.functionCall.args || {};
+                            if (part.functionCall.name === 'search_catalog') {
+                                const result = await performCatalogSearch(args.query || '', brandId);
+                                if (onToolSuccess) onToolSuccess('search_catalog', result);
+                                
+                                const functionResponsePart = {
+                                    functionResponse: {
+                                        name: 'search_catalog',
+                                        response: { result }
+                                    }
+                                };
+                                
+                                geminiContents.push({
+                                    role: 'model',
+                                    parts: [part]
+                                });
+                                geminiContents.push({
+                                    role: 'user',
+                                    parts: [functionResponsePart]
+                                });
+                                
+                                const followUpPayload = {
+                                    contents: geminiContents,
+                                    systemInstruction: { parts: [{ text: instructions }] },
+                                    tools: [{ functionDeclarations: TOOLS }]
+                                };
+                                
+                                const followUpResponse = await fetch(geminiEndpoint, {
+                                    method: 'POST',
+                                    headers: { 'Content-Type': 'application/json' },
+                                    body: JSON.stringify(followUpPayload)
+                                });
+                                
+                                const fReader = followUpResponse.body?.getReader();
+                                let fBuffer = '';
+                                while (true) {
+                                    const { done: fDone, value: fValue } = await fReader!.read();
+                                    if (fDone) break;
+                                    fBuffer += decoder.decode(fValue, { stream: true });
+                                    const fLines = fBuffer.split('\n');
+                                    fBuffer = fLines.pop() || '';
+                                    for (const fLine of fLines) {
+                                        const fTrimmed = fLine.trim();
+                                        if (fTrimmed.startsWith('data: ')) {
+                                            try {
+                                                const fJson = JSON.parse(fTrimmed.slice(6));
+                                                const fPart = fJson.candidates?.[0]?.content?.parts?.[0];
+                                                if (fPart && fPart.text) {
+                                                    yield { text: fPart.text, candidates: fJson.candidates };
+                                                }
+                                            } catch (e) {}
+                                        }
+                                    }
+                                }
+                            } else {
+                                if (onToolSuccess) onToolSuccess(part.functionCall.name, args);
+                            }
+                        }
+                    }
+                } catch (e) {}
             }
-          } catch (_) { /* skip malformed SSE chunk */ }
         }
       }
-    }
   } finally {
-    reader.releaseLock();
+      if (reader) reader.releaseLock();
   }
 }
 

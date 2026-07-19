@@ -9,7 +9,7 @@ import { generateImage, editImage } from '../services/imageService';
 import { getAppConfig, saveAppConfig, getCrmLogs, CrmLog, getAllChatSessions, getTelegramConfig, saveTelegramConfig } from '../services/firestoreService';
 import { db } from '../firebase';
 import { doc, writeBatch } from 'firebase/firestore';
-import { DEFAULT_TRAINING_DATA } from '../constants';
+
 import { subscribeToConversations, subscribeToInterventions, updateSessionStatus, addMessage, subscribeToMessages } from '../services/conversationService';
 import ConversationMonitor from './ConversationMonitor';
 import StaffIntervention from './StaffIntervention';
@@ -222,7 +222,7 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({
         if (config.trainingData && config.trainingData.length > 50) {
           setTrainingData(config.trainingData);
         } else {
-          setTrainingData(DEFAULT_TRAINING_DATA);
+          setTrainingData("");
         }
         if (config.geminiApiKey) {
           setGeminiApiKey(config.geminiApiKey);

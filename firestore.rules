@@ -144,7 +144,7 @@ service cloud.firestore {
       allow get: if true;
       allow list: if isStaff();
       allow create: if isValidConversation();
-      allow update: if isStaff() || (!isAuthenticated() && request.resource.data.id == resource.data.id);
+      allow update: if isStaff() || (!isAuthenticated() && request.resource.data.id == resource.data.id && isValidConversation());
       allow delete: if isAdmin();
       
       // -- Messages subcollection: public read & create, authenticated update/delete --

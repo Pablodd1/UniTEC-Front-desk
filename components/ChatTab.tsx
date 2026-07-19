@@ -142,10 +142,12 @@ const ChatTab: React.FC<ChatTabProps> = ({ quickActions, initialMessage, emergen
       try {
         const storageKey = `unitec_chat_conversation_id_${brandId || 'unitec'}`;
         const historyKey = `unitec_chat_history_${brandId || 'unitec'}`;
-        // PRIVACY FIX: Always start fresh for every new chat load
         if (typeof window !== 'undefined') {
-          localStorage.removeItem(storageKey);
-          localStorage.removeItem(historyKey);
+          const existingId = localStorage.getItem(storageKey);
+          if (existingId) {
+            setConversationId(existingId);
+            return;
+          }
         }
 
         const id = await createConversation(
@@ -231,26 +233,7 @@ const ChatTab: React.FC<ChatTabProps> = ({ quickActions, initialMessage, emergen
       unsubMessages();
     };
   }, [conversationId]);
-// Sync to Firebase (Only when AI is actively responding to avoid race-loops)
-  useEffect(() => {
-    if (messages.length > 1 && sessionStatus === 'active' && !isLoading && conversationId) {
-      const sessionPayload: any = {
-        id: conversationId,
-        timestamp: new Date().toISOString(),
-        lastUpdated: new Date().toISOString(),
-        messages: messages,
-        customerName: extractedPii?.name || 'Anonymous Visitor',
-        status: 'active',
-      };
-      if (extractedPii) {
-        sessionPayload.extracted_pii = extractedPii;
-      }
-      if (intentCategory) {
-        sessionPayload.intent_category = intentCategory;
-      }
-      saveChatSession(sessionPayload).catch(e => console.warn('Sync warning', e));
-    }
-  }, [messages, sessionStatus, isLoading]);
+// Sync to Firebase (Handled by addMessage above)
 
   // Update welcome message when language or brandId changes, but only if it's the only message
   useEffect(() => {
