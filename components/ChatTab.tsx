@@ -283,27 +283,52 @@ const ChatTab: React.FC<ChatTabProps> = ({ quickActions, initialMessage, emergen
     // Do not trigger if the last message was the abandon message
     if (lastMessage.id?.startsWith('idle_abandon_')) return;
 
-    const abandonTimeoutMs = 5 * 60 * 1000; // 5 minutes
-    const timer = setTimeout(() => {
-      console.log('Session idle for 5 minutes. Closing and saving as completed.');
-      
-      // Update session status to completed and summarize
-      updateSessionStatus(conversationId, 'completed').catch(() => {});
-      summarizeSessionNow(conversationId).catch(console.error);
-      
-      const closingText = language === 'en'
-        ? "It looks like you aren't able to respond right now. I'll close the chat and save our conversation to keep things clean. Feel free to message again whenever you're ready! "
-        : "Veo que en este momento no has podido responder. Por ahora cerraré la conversación y guardaré nuestro progreso para no saturarte  Cuando quieras retomar, solo escríbenos y con gusto continuamos desde donde quedamos  ¡Que tengas un excelente día!";
+    let warningTimer: NodeJS.Timeout;
+    let closeTimer: NodeJS.Timeout;
 
-      setMessages(prev => [...prev, {
-        id: `idle_abandon_${Date.now()}`,
-        role: 'model',
-        text: closingText,
-        timestamp: new Date()
-      }]);
-    }, abandonTimeoutMs);
+    if (lastMessage.id?.startsWith('idle_warning_')) {
+      // Already sent warning, wait 5 more minutes to close (30 total)
+      const abandonTimeoutMs = 5 * 60 * 1000; // 5 minutes
+      closeTimer = setTimeout(() => {
+        console.log('Session idle for 30 minutes. Closing and saving as completed.');
+        
+        // Update session status to completed and summarize
+        updateSessionStatus(conversationId, 'completed').catch(() => {});
+        summarizeSessionNow(conversationId).catch(console.error);
+        
+        const closingText = language === 'en'
+          ? "It looks like you aren't able to respond right now. I'll close the chat and save our conversation to keep things clean. Feel free to message again whenever you're ready! "
+          : "Veo que en este momento no has podido responder. Por ahora cerraré la conversación y guardaré nuestro progreso para no saturarte  Cuando quieras retomar, solo escríbenos y con gusto continuamos desde donde quedamos  ¡Que tengas un excelente día!";
 
-    return () => clearTimeout(timer);
+        setMessages(prev => [...prev, {
+          id: `idle_abandon_${Date.now()}`,
+          role: 'model',
+          text: closingText,
+          timestamp: new Date()
+        }]);
+      }, abandonTimeoutMs);
+    } else {
+      // Normal flow, wait 25 minutes to send warning
+      const warningTimeoutMs = 25 * 60 * 1000; // 25 minutes
+      warningTimer = setTimeout(() => {
+        console.log('Session idle for 25 minutes. Sending warning.');
+        const warningText = language === 'en'
+          ? "Are you still there? If you don't respond in a few minutes, I'll close the chat."
+          : "Señor/a, ¿aún continuas en línea?";
+          
+        setMessages(prev => [...prev, {
+          id: `idle_warning_${Date.now()}`,
+          role: 'model',
+          text: warningText,
+          timestamp: new Date()
+        }]);
+      }, warningTimeoutMs);
+    }
+
+    return () => {
+      if (warningTimer) clearTimeout(warningTimer);
+      if (closeTimer) clearTimeout(closeTimer);
+    };
   }, [messages, sessionStatus, conversationId, language]);
 
   // Robust Auto-Scroll Implementation
@@ -374,7 +399,13 @@ const ChatTab: React.FC<ChatTabProps> = ({ quickActions, initialMessage, emergen
     setInputText('');
 
     if (onboardingStage === 'name') {
-      const name = text.trim();
+      let name = text.trim();
+      const nameRegex = /^(?:hola[\s,]+)?(?:me\s+llamo\s+|soy\s+|mi\s+nombre\s+es\s+)?([a-zA-ZÁÉÍÓÚáéíóúñÑ\s]+)$/i;
+      const match = name.match(nameRegex);
+      if (match && match[1]) {
+        name = match[1].trim();
+        name = name.charAt(0).toUpperCase() + name.slice(1);
+      }
       setExtractedPii(prev => {
         const merged = { ...prev, name };
         if (conversationId) {
@@ -418,8 +449,8 @@ const ChatTab: React.FC<ChatTabProps> = ({ quickActions, initialMessage, emergen
       setOnboardingStage('profession');
       
       const professionPrompt = language === 'en'
-        ? `Great! Lastly, what is your profession or role? Please choose one of the options below:\n\n1. Architect\n2. Builder\n3. Designer\n4. Distributor\n5. End Customer\n6. Other`
-        : `¡Perfecto! Por último, ¿cuál es tu profesión? Elige una opción:\n\n1. Arquitecto\n2. Constructor\n3. Diseñador\n4. Distribuidor\n5. Cliente Final\n6. Otro`;
+        ? `Great! Lastly, what do you do? Please choose one of the options below:\n\n1. Architect\n2. Builder\n3. Designer\n4. Distributor\n5. Wholesaler\n6. End Customer\n7. Other`
+        : `¡Perfecto! Por último, ¿Cuéntame a que te dedicas? Elige una opción:\n\n1. Arquitecto\n2. Constructor\n3. Diseñador\n4. Distribuidor\n5. Mayorista\n6. Cliente Final\n7. Otro`;
         
       setMessages(prev => [...prev, {
         id: Date.now().toString(),

@@ -154,10 +154,18 @@ export default async function handler(req, res) {
       }
     }
 
-    // 4. Fetch all conversations from Firestore REST API
-    const conversationsUrl = `https://firestore.googleapis.com/v1/projects/${projectId}/databases/(default)/documents/conversations?pageSize=300`;
-    const convRes = await fetch(conversationsUrl, {
-      headers: { 'Authorization': `Bearer ${idToken}` }
+    // 4. Fetch all conversations from Firestore REST API using runQuery
+    const queryUrl = `https://firestore.googleapis.com/v1/projects/${projectId}/databases/(default)/documents:runQuery`;
+    const convRes = await fetch(queryUrl, {
+      method: 'POST',
+      headers: { 'Authorization': `Bearer ${idToken}`, 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        structuredQuery: {
+          from: [{ collectionId: 'conversations' }],
+          orderBy: [{ field: { fieldPath: 'lastUpdated' }, direction: 'DESCENDING' }],
+          limit: 300
+        }
+      })
     });
 
     if (!convRes.ok) {
@@ -165,8 +173,9 @@ export default async function handler(req, res) {
       throw new Error(`Failed to fetch conversations: ${errText}`);
     }
 
-    const convData = await convRes.json();
-    const documents = convData.documents || [];
+    const results = await convRes.json();
+    // runQuery returns an array of { document: {...} }, map it to match previous document array format
+    const documents = results.map(r => r.document).filter(Boolean);
 
     // Parse Firestore REST API document format
     const parsedSessions = documents.map(doc => {
