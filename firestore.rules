@@ -67,35 +67,7 @@ service cloud.firestore {
              (!('escalaIsActive' in request.resource.data) || request.resource.data.escalaIsActive is bool) &&
              (!('trainingData' in request.resource.data) || (request.resource.data.trainingData is string && request.resource.data.trainingData.size() < 500000)) &&
              (!('geminiApiKey' in request.resource.data)) &&
-             request.resource.data.userId is string && request.resource.data.userId.size() < 100;
-    }
-
-    function isValidConversation() {
-      return request.resource.data.keys().hasAll(['id', 'status', 'brandId', 'createdAt', 'lastUpdated']) &&
-             request.resource.data.id is string &&
-             request.resource.data.status in ['active', 'human_requested', 'human_assigned', 'completed', 'abandoned'] &&
-             request.resource.data.brandId in ['unitec', 'building'] &&
-             request.resource.data.createdAt is string &&
-             request.resource.data.lastUpdated is string;
-    }
-    
-    function isValidMessage() {
-      return request.resource.data.keys().hasAll(['id', 'role', 'text', 'timestamp']) &&
-             request.resource.data.id is string &&
-             request.resource.data.role in ['user', 'model', 'staff'] &&
-             request.resource.data.text is string &&
-             request.resource.data.text.size() < 10000 &&
-             request.resource.data.timestamp is string;
-    }
-    
-    function isValidIntervention() {
-      return request.resource.data.keys().hasAll(['id', 'sessionId', 'requestedAt', 'status', 'requestedBy', 'reason', 'priority']) &&
-             request.resource.data.id is string &&
-             request.resource.data.sessionId is string &&
-             request.resource.data.status in ['pending', 'accepted', 'resolved', 'timeout'] &&
-             request.resource.data.requestedBy in ['user', 'system', 'staff'] &&
-             request.resource.data.reason is string &&
-             request.resource.data.priority in ['low', 'medium', 'high', 'urgent'];
+              request.resource.data.userId is string && request.resource.data.userId.size() < 100;
     }
     
     function isValidCall() {
