@@ -1631,7 +1631,7 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({
 
                               <div className="grid grid-cols-1 md:grid-cols-2 gap-6 pt-2">
                                   <div className="space-y-2">
-                                      <label className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Report Delivery Time (Colombia Time)</label>
+                                      <label className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Hora de envío (Hora Colombia)</label>
                                       <select 
                                           value={telegramReportTime}
                                           onChange={e => setTelegramReportTime(e.target.value)}
@@ -1646,11 +1646,11 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({
                                               );
                                           })}
                                       </select>
-                                      <p className="text-[10px] text-slate-400 italic">Cron checks hourly; report is dispatched once daily at the selected hour.</p>
+                                      <p className="text-[10px] text-slate-400 italic">Cron revisa cada hora; el reporte se envía una vez al día a la hora seleccionada.</p>
                                   </div>
 
                                   <div className="space-y-3">
-                                      <label className="text-[10px] font-bold text-slate-400 uppercase tracking-widest block">Included Analytics Modules</label>
+                                      <label className="text-[10px] font-bold text-slate-400 uppercase tracking-widest block">Módulos de Análisis Incluidos</label>
                                       <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
                                           <label className="flex items-center gap-2 text-xs text-slate-600 cursor-pointer">
                                               <input 
@@ -1659,7 +1659,7 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({
                                                   onChange={e => setAnalyticsPreferences(prev => ({ ...prev, includeTraffic: e.target.checked }))}
                                                   className="rounded border-slate-300 text-brand-600 focus:ring-brand-500"
                                               />
-                                              Traffic Trends
+                                              Tendencias de Tráfico
                                           </label>
                                           <label className="flex items-center gap-2 text-xs text-slate-600 cursor-pointer">
                                               <input 
@@ -1668,7 +1668,7 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({
                                                   onChange={e => setAnalyticsPreferences(prev => ({ ...prev, includeSentiment: e.target.checked }))}
                                                   className="rounded border-slate-300 text-brand-600 focus:ring-brand-500"
                                               />
-                                              Sentiment Analysis
+                                              Análisis de Sentimiento
                                           </label>
                                           <label className="flex items-center gap-2 text-xs text-slate-600 cursor-pointer">
                                               <input 
@@ -1677,7 +1677,7 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({
                                                   onChange={e => setAnalyticsPreferences(prev => ({ ...prev, includeIntents: e.target.checked }))}
                                                   className="rounded border-slate-300 text-brand-600 focus:ring-brand-500"
                                               />
-                                              Top Intentions
+                                              Intenciones Principales
                                           </label>
                                           <label className="flex items-center gap-2 text-xs text-slate-600 cursor-pointer">
                                               <input 
@@ -1887,7 +1887,7 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({
                      â† {language === 'en' ? 'Back to Site' : 'Volver a la Web'}
                    </button>
                  )}
-                 <span className="text-[9px] font-black uppercase tracking-[0.2em] text-slate-400">Mission Control</span>
+                 <span className="text-[9px] font-black uppercase tracking-[0.2em] text-slate-400">Panel de Control</span>
                </div>
                <span className="flex items-center gap-1.5">
                  <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span>
@@ -1897,10 +1897,10 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({
 <div className="flex items-end gap-0">
                {/* CRM & OPERATIONS GROUP */}
                {[
-                 { id: 'chats',           label: 'Inbox',        icon: <MessageSquare size={13} /> },
-                 { id: 'conversations',   label: 'Live Monitor', icon: <Phone size={13} /> },
-                 { id: 'interventions',   label: 'Alerts',       icon: <span className="relative flex items-center gap-1"><Headphones size={13} />{pendingAlerts.length > 0 && <span className="absolute -top-1.5 -right-2 w-3.5 h-3.5 bg-red-500 rounded-full text-[8px] font-black text-white flex items-center justify-center animate-bounce">{pendingAlerts.length}</span>}</span> },
-                 { id: 'catalogs',        label: 'Catalogs',     icon: <Copy size={13} /> },
+                 { id: 'chats',           label: 'Bandeja',        icon: <MessageSquare size={13} /> },
+                 { id: 'conversations',   label: 'Monitor', icon: <Phone size={13} /> },
+                 { id: 'interventions',   label: 'Alertas',       icon: <span className="relative flex items-center gap-1"><Headphones size={13} />{pendingAlerts.length > 0 && <span className="absolute -top-1.5 -right-2 w-3.5 h-3.5 bg-red-500 rounded-full text-[8px] font-black text-white flex items-center justify-center animate-bounce">{pendingAlerts.length}</span>}</span> },
+                 { id: 'catalogs',        label: 'Catálogos',     icon: <Copy size={13} /> },
                ].map((t: any) => (
                  <button
                    key={t.id}
@@ -1915,10 +1915,10 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({
                
                {/* INSIGHTS GROUP */}
                {[
-                 { id: 'analytics',       label: 'Analytics',      icon: <BarChart3 size={13} /> },
-                 { id: 'usage',           label: 'Usage & Billing',icon: <DollarSign size={13} /> },
+                 { id: 'analytics',       label: 'Analíticas',      icon: <BarChart3 size={13} /> },
+                 { id: 'usage',           label: 'Uso y Facturación',icon: <DollarSign size={13} /> },
                  { id: 'retraining',      label: 'Memoria',     icon: <Brain size={13} /> },
-                 { id: 'health',          label: 'API Health',     icon: <Check size={13} /> },
+                 { id: 'health',          label: 'Salud API',     icon: <Check size={13} /> },
                ].map((t: any) => (
                  <button
                    key={t.id}
@@ -1933,9 +1933,9 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({
 
                {/* SYSTEM / CONFIG GROUP */}
                {[
-                 { id: 'general',         label: 'Settings',     icon: <ShieldCheck size={13} /> },
-                 { id: 'integrations',    label: 'Integrations', icon: <Plug size={13} /> },
-                 { id: 'training',        label: 'Training',     icon: <Brain size={13} /> },
+                 { id: 'general',         label: 'Ajustes',     icon: <ShieldCheck size={13} /> },
+                 { id: 'integrations',    label: 'Integraciones', icon: <Plug size={13} /> },
+                 { id: 'training',        label: 'Entrenamiento',     icon: <Brain size={13} /> },
                 ].map((t: any) => {
                  const activeBrandColor = currentBrandId === 'building' ? 'border-indigo-600 text-indigo-600' : 'border-brand-600 text-brand-600';
                  return (

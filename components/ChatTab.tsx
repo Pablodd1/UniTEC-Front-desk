@@ -287,10 +287,10 @@ const ChatTab: React.FC<ChatTabProps> = ({ quickActions, initialMessage, emergen
     let closeTimer: NodeJS.Timeout;
 
     if (lastMessage.id?.startsWith('idle_warning_')) {
-      // Already sent warning, wait 5 more minutes to close (30 total)
-      const abandonTimeoutMs = 5 * 60 * 1000; // 5 minutes
+      // Already sent warning, wait 1 more minute to close (5 total)
+      const abandonTimeoutMs = 1 * 60 * 1000; // 1 minute
       closeTimer = setTimeout(() => {
-        console.log('Session idle for 30 minutes. Closing and saving as completed.');
+        console.log('Session idle for 5 minutes. Closing and saving as completed.');
         
         // Update session status to completed and summarize
         updateSessionStatus(conversationId, 'completed').catch(() => {});
@@ -308,12 +308,12 @@ const ChatTab: React.FC<ChatTabProps> = ({ quickActions, initialMessage, emergen
         }]);
       }, abandonTimeoutMs);
     } else {
-      // Normal flow, wait 25 minutes to send warning
-      const warningTimeoutMs = 25 * 60 * 1000; // 25 minutes
+      // Normal flow, wait 4 minutes to send warning
+      const warningTimeoutMs = 4 * 60 * 1000; // 4 minutes
       warningTimer = setTimeout(() => {
-        console.log('Session idle for 25 minutes. Sending warning.');
+        console.log('Session idle for 4 minutes. Sending warning.');
         const warningText = language === 'en'
-          ? "Are you still there? If you don't respond in a few minutes, I'll close the chat."
+          ? "Are you still there? If you don't respond in a minute, I'll close the chat."
           : "Señor/a, ¿aún continuas en línea?";
           
         setMessages(prev => [...prev, {

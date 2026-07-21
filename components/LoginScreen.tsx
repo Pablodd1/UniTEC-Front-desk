@@ -42,7 +42,7 @@ const LoginScreen: React.FC<LoginScreenProps> = ({ onLogin }) => {
       });
     } else {
       setTimeout(() => {
-        setError('Invalid Email or Password credentials.');
+        setError('Correo o contraseña inválidos.');
         setIsLoading(false);
       }, 600);
     }
@@ -56,8 +56,8 @@ const LoginScreen: React.FC<LoginScreenProps> = ({ onLogin }) => {
                 <div className="w-14 h-14 bg-brand-900 rounded-3xl flex items-center justify-center text-accent-500 mb-3 shadow-lg">
                     <ShieldCheck size={30} />
                 </div>
-                <h2 className="text-base font-black text-slate-800 tracking-tight">Admin Gatekeeper</h2>
-                <p className="text-[9px] text-slate-400 uppercase font-black tracking-widest mt-0.5">Secure Credentials Required</p>
+                <h2 className="text-base font-black text-slate-800 tracking-tight">Acceso Administrador</h2>
+                <p className="text-[9px] text-slate-400 uppercase font-black tracking-widest mt-0.5">Credenciales Requeridas</p>
             </div>
 
             {error && (
@@ -68,7 +68,7 @@ const LoginScreen: React.FC<LoginScreenProps> = ({ onLogin }) => {
 
             <form onSubmit={handleCredentialLogin} className="space-y-4">
                 <div className="space-y-1">
-                    <label className="text-[9px] font-black text-slate-400 uppercase tracking-wider block">Email Address</label>
+                    <label className="text-[9px] font-black text-slate-400 uppercase tracking-wider block">Correo Electrónico</label>
                     <div className="relative">
                         <Mail className="absolute left-3.5 top-3.5 text-slate-400" size={14} />
                         <input 
@@ -83,13 +83,13 @@ const LoginScreen: React.FC<LoginScreenProps> = ({ onLogin }) => {
                 </div>
 
                 <div className="space-y-1">
-                    <label className="text-[9px] font-black text-slate-400 uppercase tracking-wider block">Secure Password</label>
+                    <label className="text-[9px] font-black text-slate-400 uppercase tracking-wider block">Contraseña</label>
                     <div className="relative">
                         <Lock className="absolute left-3.5 top-3.5 text-slate-400" size={14} />
                         <input 
                             type="password" 
                             required
-                            placeholder="Enter password"
+                            placeholder="Ingresa tu contraseña"
                             value={password}
                             onChange={(e) => setPassword(e.target.value)}
                             className="w-full bg-slate-50 border border-slate-200 rounded-xl pl-10 pr-4 py-3 text-xs focus:ring-2 focus:ring-brand-500 outline-none transition-all placeholder:text-slate-300 text-slate-800"
@@ -103,7 +103,7 @@ const LoginScreen: React.FC<LoginScreenProps> = ({ onLogin }) => {
                     className="w-full mt-2 bg-brand-600 hover:bg-brand-700 text-white font-bold py-3 px-4 rounded-xl flex items-center justify-center gap-2 text-xs uppercase tracking-wider shadow-lg shadow-brand-500/10 transition-all active:scale-[0.98] disabled:opacity-50"
                 >
                     {isLoading ? <Loader2 size={14} className="animate-spin" /> : <ArrowRight size={14} />}
-                    {isLoading ? 'Verifying...' : 'Access Dashboard'}
+                    {isLoading ? 'Verificando...' : 'Acceder al Panel'}
                 </button>
             </form>
 
