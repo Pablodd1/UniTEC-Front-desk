@@ -422,17 +422,24 @@ export const getConversations = async (
     return []; // Return empty array when privacy mode is on
   }
   
-  let q = query(collection(db, COLLECTIONS.sessions), orderBy('lastUpdated', 'desc'));
-  
-  if (filters?.status) {
-    q = query(q, where('status', '==', filters.status));
+  try {
+    const q = query(collection(db, COLLECTIONS.sessions), orderBy('lastUpdated', 'desc'));
+    const snapshot = await getDocs(q);
+    let docs = snapshot.docs.map(doc => doc.data() as ConversationSession);
+    if (filters?.status) {
+      docs = docs.filter(s => s.status === filters.status);
+    }
+    if (filters?.brandId) {
+      docs = docs.filter(s => s.brandId === filters.brandId);
+    }
+    return docs;
+  } catch (e) {
+    console.error('getConversations failed:', e);
+    let docs = getLocalSessions();
+    if (filters?.status) docs = docs.filter(s => s.status === filters.status);
+    if (filters?.brandId) docs = docs.filter(s => s.brandId === filters.brandId);
+    return docs;
   }
-  if (filters?.brandId) {
-    q = query(q, where('brandId', '==', filters.brandId));
-  }
-  
-  const snapshot = await getDocs(q);
-  return snapshot.docs.map(doc => doc.data() as ConversationSession);
 };
 
 interface ActiveSubscription {
@@ -902,7 +909,45 @@ export const updateStaffStatus = async (
 };
 
 // Get conversation metrics for analytics
-export const getConversationMetrics = async (
+export const getInterventions = async (
+  status?: InterventionStatus
+): Promise<InterventionRequest[]> => {
+  if (getPrivacyMode()) {
+    logPrivacy('getInterventions');
+    return [];
+  }
+  try {
+    const q = query(collection(db, COLLECTIONS.interventions), orderBy('requestedAt', 'desc'));
+    const snapshot = await getDocs(q);
+    let docs = snapshot.docs.map(doc => doc.data() as InterventionRequest);
+    if (status) {
+      docs = docs.filter(i => i.status === status);
+    }
+    return docs;
+  } catch (e) {
+    console.error('getInterventions failed:', e);
+    return [];
+  }
+};
+
+// Clear an intervention request
+export const clearIntervention = async (
+  interventionId: string,
+  resolution: string = 'Resolved by staff'
+): Promise<void> => {
+  if (getPrivacyMode()) {
+    logPrivacy('clearIntervention');
+    return;
+  }
+  await updateDoc(doc(db, COLLECTIONS.interventions, interventionId), {
+    status: 'resolved',
+    resolution,
+    resolvedAt: new Date().toISOString(),
+  });
+};
+
+// Analytics summary data
+export const getAnalyticsSummary = async (
   dateFrom?: string,
   dateTo?: string
 ): Promise<{
@@ -914,51 +959,56 @@ export const getConversationMetrics = async (
   avgResponseTime: number;
   satisfactionRate: number;
 }> => {
-  let q = query(collection(db, COLLECTIONS.sessions), orderBy('createdAt', 'desc'));
-  
-  if (dateFrom) {
-    q = query(q, where('createdAt', '>=', dateFrom));
+  try {
+    const q = query(collection(db, COLLECTIONS.sessions), orderBy('lastUpdated', 'desc'));
+    const snapshot = await getDocs(q);
+    let sessions = snapshot.docs.map(doc => doc.data() as ConversationSession);
+
+    if (dateFrom) {
+      const fromTime = new Date(dateFrom).getTime();
+      sessions = sessions.filter(s => new Date(s.createdAt).getTime() >= fromTime);
+    }
+    if (dateTo) {
+      const toTime = new Date(dateTo).getTime();
+      sessions = sessions.filter(s => new Date(s.createdAt).getTime() <= toTime);
+    }
+
+    const total = sessions.length;
+    const active = sessions.filter(s => s.status === 'active').length;
+    const completed = sessions.filter(s => s.status === 'completed').length;
+    const humanRequested = sessions.filter(s => s.status === 'human_requested').length;
+
+    const avgDuration = total > 0
+      ? sessions.reduce((acc, s) => acc + (s.duration || 0), 0) / total
+      : 0;
+
+    const avgResponseTime = total > 0
+      ? sessions.reduce((acc, s) => acc + (s.analytics?.avgResponseTime || 0), 0) / total
+      : 0;
+
+    const positiveSessions = sessions.filter(s => (s.sentimentScore || 0) > 0.3).length;
+    const satisfactionRate = total > 0 ? (positiveSessions / total) * 100 : 0;
+
+    return {
+      total,
+      active,
+      completed,
+      humanRequested,
+      avgDuration,
+      avgResponseTime,
+      satisfactionRate,
+    };
+  } catch (e) {
+    console.error('getAnalyticsSummary failed:', e);
+    return {
+      total: 0, active: 0, completed: 0, humanRequested: 0,
+      avgDuration: 0, avgResponseTime: 0, satisfactionRate: 0
+    };
   }
-  if (dateTo) {
-    q = query(q, where('createdAt', '<=', dateTo));
-  }
-  
-  const snapshot = await getDocs(q);
-  const sessions = snapshot.docs.map(doc => doc.data() as ConversationSession);
-  
-  const total = sessions.length;
-  const active = sessions.filter(s => s.status === 'active').length;
-  const completed = sessions.filter(s => s.status === 'completed').length;
-  const humanRequested = sessions.filter(s => s.status === 'human_requested').length;
-  
-  const avgDuration = total > 0
-    ? sessions.reduce((acc, s) => acc + (s.duration || 0), 0) / total
-    : 0;
-  
-  const avgResponseTime = total > 0
-    ? sessions.reduce((acc, s) => acc + (s.analytics?.avgResponseTime || 0), 0) / total
-    : 0;
-  
-  // Calculate satisfaction based on sentiment (simple heuristic)
-  const positiveSessions = sessions.filter(s => (s.sentimentScore || 0) > 0.3).length;
-  const satisfactionRate = total > 0 ? (positiveSessions / total) * 100 : 0;
-  
-  return {
-    total,
-    active,
-    completed,
-    humanRequested,
-    avgDuration,
-    avgResponseTime,
-    satisfactionRate,
-  };
 };
 
 // Export collections for direct access
 export { COLLECTIONS };
-
-
-
 
 // Save AI-generated summary and Q&A pairs to a conversation
 export const saveConversationSummary = async (
@@ -986,36 +1036,44 @@ export const getSessionsWithSummaries = async (
     logPrivacy('getSessionsWithSummaries');
     return [];
   }
-  let q = query(
-    collection(db, COLLECTIONS.sessions),
-    where('status', '==', 'completed'),
-    orderBy('lastUpdated', 'desc')
-  );
-  if (dateFrom) {
-    q = query(q, where('createdAt', '>=', dateFrom));
+  try {
+    const q = query(
+      collection(db, COLLECTIONS.sessions),
+      orderBy('lastUpdated', 'desc')
+    );
+    const snapshot = await getDocs(q);
+    let docs = snapshot.docs.map(doc => doc.data() as ConversationSession);
+    docs = docs.filter(s => s.status === 'completed');
+    if (dateFrom) {
+      const fromTime = new Date(dateFrom).getTime();
+      docs = docs.filter(s => new Date(s.createdAt).getTime() >= fromTime);
+    }
+    return docs;
+  } catch (e) {
+    console.error('getSessionsWithSummaries failed:', e);
+    const local = getLocalSessions().filter(s => s.status === 'completed');
+    return local;
   }
-  const snapshot = await getDocs(q);
-  return snapshot.docs.map(doc => doc.data() as ConversationSession);
 };
 
-// Fetch ALL sessions (any status) for backfill â€” no date filter, large limit
+// Fetch ALL sessions (any status) for backfill — no date filter, large limit
 export const getAllSessionsForBackfill = async (): Promise<ConversationSession[]> => {
   if (getPrivacyMode()) {
     logPrivacy('getAllSessionsForBackfill');
     return [];
   }
-  const q = query(
-    collection(db, COLLECTIONS.sessions),
-    orderBy('createdAt', 'desc')
-  );
-  const snapshot = await getDocs(q);
-  return snapshot.docs.map(d => d.data() as ConversationSession);
+  try {
+    const q = query(
+      collection(db, COLLECTIONS.sessions),
+      orderBy('lastUpdated', 'desc')
+    );
+    const snapshot = await getDocs(q);
+    return snapshot.docs.map(d => d.data() as ConversationSession);
+  } catch (e) {
+    console.error('getAllSessionsForBackfill failed:', e);
+    return getLocalSessions();
+  }
 };
-
-
-
-
-
 
 
 
