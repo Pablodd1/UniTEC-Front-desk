@@ -1,4 +1,4 @@
-﻿import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import Layout from './components/Layout';
 import WebsiteLayout from './components/WebsiteLayout';
 import ChatTab from './components/ChatTab';
@@ -14,7 +14,7 @@ import { Tab, Language, VoiceName, VoiceProvider, CartItem } from './types';
 import { UNITEC_CONFIG, BUILDING_INNOVATION_CONFIG, QUICK_ACTIONS } from './constants';
 import { resetChatSession } from './services/geminiService';
 import { auth, logOut } from './firebase';
-import { onAuthStateChanged } from 'firebase/auth';
+import { onAuthStateChanged, signInAnonymously } from 'firebase/auth';
 
 const App: React.FC = () => {
   const isEmbedMode = new URLSearchParams(window.location.search).get('embed') === 'true';
@@ -42,7 +42,11 @@ const App: React.FC = () => {
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (user) => {
-      setIsLoggedIn(!!user);
+      if (!user) {
+        signInAnonymously(auth).catch(err => console.warn('Auto anonymous auth failed:', err));
+      } else {
+        setIsLoggedIn(true);
+      }
       setIsAuthReady(true);
     });
     return () => unsubscribe();
