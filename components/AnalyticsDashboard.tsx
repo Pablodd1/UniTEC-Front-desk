@@ -8,7 +8,7 @@ interface AnalyticsDashboardProps {
 }
 
 const AnalyticsDashboard: React.FC<AnalyticsDashboardProps> = ({ sessions }) => {
-  const [timeFilter, setTimeFilter] = useState<'all' | 'today' | 'week' | 'month'>('today');
+  const [timeFilter, setTimeFilter] = useState<'all' | 'today' | 'week' | 'month'>('all');
   const [_liveTime, setLiveTime] = useState(new Date());
 
   // Refresh live metrics every 30s

@@ -95,6 +95,7 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({
     includeAIExecutiveSummary: true,
   });
   const [isSavingTelegram, setIsSavingTelegram] = useState(false);
+  const [isTelegramSaved, setIsTelegramSaved] = useState(false);
   // Gemini API Key & Privacy Mode State
   const [geminiApiKey, setGeminiApiKey] = useState('');
   const [privacyMode, setPrivacyMode] = useState(() => {
@@ -569,6 +570,7 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({
 
   const handleSaveTelegram = async () => {
     setIsSavingTelegram(true);
+    setIsTelegramSaved(false);
     try {
       await saveTelegramConfig({
         botToken: telegramBotToken.trim(),
@@ -576,12 +578,16 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({
         reportTime: telegramReportTime,
         analyticsPreferences: analyticsPreferences,
       });
+      setIsTelegramSaved(true);
     } catch (e) {
       console.error("Failed to save Telegram config to Firestore:", e);
     }
     setTimeout(() => {
       setIsSavingTelegram(false);
     }, 1500);
+    setTimeout(() => {
+      setIsTelegramSaved(false);
+    }, 4000);
   };
 
   const currentVoiceList = [...geminiVoices];
