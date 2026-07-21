@@ -1,3 +1,7 @@
+import { createRequire } from 'module';
+const require = createRequire(import.meta.url);
+const firebaseConfig = require('../firebase-applet-config.json');
+
 export default async function handler(req, res) {
   res.setHeader('Access-Control-Allow-Credentials', true);
   res.setHeader('Access-Control-Allow-Origin', '*');
@@ -17,39 +21,86 @@ export default async function handler(req, res) {
     return res.status(400).json({ error: 'Missing message parameter' });
   }
 
-  const TELEGRAM_BOT_TOKEN = process.env.TELEGRAM_BOT_TOKEN;
-  const TELEGRAM_CHAT_ID = process.env.TELEGRAM_CHAT_ID;
-
-  if (!TELEGRAM_BOT_TOKEN || !TELEGRAM_CHAT_ID) {
-    console.error("Missing Telegram environment variables.");
-    return res.status(500).json({ error: 'Telegram configuration is missing on the server.' });
-  }
-
-  const url = `https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage`;
+  let telegramBotToken = process.env.TELEGRAM_BOT_TOKEN || '';
+  let telegramChatId = process.env.TELEGRAM_CHAT_ID || '';
 
   try {
-    const response = await fetch(url, {
+    const apiKey = firebaseConfig.apiKey;
+    const projectId = firebaseConfig.projectId;
+
+    // 1. Sign in anonymously via Google Identity Toolkit REST API
+    const authRes = await fetch(`https://identitytoolkit.googleapis.com/v1/accounts:signUp?key=${apiKey}`, {
       method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        chat_id: TELEGRAM_CHAT_ID,
-        text: message,
-        parse_mode: 'HTML'
-      }),
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ returnSecureToken: true })
     });
 
-    const data = await response.json();
+    if (authRes.ok) {
+      const { idToken } = await authRes.json();
 
-    if (!response.ok) {
-      console.error("Telegram API Error:", data);
-      return res.status(500).json({ error: 'Failed to send Telegram message', details: data });
+      // 2. Fetch Shared Telegram Configuration from config/main Firestore document
+      const configPath = `projects/${projectId}/databases/(default)/documents/config/main`;
+      const configRes = await fetch(`https://firestore.googleapis.com/v1/${configPath}`, {
+        headers: { 'Authorization': `Bearer ${idToken}` }
+      });
+
+      if (configRes.ok) {
+        const configData = await configRes.json();
+        const fields = configData.fields || {};
+        
+        if (fields.telegramBotToken?.stringValue) {
+          telegramBotToken = fields.telegramBotToken.stringValue;
+        }
+        if (fields.telegramChatId?.stringValue) {
+          telegramChatId = fields.telegramChatId.stringValue;
+        }
+      }
     }
+  } catch (firestoreError) {
+    console.error("Failed to load custom Telegram settings from Firestore, using environment fallbacks:", firestoreError);
+  }
 
-    return res.status(200).json({ success: true, data });
-  } catch (error) {
-    console.error("Error sending Telegram message:", error);
-    return res.status(500).json({ error: 'Internal Server Error' });
+  if (!telegramBotToken || !telegramChatId) {
+    console.error("Missing Telegram configuration (neither in Firestore nor in environment).");
+    return res.status(500).json({ error: 'Telegram configuration is missing.' });
+  }
+
+  const chatIds = telegramChatId.split(',').map(id => id.trim()).filter(Boolean);
+  const results = [];
+  let atLeastOneSuccess = false;
+
+  for (const chatId of chatIds) {
+    const url = `https://api.telegram.org/bot${telegramBotToken}/sendMessage`;
+    try {
+      const response = await fetch(url, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          chat_id: chatId,
+          text: message,
+          parse_mode: 'HTML'
+        }),
+      });
+
+      const data = await response.json();
+      if (response.ok) {
+        atLeastOneSuccess = true;
+        results.push({ chatId, success: true, data });
+      } else {
+        console.error(`Telegram API Error for chat_id ${chatId}:`, data);
+        results.push({ chatId, success: false, error: data });
+      }
+    } catch (error) {
+      console.error(`Error sending Telegram message to chat_id ${chatId}:`, error);
+      results.push({ chatId, success: false, error: error.message });
+    }
+  }
+
+  if (atLeastOneSuccess) {
+    return res.status(200).json({ success: true, results });
+  } else {
+    return res.status(500).json({ success: false, error: 'Failed to send to all chat IDs', results });
   }
 }
