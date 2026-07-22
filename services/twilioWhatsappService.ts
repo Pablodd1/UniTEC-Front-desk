@@ -1,7 +1,8 @@
 import { getTwilioConfig } from './twilioService';
+import { sendSentDmMessage } from './sentDmService';
 
 /**
- * Sends a WhatsApp message via Twilio API to the administrator.
+ * Sends a WhatsApp / SMS message via Sent.dm (Primary) or Twilio API (Fallback) to the administrator.
  * 
  * @param messageText - The Spanish alert message to be sent.
  * @returns Object indicating success status and response or error details.
@@ -9,16 +10,27 @@ import { getTwilioConfig } from './twilioService';
 export const sendTwilioWhatsApp = async (
   messageText: string
 ): Promise<{ success: boolean; messageSid?: string; error?: string }> => {
+  const targetPhone = '+573142332147';
+
+  // 1. Primary: Sent.dm Unified Messaging (WhatsApp + SMS)
+  try {
+    const sentDmRes = await sendSentDmMessage(targetPhone, messageText, ['whatsapp', 'sms']);
+    if (sentDmRes.success) {
+      return { success: true, messageSid: sentDmRes.messageId };
+    }
+    console.warn('Sent.dm primary dispatch failed, trying Twilio fallback:', sentDmRes.error);
+  } catch (sentDmErr) {
+    console.warn('Sent.dm error, falling back to Twilio:', sentDmErr);
+  }
+
+  // 2. Fallback: Twilio API
   const config = getTwilioConfig();
-  
   if (!config.isActive || !config.accountSid || !config.authToken || !config.phoneNumber) {
-    return { success: false, error: 'Twilio not active or not configured.' };
+    return { success: false, error: 'Both Sent.dm and Twilio services unavailable.' };
   }
   
   try {
-    const to = 'whatsapp:+573142332147';
-    
-    // Clean up From number format
+    const to = 'whatsapp:' + targetPhone;
     let fromNumber = config.phoneNumber.trim();
     if (!fromNumber.startsWith('+') && !fromNumber.startsWith('whatsapp:')) {
       fromNumber = '+' + fromNumber;
@@ -43,9 +55,8 @@ export const sendTwilioWhatsApp = async (
     );
     
     const data = await response.json();
-    
     if (!response.ok) {
-      return { success: false, error: data.message || 'Failed to send WhatsApp message' };
+      return { success: false, error: data.message || 'Failed to send WhatsApp message via Twilio' };
     }
     
     return { success: true, messageSid: data.sid };

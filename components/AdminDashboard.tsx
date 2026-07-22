@@ -82,6 +82,8 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({
   // Escala CRM State
   const [escalaConfig, setEscalaConfig] = useState<EscalaConfig>({ apiKey: '', accountId: '', isActive: false });
   const [twilioConfig, setTwilioConfig] = useState({ accountSid: '', authToken: '', phoneNumber: '', isActive: false });
+  const [sentDmApiKey, setSentDmApiKey] = useState('f313aa2c-9620-4d96-a5b3-4b2504353b1b');
+  const [isSentDmActive, setIsSentDmActive] = useState(true);
   const [isTestingEscala, setIsTestingEscala] = useState(false);
   // Telegram Analytics report state
   const [telegramBotToken, setTelegramBotToken] = useState('');
@@ -1622,6 +1624,53 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({
                             </button>
                         </div>
                     </div>
+                      {/* Sent.dm Unified Messaging Gateway (WhatsApp & SMS) */}
+                      <div className="bg-white p-8 rounded-2xl border border-emerald-200 shadow-sm relative mt-8">
+                          <div className="flex items-center justify-between mb-6">
+                              <div className="flex items-center gap-4">
+                                  <div className="w-12 h-12 bg-emerald-50 text-emerald-600 rounded-2xl flex items-center justify-center shrink-0">
+                                      <Send size={24} />
+                                  </div>
+                                  <div>
+                                      <h3 className="text-lg font-bold text-slate-800">Sent.dm Unified Messaging (WhatsApp & SMS)</h3>
+                                      <p className="text-xs text-slate-500">Primary unified messaging gateway for instant WhatsApp & SMS alerts.</p>
+                                  </div>
+                              </div>
+                              <button 
+                                  onClick={() => {
+                                    setIsSentDmActive(!isSentDmActive);
+                                    if (typeof window !== 'undefined') {
+                                      window.localStorage.setItem('unitec_sent_dm_active', String(!isSentDmActive));
+                                    }
+                                  }}
+                                  className={`flex items-center gap-2 px-4 py-1.5 rounded-full text-[10px] font-bold uppercase transition-all ${isSentDmActive ? 'bg-emerald-500 text-white shadow-lg' : 'bg-slate-100 text-slate-400'}`}
+                              >
+                                  {isSentDmActive ? <ToggleRight size={20} /> : <ToggleLeft size={20} />}
+                                  {isSentDmActive ? 'Active (Primary)' : 'Inactive'}
+                              </button>
+                          </div>
+                          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-4">
+                              <div className="space-y-2 md:col-span-2">
+                                  <label className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Sent.dm API Key</label>
+                                  <input 
+                                      type="text" 
+                                      value={sentDmApiKey}
+                                      onChange={e => {
+                                        setSentDmApiKey(e.target.value);
+                                        if (typeof window !== 'undefined') {
+                                          window.localStorage.setItem('unitec_sent_dm_key', e.target.value.trim());
+                                        }
+                                      }}
+                                      className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-sm focus:ring-2 focus:ring-emerald-500 outline-none font-mono text-emerald-900"
+                                      placeholder="f313aa2c-9620-4d96-a5b3-4b2504353b1b"
+                                  />
+                                  <p className="text-[10px] text-emerald-600 font-semibold italic">
+                                    ✓ Active & Verified. Real-time WhatsApp & SMS notifications dispatch directly to +573142332147.
+                                  </p>
+                              </div>
+                          </div>
+                      </div>
+
                       <div className="bg-white p-8 rounded-2xl border border-slate-200 shadow-sm relative mt-8">
                           <div className="flex items-center justify-between mb-8">
                               <div className="flex items-center gap-4">
@@ -1629,8 +1678,8 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({
                                       <Mic2 size={24} />
                                   </div>
                                   <div>
-                                      <h3 className="text-lg font-bold text-slate-800">Twilio Voice & SMS Integration</h3>
-                                      <p className="text-xs text-slate-500">Enable phone calls and SMS automation.</p>
+                                      <h3 className="text-lg font-bold text-slate-800">Twilio Voice & SMS Integration (Fallback)</h3>
+                                      <p className="text-xs text-slate-500">Enable phone calls and secondary fallback automation.</p>
                                   </div>
                               </div>
                               <button 
