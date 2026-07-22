@@ -2084,6 +2084,7 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({
                {[
                  { id: 'general',         label: 'Ajustes',     icon: <ShieldCheck size={13} /> },
                  { id: 'integrations',    label: 'Integraciones', icon: <Plug size={13} /> },
+                 { id: 'telegram',        label: 'Telegram Bot', icon: <Send size={13} /> },
                  { id: 'training',        label: 'Entrenamiento',     icon: <Brain size={13} /> },
                 ].map((t: any) => {
                  const activeBrandColor = currentBrandId === 'building' ? 'border-indigo-600 text-indigo-600' : 'border-brand-600 text-brand-600';
