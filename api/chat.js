@@ -162,9 +162,16 @@ export default async function handler(req, res) {
       }
     }
 
-    return res.status(500).json({ error: 'All configured AI API keys failed.', details: lastErrorDetails });
+    // Graceful Fallback: If all API keys fail or are expired (401), return a polite receptionist fallback response
+    const fallbackText = "¡Hola! Gracias por contactar a UNITEC USA Design. En este momento nuestra pasarela de Inteligencia Artificial se encuentra en actualización de credenciales. Para ser atendido inmediatamente por un asesor de ventas humano, por favor comunícate a nuestro WhatsApp oficial: https://wa.me/573142332147";
+
+    return res.status(200).json({ text: fallbackText, success: true, isFallback: true, lastError: lastErrorDetails });
   } catch (error) {
     console.error("Proxy Chat Error:", error);
-    return res.status(500).json({ error: 'Internal Server Error' });
+    return res.status(200).json({ 
+      text: "¡Hola! Gracias por contactar a UNITEC USA Design. Para asistencia inmediata, comunícate a nuestro WhatsApp oficial: https://wa.me/573142332147",
+      success: true,
+      isFallback: true 
+    });
   }
 }
