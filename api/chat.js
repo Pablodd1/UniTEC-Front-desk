@@ -1,7 +1,19 @@
-// Serverless Handler: Proxy Gemini/OpenRouter chat generation server-side
-// Secret API keys never reach the client browser.
+// Rate limiting memory map
+const rateMap = new Map();
+function isRateLimited(ip, limit = 60, windowMs = 60000) {
+  const now = Date.now();
+  const timestamps = (rateMap.get(ip) || []).filter(t => now - t < windowMs);
+  if (timestamps.length >= limit) return true;
+  timestamps.push(now);
+  rateMap.set(ip, timestamps);
+  return false;
+}
 
 export default async function handler(req, res) {
+  const clientIp = req.headers['x-forwarded-for']?.split(',')[0]?.trim() || req.socket?.remoteAddress || 'unknown';
+  if (isRateLimited(clientIp, 60, 60000)) {
+    return res.status(429).json({ error: 'Too many requests. Please wait a minute before sending another message.' });
+  }
   // CORS Origin check
   const ALLOWED_ORIGINS = (process.env.ALLOWED_ORIGINS || '')
     .split(',')
