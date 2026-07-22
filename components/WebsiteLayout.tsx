@@ -77,6 +77,19 @@ const WebsiteLayout: React.FC<WebsiteLayoutProps> = ({
               >
                 {language === 'en' ? 'Voice Call (AI)' : 'Llamada de Voz (IA)'}
               </button>
+              {showAdminTab && (
+                <button
+                  onClick={() => onTabChange(Tab.ADMIN_SETTINGS)}
+                  className={`px-4 py-3.5 text-xs font-black uppercase tracking-wider rounded-xl transition-all flex items-center justify-center gap-1.5 ${
+                    activeTab === Tab.ADMIN_SETTINGS
+                      ? 'bg-brand-600 text-white shadow-md'
+                      : 'bg-brand-50 text-brand-700 hover:bg-brand-100 border border-brand-200'
+                  }`}
+                >
+                  <Settings size={14} />
+                  ADMIN / TELEGRAM
+                </button>
+              )}
             </div>
           )}
           <div className="flex-1 min-h-0 flex flex-col relative overflow-hidden">

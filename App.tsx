@@ -273,10 +273,11 @@ const App: React.FC = () => {
   }
 
   if (activeTab === Tab.ADMIN_SETTINGS && !isEmbedMode) {
-    if (!isLoggedIn) {
+    const isLocalAdmin = typeof window !== 'undefined' && sessionStorage.getItem('unitec_local_admin') === 'true';
+    if (!isLocalAdmin) {
       return (
         <div className="min-h-[100dvh] w-full bg-slate-50 flex flex-col font-sans justify-center items-center p-4">
-          <LoginScreen config={activeConfig} onLogin={() => setIsLoggedIn(true)} />
+          <LoginScreen config={activeConfig} onLogin={() => { sessionStorage.setItem('unitec_local_admin', 'true'); setIsLoggedIn(true); }} />
         </div>
       );
     }
