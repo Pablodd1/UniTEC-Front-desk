@@ -1,6 +1,6 @@
 // @ts-nocheck
 import React, { useState, useEffect } from 'react';
-import { Plug, Phone, ShieldCheck, Database, Mic2, Save, RefreshCw, Check, Loader2, Volume2, TrendingUp, Zap, Gauge, Building2, Store, Brain, Code, Copy, ExternalLink, Rocket, ToggleRight, ToggleLeft, DollarSign, MessageSquare, Headphones, BarChart3, AlertTriangle, X } from 'lucide-react';
+import { Plug, Phone, ShieldCheck, Database, Mic2, Save, RefreshCw, Check, Loader2, Volume2, TrendingUp, Zap, Gauge, Building2, Store, Brain, Code, Copy, ExternalLink, Rocket, ToggleRight, ToggleLeft, DollarSign, MessageSquare, Headphones, BarChart3, AlertTriangle, X, Send } from 'lucide-react';
 import { EscalaConfig, VoiceName, VoiceProvider, BillingInvoice, ConversationSession, InterventionRequest, ConversationMessage } from '../types';
 import { playGeminiTTS } from '../services/geminiService';
 import { getEscalaConfig, saveEscalaConfig, testEscalaConnection } from '../services/escalaService';
@@ -51,7 +51,7 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({
     onBack,
     language
 }) => {
-  const [activeSubTab, setActiveSubTab] = useState<'chats' | 'catalogs' | 'usage' | 'voice' | 'visuals' | 'training' | 'integrations' | 'deploy' | 'functionalities' | 'general' | 'conversations' | 'interventions' | 'analytics' | 'health' | 'retraining'>('chats');
+  const [activeSubTab, setActiveSubTab] = useState<'chats' | 'catalogs' | 'usage' | 'voice' | 'visuals' | 'training' | 'integrations' | 'telegram' | 'deploy' | 'functionalities' | 'general' | 'conversations' | 'interventions' | 'analytics' | 'health' | 'retraining'>('chats');
   
   // NEW: Conversation Tracking States
   const [conversations, setConversations] = useState<ConversationSession[]>([]);
@@ -1421,6 +1421,149 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({
                 </div>
             );
 
+
+        case 'telegram':
+            return (
+                <div className="space-y-8 animate-in slide-in-from-bottom-2 duration-500 pb-20">
+                    <div className="bg-white p-8 rounded-2xl border border-slate-200 shadow-sm relative animate-in fade-in slide-in-from-bottom-2 duration-300">
+                        <div className="flex items-center justify-between mb-8">
+                            <div className="flex items-center gap-4">
+                                <div className="w-12 h-12 bg-sky-50 text-sky-600 rounded-2xl flex items-center justify-center shrink-0 animate-pulse">
+                                    <BarChart3 size={24} />
+                                </div>
+                                <div>
+                                    <h3 className="text-lg font-bold text-slate-800">Telegram Daily Reports</h3>
+                                    <p className="text-xs text-slate-500">Configure credentials for automated daily analytics dispatches.</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div className="space-y-6">
+                            <div className="p-4 rounded-xl border bg-sky-50/50 border-sky-100 text-xs text-slate-600 space-y-2">
+                                <p className="font-bold text-sky-900">Setup Instructions & Requirements:</p>
+                                <ol className="list-decimal pl-5 space-y-1 text-slate-700">
+                                    <li>Search for <strong>@BotFather</strong> in Telegram and send the command <code>/newbot</code> to create your bot.</li>
+                                    <li>Copy the generated <strong>Bot API Token</strong> and paste it below.</li>
+                                    <li>Create a Telegram Group, add your bot as an administrator, and search for <strong>@userinfobot</strong> to get the group's <strong>Chat ID</strong>.</li>
+                                    <li>Ensure the Group Chat ID starts with a minus sign (e.g. <code>-100xxxxxxxxx</code>) and paste it below.</li>
+                                </ol>
+                            </div>
+
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                <div className="space-y-2">
+                                    <label className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Telegram Bot Token</label>
+                                    <input 
+                                        type="password" 
+                                        value={telegramBotToken}
+                                        onChange={e => setTelegramBotToken(e.target.value)}
+                                        className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-sm focus:ring-2 focus:ring-brand-500 outline-none"
+                                        placeholder="123456789:ABCdefGhIJKlmNoPQRsT..."
+                                    />
+                                </div>
+                                <div className="space-y-2">
+                                    <label className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Telegram Chat IDs (comma-separated for multiple)</label>
+                                    <input 
+                                        type="text" 
+                                        value={telegramChatId}
+                                        onChange={e => setTelegramChatId(e.target.value)}
+                                        className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-sm focus:ring-2 focus:ring-brand-500 outline-none"
+                                        placeholder="-100xxxxxxxxxx, -100yyyyyyyyyy"
+                                    />
+                                </div>
+                            </div>
+
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 pt-2">
+                                <div className="space-y-2">
+                                    <label className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Hora de envío (Hora Colombia)</label>
+                                    <select 
+                                        value={telegramReportTime}
+                                        onChange={e => setTelegramReportTime(e.target.value)}
+                                        className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-sm focus:ring-2 focus:ring-brand-500 outline-none"
+                                    >
+                                        {Array.from({ length: 24 }).map((_, i) => {
+                                            const hr = i.toString().padStart(2, '0');
+                                            return (
+                                                <option key={hr} value={`${hr}:00`}>
+                                                    {hr === '12' ? '12:00 PM (Noon)' : hr === '00' ? '12:00 AM (Midnight)' : parseInt(hr) > 12 ? `${parseInt(hr) - 12}:00 PM` : `${hr}:00 AM`}
+                                                </option>
+                                            );
+                                        })}
+                                    </select>
+                                    <p className="text-[10px] text-slate-400 italic">Cron revisa cada hora; el reporte se envía una vez al día a la hora seleccionada.</p>
+                                </div>
+
+                                <div className="space-y-3">
+                                    <label className="text-[10px] font-bold text-slate-400 uppercase tracking-widest block">Módulos de Análisis Incluidos</label>
+                                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                                        <label className="flex items-center gap-2 text-xs text-slate-600 cursor-pointer">
+                                            <input 
+                                                type="checkbox" 
+                                                checked={analyticsPreferences.includeTraffic}
+                                                onChange={e => setAnalyticsPreferences(prev => ({ ...prev, includeTraffic: e.target.checked }))}
+                                                className="rounded border-slate-300 text-brand-600 focus:ring-brand-500"
+                                            />
+                                            Tendencias de Tráfico
+                                        </label>
+                                        <label className="flex items-center gap-2 text-xs text-slate-600 cursor-pointer">
+                                            <input 
+                                                type="checkbox" 
+                                                checked={analyticsPreferences.includeSentiment}
+                                                onChange={e => setAnalyticsPreferences(prev => ({ ...prev, includeSentiment: e.target.checked }))}
+                                                className="rounded border-slate-300 text-brand-600 focus:ring-brand-500"
+                                            />
+                                            Análisis de Sentimiento
+                                        </label>
+                                        <label className="flex items-center gap-2 text-xs text-slate-600 cursor-pointer">
+                                            <input 
+                                                type="checkbox" 
+                                                checked={analyticsPreferences.includeIntents}
+                                                onChange={e => setAnalyticsPreferences(prev => ({ ...prev, includeIntents: e.target.checked }))}
+                                                className="rounded border-slate-300 text-brand-600 focus:ring-brand-500"
+                                            />
+                                            Intenciones Principales
+                                        </label>
+                                        <label className="flex items-center gap-2 text-xs text-slate-600 cursor-pointer">
+                                            <input 
+                                                type="checkbox" 
+                                                checked={analyticsPreferences.includeDemographics}
+                                                onChange={e => setAnalyticsPreferences(prev => ({ ...prev, includeDemographics: e.target.checked }))}
+                                                className="rounded border-slate-300 text-brand-600 focus:ring-brand-500"
+                                            />
+                                            User Demographics
+                                        </label>
+                                        <label className="flex items-center gap-2 text-xs text-slate-600 cursor-pointer col-span-2">
+                                            <input 
+                                                type="checkbox" 
+                                                checked={analyticsPreferences.includeAIExecutiveSummary}
+                                                onChange={e => setAnalyticsPreferences(prev => ({ ...prev, includeAIExecutiveSummary: e.target.checked }))}
+                                                className="rounded border-slate-300 text-brand-600 focus:ring-brand-500"
+                                            />
+                                            AI Executive Summary (via Gemini)
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div className="flex items-center gap-3 pt-2">
+                                <button 
+                                    onClick={handleSaveTelegram} 
+                                    disabled={isSavingTelegram}
+                                    className="px-8 py-2.5 bg-brand-600 text-white rounded-xl text-xs font-bold shadow-lg hover:bg-brand-700 flex items-center gap-2"
+                                >
+                                    {isSavingTelegram ? <Loader2 size={14} className="animate-spin" /> : <Save size={14} />}
+                                    {isSavingTelegram ? 'Saving Telegram Setup...' : 'Save Telegram Config'}
+                                </button>
+                                {isTelegramSaved && (
+                                    <span className="px-4 py-2 bg-emerald-50 text-emerald-700 border border-emerald-200 rounded-xl text-xs font-bold flex items-center gap-1.5 animate-in fade-in">
+                                        <Check size={14} className="text-emerald-600" />
+                                        ¡Configuración de Telegram guardada exitosamente!
+                                    </span>
+                                )}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            );
 
         case 'integrations':
             return (
