@@ -108,7 +108,8 @@ export default async function handler(req, res) {
               model: 'google/gemini-2.0-flash-001',
               messages: formattedMessages,
               temperature: 0.7,
-            })
+            }),
+            signal: AbortSignal.timeout(6000)
           });
 
           if (!apiRes.ok) {
@@ -139,7 +140,8 @@ export default async function handler(req, res) {
           const apiRes = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(payload)
+            body: JSON.stringify(payload),
+            signal: AbortSignal.timeout(6000)
           });
 
           if (!apiRes.ok) {

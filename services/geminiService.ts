@@ -101,7 +101,8 @@ export async function* sendMessageToGemini(
     const proxyRes = await fetch('/api/chat', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ message, history, instructions })
+      body: JSON.stringify({ message, history, instructions }),
+      signal: AbortSignal.timeout(7000)
     });
 
     if (proxyRes.ok) {
