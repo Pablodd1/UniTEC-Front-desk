@@ -22,13 +22,29 @@ const App: React.FC = () => {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [isAuthReady, setIsAuthReady] = useState(false);
 
-  const [activeTab, setActiveTab] = useState<Tab>(Tab.CHAT);
+  const [activeTab, setActiveTab] = useState<Tab>(() => {
+    if (typeof window !== 'undefined') {
+      const search = window.location.search;
+      const hash = window.location.hash;
+      if (search.includes('admin=true') || hash === '#admin' || localStorage.getItem('unitec_show_admin') === 'true') {
+        return Tab.ADMIN_SETTINGS;
+      }
+    }
+    return Tab.CHAT;
+  });
   const [cart, setCart] = useState<CartItem[]>([]);
   const [isCartOpen, setIsCartOpen] = useState(false);
   
   const [emergencyMode, setEmergencyMode] = useState(false);
   const [language, setLanguage] = useState<Language>('es');
-  const [showAdminTab, setShowAdminTab] = useState(false);
+  const [showAdminTab, setShowAdminTab] = useState<boolean>(() => {
+    if (typeof window !== 'undefined') {
+      const search = window.location.search;
+      const hash = window.location.hash;
+      return search.includes('admin=true') || hash === '#admin' || localStorage.getItem('unitec_show_admin') === 'true';
+    }
+    return false;
+  });
   
   const [currentBrandId, setCurrentBrandId] = useState<'unitec' | 'building'>('unitec');
   const activeConfig = currentBrandId === 'unitec' ? UNITEC_CONFIG : BUILDING_INNOVATION_CONFIG;
