@@ -80,6 +80,7 @@ const App: React.FC = () => {
         setShowAdminTab(true);
         if (hasAdminParam) {
           localStorage.setItem('unitec_show_admin', 'true');
+          setActiveTab(Tab.ADMIN_SETTINGS);
         }
         if (hash === '#admin') {
           setActiveTab(Tab.ADMIN_SETTINGS);
