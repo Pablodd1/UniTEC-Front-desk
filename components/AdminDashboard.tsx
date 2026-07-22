@@ -2065,6 +2065,7 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({
                {/* INSIGHTS GROUP */}
                {[
                  { id: 'analytics',       label: 'Analíticas',      icon: <BarChart3 size={13} /> },
+                 { id: 'telegram',        label: 'Reportes Telegram', icon: <Send size={13} className="text-sky-500" /> },
                  { id: 'usage',           label: 'Uso y Facturación',icon: <DollarSign size={13} /> },
                  { id: 'retraining',      label: 'Memoria',     icon: <Brain size={13} /> },
                  { id: 'health',          label: 'Salud API',     icon: <Check size={13} /> },
