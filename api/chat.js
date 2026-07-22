@@ -65,89 +65,104 @@ export default async function handler(req, res) {
     }
 
     const keys = [
-      process.env.OPENROUTER_API_KEY,
-      process.env.OPENAI_API_KEY,
       process.env.GEMINI_API_KEY,
       process.env.GEMINI_BACKUP_KEY,
-      process.env.API_KEY
+      process.env.GEMINI_BACKUP_KEY_2,
+      process.env.OPENROUTER_API_KEY,
+      process.env.OPENAI_API_KEY,
+      process.env.API_KEY,
+      process.env.VITE_GEMINI_API_KEY,
+      process.env.VITE_API_KEY
     ].filter(Boolean);
 
-    const apiKey = keys[0];
-    if (!apiKey) {
+    if (keys.length === 0) {
       return res.status(500).json({ error: 'No AI API keys configured on server.' });
     }
 
-    // Direct HTTP call to Gemini / OpenRouter API server-side
-    const isOpenRouter = apiKey.startsWith('sk-or-') || apiKey.startsWith('sk-proj-');
-    let responseText = '';
+    let lastErrorDetails = null;
 
-    if (isOpenRouter) {
-      // OpenRouter / OpenAI format
-      const formattedMessages = [
-        { role: 'system', content: instructions || '' },
-        ...(history || []).map(h => ({
-          role: h.role === 'model' ? 'assistant' : 'user',
-          content: h.text || h.content || ''
-        })),
-        { role: 'user', content: message }
-      ];
+    for (const apiKey of keys) {
+      try {
+        const isOpenRouter = apiKey.startsWith('sk-or-') || apiKey.startsWith('sk-proj-');
+        let responseText = '';
 
-      const apiRes = await fetch('https://openrouter.ai/api/v1/chat/completions', {
-        method: 'POST',
-        headers: {
-          'Authorization': `Bearer ${apiKey}`,
-          'Content-Type': 'application/json',
-          'HTTP-Referer': origin || 'https://unitec-front-desk.vercel.app',
-          'X-Title': 'UniTEC AI Desk'
-        },
-        body: JSON.stringify({
-          model: 'google/gemini-2.0-flash-001',
-          messages: formattedMessages,
-          temperature: 0.7,
-        })
-      });
+        if (isOpenRouter) {
+          const formattedMessages = [
+            { role: 'system', content: instructions || '' },
+            ...(history || []).map(h => ({
+              role: h.role === 'model' ? 'assistant' : 'user',
+              content: h.text || h.content || ''
+            })),
+            { role: 'user', content: message }
+          ];
 
-      if (!apiRes.ok) {
-        const errText = await apiRes.text();
-        console.error("OpenRouter API error:", errText);
-        return res.status(500).json({ error: 'AI Gateway Error', details: errText });
+          const apiRes = await fetch('https://openrouter.ai/api/v1/chat/completions', {
+            method: 'POST',
+            headers: {
+              'Authorization': `Bearer ${apiKey}`,
+              'Content-Type': 'application/json',
+              'HTTP-Referer': origin || 'https://unitec-front-desk.vercel.app',
+              'X-Title': 'UniTEC AI Desk'
+            },
+            body: JSON.stringify({
+              model: 'google/gemini-2.0-flash-001',
+              messages: formattedMessages,
+              temperature: 0.7,
+            })
+          });
+
+          if (!apiRes.ok) {
+            const errText = await apiRes.text();
+            console.warn(`OpenRouter key (${apiKey.slice(0, 7)}...) failed:`, errText);
+            lastErrorDetails = errText;
+            continue; // try next key
+          }
+
+          const data = await apiRes.json();
+          responseText = data.choices?.[0]?.message?.content || '';
+        } else {
+          // Native Google Gemini REST API format
+          const contents = [
+            ...(history || []).map(h => ({
+              role: h.role === 'model' ? 'model' : 'user',
+              parts: [{ text: h.text || h.content || '' }]
+            })),
+            { role: 'user', parts: [{ text: message }] }
+          ];
+
+          const payload = {
+            systemInstruction: instructions ? { parts: [{ text: instructions }] } : undefined,
+            contents,
+            generationConfig: { temperature: 0.7 }
+          };
+
+          const apiRes = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(payload)
+          });
+
+          if (!apiRes.ok) {
+            const errText = await apiRes.text();
+            console.warn(`Gemini key (${apiKey.slice(0, 7)}...) failed:`, errText);
+            lastErrorDetails = errText;
+            continue; // try next key
+          }
+
+          const data = await apiRes.json();
+          responseText = data.candidates?.[0]?.content?.parts?.[0]?.text || '';
+        }
+
+        if (responseText) {
+          return res.status(200).json({ text: responseText, success: true });
+        }
+      } catch (keyErr) {
+        console.warn(`Error trying API key:`, keyErr);
+        lastErrorDetails = keyErr.message;
       }
-
-      const data = await apiRes.json();
-      responseText = data.choices?.[0]?.message?.content || '';
-    } else {
-      // Native Google Gemini REST API format
-      const contents = [
-        ...(history || []).map(h => ({
-          role: h.role === 'model' ? 'model' : 'user',
-          parts: [{ text: h.text || h.content || '' }]
-        })),
-        { role: 'user', parts: [{ text: message }] }
-      ];
-
-      const payload = {
-        systemInstruction: instructions ? { parts: [{ text: instructions }] } : undefined,
-        contents,
-        generationConfig: { temperature: 0.7 }
-      };
-
-      const apiRes = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(payload)
-      });
-
-      if (!apiRes.ok) {
-        const errText = await apiRes.text();
-        console.error("Gemini Native API error:", errText);
-        return res.status(500).json({ error: 'Gemini API Error', details: errText });
-      }
-
-      const data = await apiRes.json();
-      responseText = data.candidates?.[0]?.content?.parts?.[0]?.text || '';
     }
 
-    return res.status(200).json({ text: responseText, success: true });
+    return res.status(500).json({ error: 'All configured AI API keys failed.', details: lastErrorDetails });
   } catch (error) {
     console.error("Proxy Chat Error:", error);
     return res.status(500).json({ error: 'Internal Server Error' });

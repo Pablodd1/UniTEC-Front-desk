@@ -1,4 +1,4 @@
-﻿// Secure endpoint: validates request origin/auth before returning API keys.
+// Secure endpoint: validates request origin/auth before returning API keys.
 // Uses a shared ADMIN_SECRET env var for authentication.
 // Only allows requests from configured ALLOWED_ORIGINS.
 
@@ -60,11 +60,11 @@ export default async function handler(req, res) {
   // ---- Rate limiting via simple token bucket (in-memory, per-deployment) ----
   // Production: replace with Vercel KV or Upstash Redis
   const keys = [
-    process.env.OPENROUTER_API_KEY,
-    process.env.OPENAI_API_KEY,
     process.env.GEMINI_API_KEY,
     process.env.GEMINI_BACKUP_KEY,
     process.env.GEMINI_BACKUP_KEY_2,
+    process.env.OPENROUTER_API_KEY,
+    process.env.OPENAI_API_KEY,
     process.env.API_KEY,
     process.env.VITE_GEMINI_API_KEY,
     process.env.VITE_API_KEY

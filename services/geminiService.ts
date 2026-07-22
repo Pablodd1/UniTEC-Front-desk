@@ -119,10 +119,39 @@ export async function* sendMessageToGemini(
   const apiKey = await getApiKey();
   if (!apiKey) throw new Error('API_KEY_MISSING');
 
-  const isGemini = apiKey.startsWith('AIza');
-  
-  if (!isGemini) {
-      throw new Error('Only Gemini API keys (AIza...) are supported.');
+  const isOpenRouter = apiKey.startsWith('sk-or-') || apiKey.startsWith('sk-proj-');
+  if (isOpenRouter) {
+    try {
+      const formattedMessages = [
+        { role: 'system', content: instructions },
+        ...history.map(h => ({
+          role: h.role === 'model' ? 'assistant' : 'user',
+          content: h.text || h.parts?.[0]?.text || ''
+        })),
+        { role: 'user', content: message }
+      ];
+
+      const orRes = await fetch('https://openrouter.ai/api/v1/chat/completions', {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${apiKey}`,
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          model: 'google/gemini-2.0-flash-001',
+          messages: formattedMessages
+        })
+      });
+
+      if (orRes.ok) {
+        const orData = await orRes.json();
+        const answer = orData.choices?.[0]?.message?.content || '';
+        if (answer) {
+          yield answer;
+          return;
+        }
+      }
+    } catch (_) {}
   }
 
   const geminiContents = [
