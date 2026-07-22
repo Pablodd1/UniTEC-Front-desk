@@ -1,6 +1,33 @@
 export default async function handler(req, res) {
-  res.setHeader('Access-Control-Allow-Credentials', true);
-  res.setHeader('Access-Control-Allow-Origin', '*');
+  const ALLOWED_ORIGINS = (process.env.ALLOWED_ORIGINS || '')
+    .split(',')
+    .map(s => s.trim())
+    .filter(Boolean);
+
+  let origin = req.headers.origin || '';
+  if (!origin && req.headers.referer) {
+    try {
+      const refererUrl = new URL(req.headers.referer);
+      origin = refererUrl.origin;
+    } catch (e) {}
+  }
+
+  if (ALLOWED_ORIGINS.length > 0 && origin) {
+    const isAllowed = ALLOWED_ORIGINS.some(allowed => {
+      const allowedClean = allowed.replace(/^https?:\/\//, '').toLowerCase();
+      const originClean = origin.replace(/^https?:\/\//, '').toLowerCase();
+      return originClean === allowedClean || originClean.endsWith('.' + allowedClean);
+    });
+
+    if (!isAllowed) {
+      return res.status(403).json({ error: `Origin "${origin}" not allowed` });
+    }
+    res.setHeader('Access-Control-Allow-Origin', origin);
+  } else {
+    res.setHeader('Access-Control-Allow-Origin', origin || '*');
+  }
+
+  res.setHeader('Access-Control-Allow-Credentials', 'true');
   res.setHeader('Access-Control-Allow-Methods', 'POST,OPTIONS');
   res.setHeader('Access-Control-Allow-Headers', 'X-CSRF-Token, X-Requested-With, Accept, Accept-Version, Content-Length, Content-MD5, Content-Type, Date, X-Api-Version, Authorization');
 

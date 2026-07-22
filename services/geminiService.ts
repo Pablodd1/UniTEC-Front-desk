@@ -93,11 +93,31 @@ export async function* sendMessageToGemini(
   brandId: any = 'building'
 ): AsyncGenerator<any, void, unknown> {
 
-  const apiKey = await getApiKey();
-  if (!apiKey) throw new Error('API_KEY_MISSING');
-
   let instructions = getSystemInstruction(language, customGreeting, brandId);
   if (emergencyMode) instructions += '\n\n[SYSTEM OVERRIDE: EMERGENCY MODE ACTIVE]. Respond concisely.';
+
+  // 1. Primary path: Call secure serverless proxy (/api/chat)
+  try {
+    const proxyRes = await fetch('/api/chat', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ message, history, instructions })
+    });
+
+    if (proxyRes.ok) {
+      const data = await proxyRes.json();
+      if (data.text) {
+        yield data.text;
+        return;
+      }
+    }
+  } catch (proxyError) {
+    console.warn("Serverless chat proxy unreachable, falling back to direct API key access:", proxyError);
+  }
+
+  // 2. Direct client fallback if proxy unavailable
+  const apiKey = await getApiKey();
+  if (!apiKey) throw new Error('API_KEY_MISSING');
 
   const isGemini = apiKey.startsWith('AIza');
   
