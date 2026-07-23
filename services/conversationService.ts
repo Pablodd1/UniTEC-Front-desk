@@ -1,7 +1,7 @@
 // @ts-nocheck
 import { getPrivacyMode } from './firestoreService';
 import { db } from '../firebase';
-import { collection, addDoc, getDocs, doc, updateDoc, query, orderBy, onSnapshot, getDoc, where, serverTimestamp } from 'firebase/firestore';
+import { collection, addDoc, getDocs, doc, updateDoc, query, orderBy, onSnapshot, getDoc, where, serverTimestamp, setDoc, increment } from 'firebase/firestore';
 
 
 // --- OFFLINE-FIRST / FIREBASE API SUSPENSION RESILIENCY FALLBACK SYSTEM ---

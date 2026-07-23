@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { getSystemInstruction, PROFESSIONS } from '../constants';
+import { getSystemInstruction } from '../constants';
 
 describe('Constants & Chatbot System Prompt Training', () => {
   it('should include installation disclaimer script in system prompt', () => {

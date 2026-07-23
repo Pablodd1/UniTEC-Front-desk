@@ -139,7 +139,7 @@ export async function* sendMessageToGemini(
           'Content-Type': 'application/json'
         },
         body: JSON.stringify({
-          model: 'google/gemini-2.0-flash-001',
+          model: 'google/gemini-2.5-flash',
           messages: formattedMessages
         })
       });
@@ -169,7 +169,7 @@ export async function* sendMessageToGemini(
       tools: [{ functionDeclarations: TOOLS }]
   };
 
-  const geminiEndpoint = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:streamGenerateContent?key=${apiKey}`;
+  const geminiEndpoint = `https://generativelanguage.googleapis.com/v1beta/models/gemini-3.6-flash:streamGenerateContent?key=${apiKey}`;
 
   let response = await fetch(geminiEndpoint, {
       method: 'POST',

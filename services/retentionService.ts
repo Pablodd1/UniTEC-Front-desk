@@ -1,4 +1,4 @@
-﻿import { db } from '../firebase';
+import { db } from '../firebase';
 import { collection, query, getDoc, updateDoc, getDocs, doc, setDoc, deleteDoc } from 'firebase/firestore';
 import { getPrivacyMode } from './firestoreService';
 import { ConversationSession, ConversationMessage } from './conversationService';
@@ -42,7 +42,7 @@ async function generateSummaryWithGemini(
     const prompt = `Eres un asistente que resume conversaciones de chatbot para archivo. Resume esta conversacion en 2-3 oraciones en espaï¿½ol. Incluye: tema principal, si el cliente quiso hablar con humano, y resultado.\n\nCONVERSACION:\n${conversationText}\n\nRESUMEN:`;
 
     const res = await fetch(
-      `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash-lite:generateContent?key=${apiKey}`,
+      `https://generativelanguage.googleapis.com/v1beta/models/gemini-3.6-flash:generateContent?key=${apiKey}`,
       {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
