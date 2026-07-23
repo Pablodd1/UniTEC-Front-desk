@@ -66,6 +66,8 @@ export default async function handler(req, res) {
 
     const keys = [
       process.env.GEMINI_API_KEY,
+      process.env.GROQ_API_KEY,
+      process.env.XAI_API_KEY,
       process.env.GEMINI_BACKUP_KEY,
       process.env.GEMINI_BACKUP_KEY_2,
       process.env.OPENROUTER_API_KEY,
@@ -84,9 +86,43 @@ export default async function handler(req, res) {
     for (const apiKey of keys) {
       try {
         const isOpenRouter = apiKey.startsWith('sk-or-') || apiKey.startsWith('sk-proj-');
+        const isXAI = apiKey.startsWith('xai-');
         let responseText = '';
 
-        if (isOpenRouter) {
+        if (isXAI) {
+          const formattedMessages = [
+            { role: 'system', content: instructions || '' },
+            ...(history || []).map(h => ({
+              role: h.role === 'model' ? 'assistant' : 'user',
+              content: h.text || h.content || ''
+            })),
+            { role: 'user', content: message }
+          ];
+
+          const apiRes = await fetch('https://api.x.ai/v1/chat/completions', {
+            method: 'POST',
+            headers: {
+              'Authorization': `Bearer ${apiKey}`,
+              'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+              model: 'grok-latest',
+              messages: formattedMessages,
+              temperature: 0.7
+            }),
+            signal: AbortSignal.timeout(6000)
+          });
+
+          if (!apiRes.ok) {
+            const errText = await apiRes.text();
+            console.warn(`xAI Grok key (${apiKey.slice(0, 7)}...) failed:`, errText);
+            lastErrorDetails = errText;
+            continue; // try next key
+          }
+
+          const data = await apiRes.json();
+          responseText = data.choices?.[0]?.message?.content || '';
+        } else if (isOpenRouter) {
           const formattedMessages = [
             { role: 'system', content: instructions || '' },
             ...(history || []).map(h => ({
