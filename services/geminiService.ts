@@ -320,7 +320,10 @@ export const connectLiveSession = async (
       try {
         const stream = sendMessageToGemini(transcript, messageHistory, false, language, undefined, customGreeting, brandId);
         let fullResponse = '';
-        for await (const chunk of stream) { fullResponse += chunk.text || ''; }
+        for await (const chunk of stream) {
+          const chunkText = typeof chunk === 'string' ? chunk : ((chunk as any)?.text || '');
+          fullResponse += chunkText;
+        }
 
         callbacks.onMessage(fullResponse, null, false);
         messageHistory.push({ role: 'model', parts: [{ text: fullResponse }] });

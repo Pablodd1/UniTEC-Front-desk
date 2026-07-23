@@ -590,8 +590,7 @@ const ChatTab: React.FC<ChatTabProps> = ({ quickActions, initialMessage, emergen
       let fullText = '';
       
       for await (const chunk of responseGenerator) {
-        const c = chunk as GenerateContentResponse;
-        const chunkText = c.text || '';
+        const chunkText = typeof chunk === 'string' ? chunk : ((chunk as any)?.text || (chunk as any)?.candidates?.[0]?.content?.parts?.[0]?.text || '');
         fullText += chunkText;
         
         setMessages(prev => prev.map(msg => 
