@@ -50,7 +50,18 @@ function fallbackWebSpeech(text: string, language: string): Promise<void> {
     }
     const synth = window.speechSynthesis;
     const utterance = new SpeechSynthesisUtterance(text);
-    utterance.lang = language === 'en' ? 'en-US' : 'es-ES';
+    const targetLang = language === 'en' ? 'en-US' : 'es-CO';
+    utterance.lang = targetLang;
+
+    // Search for explicit Colombian Spanish voice in browser
+    if (language !== 'en') {
+      const voices = synth.getVoices();
+      const coVoice = voices.find(v => v.lang.includes('es-CO') || v.name.toLowerCase().includes('colombia'));
+      if (coVoice) {
+        utterance.voice = coVoice;
+      }
+    }
+
     utterance.onend = () => resolve();
     utterance.onerror = () => resolve();
     synth.speak(utterance);

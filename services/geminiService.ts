@@ -301,7 +301,7 @@ export const connectLiveSession = async (
     recognition = new (window as any).webkitSpeechRecognition();
     recognition.continuous = false;
     recognition.interimResults = false;
-    recognition.lang = language === 'en' ? 'en-US' : 'es-ES';
+    recognition.lang = language === 'en' ? 'en-US' : 'es-CO';
 
     recognition.onstart = () => {
       const interval = setInterval(() => {
@@ -351,11 +351,11 @@ export const connectLiveSession = async (
     setTimeout(() => {
       callbacks.onMessage(greeting, null, false);
       messageHistory.push({ role: 'model', parts: [{ text: greeting }] });
-      const utterance = new SpeechSynthesisUtterance(greeting);
-      utterance.lang = language === 'en' ? 'en-US' : 'es-ES';
-      utterance.onend = () => { if (isRecording) recognition.start(); };
-      setTimeout(() => { if (isRecording && !synth.speaking && recognition) { try { recognition.start(); } catch (_) {} } }, 3000);
-      synth.speak(utterance);
+      speakTextWithDeepgram(greeting, 'aura-asteria-en', language).then(() => {
+        if (isRecording && recognition) {
+          try { recognition.start(); } catch (_) {}
+        }
+      });
     }, 1000);
 
   } else {

@@ -281,7 +281,7 @@ const CallTab: React.FC<CallTabProps> = ({ emergencyMode, language, voiceName, c
             <div className="w-full max-w-md bg-white/60 backdrop-blur-sm rounded-3xl p-4 border border-white/50 shadow-sm mb-6 animate-in fade-in slide-in-from-bottom-4 duration-500">
                 <div className="flex items-center gap-2 mb-3 border-bottom border-slate-100 pb-2">
                     <div className="w-2 h-2 rounded-full bg-blue-500 animate-pulse"></div>
-                    <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Live Transcript</span>
+                    <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest">{language === 'en' ? 'Live Transcript' : 'Transcripción en Vivo'}</span>
                 </div>
                 <div className="space-y-3 max-h-32 overflow-y-auto no-scrollbar">
                     {transcript.slice(-3).map((msg, i) => (
@@ -375,7 +375,7 @@ const CallTab: React.FC<CallTabProps> = ({ emergencyMode, language, voiceName, c
         {!isActive && showLibrary && (
             <div className="w-full max-w-md bg-white rounded-[40px] p-6 shadow-xl border border-slate-100 animate-in slide-in-from-bottom-8 duration-500">
                 <div className="flex items-center justify-between mb-6">
-                    <h3 className="text-sm font-black text-slate-900 uppercase tracking-widest">Call History</h3>
+                    <h3 className="text-sm font-black text-slate-900 uppercase tracking-widest">{language === 'en' ? 'Call History' : 'Historial de Llamadas'}</h3>
                     <button onClick={() => setShowLibrary(false)} className="text-slate-400 hover:text-slate-600">
                         <Loader2 size={18} className="rotate-45" />
                     </button>
@@ -384,7 +384,7 @@ const CallTab: React.FC<CallTabProps> = ({ emergencyMode, language, voiceName, c
                 {callLibrary.length === 0 ? (
                     <div className="py-12 text-center">
                         <Headphones size={40} className="mx-auto text-slate-200 mb-4" />
-                        <p className="text-slate-400 text-xs font-medium">No recorded calls yet.</p>
+                        <p className="text-slate-400 text-xs font-medium">{language === 'en' ? 'No recorded calls yet.' : 'Sin llamadas grabadas aún.'}</p>
                     </div>
                 ) : (
                     <div className="space-y-4 max-h-[400px] overflow-y-auto no-scrollbar pr-1">
@@ -408,7 +408,7 @@ const CallTab: React.FC<CallTabProps> = ({ emergencyMode, language, voiceName, c
                                 </div>
                                 {rec.transcript && (
                                     <div className="mt-3 pt-3 border-t border-slate-200/50">
-                                        <p className="text-[9px] font-black text-slate-400 uppercase tracking-widest mb-2">Transcript Preview</p>
+                                        <p className="text-[9px] font-black text-slate-400 uppercase tracking-widest mb-2">{language === 'en' ? 'Transcript Preview' : 'Vista Previa de Transcripción'}</p>
                                         <p className="text-[10px] text-slate-600 line-clamp-2 italic leading-relaxed">
                                             "{rec.transcript.split('\n')[0].replace('USER: ', '').replace('MODEL: ', '')}"
                                         </p>
@@ -431,7 +431,7 @@ const CallTab: React.FC<CallTabProps> = ({ emergencyMode, language, voiceName, c
                     className="flex items-center gap-2 px-5 py-2.5 bg-white text-slate-600 rounded-xl text-[11px] font-black uppercase tracking-widest hover:bg-slate-100 transition-colors shadow-sm border border-slate-200"
                 >
                     <Headphones size={14} />
-                    View Call Library ({callLibrary.length})
+                    {language === 'en' ? `View Call Library (${callLibrary.length})` : `Ver Historial (${callLibrary.length})`}
                 </button>
             </div>
         )}
