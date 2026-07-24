@@ -48,13 +48,11 @@ export async function getApiKey(): Promise<string> {
 export const resetApiKeyCache = (): void => { cachedApiKey = ''; };
 export const resetChatSession = () => {};
 
+import { speakTextWithDeepgram } from './deepgramService';
+
 // ─── TTS ────────────────────────────────────────────────────────────────────
 export async function playGeminiTTS(text: string, voiceName: string = 'Kore') {
-  const synth = window.speechSynthesis;
-  const utterance = new SpeechSynthesisUtterance(text);
-  utterance.lang = 'es-ES';
-  synth.speak(utterance);
-  return new Promise(resolve => { utterance.onend = resolve; });
+  return speakTextWithDeepgram(text, 'aura-asteria-en', 'es');
 }
 
 // ─── Helpers ────────────────────────────────────────────────────────────────
@@ -328,11 +326,11 @@ export const connectLiveSession = async (
         callbacks.onMessage(fullResponse, null, false);
         messageHistory.push({ role: 'model', parts: [{ text: fullResponse }] });
 
-        const utterance = new SpeechSynthesisUtterance(fullResponse);
-        utterance.lang = language === 'en' ? 'en-US' : 'es-ES';
-        utterance.onend = () => { if (isRecording && recognition) recognition.start(); };
-        setTimeout(() => { if (isRecording && !synth.speaking && recognition) { try { recognition.start(); } catch (_) {} } }, 3000);
-        synth.speak(utterance);
+        speakTextWithDeepgram(fullResponse, 'aura-asteria-en', language).then(() => {
+          if (isRecording && recognition) {
+            try { recognition.start(); } catch (_) {}
+          }
+        });
       } catch (err: any) {
         callbacks.onError(err);
       }
