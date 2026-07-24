@@ -13,7 +13,7 @@ export default async function handler(req, res) {
 
   try {
     const { text, model, apiKey: customKey } = req.body || {};
-    const apiKey = customKey || process.env.DEEPGRAM_API_KEY;
+    const apiKey = customKey || process.env.DEEPGRAM_API_KEY || 'b7a3b32ae544ca0840276c20767fcf177ff3deec';
 
     if (!text) {
       return res.status(400).json({ error: 'Missing text parameter' });

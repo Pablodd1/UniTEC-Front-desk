@@ -12,7 +12,7 @@ export default async function handler(req, res) {
   }
 
   try {
-    const apiKey = req.headers['authorization']?.replace(/^Bearer\s+|^Token\s+/i, '') || process.env.DEEPGRAM_API_KEY;
+    const apiKey = req.headers['authorization']?.replace(/^Bearer\s+|^Token\s+/i, '') || process.env.DEEPGRAM_API_KEY || 'b7a3b32ae544ca0840276c20767fcf177ff3deec';
     const language = req.query.language || 'es';
     const model = req.query.model || 'nova-2';
 

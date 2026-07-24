@@ -84,6 +84,8 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({
   const [twilioConfig, setTwilioConfig] = useState({ accountSid: '', authToken: '', phoneNumber: '', isActive: false });
   const [sentDmApiKey, setSentDmApiKey] = useState('f313aa2c-9620-4d96-a5b3-4b2504353b1b');
   const [isSentDmActive, setIsSentDmActive] = useState(true);
+  const [deepgramApiKey, setDeepgramApiKey] = useState('b7a3b32ae544ca0840276c20767fcf177ff3deec');
+  const [isDeepgramActive, setIsDeepgramActive] = useState(true);
   const [isTestingEscala, setIsTestingEscala] = useState(false);
   // Telegram Analytics report state
   const [telegramBotToken, setTelegramBotToken] = useState('');
