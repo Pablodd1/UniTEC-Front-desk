@@ -136,32 +136,47 @@ const ChatTab: React.FC<ChatTabProps> = ({ quickActions, initialMessage, emergen
   const scrollContainerRef = useRef<HTMLDivElement>(null);
   const hasProcessedInitial = useRef(false);
 
-  // ===== NEW: Initialize Conversation Session =====
+  // ===== 100% ACCOUNTABILITY: Initialize & Sync Conversation Session for EVERY Visitor =====
   useEffect(() => {
     const initConversation = async () => {
       try {
         const storageKey = `unitec_chat_conversation_id_${brandId || 'unitec'}`;
-        const historyKey = `unitec_chat_history_${brandId || 'unitec'}`;
-        if (typeof window !== 'undefined') {
-          const existingId = localStorage.getItem(storageKey);
-          if (existingId) {
-            setConversationId(existingId);
-            return;
+        const timestampKey = `unitec_chat_session_time_${brandId || 'unitec'}`;
+        
+        let existingId = typeof window !== 'undefined' ? localStorage.getItem(storageKey) : null;
+        let lastSessionTime = typeof window !== 'undefined' ? localStorage.getItem(timestampKey) : null;
+        const now = Date.now();
+
+        // Create a new session if:
+        // 1. No existing session ID in localStorage
+        // 2. Previous session is older than 12 hours (new visit/day)
+        const isExpired = !lastSessionTime || (now - parseInt(lastSessionTime, 10) > 12 * 60 * 60 * 1000);
+
+        if (!existingId || isExpired) {
+          const newId = await createConversation(
+            brandId || 'unitec',
+            language,
+            'web',
+            { userAgent: navigator.userAgent, ipAddress: 'unknown' }
+          );
+          existingId = newId;
+          if (typeof window !== 'undefined') {
+            localStorage.setItem(storageKey, newId);
+            localStorage.setItem(timestampKey, now.toString());
           }
+        } else {
+          // Even for existing session, ensure document exists in Firestore
+          createConversation(
+            brandId || 'unitec',
+            language,
+            'web',
+            { userAgent: navigator.userAgent, ipAddress: 'unknown' }
+          ).catch(() => {});
         }
 
-        const id = await createConversation(
-          brandId || 'unitec',
-          language,
-          'web',
-          { userAgent: navigator.userAgent, ipAddress: 'unknown' }
-        );
-        setConversationId(id);
-        if (typeof window !== 'undefined') {
-          localStorage.setItem(storageKey, id);
-        }
+        setConversationId(existingId);
       } catch (e) {
-        console.warn('Failed to create conversation session:', e);
+        console.warn('Failed to initialize conversation session:', e);
       }
     };
     initConversation();
