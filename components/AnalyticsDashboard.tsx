@@ -149,6 +149,53 @@ const AnalyticsDashboard: React.FC<AnalyticsDashboardProps> = ({ sessions, googl
     (s.analytics as any)?.salesContactShared
   ).length;
 
+  // Hourly distribution for historical sessions
+  const hourlyData = Array.from({ length: 24 }, (_, h) => {
+    const hourStr = `${h.toString().padStart(2, '0')}:00`;
+    const count = filteredSessions.filter(s => new Date(s.createdAt).getHours() === h).length;
+    return { hour: hourStr, count };
+  });
+
+  // Brand distribution
+  const brandDistribution = filteredSessions.reduce((acc, s) => {
+    const brand = s.brandId || 'building';
+    acc[brand] = (acc[brand] || 0) + 1;
+    return acc;
+  }, { unitec: 0, building: 0 } as Record<string, number>);
+
+  // Sentiment analysis count
+  const sentimentData = filteredSessions.reduce((acc, s) => {
+    const score = s.sentimentScore || 0;
+    if (score > 0.3) acc.positive++;
+    else if (score < -0.3) acc.negative++;
+    else acc.neutral++;
+    return acc;
+  }, { positive: 0, neutral: 0, negative: 0 });
+
+  // Source distribution
+  const sourceDistribution = filteredSessions.reduce((acc, s) => {
+    const src = s.source || 'web';
+    acc[src] = (acc[src] || 0) + 1;
+    return acc;
+  }, { web: 0, phone: 0, whatsapp: 0 } as Record<string, number>);
+
+  // Top Topics
+  const topTopics = filteredSessions.reduce((acc: Record<string, number>, s) => {
+    (s.topics || []).forEach((topic: string) => {
+      acc[topic] = (acc[topic] || 0) + 1;
+    });
+    return acc;
+  }, {});
+  const sortedTopics = Object.entries(topTopics).sort(([, a], [, b]) => b - a).slice(0, 8);
+
+  // Intent distribution
+  const intentDistribution = filteredSessions.reduce((acc, s) => {
+    let intent = s.intentCategory || 'Desconocido';
+    if (intent === 'unknown') intent = 'Desconocido';
+    acc[intent] = (acc[intent] || 0) + 1;
+    return acc;
+  }, {} as Record<string, number>);
+
   return (
     <div className="space-y-6 pb-20">
       {/* TODAY LIVE PANEL */}
