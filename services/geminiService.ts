@@ -285,6 +285,7 @@ export const connectLiveSession = async (
 ) => {
   let isRecording = true;
   let recognition: any = null;
+  let isBotSpeaking = false;
   const synth = window.speechSynthesis;
   const messageHistory: any[] = [];
   const instructions = getSystemInstruction(language, customGreeting, brandId);
@@ -306,6 +307,7 @@ export const connectLiveSession = async (
     recognition.lang = language === 'en' ? 'en-US' : 'es-CO';
 
     recognition.onstart = () => {
+      callbacks.onStatusChange?.('listening');
       const interval = setInterval(() => {
         if (!isRecording) clearInterval(interval);
         if (callbacks.onAudioData) callbacks.onAudioData(new Uint8Array(64).fill(128));
@@ -317,6 +319,7 @@ export const connectLiveSession = async (
       callbacks.onMessage(transcript, null, false);
       messageHistory.push({ role: 'user', parts: [{ text: transcript }] });
 
+      callbacks.onStatusChange?.('processing');
       try {
         const stream = sendMessageToGemini(transcript, messageHistory, false, language, undefined, customGreeting, brandId);
         let fullResponse = '';
@@ -329,7 +332,14 @@ export const connectLiveSession = async (
         messageHistory.push({ role: 'model', parts: [{ text: fullResponse }] });
 
         const model = language === 'en' ? 'aura-asteria-en' : 'aura-2-celeste-es';
+        
+        isBotSpeaking = true;
+        callbacks.onStatusChange?.('speaking');
+        try { recognition.stop(); } catch (_) {}
+
         speakTextWithDeepgram(fullResponse, model, language).then(() => {
+          isBotSpeaking = false;
+          callbacks.onStatusChange?.('listening');
           if (isRecording && recognition) {
             try { recognition.start(); } catch (_) {}
           }
@@ -340,11 +350,15 @@ export const connectLiveSession = async (
     };
 
     recognition.onerror = () => {
-      if (isRecording) setTimeout(() => { if (isRecording && recognition) recognition.start(); }, 1000);
+      if (isRecording && !isBotSpeaking) {
+        setTimeout(() => { if (isRecording && recognition && !isBotSpeaking) recognition.start(); }, 1000);
+      }
     };
 
     recognition.onend = () => {
-      if (isRecording && !synth.speaking) recognition.start();
+      if (isRecording && !isBotSpeaking) {
+        try { recognition.start(); } catch (_) {}
+      }
     };
 
     const greeting = customGreeting || (language === 'en'
@@ -355,7 +369,13 @@ export const connectLiveSession = async (
       callbacks.onMessage(greeting, null, false);
       messageHistory.push({ role: 'model', parts: [{ text: greeting }] });
       const model = language === 'en' ? 'aura-asteria-en' : 'aura-2-celeste-es';
+      
+      isBotSpeaking = true;
+      callbacks.onStatusChange?.('speaking');
+
       speakTextWithDeepgram(greeting, model, language).then(() => {
+        isBotSpeaking = false;
+        callbacks.onStatusChange?.('listening');
         if (isRecording && recognition) {
           try { recognition.start(); } catch (_) {}
         }

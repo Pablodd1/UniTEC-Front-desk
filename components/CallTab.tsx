@@ -109,6 +109,9 @@ const CallTab: React.FC<CallTabProps> = ({ emergencyMode, language, voiceName, c
             onOpen: () => {
                 setStatus('connected');
             },
+            onStatusChange: (newStatus: any) => {
+                setStatus(newStatus);
+            },
             onMessage: (text: string | null) => {
                 if (text) {
                     setTranscript(prev => {
@@ -162,16 +165,32 @@ const CallTab: React.FC<CallTabProps> = ({ emergencyMode, language, voiceName, c
 
 
 
-  // ===== 5-minute idle timer for CallTab =====
+  // ===== Silence / Inactivity Timer (30s) & Hard Max Call Limit (5m) =====
   useEffect(() => {
-    if (status !== 'connected' && status !== 'listening' && status !== 'processing' && status !== 'speaking') return;
+    if (status !== 'connected' && status !== 'listening' && status !== 'speaking' && status !== 'processing') return;
 
-    const timer = setTimeout(() => {
-      console.log('Call idle for 5 minutes. Ending call and summarizing.');
+    // 1. Hard maximum limit of 5 minutes to prevent infinite calls
+    const maxCallTimer = setTimeout(() => {
+      console.log('Call reached 5 minutes limit. Ending call.');
       handleEndCall();
-    }, 5 * 60 * 1000); // 5 minutes
+    }, 5 * 60 * 1000);
 
-    return () => clearTimeout(timer);
+    // 2. Silence/Inactivity detection: close call if user does not speak/answer for 30 seconds
+    const lastMsg = transcript[transcript.length - 1];
+    const isWaitingForUser = !lastMsg || lastMsg.role === 'model';
+    let silenceTimer: NodeJS.Timeout | null = null;
+
+    if (isWaitingForUser) {
+      silenceTimer = setTimeout(() => {
+        console.log('No user response for 30 seconds. Auto-hanging up.');
+        handleEndCall();
+      }, 30 * 1000); // 30 seconds silence timeout
+    }
+
+    return () => {
+      clearTimeout(maxCallTimer);
+      if (silenceTimer) clearTimeout(silenceTimer);
+    };
   }, [transcript, status]);
 
   const handleEndCall = async () => {
