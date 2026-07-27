@@ -23,9 +23,22 @@ export default async function handler(req, res) {
       return res.status(400).json({ error: 'DEEPGRAM_API_KEY not configured on server' });
     }
 
+    // Clean markdown links, URLs, images, and formatting symbols before sending to TTS
+    const cleanText = String(text)
+      .replace(/!\[.*?\]\(.*?\)/g, '') // remove markdown images
+      .replace(/\[([^\]]+)\]\([^)]+\)/g, '$1') // replace markdown links with text only
+      .replace(/https?:\/\/\S+/g, '') // remove raw URLs
+      .replace(/[*_#~`]/g, '') // remove markdown formatting symbols
+      .replace(/\s+/g, ' ')
+      .trim();
+
+    if (!cleanText) {
+      return res.status(400).json({ error: 'Text empty after markdown sanitization' });
+    }
+
     // Default to Deepgram Aura 2 model if not specified
     const selectedModel = model || 'aura-asteria-en';
-    const dgUrl = `https://api.deepgram.com/v1/speak?model=${encodeURIComponent(selectedModel)}`;
+    const dgUrl = `https://api.deepgram.com/v1/speak?model=${encodeURIComponent(selectedModel)}&encoding=mp3`;
 
     const dgRes = await fetch(dgUrl, {
       method: 'POST',
@@ -33,7 +46,7 @@ export default async function handler(req, res) {
         'Authorization': `Token ${apiKey}`,
         'Content-Type': 'application/json'
       },
-      body: JSON.stringify({ text })
+      body: JSON.stringify({ text: cleanText })
     });
 
     if (!dgRes.ok) {

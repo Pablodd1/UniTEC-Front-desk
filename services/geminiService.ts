@@ -93,7 +93,8 @@ export async function* sendMessageToGemini(
   brandId: any = 'building'
 ): AsyncGenerator<any, void, unknown> {
 
-  let instructions = getSystemInstruction(language, customGreeting, brandId);
+  const localTraining = typeof window !== 'undefined' ? (localStorage.getItem('unitec_training_data') || undefined) : undefined;
+  let instructions = getSystemInstruction(language, customGreeting, brandId, localTraining, false);
   if (emergencyMode) instructions += '\n\n[SYSTEM OVERRIDE: EMERGENCY MODE ACTIVE]. Respond concisely.';
 
   // 1. Primary path: Call secure serverless proxy (/api/chat)
@@ -287,8 +288,8 @@ export const connectLiveSession = async (
   let recognition: any = null;
   let isBotSpeaking = false;
   const synth = window.speechSynthesis;
-  const messageHistory: any[] = [];
-  const instructions = getSystemInstruction(language, customGreeting, brandId);
+  const localTraining = typeof window !== 'undefined' ? (localStorage.getItem('unitec_training_data') || undefined) : undefined;
+  const instructions = getSystemInstruction(language, customGreeting, brandId, localTraining, true);
 
   try {
     const stream = await navigator.mediaDevices.getUserMedia({ audio: true });

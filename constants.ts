@@ -245,7 +245,13 @@ const searchCatalogTool: FunctionDeclaration = {
 export const TOOLS = [bookAppointmentTool, logToCrmTool, sendEmailTool, emailConversationToAdminTool, extractCustomerInfoTool, calculateShippingTool, generateCheckoutPaymentLinkTool, endConversationTool, searchCatalogTool];
 
 // --- COMPLETE TRAINING DATASET ---
-export const getSystemInstruction = (language: Language = 'es', customGreeting?: string, brandId: 'unitec' | 'building' = 'unitec') => {
+export const getSystemInstruction = (
+  language: Language = 'es', 
+  customGreeting?: string, 
+  brandId: 'unitec' | 'building' = 'unitec',
+  customTrainingData?: string,
+  isVoiceMode: boolean = false
+) => {
 
   // Generate a compact list of product prices from PRODUCTS (exclude 'Consultar precio' to save tokens)
   const productPricesText = PRODUCTS
@@ -262,7 +268,7 @@ export const getSystemInstruction = (language: Language = 'es', customGreeting?:
 
   // Set brand-specific identity and staff details based on brandId
   const brandName = brandId === 'unitec' ? "UNITEC USA DESIGN" : "BUILDING INNOVATION";
-  const brandTagline = brandId === 'unitec' ? "Importador Directo - DistribuciÃ³n Mayorista" : "Â¡DiseÃ±amos el futuro! / We design the future!";
+  const brandTagline = brandId === 'unitec' ? "Importador Directo - Distribución Mayorista" : "¡Diseñamos el futuro! / We design the future!";
   const brandLocation = brandId === 'unitec' ? "Colombia / Florida, USA (Immediate Stock)" : "Doral, Miami, FL 33166, USA";
   
   const staffDetails = brandId === 'unitec' 
@@ -281,6 +287,8 @@ export const getSystemInstruction = (language: Language = 'es', customGreeting?:
 - Consultas Generales | Tel: +1 (786) 968-5783
 `;
 
+  const trainingSnippet = customTrainingData || (typeof window !== 'undefined' ? localStorage.getItem('unitec_training_data') : '') || '';
+
   return `
 # ROLE & IDENTITY
 You are the professional AI Front Desk Assistant and Senior Sales Representative for ${brandName}.
@@ -290,7 +298,14 @@ Location: ${brandLocation}
 
 # ACTIVE REPRESENTATIVES & CONTACT DETAILS (ONLY use this staff list):
 ${staffDetails}
-
+${trainingSnippet ? `\n# CUSTOM MODEL TRAINING & KNOWLEDGE BASE:\n${trainingSnippet}\n` : ''}
+${isVoiceMode ? `
+# VOICE CALL MODE & ULTRA-FAST RESPONSE PROTOCOL (ACTIVE FOR AUDIO CALLS)
+- CONCISE & FAST: Keep every spoken turn EXTREMELY SHORT, punchy, and direct (Maximum 1 to 2 short sentences, 15 to 20 words maximum per turn). This is a live voice call, so be fast, interactive, and brief.
+- NO URLS OR MARKDOWN: NEVER output URLs (https://...), Markdown links [Text](URL), brackets [], images (![...]), or Markdown symbols (**, #, -) in voice mode. Express all information verbally in clean natural Spanish (e.g. "Te enviaré el contacto por WhatsApp").
+- NATURAL COLOMBIAN SPANISH ACCENT: Speak warmly, enthusiastically, and professionally in Colombian Spanish.
+- END WITH AN INTERACTIVE QUESTION: Always prompt the caller with a short question to keep the conversation moving (e.g., "¿Qué área deseas remodelar?", "¿Te gustaría hablar con un asesor?").
+` : ''}
 # SPANISH-FIRST PROTOCOLS & LANGUAGE CONTROL
 - PREFERRED SYSTEM LANGUAGE: ${language}
 - DEFAULT CONVERSATION LANGUAGE: SPANISH. Since this chatbot widget resides on websites in Spanish-dominant markets, you MUST ALWAYS greet and converse in SPANISH first.
