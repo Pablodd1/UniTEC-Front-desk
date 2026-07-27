@@ -88,6 +88,7 @@ export interface TelegramConfig {
   botToken: string;
   chatId: string;
   reportTime?: string;
+  googleAnalyticsVisits?: string;
   analyticsPreferences?: {
     includeTraffic: boolean;
     includeSentiment: boolean;
@@ -108,6 +109,7 @@ export const getTelegramConfig = async (): Promise<TelegramConfig> => {
         botToken: data.telegramBotToken || '',
         chatId: data.telegramChatId || '',
         reportTime: data.telegramReportTime || '09:00',
+        googleAnalyticsVisits: data.googleAnalyticsVisits || '3188',
         analyticsPreferences: data.telegramAnalyticsPreferences || {
           includeTraffic: true,
           includeSentiment: true,
@@ -142,6 +144,7 @@ export const saveTelegramConfig = async (config: TelegramConfig): Promise<void> 
       telegramBotToken: config.botToken,
       telegramChatId: config.chatId,
       telegramReportTime: config.reportTime || '09:00',
+      googleAnalyticsVisits: config.googleAnalyticsVisits || '3188',
       telegramAnalyticsPreferences: config.analyticsPreferences || {
         includeTraffic: true,
         includeSentiment: true,

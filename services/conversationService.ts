@@ -67,7 +67,9 @@ export interface ConversationSession {
   customerName?: string;
   customerEmail?: string;
   customerPhone?: string;
-  status: 'active' | 'human_requested' | 'human_assigned' | 'completed' | 'abandoned';
+  // 'abandoned_at_greeting' = left after seeing only the greeting (0 user messages)
+  // 'abandoned' = left mid-flow (had at least 1 user message but did not complete)
+  status: 'active' | 'human_requested' | 'human_assigned' | 'completed' | 'abandoned' | 'abandoned_at_greeting';
   brandId: 'unitec' | 'building';
   language: 'en' | 'es';
   messages?: ConversationMessage[];
@@ -86,8 +88,17 @@ export interface ConversationSession {
   referrer?: string;
   pageUrl?: string;
   location?: string;
+  country?: string;
+  city?: string;
+  campaign?: string;
   timeOnSite?: number;
   visitCount?: number;
+  // Timestamp when the FIRST user (non-bot) message was received
+  firstUserMessageAt?: string;
+  // Granular flow stage for funnel analysis
+  flowStage?: 'greeted' | 'engaging' | 'lead_captured' | 'completed';
+  // UI interaction count (button clicks, menu selections)
+  uiInteractions?: number;
   extractedData?: {
     name?: string;
     email?: string;
@@ -100,6 +111,7 @@ export interface ConversationSession {
   };
   analytics?: {
     messageCount: number;
+    userMessageCount: number;
     avgResponseTime: number;
     escalationCount: number;
     productMentions: string[];
@@ -172,9 +184,12 @@ export const createConversation = async (
     lastUpdated: now,
     source,
     topics: [],
+    flowStage: 'greeted',
+    uiInteractions: 0,
     ...metadata,
     analytics: {
       messageCount: 0,
+      userMessageCount: 0,
       avgResponseTime: 0,
       escalationCount: 0,
       productMentions: [],
@@ -229,7 +244,16 @@ export const addMessage = async (
     if (local[idx].analytics) {
       local[idx].analytics.messageCount = (local[idx].analytics.messageCount || 0) + 1;
     }
-    if (local[idx].status === 'completed' || local[idx].status === 'abandoned') {
+    // Track first user message timestamp for funnel time metrics
+    if (message.role === 'user') {
+      if (!local[idx].analytics) local[idx].analytics = { messageCount: 1, userMessageCount: 1, avgResponseTime: 0, escalationCount: 0, productMentions: [], staffInteractions: 0 };
+      local[idx].analytics.userMessageCount = (local[idx].analytics.userMessageCount || 0) + 1;
+      if (!local[idx].firstUserMessageAt) {
+        local[idx].firstUserMessageAt = now;
+        local[idx].flowStage = 'engaging';
+      }
+    }
+    if (local[idx].status === 'completed' || local[idx].status === 'abandoned' || local[idx].status === 'abandoned_at_greeting') {
       local[idx].status = 'active';
     }
     saveLocalSessions(local);
@@ -253,10 +277,25 @@ export const addMessage = async (
       'analytics.messageCount': increment(1),
     };
 
-    if (sessionSnap.exists()) {
-      const sessionData = sessionSnap.data() as ConversationSession;
-      if (sessionData.status === 'completed' || sessionData.status === 'abandoned') {
-        updatePayload.status = 'active';
+    // First user message: set firstUserMessageAt and flowStage
+    if (message.role === 'user') {
+      updatePayload['analytics.userMessageCount'] = increment(1);
+      if (sessionSnap.exists()) {
+        const sessionData = sessionSnap.data() as ConversationSession;
+        if (!sessionData.firstUserMessageAt) {
+          updatePayload.firstUserMessageAt = now;
+          updatePayload.flowStage = 'engaging';
+        }
+        if (sessionData.status === 'completed' || sessionData.status === 'abandoned' || sessionData.status === 'abandoned_at_greeting') {
+          updatePayload.status = 'active';
+        }
+      }
+    } else {
+      if (sessionSnap.exists()) {
+        const sessionData = sessionSnap.data() as ConversationSession;
+        if (sessionData.status === 'completed' || sessionData.status === 'abandoned' || sessionData.status === 'abandoned_at_greeting') {
+          updatePayload.status = 'active';
+        }
       }
     }
 
@@ -309,7 +348,7 @@ export const updateSessionStatus = async (
             const startTime = new Date(sessionData.createdAt).getTime();
             const endTime = Date.now();
             update.duration = Math.floor((endTime - startTime) / 1000);
-            
+
             // Update locally
             const l2 = getLocalSessions();
             const idx2 = l2.findIndex(s => s.id === sessionId);
@@ -318,15 +357,45 @@ export const updateSessionStatus = async (
               saveLocalSessions(l2);
             }
           }
+          // Smart: if user never sent a message, classify as abandoned_at_greeting
+          if (status === 'abandoned') {
+            const userMsgCount = sessionData.analytics?.userMessageCount || 0;
+            if (userMsgCount === 0) {
+              update.status = 'abandoned_at_greeting';
+              // Also fix locally
+              const l3 = getLocalSessions();
+              const idx3 = l3.findIndex(s => s.id === sessionId);
+              if (idx3 !== -1) { l3[idx3].status = 'abandoned_at_greeting'; saveLocalSessions(l3); }
+            }
+          }
         }
       } catch (e) {
         console.error('Error calculating duration:', e);
       }
     }
-    
+
     await updateDoc(doc(db, COLLECTIONS.sessions, sessionId), update);
   } catch (e) {
     console.warn('Failed to update session status in Firestore:', e);
+  }
+};
+
+// Record a UI interaction (button click, menu selection) for funnel analysis
+export const recordUIInteraction = async (sessionId: string): Promise<void> => {
+  if (getPrivacyMode()) return;
+  const local = getLocalSessions();
+  const idx = local.findIndex(s => s.id === sessionId);
+  if (idx !== -1) {
+    local[idx].uiInteractions = (local[idx].uiInteractions || 0) + 1;
+    saveLocalSessions(local);
+  }
+  try {
+    await updateDoc(doc(db, COLLECTIONS.sessions, sessionId), {
+      uiInteractions: increment(1),
+      lastUpdated: new Date().toISOString(),
+    });
+  } catch (e) {
+    console.warn('Failed to record UI interaction:', e);
   }
 };
 
@@ -620,8 +689,24 @@ export const subscribeToMessages = (
   let unsubSnapshot = () => {};
   try {
     unsubSnapshot = onSnapshot(q, (snapshot) => {
-      const messages = snapshot.docs.map(doc => doc.data() as ConversationMessage);
+      let messages = snapshot.docs.map(doc => doc.data() as ConversationMessage);
       const local = getLocalSessions();
+      const foundLocal = local.find(s => s.id === sessionId);
+      
+      // Resiliency for Anonymous sessions: if subcollection is empty but session has inline messages or lastMessage, fallback
+      if (messages.length === 0 && foundLocal) {
+        if (foundLocal.messages && foundLocal.messages.length > 0) {
+          messages = foundLocal.messages;
+        } else if (foundLocal.lastMessage) {
+          messages = [{
+            id: `synthetic_${Date.now()}`,
+            role: 'user',
+            text: foundLocal.lastMessage,
+            timestamp: foundLocal.lastUpdated || new Date().toISOString()
+          }];
+        }
+      }
+
       const idx = local.findIndex(s => s.id === sessionId);
       if (idx !== -1) {
         local[idx].messages = messages;

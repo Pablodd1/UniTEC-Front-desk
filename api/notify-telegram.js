@@ -92,12 +92,21 @@ export default async function handler(req, res) {
     return res.status(500).json({ error: 'Telegram configuration is missing.' });
   }
 
+  const botTokens = telegramBotToken.split(',').map(t => t.trim()).filter(Boolean);
   const chatIds = telegramChatId.split(',').map(id => id.trim()).filter(Boolean);
   const results = [];
   let atLeastOneSuccess = false;
 
-  for (const chatId of chatIds) {
-    const url = `https://api.telegram.org/bot${telegramBotToken}/sendMessage`;
+  for (let i = 0; i < chatIds.length; i++) {
+    const chatId = chatIds[i];
+    const token = botTokens[i] || botTokens[0]; // Use matching token, or fallback to first
+    
+    if (!token) {
+       results.push({ chatId, success: false, error: 'No bot token available for this chat ID' });
+       continue;
+    }
+    
+    const url = `https://api.telegram.org/bot${token}/sendMessage`;
     try {
       const response = await fetch(url, {
         method: 'POST',

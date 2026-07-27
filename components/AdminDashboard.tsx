@@ -91,6 +91,7 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({
   const [telegramBotToken, setTelegramBotToken] = useState('');
   const [telegramChatId, setTelegramChatId] = useState('');
   const [telegramReportTime, setTelegramReportTime] = useState('09:00');
+  const [googleAnalyticsVisits, setGoogleAnalyticsVisits] = useState('3188');
   const [analyticsPreferences, setAnalyticsPreferences] = useState({
     includeTraffic: true,
     includeSentiment: true,
@@ -241,6 +242,7 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({
       setTelegramBotToken(tg.botToken);
       setTelegramChatId(tg.chatId);
       if (tg.reportTime) setTelegramReportTime(tg.reportTime);
+      if (tg.googleAnalyticsVisits) setGoogleAnalyticsVisits(tg.googleAnalyticsVisits);
       if (tg.analyticsPreferences) setAnalyticsPreferences(tg.analyticsPreferences);
 
       const logs = await getCrmLogs();
@@ -580,6 +582,7 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({
         botToken: telegramBotToken.trim(),
         chatId: telegramChatId.trim(),
         reportTime: telegramReportTime,
+        googleAnalyticsVisits: googleAnalyticsVisits,
         analyticsPreferences: analyticsPreferences,
       });
       setIsTelegramSaved(true);
@@ -1496,6 +1499,19 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({
                                     <p className="text-[10px] text-slate-400 italic">Cron revisa cada hora; el reporte se envía una vez al día a la hora seleccionada.</p>
                                 </div>
 
+                                <div className="space-y-2">
+                                    <label className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Visitas Web (Google Analytics)</label>
+                                    <input 
+                                        type="text" 
+                                        value={googleAnalyticsVisits}
+                                        onChange={e => setGoogleAnalyticsVisits(e.target.value)}
+                                        className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-sm focus:ring-2 focus:ring-brand-500 outline-none"
+                                        placeholder="3188"
+                                    />
+                                    <p className="text-[10px] text-slate-400 italic">Visitas totales del mes/período de Google Analytics para comparar conversión.</p>
+                                </div>
+                            </div>
+
                                 <div className="space-y-3">
                                     <label className="text-[10px] font-bold text-slate-400 uppercase tracking-widest block">Módulos de Análisis Incluidos</label>
                                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
@@ -1566,8 +1582,7 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({
                             </div>
                         </div>
                     </div>
-                </div>
-            );
+                );
 
         case 'integrations':
             return (
@@ -2015,7 +2030,7 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({
         case 'analytics':
             return (
                 <div className="h-[calc(100vh-200px)] animate-in slide-in-from-bottom-2 duration-500">
-                    <AnalyticsDashboard sessions={conversations} />
+                    <AnalyticsDashboard sessions={conversations} googleAnalyticsVisits={googleAnalyticsVisits} />
                 </div>
             );
             
@@ -2136,8 +2151,10 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({
                {[
                  { id: 'general',         label: 'Ajustes',     icon: <ShieldCheck size={13} /> },
                  { id: 'integrations',    label: 'Integraciones', icon: <Plug size={13} /> },
-                 { id: 'telegram',        label: 'Telegram Bot', icon: <Send size={13} /> },
                  { id: 'training',        label: 'Entrenamiento',     icon: <Brain size={13} /> },
+                 { id: 'deploy',          label: 'Despliegue y Llaves', icon: <Rocket size={13} /> },
+                 { id: 'voice',           label: 'Voz y TTS',     icon: <Volume2 size={13} /> },
+                 { id: 'visuals',         label: 'Diseño de Imagen', icon: <Store size={13} /> },
                 ].map((t: any) => {
                  const activeBrandColor = currentBrandId === 'building' ? 'border-indigo-600 text-indigo-600' : 'border-brand-600 text-brand-600';
                  return (

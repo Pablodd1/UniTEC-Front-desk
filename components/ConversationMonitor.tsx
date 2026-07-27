@@ -45,10 +45,26 @@ const CHAT_TAGS = [
   { id: 'complaint', label: 'Complaint', color: 'bg-red-100 text-red-700' },
   { id: 'pricing', label: 'Pricing', color: 'bg-purple-100 text-purple-700' },
   { id: 'technical', label: 'Technical', color: 'bg-orange-100 text-orange-700' },
-  { id: 'urgent', label: 'Urgent', color: 'bg-red-50 text-red-600 border-red-200' },
-  { id: 'vip', label: 'VIP', color: 'bg-amber-100 text-amber-700' },
+  { id: 'urgent', label: 'Urgent', color: 'bg-amber-100 text-amber-700' },
   { id: 'follow-up', label: 'Follow-up', color: 'bg-slate-100 text-slate-700' },
 ];
+
+/** Format timestamp into DD/MM/YY HH:mm for default connection date display */
+const formatDateTime = (dateStr?: string): string => {
+  if (!dateStr) return 'N/A';
+  try {
+    const d = new Date(dateStr);
+    if (isNaN(d.getTime())) return dateStr;
+    const day = String(d.getDate()).padStart(2, '0');
+    const month = String(d.getMonth() + 1).padStart(2, '0');
+    const year = String(d.getFullYear()).slice(-2);
+    const hours = String(d.getHours()).padStart(2, '0');
+    const minutes = String(d.getMinutes()).padStart(2, '0');
+    return `${day}/${month}/${year} ${hours}:${minutes}`;
+  } catch (e) {
+    return dateStr;
+  }
+};
 
 const ConversationMonitor: React.FC<ConversationMonitorProps> = ({ 
   sessions, 
@@ -530,9 +546,9 @@ const ConversationMonitor: React.FC<ConversationMonitorProps> = ({
                         
                         <div className="flex items-center justify-between text-xs text-slate-400">
                           <div className="flex items-center gap-3">
-                            <span className="flex items-center gap-1">
+                            <span className="flex items-center gap-1 font-mono text-[11px] text-slate-500">
                               <Clock size={10} />
-                              {new Date(session.lastUpdated).toLocaleTimeString()}
+                              {formatDateTime(session.lastUpdated)}
                             </span>
                             <span>{session.analytics?.messageCount || 0} msgs</span>
                             <span className="capitalize">{session.brandId}</span>

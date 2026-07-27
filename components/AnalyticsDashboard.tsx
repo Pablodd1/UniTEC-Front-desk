@@ -5,9 +5,10 @@ import { ConversationSession } from '../services/conversationService';
 
 interface AnalyticsDashboardProps {
   sessions: ConversationSession[];
+  googleAnalyticsVisits?: string;
 }
 
-const AnalyticsDashboard: React.FC<AnalyticsDashboardProps> = ({ sessions }) => {
+const AnalyticsDashboard: React.FC<AnalyticsDashboardProps> = ({ sessions, googleAnalyticsVisits }) => {
   const [timeFilter, setTimeFilter] = useState<'all' | 'today' | 'week' | 'month'>('all');
   const [_liveTime, setLiveTime] = useState(new Date());
 
@@ -89,9 +90,22 @@ const AnalyticsDashboard: React.FC<AnalyticsDashboardProps> = ({ sessions }) => 
     count: todaySessions.filter(s => new Date(s.createdAt).getHours() === h).length,
   }));
 
-  // Apply time filter for main metrics
+  const [selectedMonth, setSelectedMonth] = useState<string>('all');
+  const [selectedDay, setSelectedDay] = useState<string>('all');
+
+  const MONTHS_SPANISH = [
+    'Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio',
+    'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'
+  ];
+
+  // Apply time, month, and day filter for main metrics
   const filteredSessions = sessions.filter(s => {
-    const sTime = new Date(s.createdAt).getTime();
+    const d = new Date(s.createdAt);
+    const sTime = d.getTime();
+    
+    if (selectedMonth !== 'all' && d.getMonth() !== parseInt(selectedMonth, 10)) return false;
+    if (selectedDay !== 'all' && d.getDate() !== parseInt(selectedDay, 10)) return false;
+
     if (timeFilter === 'today') return sTime >= todayStart;
     if (timeFilter === 'week') return sTime >= weekStart;
     if (timeFilter === 'month') return sTime >= monthStart;
@@ -107,51 +121,33 @@ const AnalyticsDashboard: React.FC<AnalyticsDashboardProps> = ({ sessions }) => 
     ? ((startedChatSessions / totalSessions) * 100).toFixed(1)
     : '0.0';
 
-  const brandDistribution = {
-    unitec: filteredSessions.filter(s => s.brandId === 'unitec').length,
-    building: filteredSessions.filter(s => s.brandId === 'building').length,
-  };
+  const gaVisits = parseInt(googleAnalyticsVisits || '3188', 10) || 3188;
+  const gaConversionRate = gaVisits > 0
+    ? ((startedChatSessions / gaVisits) * 100).toFixed(1)
+    : '0.0';
 
-  const sourceDistribution = {
-    web: filteredSessions.filter(s => s.source === 'web').length,
-    phone: filteredSessions.filter(s => s.source === 'phone').length,
-    whatsapp: filteredSessions.filter(s => s.source === 'whatsapp').length,
-  };
+  // Average Handling Time (AHT) calculation
+  const sessionsWithDuration = filteredSessions.filter(s => s.duration && s.duration > 0);
+  const avgAhtSeconds = sessionsWithDuration.length > 0
+    ? Math.round(sessionsWithDuration.reduce((sum, s) => sum + (s.duration || 0), 0) / sessionsWithDuration.length)
+    : 0;
+  const ahtFormatted = avgAhtSeconds > 0
+    ? `${Math.floor(avgAhtSeconds / 60)}m ${avgAhtSeconds % 60}s`
+    : 'N/A';
+  
+  // AHT percentage compared to 3-minute standard (180s = 100%)
+  const ahtPercentage = avgAhtSeconds > 0
+    ? ((avgAhtSeconds / 180) * 100).toFixed(1)
+    : '0.0';
 
-  const intentDistribution = filteredSessions.reduce((acc, s) => {
-    let intent = s.intentCategory || 'Desconocido';
-    if (intent === 'unknown') intent = 'Desconocido';
-    acc[intent] = (acc[intent] || 0) + 1;
-    return acc;
-  }, {} as Record<string, number>);
-
-  const hourlyDistribution = filteredSessions.reduce((acc, s) => {
-    const hour = new Date(s.createdAt).getHours();
-    acc[hour] = (acc[hour] || 0) + 1;
-    return acc;
-  }, {} as Record<number, number>);
-
-  const hourlyData = Object.entries(hourlyDistribution)
-    .map(([hour, count]) => ({ hour: `${hour}:00`, count }))
-    .sort((a, b) => parseInt(a.hour) - parseInt(b.hour));
-
-  const sentimentData = filteredSessions.reduce((acc, s) => {
-    const score = s.sentimentScore || 0;
-    if (score > 0.3) acc.positive++;
-    else if (score < -0.3) acc.negative++;
-    else acc.neutral++;
-    return acc;
-  }, { positive: 0, neutral: 0, negative: 0 });
-
-  void ['#2563eb', '#16a34a', '#ea580c', '#8b5cf6', '#ec4899'];
-
-  const topTopics = filteredSessions.reduce((acc: Record<string, number>, s) => {
-    s.topics?.forEach((topic: string) => {
-      acc[topic] = (acc[topic] || 0) + 1;
-    });
-    return acc;
-  }, {});
-  const sortedTopics = Object.entries(topTopics).sort(([, a], [, b]) => b - a).slice(0, 8);
+  // Sales Contact & Quotation quantification
+  const salesContactCount = filteredSessions.filter(s =>
+    s.status === 'completed' ||
+    s.intentCategory === 'cotizacion' ||
+    s.topics?.includes('cotizacion') ||
+    s.extractedData?.phone ||
+    (s.analytics as any)?.salesContactShared
+  ).length;
 
   return (
     <div className="space-y-6 pb-20">
@@ -171,16 +167,18 @@ const AnalyticsDashboard: React.FC<AnalyticsDashboardProps> = ({ sessions }) => 
             <div className="bg-white/10 rounded-xl p-4 backdrop-blur-sm border border-white/10">
               <div className="flex items-center gap-2 mb-1">
                 <Activity size={12} className="text-emerald-400" />
-                <span className="text-[9px] font-bold text-slate-400 uppercase tracking-wider">Activos ahora</span>
+                <span className="text-[9px] font-bold text-slate-400 uppercase tracking-wider">Activos Ahora (Interactuando)</span>
               </div>
               <p className="text-3xl font-black text-emerald-400">{activeNow}</p>
+              <p className="text-[9px] text-slate-400 mt-1">Clientes en línea en vivo</p>
             </div>
             <div className="bg-white/10 rounded-xl p-4 backdrop-blur-sm border border-white/10">
               <div className="flex items-center gap-2 mb-1">
                 <MessageSquare size={12} className="text-blue-400" />
-                <span className="text-[9px] font-bold text-slate-400 uppercase tracking-wider">Nuevos hoy</span>
+                <span className="text-[9px] font-bold text-slate-400 uppercase tracking-wider">Ingresaron hoy</span>
               </div>
               <p className="text-3xl font-black text-blue-400">{todaySessions.length}</p>
+              <p className="text-[9px] text-slate-400 mt-1">Total visitas del día</p>
             </div>
             <div className="bg-white/10 rounded-xl p-4 backdrop-blur-sm border border-white/10">
               <div className="flex items-center gap-2 mb-1">
@@ -238,13 +236,14 @@ const AnalyticsDashboard: React.FC<AnalyticsDashboardProps> = ({ sessions }) => 
         </div>
       </div>
 
-      {/* Time filter and export options for historical */}
+      {/* Time, Month, Day filter and export options for historical */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 p-4 bg-slate-50 rounded-2xl border border-slate-100">
         <div>
           <h2 className="font-bold text-slate-800 text-sm uppercase tracking-wider">Histórico de Análisis</h2>
-          <p className="text-xs text-slate-500 mt-0.5">Filtre y exporte los datos de conversaciones.</p>
+          <p className="text-xs text-slate-500 mt-0.5">Filtre por período, mes o día y exporte los datos.</p>
         </div>
         <div className="flex flex-wrap items-center gap-3">
+          {/* Período Rápido */}
           <div className="flex gap-1 bg-slate-200/60 rounded-xl p-1">
             {(['today', 'week', 'month', 'all'] as const).map(f => (
               <button
@@ -256,6 +255,30 @@ const AnalyticsDashboard: React.FC<AnalyticsDashboardProps> = ({ sessions }) => 
               </button>
             ))}
           </div>
+
+          {/* Filtro por Mes */}
+          <select
+            value={selectedMonth}
+            onChange={(e) => setSelectedMonth(e.target.value)}
+            className="px-3 py-1.5 bg-white border border-slate-200 rounded-xl text-[11px] font-bold text-slate-700 focus:outline-none focus:ring-2 focus:ring-brand-500"
+          >
+            <option value="all">Todos los Meses</option>
+            {MONTHS_SPANISH.map((m, idx) => (
+              <option key={idx} value={String(idx)}>{m}</option>
+            ))}
+          </select>
+
+          {/* Filtro por Día */}
+          <select
+            value={selectedDay}
+            onChange={(e) => setSelectedDay(e.target.value)}
+            className="px-3 py-1.5 bg-white border border-slate-200 rounded-xl text-[11px] font-bold text-slate-700 focus:outline-none focus:ring-2 focus:ring-brand-500"
+          >
+            <option value="all">Todos los Días</option>
+            {Array.from({ length: 31 }, (_, i) => i + 1).map(d => (
+              <option key={d} value={String(d)}>Día {d}</option>
+            ))}
+          </select>
 
           <div className="flex gap-2">
             <button 
@@ -277,7 +300,15 @@ const AnalyticsDashboard: React.FC<AnalyticsDashboardProps> = ({ sessions }) => 
       </div>
 
       {/* KPI Cards */}
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+      <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-7 gap-4">
+        <div className="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm">
+          <div className="flex items-center gap-2 mb-2">
+            <div className="p-2 bg-sky-50 rounded-lg"><Activity size={14} className="text-sky-600" /></div>
+            <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Visitas Web (GA)</span>
+          </div>
+          <p className="text-2xl font-black text-slate-800">{gaVisits.toLocaleString('es')}</p>
+          <p className="text-[10px] text-sky-600 font-bold mt-1">{gaConversionRate}% conv. real</p>
+        </div>
         <div className="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm">
           <div className="flex items-center gap-2 mb-2">
             <div className="p-2 bg-brand-50 rounded-lg"><Users size={14} className="text-brand-600" /></div>
@@ -294,8 +325,24 @@ const AnalyticsDashboard: React.FC<AnalyticsDashboardProps> = ({ sessions }) => 
         </div>
         <div className="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm">
           <div className="flex items-center gap-2 mb-2">
+            <div className="p-2 bg-purple-50 rounded-lg"><Zap size={14} className="text-purple-600" /></div>
+            <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">AHT Promedio</span>
+          </div>
+          <p className="text-2xl font-black text-slate-800">{ahtFormatted}</p>
+          <p className="text-[10px] text-purple-600 font-bold mt-1">{ahtPercentage}% respecto a estándar</p>
+        </div>
+        <div className="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm">
+          <div className="flex items-center gap-2 mb-2">
+            <div className="p-2 bg-blue-50 rounded-lg"><MessageSquare size={14} className="text-blue-600" /></div>
+            <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Cotizaciones / Ventas</span>
+          </div>
+          <p className="text-2xl font-black text-slate-800">{salesContactCount}</p>
+          <p className="text-[10px] text-blue-600 font-bold mt-1">Contactos comerciales entregados</p>
+        </div>
+        <div className="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm">
+          <div className="flex items-center gap-2 mb-2">
             <div className="p-2 bg-orange-50 rounded-lg"><Phone size={14} className="text-orange-600" /></div>
-            <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Asistencia del Personal</span>
+            <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Asistencia Humana</span>
           </div>
           <p className="text-2xl font-black text-slate-800">{humanRequested + humanAssigned}</p>
         </div>

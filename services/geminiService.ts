@@ -52,7 +52,9 @@ import { speakTextWithDeepgram } from './deepgramService';
 
 // ─── TTS ────────────────────────────────────────────────────────────────────
 export async function playGeminiTTS(text: string, voiceName: string = 'Kore') {
-  return speakTextWithDeepgram(text, 'aura-asteria-en', 'es');
+  const isSpanish = /[áéíóúüñ¿¡]/i.test(text) || text.toLowerCase().includes('hola') || text.toLowerCase().includes('bienvenido');
+  const model = isSpanish ? 'aura-2-celeste-es' : 'aura-asteria-en';
+  return speakTextWithDeepgram(text, model, isSpanish ? 'es' : 'en');
 }
 
 // ─── Helpers ────────────────────────────────────────────────────────────────
@@ -326,7 +328,8 @@ export const connectLiveSession = async (
         callbacks.onMessage(fullResponse, null, false);
         messageHistory.push({ role: 'model', parts: [{ text: fullResponse }] });
 
-        speakTextWithDeepgram(fullResponse, 'aura-asteria-en', language).then(() => {
+        const model = language === 'en' ? 'aura-asteria-en' : 'aura-2-celeste-es';
+        speakTextWithDeepgram(fullResponse, model, language).then(() => {
           if (isRecording && recognition) {
             try { recognition.start(); } catch (_) {}
           }
@@ -351,7 +354,8 @@ export const connectLiveSession = async (
     setTimeout(() => {
       callbacks.onMessage(greeting, null, false);
       messageHistory.push({ role: 'model', parts: [{ text: greeting }] });
-      speakTextWithDeepgram(greeting, 'aura-asteria-en', language).then(() => {
+      const model = language === 'en' ? 'aura-asteria-en' : 'aura-2-celeste-es';
+      speakTextWithDeepgram(greeting, model, language).then(() => {
         if (isRecording && recognition) {
           try { recognition.start(); } catch (_) {}
         }
