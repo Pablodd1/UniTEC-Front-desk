@@ -141,13 +141,14 @@ const AnalyticsDashboard: React.FC<AnalyticsDashboardProps> = ({ sessions, googl
     : '0.0';
 
   // Sales Contact & Quotation quantification
-  const salesContactCount = filteredSessions.filter(s =>
+  const salesContactSessions = filteredSessions.filter(s =>
     s.status === 'completed' ||
     s.intentCategory === 'cotizacion' ||
     s.topics?.includes('cotizacion') ||
     s.extractedData?.phone ||
     (s.analytics as any)?.salesContactShared
-  ).length;
+  );
+  const salesContactCount = salesContactSessions.length;
 
   // Hourly distribution for historical sessions
   const hourlyData = Array.from({ length: 24 }, (_, h) => {
@@ -521,6 +522,86 @@ const AnalyticsDashboard: React.FC<AnalyticsDashboardProps> = ({ sessions, googl
           </div>
         </div>
       )}
+
+      {/* Cotizaciones y Ventas Leads List */}
+      <div className="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm">
+        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 mb-6">
+          <div>
+            <h3 className="font-bold text-slate-800 text-base">Detalle de Cotizaciones y Contactos Comerciales</h3>
+            <p className="text-xs text-slate-500 mt-0.5">Clientes que solicitaron cotización o dejaron sus datos de contacto comercial en el chat.</p>
+          </div>
+          <span className="self-start sm:self-center px-3 py-1 bg-brand-50 text-brand-700 text-xs font-black rounded-full uppercase tracking-wider">
+            {salesContactSessions.length} Contactos
+          </span>
+        </div>
+        
+        {salesContactSessions.length === 0 ? (
+          <div className="text-center py-10 text-slate-400 text-sm">No hay contactos comerciales registrados en este periodo.</div>
+        ) : (
+          <div className="overflow-x-auto rounded-xl border border-slate-100">
+            <table className="w-full text-sm text-left">
+              <thead className="text-xs text-slate-500 uppercase bg-slate-50">
+                <tr>
+                  <th className="px-4 py-3">Fecha</th>
+                  <th className="px-4 py-3">Cliente</th>
+                  <th className="px-4 py-3">Contacto</th>
+                  <th className="px-4 py-3">Tipo de Proyecto</th>
+                  <th className="px-4 py-3">Presupuesto / Tiempo</th>
+                  <th className="px-4 py-3">Marca</th>
+                  <th className="px-4 py-3 text-right">Acciones</th>
+                </tr>
+              </thead>
+              <tbody>
+                {salesContactSessions.map((s) => {
+                  const ext = s.extractedData || {};
+                  const name = s.customerName || ext.name || 'Anónimo';
+                  const phone = s.customerPhone || ext.phone || 'N/A';
+                  const email = s.customerEmail || ext.email || 'N/A';
+                  const projectType = ext.projectType || ext.profession || 'Consulta General';
+                  const budget = ext.budget || 'No especificado';
+                  const timeline = ext.timeline || 'N/A';
+                  
+                  return (
+                    <tr key={s.id} className="border-b border-slate-100 hover:bg-slate-50 transition-colors">
+                      <td className="px-4 py-3 text-xs text-slate-500">{new Date(s.createdAt).toLocaleDateString('es')}</td>
+                      <td className="px-4 py-3">
+                        <div className="font-bold text-slate-800 text-xs">{name}</div>
+                        {ext.profession && <div className="text-[10px] text-slate-400 mt-0.5">{ext.profession}</div>}
+                      </td>
+                      <td className="px-4 py-3 text-xs text-slate-600 space-y-0.5">
+                        <div className="flex items-center gap-1"><span>📞</span> <span className="font-medium">{phone}</span></div>
+                        {email !== 'N/A' && <div className="flex items-center gap-1 text-[10px] text-slate-400"><span>📧</span> <span>{email}</span></div>}
+                      </td>
+                      <td className="px-4 py-3 text-xs text-slate-700 font-semibold">{projectType}</td>
+                      <td className="px-4 py-3 text-xs">
+                        <div className="text-brand-600 font-bold">{budget}</div>
+                        {timeline !== 'N/A' && <div className="text-[10px] text-slate-400 mt-0.5">⏳ {timeline}</div>}
+                      </td>
+                      <td className="px-4 py-3 text-xs">
+                        <span className={`px-2 py-0.5 rounded-full text-[9px] font-black uppercase ${s.brandId === 'unitec' ? 'bg-sky-100 text-sky-700' : 'bg-emerald-100 text-emerald-700'}`}>
+                          {s.brandId === 'unitec' ? 'UNITEC' : 'Building'}
+                        </span>
+                      </td>
+                      <td className="px-4 py-3 text-right">
+                        <button
+                          onClick={() => {
+                            const details = `Lead de Cotización:\n----------------------\nNombre: ${name}\nTeléfono: ${phone}\nEmail: ${email}\nTipo: ${projectType}\nPresupuesto: ${budget}\nTiempo: ${timeline}\nMarca: ${s.brandId === 'unitec' ? 'UNITEC' : 'Building Innovation'}`;
+                            navigator.clipboard.writeText(details);
+                            alert('Detalles de contacto copiados al portapapeles.');
+                          }}
+                          className="px-3 py-1 bg-slate-100 hover:bg-brand-50 hover:text-brand-600 rounded-lg text-[10px] font-bold text-slate-600 transition-all active:scale-95"
+                        >
+                          Copiar Ficha
+                        </button>
+                      </td>
+                    </tr>
+                  );
+                })}
+              </tbody>
+            </table>
+          </div>
+        )}
+      </div>
 
       {/* Transaction Log */}
       <div className="bg-white p-6 rounded-2xl border border-slate-200">
