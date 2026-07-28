@@ -98,185 +98,52 @@ export async function* sendMessageToGemini(
   let instructions = getSystemInstruction(language, customGreeting, brandId, localTraining, isVoiceMode);
   if (emergencyMode) instructions += '\n\n[SYSTEM OVERRIDE: EMERGENCY MODE ACTIVE]. Respond concisely.';
 
-  // 1. Primary path: Call secure serverless proxy (/api/chat)
-  try {
-    const proxyRes = await fetch('/api/chat', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ message, history, instructions }),
-      signal: AbortSignal.timeout(7000)
-    });
-
-    if (proxyRes.ok) {
-      const data = await proxyRes.json();
-      if (data.text) {
-        yield data.text;
-        return;
-      }
-    }
-  } catch (proxyError) {
-    console.warn("Serverless chat proxy unreachable, falling back to direct API key access:", proxyError);
-  }
-
-  // 2. Direct client fallback if proxy unavailable
-  const apiKey = await getApiKey();
-  if (!apiKey) throw new Error('API_KEY_MISSING');
-
-  const isOpenRouter = apiKey.startsWith('sk-or-') || apiKey.startsWith('sk-proj-');
-  if (isOpenRouter) {
+  // 1. Primary path: Call secure serverless proxy (/api/chat) with retry for rate limits
+  let lastProxyError = null;
+  for (let attempt = 0; attempt < 2; attempt++) {
     try {
-      const formattedMessages = [
-        { role: 'system', content: instructions },
-        ...history.map(h => ({
-          role: h.role === 'model' ? 'assistant' : 'user',
-          content: h.text || h.parts?.[0]?.text || ''
-        })),
-        { role: 'user', content: message }
-      ];
-
-      const orRes = await fetch('https://openrouter.ai/api/v1/chat/completions', {
+      const proxyRes = await fetch('/api/chat', {
         method: 'POST',
-        headers: {
-          'Authorization': `Bearer ${apiKey}`,
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({
-          model: 'google/gemini-2.5-flash',
-          messages: formattedMessages
-        })
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ message, history, instructions }),
+        signal: AbortSignal.timeout(20000) // 20s — allows for cold start + AI latency
       });
 
-      if (orRes.ok) {
-        const orData = await orRes.json();
-        const answer = orData.choices?.[0]?.message?.content || '';
-        if (answer) {
-          yield answer;
+      if (proxyRes.status === 429) {
+        // Rate limited — wait 3s and retry once
+        if (attempt === 0) {
+          await sleep(3000);
+          continue;
+        }
+        throw new Error('RATE_LIMITED');
+      }
+
+      if (proxyRes.ok) {
+        const data = await proxyRes.json();
+        if (data.text) {
+          yield data.text;
           return;
         }
       }
-    } catch (_) {}
-  }
-
-  const geminiContents = [
-      ...history.map(h => ({
-        role: h.role === 'model' ? 'model' : 'user',
-        parts: h.parts || [{ text: h.text || '' }]
-      }))
-  ];
-  if (message) geminiContents.push({ role: 'user', parts: [{ text: message }] });
-
-  const bodyPayload = {
-      contents: geminiContents,
-      systemInstruction: { parts: [{ text: instructions }] },
-      tools: [{ functionDeclarations: TOOLS }]
-  };
-
-  const geminiEndpoint = `https://generativelanguage.googleapis.com/v1beta/models/gemini-3.6-flash:streamGenerateContent?key=${apiKey}`;
-
-  let response = await fetch(geminiEndpoint, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(bodyPayload)
-  });
-
-  if (!response.ok) {
-      throw new Error(`Gemini API Error: ${await response.text()}`);
-  }
-
-  const reader = response.body?.getReader();
-  const decoder = new TextDecoder('utf-8');
-  let buffer = '';
-
-  try {
-      while (true) {
-        const { done, value } = await reader!.read();
-        if (done) break;
-        buffer += decoder.decode(value, { stream: true });
-        
-        const lines = buffer.split('\n');
-        buffer = lines.pop() || '';
-
-        for (const line of lines) {
-            const trimmed = line.trim();
-            if (!trimmed || trimmed === 'data: [DONE]') continue;
-            if (trimmed.startsWith('data: ')) {
-                try {
-                    const json = JSON.parse(trimmed.slice(6));
-                    const part = json.candidates?.[0]?.content?.parts?.[0];
-                    if (part) {
-                        if (part.text) {
-                            yield { text: part.text, candidates: json.candidates };
-                        }
-                        if (part.functionCall) {
-                            const args = part.functionCall.args || {};
-                            if (part.functionCall.name === 'search_catalog') {
-                                const result = await performCatalogSearch(args.query || '', brandId);
-                                if (onToolSuccess) onToolSuccess('search_catalog', result);
-                                
-                                const functionResponsePart = {
-                                    functionResponse: {
-                                        name: 'search_catalog',
-                                        response: { result }
-                                    }
-                                };
-                                
-                                geminiContents.push({
-                                    role: 'model',
-                                    parts: [part]
-                                });
-                                geminiContents.push({
-                                    role: 'user',
-                                    parts: [functionResponsePart]
-                                });
-                                
-                                const followUpPayload = {
-                                    contents: geminiContents,
-                                    systemInstruction: { parts: [{ text: instructions }] },
-                                    tools: [{ functionDeclarations: TOOLS }]
-                                };
-                                
-                                const followUpResponse = await fetch(geminiEndpoint, {
-                                    method: 'POST',
-                                    headers: { 'Content-Type': 'application/json' },
-                                    body: JSON.stringify(followUpPayload)
-                                });
-                                
-                                const fReader = followUpResponse.body?.getReader();
-                                let fBuffer = '';
-                                while (true) {
-                                    const { done: fDone, value: fValue } = await fReader!.read();
-                                    if (fDone) break;
-                                    fBuffer += decoder.decode(fValue, { stream: true });
-                                    const fLines = fBuffer.split('\n');
-                                    fBuffer = fLines.pop() || '';
-                                    for (const fLine of fLines) {
-                                        const fTrimmed = fLine.trim();
-                                        if (fTrimmed.startsWith('data: ')) {
-                                            try {
-                                                const fJson = JSON.parse(fTrimmed.slice(6));
-                                                const fPart = fJson.candidates?.[0]?.content?.parts?.[0];
-                                                if (fPart && fPart.text) {
-                                                    yield { text: fPart.text, candidates: fJson.candidates };
-                                                }
-                                            } catch (e) {}
-                                        }
-                                    }
-                                }
-                            } else {
-                                if (onToolSuccess) onToolSuccess(part.functionCall.name, args);
-                            }
-                        }
-                    }
-                } catch (e) {}
-            }
-        }
+      const errBody = await proxyRes.text().catch(() => '');
+      lastProxyError = new Error(`Proxy ${proxyRes.status}: ${errBody.slice(0, 200)}`);
+    } catch (proxyError) {
+      lastProxyError = proxyError;
+      if (attempt === 0 && !String(proxyError).includes('RATE_LIMITED')) {
+        // Only retry on rate limit, not on network errors
+        break;
       }
-  } finally {
-      if (reader) reader.releaseLock();
+    }
   }
+
+  // 2. All proxy attempts failed — throw structured error (NO direct client-side API key usage)
+  console.warn('Chat proxy unreachable:', lastProxyError?.message || lastProxyError);
+  throw new Error('PROXY_UNREACHABLE');
 }
 
 // ─── Voice / Live Session ────────────────────────────────────────────────────
+// State machine: 'idle' → 'listening' → 'processing' → 'speaking' → 'listening' → ...
+// Fixes: continuous recognition, proper TTS/STT sequencing, echo prevention
 export const connectLiveSession = async (
   callbacks: any,
   emergencyMode: boolean = false,
@@ -287,10 +154,36 @@ export const connectLiveSession = async (
 ) => {
   let isRecording = true;
   let recognition: any = null;
-  let isBotSpeaking = false;
-  const synth = window.speechSynthesis;
+  let voiceState: 'idle' | 'listening' | 'processing' | 'speaking' | 'stopped' = 'idle';
+  const messageHistory: any[] = []; // Conversation context for AI calls
   const localTraining = typeof window !== 'undefined' ? (localStorage.getItem('unitec_training_data') || undefined) : undefined;
   const instructions = getSystemInstruction(language, customGreeting, brandId, localTraining, true);
+
+  const setState = (s: typeof voiceState) => {
+    voiceState = s;
+    callbacks.onStatusChange?.(s);
+  };
+
+  const safeStartRecognition = () => {
+    if (!isRecording || voiceState === 'stopped' || voiceState === 'speaking' || voiceState === 'processing') return;
+    if (!recognition) return;
+    try {
+      recognition.start();
+    } catch (e: any) {
+      // start() throws if already started — that's fine, we're already listening
+      if (!String(e).includes('already started')) {
+        // Retry after short delay for transient errors
+        setTimeout(() => {
+          if (isRecording && voiceState === 'idle') safeStartRecognition();
+        }, 500);
+      }
+    }
+  };
+
+  const stopRecognition = () => {
+    if (!recognition) return;
+    try { recognition.stop(); } catch (_) {}
+  };
 
   try {
     const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
@@ -302,67 +195,108 @@ export const connectLiveSession = async (
 
   setTimeout(() => callbacks.onOpen(), 100);
 
-  if ('webkitSpeechRecognition' in window) {
-    recognition = new (window as any).webkitSpeechRecognition();
-    recognition.continuous = false;
-    recognition.interimResults = false;
+  const hasWebSpeech = 'webkitSpeechRecognition' in window || 'SpeechRecognition' in window;
+  const SpeechRecognitionCtor = (window as any).webkitSpeechRecognition || (window as any).SpeechRecognition;
+
+  if (hasWebSpeech && SpeechRecognitionCtor) {
+    recognition = new SpeechRecognitionCtor();
+    recognition.continuous = true;    // Keep listening across multiple utterances
+    recognition.interimResults = false; // Only final results to avoid partial triggers
     recognition.lang = language === 'en' ? 'en-US' : 'es-CO';
+    recognition.maxAlternatives = 1;
 
     recognition.onstart = () => {
-      callbacks.onStatusChange?.('listening');
+      setState('listening');
+      // Dummy audio data for visualizer
       const interval = setInterval(() => {
-        if (!isRecording) clearInterval(interval);
+        if (!isRecording || voiceState !== 'listening') clearInterval(interval);
         if (callbacks.onAudioData) callbacks.onAudioData(new Uint8Array(64).fill(128));
       }, 100);
     };
 
     recognition.onresult = async (event: any) => {
-      const transcript = event.results[0][0].transcript;
+      // Only process the latest final result
+      const lastResult = event.results[event.results.length - 1];
+      if (!lastResult || !lastResult.isFinal) return;
+
+      const transcript = lastResult[0].transcript.trim();
+      if (!transcript) return;
+
+      // Stop listening while processing + speaking (prevents echo capture)
+      stopRecognition();
+      setState('processing');
+
       callbacks.onMessage(transcript, null, false);
       messageHistory.push({ role: 'user', parts: [{ text: transcript }] });
 
-      callbacks.onStatusChange?.('processing');
       try {
-        const stream = sendMessageToGemini(transcript, messageHistory, false, language, undefined, customGreeting, brandId, true);
+        const aiStream = sendMessageToGemini(transcript, messageHistory, false, language, undefined, customGreeting, brandId, true);
         let fullResponse = '';
-        for await (const chunk of stream) {
+        for await (const chunk of aiStream) {
           const chunkText = typeof chunk === 'string' ? chunk : ((chunk as any)?.text || '');
           fullResponse += chunkText;
         }
 
+        if (!fullResponse) fullResponse = language === 'en' ? 'I apologize, could you repeat that?' : 'Disculpa, ¿podrías repetirlo?';
+
         callbacks.onMessage(fullResponse, null, false);
         messageHistory.push({ role: 'model', parts: [{ text: fullResponse }] });
 
-        const model = language === 'en' ? 'aura-asteria-en' : 'aura-2-celeste-es';
-        
-        isBotSpeaking = true;
-        callbacks.onStatusChange?.('speaking');
-        try { recognition.stop(); } catch (_) {}
+        // TTS phase — recognition is already stopped, no echo risk
+        setState('speaking');
+        const ttsModel = language === 'en' ? 'aura-asteria-en' : 'aura-2-celeste-es';
 
-        speakTextWithDeepgram(fullResponse, model, language).then(() => {
-          isBotSpeaking = false;
-          callbacks.onStatusChange?.('listening');
-          if (isRecording && recognition) {
-            try { recognition.start(); } catch (_) {}
-          }
-        });
+        await speakTextWithDeepgram(fullResponse, ttsModel, language);
+
+        // TTS done — resume listening
+        if (isRecording && voiceState !== 'stopped') {
+          setState('idle');
+          safeStartRecognition();
+        }
       } catch (err: any) {
+        console.error('Voice processing error:', err);
         callbacks.onError(err);
+        // Self-heal: go back to listening
+        if (isRecording && voiceState !== 'stopped') {
+          setState('idle');
+          setTimeout(() => safeStartRecognition(), 1000);
+        }
       }
     };
 
-    recognition.onerror = () => {
-      if (isRecording && !isBotSpeaking) {
-        setTimeout(() => { if (isRecording && recognition && !isBotSpeaking) recognition.start(); }, 1000);
+    recognition.onerror = (event: any) => {
+      const errType = event?.error || '';
+      console.warn('Speech recognition error:', errType);
+
+      if (errType === 'not-allowed' || errType === 'service-not-allowed') {
+        callbacks.onError(new Error('Microphone permission denied.'));
+        return; // Don't retry — permission issue
+      }
+
+      // 'no-speech' is normal during silence — don't treat as error, just restart
+      if (errType === 'no-speech' || errType === 'aborted') {
+        if (isRecording && voiceState === 'listening') {
+          setTimeout(() => safeStartRecognition(), 300);
+        }
+        return;
+      }
+
+      // Network or unknown error — retry with backoff
+      if (isRecording && voiceState !== 'stopped' && voiceState !== 'speaking') {
+        setState('idle');
+        setTimeout(() => safeStartRecognition(), 1000);
       }
     };
 
     recognition.onend = () => {
-      if (isRecording && !isBotSpeaking) {
-        try { recognition.start(); } catch (_) {}
+      // Recognition ended (timeout or manual) — auto-restart if still recording
+      if (isRecording && voiceState !== 'stopped' && voiceState !== 'speaking' && voiceState !== 'processing') {
+        setState('idle');
+        setTimeout(() => safeStartRecognition(), 200);
       }
     };
 
+    // Initial greeting
     const greeting = customGreeting || (language === 'en'
       ? 'Hello! How can I help you today?'
       : brandId === 'unitec' ? '¡Hola! Bienvenido a UNITEC USA DESIGN.' : '¡Hola! Bienvenido a Building Innovation.');
@@ -370,29 +304,34 @@ export const connectLiveSession = async (
     setTimeout(() => {
       callbacks.onMessage(greeting, null, false);
       messageHistory.push({ role: 'model', parts: [{ text: greeting }] });
-      const model = language === 'en' ? 'aura-asteria-en' : 'aura-2-celeste-es';
-      
-      isBotSpeaking = true;
-      callbacks.onStatusChange?.('speaking');
 
-      speakTextWithDeepgram(greeting, model, language).then(() => {
-        isBotSpeaking = false;
-        callbacks.onStatusChange?.('listening');
-        if (isRecording && recognition) {
-          try { recognition.start(); } catch (_) {}
+      setState('speaking');
+      const ttsModel = language === 'en' ? 'aura-asteria-en' : 'aura-2-celeste-es';
+
+      speakTextWithDeepgram(greeting, ttsModel, language).then(() => {
+        if (isRecording && voiceState !== 'stopped') {
+          setState('idle');
+          safeStartRecognition();
+        }
+      }).catch(() => {
+        // TTS failed — still start listening
+        if (isRecording && voiceState !== 'stopped') {
+          setState('idle');
+          safeStartRecognition();
         }
       });
-    }, 1000);
+    }, 800);
 
   } else {
-    setTimeout(() => callbacks.onError(new Error('Web Speech API not supported in this browser.')), 100);
+    setTimeout(() => callbacks.onError(new Error('Web Speech API not supported. Please use Chrome or Edge.')), 100);
   }
 
   return {
     disconnect: async () => {
       isRecording = false;
-      if (recognition) recognition.stop();
-      if (synth) synth.cancel();
+      setState('stopped');
+      stopRecognition();
+      try { window.speechSynthesis?.cancel(); } catch (_) {}
       callbacks.onClose();
     },
     getAudioBlob: () => new Blob(),

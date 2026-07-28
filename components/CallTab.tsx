@@ -169,22 +169,22 @@ const CallTab: React.FC<CallTabProps> = ({ emergencyMode, language, voiceName, c
   useEffect(() => {
     if (status !== 'connected' && status !== 'listening' && status !== 'speaking' && status !== 'processing') return;
 
-    // 1. Hard maximum limit of 5 minutes to prevent infinite calls
+    // 1. Hard maximum limit of 10 minutes to prevent infinite calls
     const maxCallTimer = setTimeout(() => {
-      console.log('Call reached 5 minutes limit. Ending call.');
+      console.log('Call reached 10 minutes limit. Ending call.');
       handleEndCall();
-    }, 5 * 60 * 1000);
+    }, 10 * 60 * 1000);
 
-    // 2. Silence/Inactivity detection: close call if user does not speak/answer for 30 seconds
+    // 2. Silence/Inactivity detection: close call if user does not speak/answer for 120 seconds
     const lastMsg = transcript[transcript.length - 1];
     const isWaitingForUser = !lastMsg || lastMsg.role === 'model';
     let silenceTimer: NodeJS.Timeout | null = null;
 
     if (isWaitingForUser) {
       silenceTimer = setTimeout(() => {
-        console.log('No user response for 30 seconds. Auto-hanging up.');
+        console.log('No user response for 120 seconds. Auto-hanging up.');
         handleEndCall();
-      }, 30 * 1000); // 30 seconds silence timeout
+      }, 120 * 1000); // 120 seconds — generous window for customer to think/speak
     }
 
     return () => {

@@ -6,7 +6,7 @@ import { db } from '../firebase';
 import { doc, getDoc } from 'firebase/firestore';
 import { Message, QuickAction, Language } from '../types';
 import { saveChatSession } from '../services/firestoreService';
-import { sendMessageToGemini, resetApiKeyCache } from '../services/geminiService';
+import { sendMessageToGemini } from '../services/geminiService';
 import { createConversation, addMessage, requestIntervention, extractCustomerData, updateSessionStatus, subscribeToConversation, subscribeToMessages } from '../services/conversationService';
 import { notifyStaffIntervention } from '../services/notificationService';
 import { sendTwilioWhatsApp } from '../services/twilioWhatsappService';
@@ -543,6 +543,12 @@ const ChatTab: React.FC<ChatTabProps> = ({ quickActions, initialMessage, emergen
 
     setIsLoading(true);
 
+    // ponytail: watchdog — auto-reset isLoading after 30s if stuck (prevents permanent lock)
+    const loadingWatchdog = setTimeout(() => {
+      setIsLoading(false);
+      console.warn('isLoading watchdog: force-reset after 30s timeout');
+    }, 30000);
+
     try {
       checkAndTriggerWhatsAppAlert(text);
       // Prepare history for Gemini
@@ -628,20 +634,13 @@ const ChatTab: React.FC<ChatTabProps> = ({ quickActions, initialMessage, emergen
       if (isConfigError) {
         setError(language === 'en' ? "Configuration Error: API Key is missing." : "Error de Configuración: Falta la API Key.");
       } else {
-        const isLocalKeyUsed = typeof window !== 'undefined' && !!window.localStorage.getItem('unitec_gemini_api_key');
         // Log detailed error for diagnostics (never shown to customer)
-        console.error('Gemini API error detail:', error.message || String(error));
-        resetApiKeyCache(); // Force fresh key fetch on next message (self-healing)
+        console.error('Chat error detail:', error.message || String(error));
         
         // Friendly message for customers - no technical details
         let errorText = language === 'en'
           ? 'Oops! I had a temporary hiccup. Please send your message again, I am ready to help!'
           : 'Ups, tuve un problema momentaneo. Por favor, envia tu mensaje de nuevo, estoy aqui para ayudarte!';
-        
-        if (isLocalKeyUsed) {
-          // Only admins see the API key hint, hidden in console
-          console.warn('Admin note: A local API key override is active in this browser. If errors persist, check Admin Settings.');
-        }
 
         // Show inline warning in chat history, but do not set global error to keep the input enabled for retry
         setMessages(prev => [...prev, {
@@ -654,6 +653,7 @@ const ChatTab: React.FC<ChatTabProps> = ({ quickActions, initialMessage, emergen
       // Remove any empty pending bot messages if they exist
       setMessages(prev => prev.filter(m => m.text !== ''));
     } finally {
+      clearTimeout(loadingWatchdog);
       setIsLoading(false);
     }
   };
