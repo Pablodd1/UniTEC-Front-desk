@@ -73,16 +73,18 @@ const ChatTab: React.FC<ChatTabProps> = ({ quickActions, initialMessage, emergen
     ];
   });
 
-  // Save messages to localStorage for refresh resiliency
+  // Save messages to localStorage for refresh resiliency (debounced to avoid excessive writes)
   useEffect(() => {
-    if (typeof window !== 'undefined') {
+    if (typeof window === 'undefined') return;
+    const timer = setTimeout(() => {
       try {
         const historyKey = `unitec_chat_history_${brandId || 'unitec'}`;
         localStorage.setItem(historyKey, JSON.stringify(messages));
       } catch (e) {
         console.error("Failed to save chat history to localStorage", e);
       }
-    }
+    }, 500);
+    return () => clearTimeout(timer);
   }, [messages, brandId]);
   const [inputText, setInputText] = useState('');
 
@@ -290,6 +292,7 @@ const ChatTab: React.FC<ChatTabProps> = ({ quickActions, initialMessage, emergen
   }, [showEmailConfirmation]);
 
     // ===== single-stage idle timer (5-minute abandon & save) =====
+  // Resets when: new message arrives, OR user is actively typing
   useEffect(() => {
     if (sessionStatus !== 'active' || !conversationId || messages.length <= 1) return;
 
@@ -344,7 +347,7 @@ const ChatTab: React.FC<ChatTabProps> = ({ quickActions, initialMessage, emergen
       if (warningTimer) clearTimeout(warningTimer);
       if (closeTimer) clearTimeout(closeTimer);
     };
-  }, [messages, sessionStatus, conversationId, language]);
+  }, [messages, sessionStatus, conversationId, language, inputText]);
 
   // Robust Auto-Scroll Implementation
   const scrollToBottom = (behavior: ScrollBehavior = 'smooth') => {

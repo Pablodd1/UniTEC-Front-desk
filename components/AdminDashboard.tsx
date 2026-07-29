@@ -82,9 +82,9 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({
   // Escala CRM State
   const [escalaConfig, setEscalaConfig] = useState<EscalaConfig>({ apiKey: '', accountId: '', isActive: false });
   const [twilioConfig, setTwilioConfig] = useState({ accountSid: '', authToken: '', phoneNumber: '', isActive: false });
-  const [sentDmApiKey, setSentDmApiKey] = useState('f313aa2c-9620-4d96-a5b3-4b2504353b1b');
+  const [sentDmApiKey, setSentDmApiKey] = useState('');
   const [isSentDmActive, setIsSentDmActive] = useState(true);
-  const [deepgramApiKey, setDeepgramApiKey] = useState('b7a3b32ae544ca0840276c20767fcf177ff3deec');
+  const [deepgramApiKey, setDeepgramApiKey] = useState('');
   const [isDeepgramActive, setIsDeepgramActive] = useState(true);
   const [isTestingEscala, setIsTestingEscala] = useState(false);
   // Telegram Analytics report state
@@ -1679,7 +1679,7 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({
                                         }
                                       }}
                                       className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-sm focus:ring-2 focus:ring-emerald-500 outline-none font-mono text-emerald-900"
-                                      placeholder="f313aa2c-9620-4d96-a5b3-4b2504353b1b"
+                                      placeholder="Enter Sent.dm API key"
                                   />
                                   <p className="text-[10px] text-emerald-600 font-semibold italic">
                                     ✓ Active & Verified. Real-time WhatsApp & SMS notifications dispatch directly to +573142332147.

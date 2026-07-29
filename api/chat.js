@@ -62,7 +62,8 @@ export default async function handler(req, res) {
   }
 
   try {
-    const { message, history, instructions } = req.body;
+    const { message, history, instructions, brandId = 'unitec' } = req.body;
+    const origin = req.headers.origin || 'https://chatbuildinginnovation.us';
     if (!message) {
       return res.status(400).json({ error: 'Missing message in request body' });
     }
@@ -173,7 +174,20 @@ export default async function handler(req, res) {
           const payload = {
             systemInstruction: instructions ? { parts: [{ text: instructions }] } : undefined,
             contents,
-            generationConfig: { temperature: 0.7 }
+            generationConfig: { temperature: 0.7 },
+            tools: [{ functionDeclarations: [
+              {
+                name: "search_catalog",
+                description: "Search the product catalog for pricing, stock, or specific product details.",
+                parameters: {
+                  type: "OBJECT",
+                  properties: {
+                    query: { type: "STRING", description: "Product name, reference code, or category to search for." }
+                  },
+                  required: ["query"]
+                }
+              }
+            ]}]
           };
 
           // ponytail: ordered by preference — 3.6 is latest stable, then fallbacks
@@ -195,7 +209,58 @@ export default async function handler(req, res) {
               }
 
               const data = await apiRes.json();
-              responseText = data.candidates?.[0]?.content?.parts?.[0]?.text || '';
+              const candidate = data.candidates?.[0];
+              const part = candidate?.content?.parts?.[0];
+              
+              // Handle function call (search_catalog)
+              if (part?.functionCall?.name === 'search_catalog') {
+                const query = part.functionCall.args?.query || '';
+                try {
+                  const productsRes = await fetch(`${origin}/products.json`);
+                  const products = await productsRes.json();
+                  const lowerQ = query.toLowerCase();
+                  const results = products.filter(p => 
+                    p.name.toLowerCase().includes(lowerQ) || 
+                    p.id.toLowerCase().includes(lowerQ) || 
+                    p.category.toLowerCase().includes(lowerQ)
+                  ).slice(0, 10).map(p => ({
+                    id: p.id,
+                    name: p.name,
+                    price: brandId === 'unitec' ? p.price_cop : p.price_usd,
+                    stock_status: p.stock_status,
+                    description: p.description
+                  }));
+                  
+                  // Send function response back to Gemini for final answer
+                  const followUpContents = [
+                    ...contents,
+                    { role: 'model', parts: [part] },
+                    { role: 'user', parts: [{ functionResponse: { name: 'search_catalog', response: { result: results } } }] }
+                  ];
+                  
+                  const followUpRes = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${modelName}:generateContent?key=${apiKey}`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                      systemInstruction: instructions ? { parts: [{ text: instructions }] } : undefined,
+                      contents: followUpContents,
+                      generationConfig: { temperature: 0.7 }
+                    }),
+                    signal: AbortSignal.timeout(12000)
+                  });
+                  
+                  if (followUpRes.ok) {
+                    const followUpData = await followUpRes.json();
+                    responseText = followUpData.candidates?.[0]?.content?.parts?.[0]?.text || '';
+                    if (responseText) break;
+                  }
+                } catch (toolErr) {
+                  console.warn('Tool execution error:', toolErr);
+                  // Fall through to text response
+                }
+              }
+              
+              responseText = part?.text || '';
               if (responseText) break;
             } catch (mErr) {
               console.warn(`Gemini model ${modelName} error:`, mErr.message);

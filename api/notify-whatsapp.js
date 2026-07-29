@@ -21,7 +21,7 @@ export default async function handler(req, res) {
       return res.status(400).json({ error: 'Missing required parameters: to and text' });
     }
 
-    const apiKey = (process.env.SENT_DM_API_KEY || 'f313aa2c-9620-4d96-a5b3-4b2504353b1b').trim();
+    const apiKey = (process.env.SENT_DM_API_KEY || '').trim();
 
     let recipientList = Array.isArray(to) ? to : [to];
     recipientList = recipientList.map(phone => {

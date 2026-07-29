@@ -259,18 +259,14 @@ export const addMessage = async (
     saveLocalSessions(local);
   }
 
-  try {
-    await setDoc(
-      doc(db, COLLECTIONS.sessions, sessionId, COLLECTIONS.messages, messageId),
-      fullMessage
-    );
-  } catch (e) {
-    console.warn('Failed to write message to Firestore:', e);
-  }
+  // Firestore writes are fire-and-forget — don't block the chat UI
+  setDoc(
+    doc(db, COLLECTIONS.sessions, sessionId, COLLECTIONS.messages, messageId),
+    fullMessage
+  ).catch(e => console.warn('Failed to write message to Firestore:', e));
 
-  try {
-    const sessionRef = doc(db, COLLECTIONS.sessions, sessionId);
-    const sessionSnap = await getDoc(sessionRef);
+  const sessionRef = doc(db, COLLECTIONS.sessions, sessionId);
+  getDoc(sessionRef).then(sessionSnap => {
     const updatePayload: any = {
       lastUpdated: now,
       lastMessage: message.text.substring(0, 200),
@@ -299,10 +295,8 @@ export const addMessage = async (
       }
     }
 
-    await updateDoc(sessionRef, updatePayload);
-  } catch (e) {
-    console.warn('Failed to update session info in Firestore:', e);
-  }
+    updateDoc(sessionRef, updatePayload).catch(e => console.warn('Failed to update session info in Firestore:', e));
+  }).catch(e => console.warn('Failed to read session for update:', e));
 };
 
 // Update session status

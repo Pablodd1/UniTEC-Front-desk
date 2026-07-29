@@ -46,7 +46,21 @@ export async function getApiKey(): Promise<string> {
 
 /** Call this to force re-fetch on next message (e.g. after admin saves a new key). */
 export const resetApiKeyCache = (): void => { cachedApiKey = ''; };
-export const resetChatSession = () => {};
+export const resetChatSession = () => {
+  // Clear chat history from localStorage when brand/language changes
+  if (typeof window !== 'undefined') {
+    try {
+      const keys = Object.keys(localStorage);
+      keys.forEach(key => {
+        if (key.startsWith('unitec_chat_history_')) {
+          localStorage.removeItem(key);
+        }
+      });
+    } catch (e) {
+      console.warn('Failed to reset chat session:', e);
+    }
+  }
+};
 
 import { speakTextWithDeepgram } from './deepgramService';
 
@@ -105,7 +119,7 @@ export async function* sendMessageToGemini(
       const proxyRes = await fetch('/api/chat', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ message, history, instructions }),
+        body: JSON.stringify({ message, history, instructions, brandId }),
         signal: AbortSignal.timeout(20000) // 20s — allows for cold start + AI latency
       });
 
@@ -228,6 +242,11 @@ export const connectLiveSession = async (
 
       callbacks.onMessage(transcript, null, false);
       messageHistory.push({ role: 'user', parts: [{ text: transcript }] });
+      
+      // ponytail: keep only last 4 turns to prevent context bloat in voice mode
+      if (messageHistory.length > 8) {
+        messageHistory.splice(0, messageHistory.length - 8);
+      }
 
       try {
         const aiStream = sendMessageToGemini(transcript, messageHistory, false, language, undefined, customGreeting, brandId, true);

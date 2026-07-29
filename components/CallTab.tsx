@@ -58,17 +58,21 @@ const CallTab: React.FC<CallTabProps> = ({ emergencyMode, language, voiceName, c
     }
   }, [showEmailConfirmation]);
 
-  // ===== NEW: Save call transcript to conversation tracking =====
+  // ===== Save call transcript to conversation tracking (batched every 5s) =====
   useEffect(() => {
     if (!conversationId || transcript.length === 0) return;
     
-    const lastMsg = transcript[transcript.length - 1];
-    if (lastMsg.text) {
-      addMessage(conversationId, {
-        role: lastMsg.role === 'user' ? 'user' : 'model',
-        text: lastMsg.text,
-      }).catch((e: any) => console.warn('Failed to save call message:', e));
-    }
+    const timer = setTimeout(() => {
+      const lastMsg = transcript[transcript.length - 1];
+      if (lastMsg.text) {
+        addMessage(conversationId, {
+          role: lastMsg.role === 'user' ? 'user' : 'model',
+          text: lastMsg.text,
+        }).catch((e: any) => console.warn('Failed to save call message:', e));
+      }
+    }, 5000); // Batch: save every 5s instead of every chunk
+    
+    return () => clearTimeout(timer);
   }, [transcript, conversationId]);
 
   const stopAll = async () => {

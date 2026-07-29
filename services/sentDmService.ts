@@ -10,7 +10,7 @@ export interface SentDmResponse {
   details?: any;
 }
 
-const DEFAULT_SENT_API_KEY = 'f313aa2c-9620-4d96-a5b3-4b2504353b1b';
+const DEFAULT_SENT_API_KEY = '';
 
 export const getSentDmApiKey = (): string => {
   if (typeof window !== 'undefined') {
