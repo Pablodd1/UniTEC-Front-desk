@@ -110,42 +110,78 @@ async function sendEmail(subject, html) {
   }
 }
 
-// --- Channel: WhatsApp + SMS (Sent.dm) — tries WhatsApp first, falls back to SMS ---
+// --- Channel: WhatsApp + SMS via Twilio (server-side, free-form text) ---
 async function sendWhatsAppAndSMS(phone, text) {
-  const apiKey = (process.env.SENT_DM_API_KEY || '').trim();
-  if (!apiKey) return { success: false, error: 'SENT_DM_API_KEY not set' };
+  const twilioSid = process.env.TWILIO_ACCOUNT_SID || process.env.VITE_TWILIO_ACCOUNT_SID || '';
+  const twilioToken = process.env.TWILIO_AUTH_TOKEN || process.env.VITE_TWILIO_AUTH_TOKEN || '';
+  const twilioFrom = process.env.TWILIO_PHONE_NUMBER || process.env.VITE_TWILIO_PHONE_NUMBER || '';
+  const sentDmKey = (process.env.SENT_DM_API_KEY || '').trim();
 
   let p = phone.trim();
   if (!p.startsWith('+')) p = '+' + p.replace(/\D/g, '');
 
-  // Try WhatsApp first
-  try {
-    const r = await fetch('https://api.sent.dm/v3/messages', {
-      method: 'POST',
-      headers: { 'x-api-key': apiKey, 'Content-Type': 'application/json' },
-      body: JSON.stringify({ to: [p], text, channel: ['whatsapp'] }),
-      signal: AbortSignal.timeout(8000),
-    });
-    const data = await r.json();
-    if (r.ok || r.status === 202) return { success: true, channel: 'whatsapp', data };
-    console.warn('Sent.dm WhatsApp failed, trying SMS:', JSON.stringify(data?.error));
-  } catch (e) {
-    console.warn('Sent.dm WhatsApp error, trying SMS:', e.message);
+  // 1. Try Twilio WhatsApp (supports free-form text, no template needed)
+  if (twilioSid && twilioToken && twilioFrom) {
+    let fromNum = twilioFrom.trim();
+    if (!fromNum.startsWith('+')) fromNum = '+' + fromNum;
+    try {
+      const formData = new URLSearchParams();
+      formData.append('To', `whatsapp:${p}`);
+      formData.append('From', fromNum.startsWith('whatsapp:') ? fromNum : `whatsapp:${fromNum}`);
+      formData.append('Body', text);
+      const r = await fetch(`https://api.twilio.com/2010-04-01/Accounts/${twilioSid}/Messages.json`, {
+        method: 'POST',
+        headers: {
+          Authorization: 'Basic ' + Buffer.from(`${twilioSid}:${twilioToken}`).toString('base64'),
+          'Content-Type': 'application/x-www-form-urlencoded',
+        },
+        body: formData,
+        signal: AbortSignal.timeout(8000),
+      });
+      if (r.ok) return { success: true, channel: 'twilio_whatsapp', data: await r.json() };
+      console.warn('Twilio WhatsApp failed, trying Twilio SMS');
+    } catch (e) {
+      console.warn('Twilio WhatsApp error:', e.message);
+    }
+
+    // 2. Try Twilio SMS
+    try {
+      const formData = new URLSearchParams();
+      formData.append('To', p);
+      formData.append('From', fromNum);
+      formData.append('Body', text);
+      const r = await fetch(`https://api.twilio.com/2010-04-01/Accounts/${twilioSid}/Messages.json`, {
+        method: 'POST',
+        headers: {
+          Authorization: 'Basic ' + Buffer.from(`${twilioSid}:${twilioToken}`).toString('base64'),
+          'Content-Type': 'application/x-www-form-urlencoded',
+        },
+        body: formData,
+        signal: AbortSignal.timeout(8000),
+      });
+      if (r.ok) return { success: true, channel: 'twilio_sms', data: await r.json() };
+    } catch (e) {
+      console.warn('Twilio SMS error:', e.message);
+    }
   }
 
-  // Fallback: SMS only (no template restriction)
-  try {
-    const r = await fetch('https://api.sent.dm/v3/messages', {
-      method: 'POST',
-      headers: { 'x-api-key': apiKey, 'Content-Type': 'application/json' },
-      body: JSON.stringify({ to: [p], text, channel: ['sms'] }),
-      signal: AbortSignal.timeout(8000),
-    });
-    const data = await r.json();
-    return { success: r.ok || r.status === 202, channel: 'sms', data };
-  } catch (e) {
-    return { success: false, error: e.message };
+  // 3. Try Sent.dm (free-form text only works if contact has messaged before)
+  if (sentDmKey) {
+    try {
+      const r = await fetch('https://api.sent.dm/v3/messages', {
+        method: 'POST',
+        headers: { 'x-api-key': sentDmKey, 'Content-Type': 'application/json' },
+        body: JSON.stringify({ to: [p], text, channel: ['sms'] }),
+        signal: AbortSignal.timeout(8000),
+      });
+      const data = await r.json();
+      if (r.ok || r.status === 202) return { success: true, channel: 'sent_dm', data };
+    } catch (e) {
+      console.warn('Sent.dm error:', e.message);
+    }
   }
+
+  return { success: false, error: 'All WhatsApp/SMS providers failed (Twilio not configured, Sent.dm requires prior contact)' };
 }
 
 // --- Templates ---
