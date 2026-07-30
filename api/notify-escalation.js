@@ -183,14 +183,8 @@ function buildEmailHtml(d) {
 }
 
 function buildWhatsAppText(d) {
-  return `🔔 *ESCALATION ALERT*\n\n` +
-    `*Type:* ${d.type.toUpperCase()}\n` +
-    `*Customer:* ${d.customerName || 'Unknown'}\n` +
-    `*Phone:* ${d.customerPhone || 'Not provided'}\n` +
-    `*Brand:* ${d.brand || 'Unknown'}\n\n` +
-    `*Message:*\n${d.message ? d.message.substring(0, 300) : 'N/A'}\n\n` +
-    `*Session:* ${d.sessionId || 'N/A'}\n` +
-    `*Time:* ${new Date(d.timestamp).toLocaleString()}`;
+  const prefix = d.type === 'quote' ? '💰 Cotizacion' : d.type === 'staff' ? '🧑‍💼 Asesor' : '🔔 Alerta';
+  return `${prefix} - Cliente: ${d.customerName || 'N/A'} - Msg: ${d.message ? d.message.substring(0, 200) : 'N/A'} - Tel: ${d.customerPhone || 'N/A'} - Sesion: ${d.sessionId || 'N/A'}`;
 }
 
 // --- Main handler ---
