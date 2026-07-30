@@ -1,6 +1,45 @@
 import { db } from '../firebase';
 import { collection, addDoc } from 'firebase/firestore';
 
+// --- Unified escalation: fires Telegram + Email + WhatsApp + SMS in one server call ---
+export interface EscalationData {
+  type: 'quote' | 'staff' | 'custom';
+  priority?: 'low' | 'medium' | 'high' | 'urgent';
+  customerName?: string;
+  customerPhone?: string;
+  customerEmail?: string;
+  message: string;
+  brand?: string;
+  sessionId?: string;
+}
+
+export const triggerEscalation = async (data: EscalationData): Promise<{ success: boolean; results?: any }> => {
+  try {
+    // Log to Firestore for audit trail
+    await addDoc(collection(db, 'notifications'), {
+      ...data,
+      timestamp: new Date().toISOString(),
+      source: 'unified_escalation',
+      delivered: { telegram: false, email: false, whatsapp: false },
+    }).catch(() => {});
+
+    const res = await fetch('/api/notify-escalation', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        ...data,
+        priority: data.priority || 'high',
+        dashboardUrl: `${window.location.origin}/admin`,
+      }),
+    });
+    const json = await res.json();
+    return { success: json.success !== false, results: json.results };
+  } catch (e) {
+    console.error('Escalation failed:', e);
+    return { success: false };
+  }
+};
+
 export interface NotificationPayload {
   type: 'intervention_request' | 'intervention_accepted' | 'new_message' | 'call_ended' | 'system_alert';
   sessionId: string;

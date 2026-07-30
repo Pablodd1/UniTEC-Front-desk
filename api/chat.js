@@ -244,7 +244,32 @@ export default async function handler(req, res) {
         }
 
         if (responseText) {
-          return res.status(200).json({ text: responseText, success: true });
+          // ponytail: server-side escalation intent detection — catches quote/staff requests
+          // even if client-side keyword matching misses them
+          const escalationKeywords = [
+            'cotiz', 'presupuesto', 'quote', 'budget',
+            'precio', 'costo', 'valor', 'price', 'cost',
+            'asesor', 'humano', 'staff', 'human', 'agent',
+            'llamar', 'call me', 'telefono', 'contacto', 'atencion', 'atención',
+            'whatsapp', 'speak to someone', 'talk to someone'
+          ];
+          const lowerMsg = (message || '').toLowerCase();
+          const isEscalation = escalationKeywords.some(kw => lowerMsg.includes(kw));
+          const isQuote = ['cotiz', 'presupuesto', 'quote', 'budget', 'precio', 'costo', 'valor', 'price', 'cost'].some(kw => lowerMsg.includes(kw));
+          const isStaff = ['asesor', 'humano', 'staff', 'human', 'agent', 'llamar', 'call me', 'contacto', 'atencion', 'atención', 'speak to someone', 'talk to someone'].some(kw => lowerMsg.includes(kw));
+
+          return res.status(200).json({
+            text: responseText,
+            success: true,
+            ...(isEscalation && {
+              escalation: {
+                type: isQuote ? 'quote' : isStaff ? 'staff' : 'custom',
+                priority: 'high',
+                trigger: 'server_detected',
+                originalMessage: message,
+              }
+            })
+          });
         }
       } catch (keyErr) {
         console.warn(`Error trying API key:`, keyErr);

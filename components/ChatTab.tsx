@@ -8,7 +8,7 @@ import { Message, QuickAction, Language } from '../types';
 import { saveChatSession } from '../services/firestoreService';
 import { sendMessageToGemini } from '../services/geminiService';
 import { createConversation, addMessage, requestIntervention, extractCustomerData, updateSessionStatus, subscribeToConversation, subscribeToMessages } from '../services/conversationService';
-import { notifyStaffIntervention } from '../services/notificationService';
+import { notifyStaffIntervention, triggerEscalation } from '../services/notificationService';
 import { sendTwilioWhatsApp } from '../services/twilioWhatsappService';
 import { Send, User, Box, DollarSign, Hammer, BookOpen, CheckCircle2, Truck, FileText, RefreshCcw, Percent, Headphones, CreditCard, Lock, MessageSquare } from 'lucide-react';
 import { GenerateContentResponse } from '@google/genai';
@@ -365,39 +365,64 @@ const ChatTab: React.FC<ChatTabProps> = ({ quickActions, initialMessage, emergen
 
   const checkAndTriggerWhatsAppAlert = async (textText: string) => {
     const lowercaseText = textText.toLowerCase();
-    const alertKeywords = [
-      'price', 'precio', 'costo', 'valor', 'valores',
-      'cotiz', 'presupuesto',
-      'urgent', 'urgencia', 'emergencia',
-      'staff', 'asesor', 'humano', 'contacto', 'atencion', 'atención'
-    ];
-    
-    const hasKeyword = alertKeywords.some(keyword => lowercaseText.includes(keyword));
-    if (hasKeyword) {
-      console.log('Alert keyword detected in user message. Triggering Twilio WhatsApp alert...');
-      const name = extractedPii?.name || 'Cliente';
-      const phone = extractedPii?.phone || 'No proporcionado';
-      const email = extractedPii?.email || 'No proporcionado';
-      
-      const adminMessage = `🔔 *Alerta de Chatbot*\n\n` +
-        `El cliente *${name}* ha enviado un mensaje de interés:\n` +
-        `"${textText}"\n\n` +
-        `*Datos de Contacto:*\n` +
-        `- Teléfono: ${phone}\n` +
-        `- Email: ${email}\n` +
-        `- Conversación ID: ${conversationId || 'N/A'}`;
-        
-      try {
-        const res = await sendTwilioWhatsApp(adminMessage);
-        if (res.success) {
-          console.log('Twilio WhatsApp alert sent successfully to +573142332147. Message SID:', res.messageSid);
-        } else {
-          console.warn('Failed to send Twilio WhatsApp alert:', res.error);
-        }
-      } catch (e) {
-        console.error('Error sending Twilio WhatsApp alert:', e);
-      }
-    }
+    // ponytail: expanded keyword list — quote, budget, price, staff, contact
+    const quoteKeywords = ['price', 'precio', 'costo', 'valor', 'valores', 'cotiz', 'presupuesto', 'budget', 'quote', 'cuanto', 'how much'];
+    const staffKeywords = ['urgent', 'urgencia', 'emergencia', 'staff', 'asesor', 'humano', 'contacto', 'atencion', 'atención', 'agent', 'llamar', 'call me', 'speak to someone', 'talk to someone', 'whatsapp', 'telefono'];
+    const allKeywords = [...quoteKeywords, ...staffKeywords];
+
+    const hasKeyword = allKeywords.some(keyword => lowercaseText.includes(keyword));
+    if (!hasKeyword) return;
+
+    const isQuote = quoteKeywords.some(kw => lowercaseText.includes(kw));
+    const isStaff = staffKeywords.some(kw => lowercaseText.includes(kw));
+    const escalationType = isQuote ? 'quote' : 'staff';
+
+    console.log(`[Escalation] ${escalationType} intent detected. Firing Telegram + Email + WhatsApp + SMS...`);
+
+    // Fire unified escalation (all 4 channels server-side)
+    triggerEscalation({
+      type: escalationType as 'quote' | 'staff',
+      priority: 'high',
+      customerName: extractedPii?.name || 'Cliente',
+      customerPhone: extractedPii?.phone || '',
+      customerEmail: extractedPii?.email || '',
+      message: textText,
+      brand: currentBrand || 'unitec',
+      sessionId: conversationId || '',
+    }).catch(console.error);
+
+    // Also fire legacy Twilio WhatsApp for backward compat
+    const name = extractedPii?.name || 'Cliente';
+    const phone = extractedPii?.phone || 'No proporcionado';
+    const email = extractedPii?.email || 'No proporcionado';
+    const adminMessage = `🔔 *Alerta de Chatbot*\n\n` +
+      `El cliente *${name}* ha enviado un mensaje de interés:\n` +
+      `"${textText}"\n\n` +
+      `*Datos de Contacto:*\n` +
+      `- Teléfono: ${phone}\n` +
+      `- Email: ${email}\n` +
+      `- Conversación ID: ${conversationId || 'N/A'}`;
+    sendTwilioWhatsApp(adminMessage).catch(console.error);
+  };
+
+  // Show auto-reply to user after escalation — keeps them engaged while staff responds
+  const showEscalationAutoReply = (type: 'quote' | 'staff') => {
+    const isEn = language === 'en';
+    const waLink = 'https://wa.me/573142332147';
+    const replyText = isEn
+      ? type === 'quote'
+        ? `💰 I've forwarded your quote request to our sales team. An agent will respond shortly. For immediate attention, message us on WhatsApp: ${waLink}`
+        : `🧑‍💼 I've notified our staff. Someone will take over this conversation shortly. For urgent matters, WhatsApp: ${waLink}`
+      : type === 'quote'
+        ? `💰 He enviado tu solicitud de cotización a nuestro equipo de ventas. Un asesor te responderá en breve. Para atención inmediata, escríbenos por WhatsApp: ${waLink}`
+        : `🧑‍💼 He notificado a nuestro equipo. Alguien tomará esta conversación en breve. Para urgencias, WhatsApp: ${waLink}`;
+
+    setMessages(prev => [...prev, {
+      id: `escalation-${Date.now()}`,
+      role: 'model',
+      text: replyText,
+      timestamp: new Date().toISOString(),
+    }]);
   };
 
   const handleSendMessage = async (text: string) => {
@@ -553,7 +578,18 @@ const ChatTab: React.FC<ChatTabProps> = ({ quickActions, initialMessage, emergen
     }, 30000);
 
     try {
+      // Detect escalation type for auto-reply BEFORE firing alerts
+      const lowerText = text.toLowerCase();
+      const isQuoteIntent = ['price', 'precio', 'costo', 'valor', 'cotiz', 'presupuesto', 'budget', 'quote', 'cuanto', 'how much'].some(kw => lowerText.includes(kw));
+      const isStaffIntent = ['asesor', 'humano', 'staff', 'human', 'agent', 'llamar', 'call me', 'speak to someone', 'talk to someone', 'contacto', 'atencion', 'atención'].some(kw => lowerText.includes(kw));
+      const hasEscalationIntent = isQuoteIntent || isStaffIntent;
+
       checkAndTriggerWhatsAppAlert(text);
+
+      // Show auto-reply to user immediately (don't wait for AI response)
+      if (hasEscalationIntent) {
+        showEscalationAutoReply(isQuoteIntent ? 'quote' : 'staff');
+      }
       // Prepare history for Gemini
       const history = messages.slice(1).map(m => ({
         role: m.role as 'user' | 'model',
@@ -682,6 +718,17 @@ const ChatTab: React.FC<ChatTabProps> = ({ quickActions, initialMessage, emergen
     setIsRequestingIntervention(true);
     try {
       await requestIntervention(conversationId, interventionReason.trim(), 'high');
+      // Fire unified escalation (Telegram + Email + WhatsApp + SMS)
+      triggerEscalation({
+        type: 'staff',
+        priority: 'urgent',
+        customerName: extractedPii?.name || 'Cliente',
+        customerPhone: extractedPii?.phone || '',
+        customerEmail: extractedPii?.email || '',
+        message: interventionReason.trim(),
+        brand: currentBrand || 'unitec',
+        sessionId: conversationId,
+      }).catch(console.error);
       await notifyStaffIntervention(conversationId, interventionReason.trim(), 'high');
       
       // Add system message to chat
