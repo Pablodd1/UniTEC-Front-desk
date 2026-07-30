@@ -88,9 +88,9 @@ async function sendTelegram(message) {
 
 // --- Channel: Email (Resend) ---
 async function sendEmail(subject, html) {
-  const apiKey = process.env.RESEND_API_KEY;
+  const apiKey = process.env.RESEND_API_KEY || process.env.RESEND_KEY || process.env.VITE_RESEND_API_KEY || '';
   const adminEmail = process.env.ADMIN_EMAIL || 'lidermarketingonline@espaciosimportados.com.co';
-  if (!apiKey) return { success: false, error: 'RESEND_API_KEY not set' };
+  if (!apiKey) return { success: false, error: 'No Resend API key found in env' };
 
   try {
     const r = await fetch('https://api.resend.com/emails', {
@@ -110,7 +110,7 @@ async function sendEmail(subject, html) {
   }
 }
 
-// --- Channel: WhatsApp + SMS (Sent.dm) ---
+// --- Channel: WhatsApp + SMS (Sent.dm) — tries WhatsApp first, falls back to SMS ---
 async function sendWhatsAppAndSMS(phone, text) {
   const apiKey = (process.env.SENT_DM_API_KEY || '').trim();
   if (!apiKey) return { success: false, error: 'SENT_DM_API_KEY not set' };
@@ -118,15 +118,31 @@ async function sendWhatsAppAndSMS(phone, text) {
   let p = phone.trim();
   if (!p.startsWith('+')) p = '+' + p.replace(/\D/g, '');
 
+  // Try WhatsApp first
   try {
     const r = await fetch('https://api.sent.dm/v3/messages', {
       method: 'POST',
       headers: { 'x-api-key': apiKey, 'Content-Type': 'application/json' },
-      body: JSON.stringify({ to: [p], text, channel: ['whatsapp', 'sms'] }),
+      body: JSON.stringify({ to: [p], text, channel: ['whatsapp'] }),
       signal: AbortSignal.timeout(8000),
     });
     const data = await r.json();
-    return { success: r.ok, data };
+    if (r.ok || r.status === 202) return { success: true, channel: 'whatsapp', data };
+    console.warn('Sent.dm WhatsApp failed, trying SMS:', JSON.stringify(data?.error));
+  } catch (e) {
+    console.warn('Sent.dm WhatsApp error, trying SMS:', e.message);
+  }
+
+  // Fallback: SMS only (no template restriction)
+  try {
+    const r = await fetch('https://api.sent.dm/v3/messages', {
+      method: 'POST',
+      headers: { 'x-api-key': apiKey, 'Content-Type': 'application/json' },
+      body: JSON.stringify({ to: [p], text, channel: ['sms'] }),
+      signal: AbortSignal.timeout(8000),
+    });
+    const data = await r.json();
+    return { success: r.ok || r.status === 202, channel: 'sms', data };
   } catch (e) {
     return { success: false, error: e.message };
   }
