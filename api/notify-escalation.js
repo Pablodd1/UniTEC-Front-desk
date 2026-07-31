@@ -110,23 +110,110 @@ async function sendEmail(subject, html) {
   }
 }
 
+// --- Channel: Twilio SMS ---
+async function sendTwilioSMS(phones, text) {
+  const accountSid = process.env.TWILIO_ACCOUNT_SID || '';
+  const authToken = process.env.TWILIO_AUTH_TOKEN || '';
+  const twilioNumber = process.env.TWILIO_PHONE_NUMBER || '+18332164335';
+
+  if (!accountSid || !authToken || !twilioNumber) {
+    return { success: false, error: 'Twilio credentials or phone number missing' };
+  }
+
+  const phoneList = (Array.isArray(phones) ? phones : [phones])
+    .map(p => {
+      let clean = (p || '').trim();
+      if (!clean.startsWith('+')) clean = '+' + clean.replace(/\D/g, '');
+      return clean;
+    })
+    .filter(Boolean);
+
+  const results = [];
+  for (const phone of phoneList) {
+    try {
+      const formData = new URLSearchParams();
+      formData.append('To', phone);
+      formData.append('From', twilioNumber);
+      formData.append('Body', text);
+
+      const r = await fetch(`https://api.twilio.com/2010-04-01/Accounts/${accountSid}/Messages.json`, {
+        method: 'POST',
+        headers: {
+          'Authorization': 'Basic ' + Buffer.from(`${accountSid}:${authToken}`).toString('base64'),
+          'Content-Type': 'application/x-www-form-urlencoded',
+        },
+        body: formData,
+        signal: AbortSignal.timeout(8000),
+      });
+      const data = await r.json();
+      results.push({ phone, success: r.ok, sid: data.sid, error: data.message });
+    } catch (e) {
+      results.push({ phone, success: false, error: e.message });
+    }
+  }
+  return { success: results.some(r => r.success), details: results };
+}
+
+// --- Channel: WhatsApp + SMS via Twilio ---
+async function sendTwilioWhatsApp(phone, text) {
+  const accountSid = process.env.TWILIO_ACCOUNT_SID || '';
+  const authToken = process.env.TWILIO_AUTH_TOKEN || '';
+  const twilioNumber = process.env.TWILIO_PHONE_NUMBER || '';
+
+  if (!accountSid || !authToken || !twilioNumber) {
+    return { success: false, error: 'TWILIO_ACCOUNT_SID / TWILIO_AUTH_TOKEN / TWILIO_PHONE_NUMBER not set' };
+  }
+
+  let p = (phone || '').trim();
+  if (!p) return { success: false, error: 'No phone number provided' };
+  if (!p.startsWith('+')) p = '+' + p.replace(/\D/g, '');
+
+  try {
+    const formData = new URLSearchParams();
+    formData.append('To', `whatsapp:${p}`);
+    formData.append('From', `whatsapp:${twilioNumber}`);
+    formData.append('Body', text);
+
+    const r = await fetch(`https://api.twilio.com/2010-04-01/Accounts/${accountSid}/Messages.json`, {
+      method: 'POST',
+      headers: {
+        'Authorization': 'Basic ' + Buffer.from(`${accountSid}:${authToken}`).toString('base64'),
+        'Content-Type': 'application/x-www-form-urlencoded',
+      },
+      body: formData,
+      signal: AbortSignal.timeout(8000),
+    });
+    const data = await r.json();
+    return { success: r.ok, sid: data.sid, data };
+  } catch (e) {
+    return { success: false, error: e.message };
+  }
+}
+
 // --- Channel: WhatsApp + SMS via Sent.dm ---
-async function sendWhatsAppAndSMS(phone, text) {
+async function sendWhatsAppAndSMS(phones, text) {
   const apiKey = (process.env.SENT_DM_API_KEY || '').trim();
   if (!apiKey) return { success: false, error: 'SENT_DM_API_KEY not set' };
 
-  let p = phone.trim();
-  if (!p.startsWith('+')) p = '+' + p.replace(/\D/g, '');
+  const phoneList = (Array.isArray(phones) ? phones : [phones])
+    .map(p => {
+      let clean = (p || '').trim();
+      if (!clean.startsWith('+')) clean = '+' + clean.replace(/\D/g, '');
+      return clean;
+    })
+    .filter(Boolean);
+
+  if (phoneList.length === 0) return { success: false, error: 'No valid phone numbers' };
 
   try {
     const r = await fetch('https://api.sent.dm/v3/messages', {
       method: 'POST',
       headers: { 'x-api-key': apiKey, 'Content-Type': 'application/json' },
-      body: JSON.stringify({ to: [p], text, channel: ['whatsapp', 'sms'] }),
+      body: JSON.stringify({ to: phoneList, text, channel: ['whatsapp', 'sms'] }),
       signal: AbortSignal.timeout(8000),
     });
     const data = await r.json();
-    return { success: r.ok || r.status === 202, channel: data?.recipients?.[0]?.channel || 'sent_dm', data };
+    return { success: r.ok || r.status === 202, data };
   } catch (e) {
     return { success: false, error: e.message };
   }
@@ -202,7 +289,8 @@ export default async function handler(req, res) {
     message,
     brand,
     sessionId,
-    adminPhone,    // override target phone for WhatsApp/SMS
+    adminPhone,    // override single target phone
+    phones,        // array of target phones
     dashboardUrl,
   } = req.body || {};
 
@@ -218,16 +306,31 @@ export default async function handler(req, res) {
     timestamp: new Date().toISOString(),
   };
 
-  const targetPhone = adminPhone || '+573142332147';
+  // Staff team list
+  const ALL_STAFF_PHONES = [
+    '+17869708366',  // Jasmel (Admin)
+    '+573202174861', // Nancy
+    '+573142332147', // Official WhatsApp / Admin
+    '+573104578337', // Camilo
+    '+573105769694', // Yuldor
+    '+573202174854', // Henderson
+    '+17869685783',  // Johana
+    '+573113017763', // Alexander
+  ];
 
-  // Fire all 4 channels in parallel
-  const [telegram, email, whatsapp] = await Promise.allSettled([
+  const targetPhones = phones || (adminPhone ? [adminPhone] : ALL_STAFF_PHONES);
+  const primaryPhone = Array.isArray(targetPhones) ? targetPhones[0] : targetPhones;
+
+  // Fire all channels in parallel: Telegram + Email + Twilio SMS + Twilio WhatsApp + Sent.dm
+  const [telegram, email, twilioSms, twilioWa, whatsapp] = await Promise.allSettled([
     sendTelegram(buildTelegramMessage(d)),
     sendEmail(
       `[${d.priority.toUpperCase()}] ${d.type === 'quote' ? 'Quote Request' : d.type === 'staff' ? 'Staff Requested' : 'Escalation'} — ${customerName || 'Customer'}`,
       buildEmailHtml(d)
     ),
-    sendWhatsAppAndSMS(targetPhone, buildWhatsAppText(d)),
+    sendTwilioSMS(targetPhones, buildWhatsAppText(d)),
+    sendTwilioWhatsApp(primaryPhone, buildWhatsAppText(d)),
+    sendWhatsAppAndSMS(targetPhones, buildWhatsAppText(d)),
   ]);
 
   const extract = (r) => r.status === 'fulfilled' ? r.value : { success: false, error: r.reason?.message };
@@ -235,7 +338,9 @@ export default async function handler(req, res) {
   const results = {
     telegram: extract(telegram),
     email: extract(email),
-    whatsapp: extract(whatsapp),
+    twilioSms: extract(twilioSms),
+    twilioWhatsApp: extract(twilioWa),
+    sentDmWhatsApp: extract(whatsapp),
   };
 
   const anySuccess = Object.values(results).some(r => r.success);

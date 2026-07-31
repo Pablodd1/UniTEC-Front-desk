@@ -10,7 +10,8 @@ import { sendSentDmMessage } from './sentDmService';
 export const sendTwilioWhatsApp = async (
   messageText: string
 ): Promise<{ success: boolean; messageSid?: string; error?: string }> => {
-  const targetPhone = '+573142332147';
+  // Nancy (staff) — Colombia +57 320 2174861
+  const targetPhone = '+573202174861';
 
   // 1. Primary: Sent.dm Unified Messaging (WhatsApp + SMS)
   try {
