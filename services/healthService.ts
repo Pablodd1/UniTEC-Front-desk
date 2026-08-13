@@ -12,6 +12,7 @@ export interface SystemStatus {
     email: ServiceStatus;
     telegram: ServiceStatus;
   };
+  context: ContextStatus;
   metrics: {
     totalConversations: number;
     activeConversations: number;
@@ -20,6 +21,21 @@ export interface SystemStatus {
     errorRate: number;
     uptime: number;
   };
+}
+
+// Live "memory" watchdog status: how full the AI context is and whether the bot is at risk.
+export interface ContextStatus {
+  healthy: boolean;
+  level: 'healthy' | 'elevated' | 'warning' | 'critical';
+  utilizedPct: number;
+  usedTokens: number;
+  contextBudgetTokens: number;
+  peakConversationLength: number;
+  calls: number;
+  avgLatencyMs: number;
+  recentLatencyMs: number;
+  rates: { warn: number; crit: number };
+  timestamp: string;
 }
 
 interface ServiceStatus {
@@ -47,7 +63,10 @@ export const getSystemStatus = async (): Promise<SystemStatus> => {
   const hasDegraded = statuses.includes('degraded');
   
   const overall = hasDown ? 'down' : hasDegraded ? 'degraded' : 'healthy';
-  
+
+  // Live AI "memory" health from the /api/health watchdog endpoint
+  const context = await getContextHealth();
+
   // Get basic metrics from localStorage for now
   const storedMetrics = localStorage.getItem('unitec_system_metrics');
   const metrics = storedMetrics ? JSON.parse(storedMetrics) : {
@@ -58,13 +77,52 @@ export const getSystemStatus = async (): Promise<SystemStatus> => {
     errorRate: 0,
     uptime: 99.9,
   };
-  
+
   return {
     overall,
     timestamp: new Date().toISOString(),
     services: { gemini, firebase, twilio, email, telegram },
+    context,
     metrics,
   };
+};
+
+// Fetches the live context/memory watchdog data. Falls back to a neutral healthy state if
+// the /api/health endpoint is unreachable (e.g. during cold start) so the dashboard still renders.
+const getContextHealth = async (): Promise<ContextStatus> => {
+  const fallback: ContextStatus = {
+    healthy: true,
+    level: 'healthy',
+    utilizedPct: 0,
+    usedTokens: 0,
+    contextBudgetTokens: 1_000_000,
+    peakConversationLength: 0,
+    calls: 0,
+    avgLatencyMs: 0,
+    recentLatencyMs: 0,
+    rates: { warn: 0, crit: 0 },
+    timestamp: new Date().toISOString(),
+  };
+  try {
+    const res = await fetch('/api/health', { cache: 'no-store' });
+    if (!res.ok) return fallback;
+    const data = await res.json();
+    return {
+      healthy: data.healthy !== false,
+      level: data.level || 'healthy',
+      utilizedPct: data.utilizedPct || 0,
+      usedTokens: data.usedTokens || 0,
+      contextBudgetTokens: data.contextBudgetTokens || 1_000_000,
+      peakConversationLength: data.peakConversationLength || 0,
+      calls: data.calls || 0,
+      avgLatencyMs: data.avgLatencyMs || 0,
+      recentLatencyMs: data.recentLatencyMs || 0,
+      rates: data.rates || { warn: 0, crit: 0 },
+      timestamp: data.timestamp || new Date().toISOString(),
+    };
+  } catch {
+    return fallback;
+  }
 };
 
 const checkGeminiStatus = async (): Promise<ServiceStatus> => {

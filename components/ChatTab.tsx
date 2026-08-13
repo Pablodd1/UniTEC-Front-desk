@@ -292,7 +292,8 @@ const ChatTab: React.FC<ChatTabProps> = ({ quickActions, initialMessage, emergen
   }, [showEmailConfirmation]);
 
     // ===== single-stage idle timer (5-minute abandon & save) =====
-  // Resets when: new message arrives, OR user is actively typing
+  // Resets ONLY when the USER sends a message or types.
+  // Bot messages (warnings, responses) do NOT reset the timer.
   useEffect(() => {
     if (sessionStatus !== 'active' || !conversationId || messages.length <= 1) return;
 
@@ -301,6 +302,11 @@ const ChatTab: React.FC<ChatTabProps> = ({ quickActions, initialMessage, emergen
     // Do not trigger if the last message was the abandon message
     if (lastMessage.id?.startsWith('idle_abandon_')) return;
 
+    // Only track USER messages for idle reset — bot messages don't count
+    const lastUserMessage = [...messages].reverse().find(m => m.role === 'user');
+    const lastUserMsgTime = lastUserMessage?.timestamp ? new Date(lastUserMessage.timestamp).getTime() : Date.now();
+    const timeSinceUserMsg = Date.now() - lastUserMsgTime;
+    
     let warningTimer: NodeJS.Timeout;
     let closeTimer: NodeJS.Timeout;
 
@@ -315,8 +321,8 @@ const ChatTab: React.FC<ChatTabProps> = ({ quickActions, initialMessage, emergen
         summarizeSessionNow(conversationId).catch(console.error);
         
         const closingText = language === 'en'
-          ? "It looks like you aren't able to respond right now. I'll close the chat and save our conversation to keep things clean. Feel free to message again whenever you're ready! "
-          : "Veo que en este momento no has podido responder. Por ahora cerraré la conversación y guardaré nuestro progreso para no saturarte  Cuando quieras retomar, solo escríbenos y con gusto continuamos desde donde quedamos  ¡Que tengas un excelente día!";
+          ? "It looks like you aren't able to respond right now. I'll close the chat and save our conversation to keep things clean. Feel free to message again whenever you're ready!"
+          : "Veo que en este momento no has podido responder. Por ahora cerraré la conversación y guardaré nuestro progreso para no saturarte. Cuando quieras retomar, solo escríbenos y con gusto continuamos desde donde quedamos. ¡Que tengas un excelente día!";
 
         setMessages(prev => [...prev, {
           id: `idle_abandon_${Date.now()}`,
@@ -326,13 +332,16 @@ const ChatTab: React.FC<ChatTabProps> = ({ quickActions, initialMessage, emergen
         }]);
       }, abandonTimeoutMs);
     } else {
-      // Normal flow, wait 4 minutes to send warning
-      const warningTimeoutMs = 4 * 60 * 1000; // 4 minutes
-      warningTimer = setTimeout(() => {
-        console.log('Session idle for 4 minutes. Sending warning.');
+      // Calculate remaining time based on LAST USER message, not last bot message
+      const warningTimeoutMs = 4 * 60 * 1000; // 4 minutes from user's last message
+      const remainingTime = Math.max(0, warningTimeoutMs - timeSinceUserMsg);
+      
+      if (remainingTime === 0) {
+        // Already past 4 minutes since user's last message — send warning immediately
+        console.log('Session idle for 4+ minutes. Sending warning immediately.');
         const warningText = language === 'en'
           ? "Are you still there? If you don't respond in a minute, I'll close the chat."
-          : "Señor/a, ¿aún continuas en línea?";
+          : "Señor/a, ¿aún continuas en línea? Si no hay respuesta en un minuto, cerraré la conversación.";
           
         setMessages(prev => [...prev, {
           id: `idle_warning_${Date.now()}`,
@@ -340,14 +349,28 @@ const ChatTab: React.FC<ChatTabProps> = ({ quickActions, initialMessage, emergen
           text: warningText,
           timestamp: new Date()
         }]);
-      }, warningTimeoutMs);
+      } else {
+        warningTimer = setTimeout(() => {
+          console.log('Session idle for 4 minutes. Sending warning.');
+          const warningText = language === 'en'
+            ? "Are you still there? If you don't respond in a minute, I'll close the chat."
+            : "Señor/a, ¿aún continuas en línea? Si no hay respuesta en un minuto, cerraré la conversación.";
+            
+          setMessages(prev => [...prev, {
+            id: `idle_warning_${Date.now()}`,
+            role: 'model',
+            text: warningText,
+            timestamp: new Date()
+          }]);
+        }, remainingTime);
+      }
     }
 
     return () => {
       if (warningTimer) clearTimeout(warningTimer);
       if (closeTimer) clearTimeout(closeTimer);
     };
-  }, [messages, sessionStatus, conversationId, language, inputText]);
+  }, [messages.filter(m => m.role === 'user').length, inputText, sessionStatus, conversationId, language]);
 
   // Robust Auto-Scroll Implementation
   const scrollToBottom = (behavior: ScrollBehavior = 'smooth') => {

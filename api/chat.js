@@ -9,6 +9,20 @@ function isRateLimited(ip, limit = 120, windowMs = 60000) {
   return false;
 }
 
+// Context/memory watchdog: inspects each conversation size and fires Telegram/Email/WhatsApp
+// alerts BEFORE the AI context fills up and slows or stops the bot. Fire-and-forget so it
+// never adds latency to the user's chat response.
+import { inspectConversation } from './health.js';
+
+// Cap transcript sent to the AI. Long conversations fill the context window and make the bot
+// slow then unresponsive. Keeping the last ~30 turns preserves enough continuity while bound
+// the request size (mirrors the voice-mode trim in geminiService.ts).
+function trimHistory(history) {
+  if (!Array.isArray(history)) return [];
+  if (history.length <= 60) return history;
+  return history.slice(-60);
+}
+
 export default async function handler(req, res) {
   const clientIp = req.headers['x-forwarded-for']?.split(',')[0]?.trim() || req.socket?.remoteAddress || 'unknown';
   if (isRateLimited(clientIp, 120, 60000)) {
@@ -62,11 +76,18 @@ export default async function handler(req, res) {
   }
 
   try {
-    const { message, history, instructions, brandId = 'unitec' } = req.body;
+    const { message, history: rawHistory, instructions, brandId = 'unitec' } = req.body;
     const origin = req.headers.origin || 'https://chatbuildinginnovation.us';
     if (!message) {
       return res.status(400).json({ error: 'Missing message in request body' });
     }
+
+    // Apply the transcript cap to bound the AI context (prevents the slowdown described above).
+    const history = trimHistory(rawHistory);
+
+    // Context/memory watchdog — fire-and-forget async alert if the conversation is filling up.
+    inspectConversation({ history: rawHistory || [], newMessage: message, brand: brandId })
+      .catch(e => console.warn('ctx-health inspect failed:', e?.message));
 
     const keys = [
       process.env.GEMINI_API_KEY,
