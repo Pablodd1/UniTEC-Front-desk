@@ -39,7 +39,7 @@ async function getSharedTraining() {
     if (!authRes.ok) return trainingCache.data;
     const { idToken } = await authRes.json();
     const docRes = await fetch(
-      `https://firestore.googleapis.com/v1/projects/${projectId}/databases/(default)/documents/config/main?fields.fields=trainingData`,
+      `https://firestore.googleapis.com/v1/projects/${projectId}/databases/(default)/documents/config/main`,
       { headers: { Authorization: `Bearer ${idToken}` } }
     );
     if (!docRes.ok) return trainingCache.data;
