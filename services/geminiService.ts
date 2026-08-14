@@ -97,6 +97,11 @@ const performCatalogSearch = async (query: string, brandId: string) => {
     }
 };
 
+// Cached current conversation session id — set by ChatTab so /api/chat can
+// record every real chat turn server-side (analytics ground truth).
+let currentSessionId = '';
+export const setCurrentChatSessionId = (id: string) => { currentSessionId = id; };
+
 export async function* sendMessageToGemini(
   message: string,
   history: any[] = [],
@@ -119,7 +124,7 @@ export async function* sendMessageToGemini(
       const proxyRes = await fetch('/api/chat', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ message, history, instructions, brandId }),
+        body: JSON.stringify({ message, history, instructions, brandId, sessionId: currentSessionId || undefined }),
         signal: AbortSignal.timeout(20000) // 20s — allows for cold start + AI latency
       });
 

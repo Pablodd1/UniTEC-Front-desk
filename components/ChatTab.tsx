@@ -6,7 +6,7 @@ import { db } from '../firebase';
 import { doc, getDoc } from 'firebase/firestore';
 import { Message, QuickAction, Language } from '../types';
 import { saveChatSession } from '../services/firestoreService';
-import { sendMessageToGemini } from '../services/geminiService';
+import { sendMessageToGemini, setCurrentChatSessionId } from '../services/geminiService';
 import { createConversation, addMessage, requestIntervention, extractCustomerData, updateSessionStatus, subscribeToConversation, subscribeToMessages } from '../services/conversationService';
 import { notifyStaffIntervention, triggerEscalation } from '../services/notificationService';
 import { sendTwilioWhatsApp } from '../services/twilioWhatsappService';
@@ -166,16 +166,14 @@ const ChatTab: React.FC<ChatTabProps> = ({ quickActions, initialMessage, emergen
             localStorage.setItem(storageKey, newId);
             localStorage.setItem(timestampKey, now.toString());
           }
-        } else {
-          // Even for existing session, ensure document exists in Firestore
-          createConversation(
-            brandId || 'unitec',
-            language,
-            'web',
-            { userAgent: navigator.userAgent, ipAddress: 'unknown' }
-          ).catch(() => {});
         }
+        // else: KEEP the existing session — do NOT create a duplicate.
+        // (Old behavior created a new empty session on every reload, which
+        // inflated totals with zero-message ghost sessions.)
 
+        // Expose the session id to the chat proxy so /api/chat records every
+        // real turn server-side (analytics ground truth, works on all origins).
+        setCurrentChatSessionId(existingId);
         setConversationId(existingId);
       } catch (e) {
         console.warn('Failed to initialize conversation session:', e);
