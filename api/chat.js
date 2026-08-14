@@ -58,77 +58,83 @@ async function getSharedTraining() {
 // reloads created duplicate empty sessions, user messages were lost).
 // /api/chat is the ground truth of every real chat turn, so we record here
 // via Firestore REST (verified working): message + counters + funnel fields.
+
+// Cached anonymous idToken (they last ~1h) to avoid a signUp round-trip per chat turn
+let cachedIdToken = { token: '', exp: 0 };
+
+async function getFirestoreToken() {
+  if (cachedIdToken.token && Date.now() < cachedIdToken.exp) return cachedIdToken.token;
+  const authRes = await fetch(`https://identitytoolkit.googleapis.com/v1/accounts:signUp?key=${firebaseConfig.apiKey}`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ returnSecureToken: true }),
+  });
+  if (!authRes.ok) return null;
+  const data = await authRes.json();
+  cachedIdToken = { token: data.idToken, exp: Date.now() + (parseInt(data.expiresIn || '3600', 10) - 300) * 1000 };
+  return data.idToken;
+}
+
 async function recordChatTurn({ sessionId, userText, replyText, brand }) {
   if (!sessionId) return;
   try {
-    const apiKey = firebaseConfig.apiKey;
+    const idToken = await getFirestoreToken();
+    if (!idToken) return;
     const projectId = firebaseConfig.projectId;
-    const authRes = await fetch(`https://identitytoolkit.googleapis.com/v1/accounts:signUp?key=${apiKey}`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ returnSecureToken: true }),
-    });
-    if (!authRes.ok) return;
-    const { idToken } = await authRes.json();
     const base = `https://firestore.googleapis.com/v1/projects/${projectId}/databases/(default)/documents`;
     const auth = { Authorization: `Bearer ${idToken}`, 'Content-Type': 'application/json' };
     const now = new Date().toISOString();
+    const ts = Date.now();
+    const docPath = `projects/${projectId}/databases/(default)/documents/conversations/${sessionId}`;
 
-    // 1. Ensure session exists (merge — never wipes)
-    await fetch(`${base}/conversations/${sessionId}?updateMask.fieldPaths=id&updateMask.fieldPaths=status&updateMask.fieldPaths=brandId&updateMask.fieldPaths=lastUpdated&updateMask.fieldPaths=source`, {
-      method: 'PATCH', headers: auth,
-      body: JSON.stringify({ fields: {
-        id: { stringValue: sessionId },
-        status: { stringValue: 'active' },
-        brandId: { stringValue: brand || 'unitec' },
-        source: { stringValue: 'web' },
-        lastUpdated: { stringValue: now },
-      }}),
-    }).catch(() => {});
-
-    // 2. Write the user message + bot reply to the messages subcollection
-    const mid_u = `srv_u_${Date.now()}`;
-    const mid_b = `srv_b_${Date.now()}`;
-    await fetch(`${base}/conversations/${sessionId}/messages?documentId=${mid_u}`, {
-      method: 'POST', headers: auth,
-      body: JSON.stringify({ fields: {
-        id: { stringValue: mid_u }, role: { stringValue: 'user' },
-        text: { stringValue: String(userText).slice(0, 2000) }, timestamp: { stringValue: now },
-      }}),
-    }).catch(() => {});
+    // COMMIT 1: merge session fields (updateMask = no wipe) + both messages
+    // (one write per document — Firestore constraint)
+    const writes = [
+      { update: { name: docPath,
+        updateMask: { fieldPaths: ['id', 'status', 'brandId', 'source', 'lastMessage', 'lastUpdated'] },
+        fields: {
+          id: { stringValue: sessionId },
+          status: { stringValue: 'active' },
+          brandId: { stringValue: brand || 'unitec' },
+          source: { stringValue: 'web' },
+          lastMessage: { stringValue: String(userText).slice(0, 200) },
+          lastUpdated: { stringValue: now },
+        }}},
+      { update: { name: `${docPath}/messages/srv_u_${ts}`,
+        fields: {
+          id: { stringValue: `srv_u_${ts}` }, role: { stringValue: 'user' },
+          text: { stringValue: String(userText).slice(0, 2000) }, timestamp: { stringValue: now },
+        }}},
+    ];
     if (replyText) {
-      await fetch(`${base}/conversations/${sessionId}/messages?documentId=${mid_b}`, {
-        method: 'POST', headers: auth,
-        body: JSON.stringify({ fields: {
-          id: { stringValue: mid_b }, role: { stringValue: 'model' },
+      writes.push({ update: { name: `${docPath}/messages/srv_b_${ts}`,
+        fields: {
+          id: { stringValue: `srv_b_${ts}` }, role: { stringValue: 'model' },
           text: { stringValue: String(replyText).slice(0, 2000) }, timestamp: { stringValue: now },
-        }}),
-      }).catch(() => {});
+        }}});
     }
+    await fetch(`https://firestore.googleapis.com/v1/projects/${projectId}/databases/(default)/documents:commit`, {
+      method: 'POST', headers: auth,
+      body: JSON.stringify({ writes }),
+    });
 
-    // 3. Atomic commit: increment counters + funnel fields + lastMessage
+    // COMMIT 2: atomic counter increments on the session doc
     await fetch(`https://firestore.googleapis.com/v1/projects/${projectId}/databases/(default)/documents:commit`, {
       method: 'POST', headers: auth,
       body: JSON.stringify({ writes: [
-        { transform: { document: `projects/${projectId}/databases/(default)/documents/conversations/${sessionId}`,
+        { transform: { document: docPath,
           fieldTransforms: [
             { fieldPath: 'analytics.messageCount', increment: { integerValue: replyText ? '2' : '1' } },
             { fieldPath: 'analytics.userMessageCount', increment: { integerValue: '1' } },
           ]}},
-        { update: { name: `projects/${projectId}/databases/(default)/documents/conversations/${sessionId}`,
-          fields: {
-            lastMessage: { stringValue: String(userText).slice(0, 200) },
-            lastUpdated: { stringValue: now },
-          }}},
       ]}),
-    }).catch(() => {});
+    });
 
-    // 4. Funnel: set firstUserMessageAt + flowStage only if not already set
+    // Funnel: set firstUserMessageAt/flowStage only if not already set (cheap second call)
     const docRes = await fetch(`${base}/conversations/${sessionId}`, { headers: auth });
     if (docRes.ok) {
       const doc = await docRes.json();
-      const f = doc.fields || {};
-      if (!f.firstUserMessageAt) {
+      if (!(doc.fields || {}).firstUserMessageAt) {
         await fetch(`${base}/conversations/${sessionId}?updateMask.fieldPaths=firstUserMessageAt&updateMask.fieldPaths=flowStage`, {
           method: 'PATCH', headers: auth,
           body: JSON.stringify({ fields: {
@@ -408,10 +414,10 @@ export default async function handler(req, res) {
 
         if (responseText) {
           // Record this real chat turn server-side (messages + counters + funnel).
-          // Fire-and-forget: never delays the user's reply.
+          // AWAITED (not fire-and-forget): Vercel kills pending promises when the
+          // response returns, which silently dropped all recording otherwise.
           if (clientSessionId && !String(responseText).includes('actualización de credenciales')) {
-            recordChatTurn({ sessionId: clientSessionId, userText: message, replyText: responseText, brand: brandId })
-              .catch(e => console.warn('recordChatTurn error:', e?.message));
+            await recordChatTurn({ sessionId: clientSessionId, userText: message, replyText: responseText, brand: brandId });
           }
 
           // ponytail: server-side escalation intent detection — catches quote/staff requests
