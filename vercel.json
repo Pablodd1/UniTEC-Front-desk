@@ -8,10 +8,6 @@
     {
       "path": "/api/daily-analytics",
       "schedule": "0 9 * * *"
-    },
-    {
-      "path": "/api/health",
-      "schedule": "0 * * * *"
     }
   ]
 }
