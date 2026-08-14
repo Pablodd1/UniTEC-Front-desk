@@ -87,16 +87,18 @@ async function recordChatTurn({ sessionId, userText, replyText, brand }) {
     const ts = Date.now();
     const docPath = `projects/${projectId}/databases/(default)/documents/conversations/${sessionId}`;
 
-    // COMMIT 1: merge session fields (updateMask = no wipe) + both messages
-    // (one write per document — Firestore constraint)
+    // COMMIT 1: merge session fields (updateMask at WRITE level = merge, no wipe) + both messages
+    // (one write per document — Firestore constraint). Verified structure.
     const writes = [
-      { update: { name: docPath,
-        updateMask: { fieldPaths: ['id', 'status', 'brandId', 'source', 'lastMessage', 'lastUpdated'] },
+      { updateMask: { fieldPaths: ['id', 'status', 'brandId', 'source', 'language', 'createdAt', 'lastMessage', 'lastUpdated'] },
+        update: { name: docPath,
         fields: {
           id: { stringValue: sessionId },
           status: { stringValue: 'active' },
           brandId: { stringValue: brand || 'unitec' },
           source: { stringValue: 'web' },
+          language: { stringValue: 'es' },
+          createdAt: { stringValue: now },
           lastMessage: { stringValue: String(userText).slice(0, 200) },
           lastUpdated: { stringValue: now },
         }}},
