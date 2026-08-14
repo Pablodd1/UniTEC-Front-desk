@@ -167,9 +167,9 @@ function computeMetrics(sessions) {
     : 'N/A';
 
   const avgTimeToFirstMsg = withFirstMsgTime.length > 0
-    ? formatDuration(withFirstMsgTime.reduce((sum, s) => {
+    ? formatDuration(Math.max(0, withFirstMsgTime.reduce((sum, s) => {
         return sum + (new Date(s.firstUserMessageAt).getTime() - new Date(s.createdAt).getTime()) / 1000;
-      }, 0) / withFirstMsgTime.length)
+      }, 0) / withFirstMsgTime.length))
     : 'N/A';
 
   // Avg messages per user
@@ -423,7 +423,8 @@ export default async function handler(req, res) {
       }
     }
 
-    // 7. Send to Telegram (supports multiple bots)
+    // 7. Send to Telegram (supports multiple bots) — report delivery outcome
+    const telegramResults = [];
     if (telegramBotToken && telegramChatId) {
       const botTokens = telegramBotToken.split(',').map(t => t.trim()).filter(Boolean);
       const chatIds = telegramChatId.split(',').map(id => id.trim()).filter(Boolean);
@@ -434,13 +435,17 @@ export default async function handler(req, res) {
         if (!token) continue;
         try {
           const tgUrl = `https://api.telegram.org/bot${token}/sendMessage`;
-          await fetch(tgUrl, {
+          const tgRes = await fetch(tgUrl, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ chat_id: chatId, text: reportText, parse_mode: 'HTML' })
           });
+          const tgOk = tgRes.ok;
+          const tgData = await tgRes.json().catch(() => ({}));
+          telegramResults.push({ chatId, ok: tgOk, messageId: tgData?.result?.message_id, error: tgOk ? undefined : JSON.stringify(tgData).slice(0, 200) });
         } catch (tgErr) {
           console.error(`Telegram send failed for chat_id ${chatId}:`, tgErr);
+          telegramResults.push({ chatId, ok: false, error: String(tgErr).slice(0, 200) });
         }
       }
     }
@@ -469,7 +474,8 @@ export default async function handler(req, res) {
       success: true,
       sessionsReported: filteredSessions.length,
       metrics: metrics || {},
-      period: isWeekly ? 'weekly' : 'daily'
+      period: isWeekly ? 'weekly' : 'daily',
+      telegram: telegramResults
     });
 
   } catch (error) {

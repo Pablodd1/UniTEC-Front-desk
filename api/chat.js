@@ -89,8 +89,11 @@ async function recordChatTurn({ sessionId, userText, replyText, brand }) {
 
     // COMMIT 1: merge session fields (updateMask at WRITE level = merge, no wipe) + both messages
     // (one write per document — Firestore constraint). Verified structure.
+    // NOTE: createdAt is intentionally NOT in the mask — it must never be rewritten
+    // on later turns (a rewritten createdAt lands AFTER firstUserMessageAt, producing
+    // negative time-to-first-message metrics).
     const writes = [
-      { updateMask: { fieldPaths: ['id', 'status', 'brandId', 'source', 'language', 'createdAt', 'lastMessage', 'lastUpdated'] },
+      { updateMask: { fieldPaths: ['id', 'status', 'brandId', 'source', 'language', 'lastMessage', 'lastUpdated'] },
         update: { name: docPath,
         fields: {
           id: { stringValue: sessionId },
@@ -98,7 +101,6 @@ async function recordChatTurn({ sessionId, userText, replyText, brand }) {
           brandId: { stringValue: brand || 'unitec' },
           source: { stringValue: 'web' },
           language: { stringValue: 'es' },
-          createdAt: { stringValue: now },
           lastMessage: { stringValue: String(userText).slice(0, 200) },
           lastUpdated: { stringValue: now },
         }}},
@@ -132,17 +134,23 @@ async function recordChatTurn({ sessionId, userText, replyText, brand }) {
       ]}),
     });
 
-    // Funnel: set firstUserMessageAt/flowStage only if not already set (cheap second call)
+    // Funnel: set firstUserMessageAt/flowStage (and createdAt if missing) — read first, write only if absent
     const docRes = await fetch(`${base}/conversations/${sessionId}`, { headers: auth });
     if (docRes.ok) {
       const doc = await docRes.json();
-      if (!(doc.fields || {}).firstUserMessageAt) {
-        await fetch(`${base}/conversations/${sessionId}?updateMask.fieldPaths=firstUserMessageAt&updateMask.fieldPaths=flowStage`, {
+      const f = doc.fields || {};
+      const missing = [];
+      if (!f.firstUserMessageAt) missing.push('firstUserMessageAt');
+      if (!f.createdAt) missing.push('createdAt');
+      if (f.flowStage?.stringValue !== 'engaging') missing.push('flowStage');
+      if (missing.length > 0) {
+        const fields = {};
+        if (missing.includes('firstUserMessageAt')) fields.firstUserMessageAt = { stringValue: now };
+        if (missing.includes('createdAt')) fields.createdAt = { stringValue: now };
+        if (missing.includes('flowStage')) fields.flowStage = { stringValue: 'engaging' };
+        await fetch(`${base}/conversations/${sessionId}?${missing.map(p => `updateMask.fieldPaths=${p}`).join('&')}`, {
           method: 'PATCH', headers: auth,
-          body: JSON.stringify({ fields: {
-            firstUserMessageAt: { stringValue: now },
-            flowStage: { stringValue: 'engaging' },
-          }}),
+          body: JSON.stringify({ fields }),
         }).catch(() => {});
       }
     }
