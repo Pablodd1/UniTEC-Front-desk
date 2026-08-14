@@ -98,6 +98,33 @@ export interface TelegramConfig {
   };
 }
 
+// Shared global TRAINING data stored at root /config/main — this is what the
+// chatbot actually reads (via /api/chat server injection), so training saved in
+// the dashboard reaches the bot on every origin, including embedded widgets.
+export const getSharedTrainingData = async (): Promise<string> => {
+  const path = 'config/main';
+  try {
+    const docRef = doc(db, path);
+    const docSnap = await getDoc(docRef);
+    if (docSnap.exists()) {
+      return docSnap.data().trainingData || '';
+    }
+  } catch (error) {
+    console.error('Failed to get shared training data:', error);
+  }
+  return '';
+};
+
+export const saveSharedTrainingData = async (trainingData: string): Promise<void> => {
+  const path = 'config/main';
+  try {
+    const docRef = doc(db, path);
+    await setDoc(docRef, { trainingData }, { merge: true });
+  } catch (error) {
+    console.error('Failed to save shared training data:', error);
+  }
+};
+
 export const getTelegramConfig = async (): Promise<TelegramConfig> => {
   const path = 'config/main';
   try {

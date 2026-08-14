@@ -6,7 +6,7 @@ import { playGeminiTTS } from '../services/geminiService';
 import { getEscalaConfig, saveEscalaConfig, testEscalaConnection } from '../services/escalaService';
 import { getUsageStats, getProfitEstimate, generateInvoice, trackUsage } from '../services/usageService';
 import { generateImage, editImage } from '../services/imageService';
-import { getAppConfig, saveAppConfig, getCrmLogs, CrmLog, getAllChatSessions, getTelegramConfig, saveTelegramConfig } from '../services/firestoreService';
+import { getAppConfig, saveAppConfig, getCrmLogs, CrmLog, getAllChatSessions, getTelegramConfig, saveTelegramConfig, getSharedTrainingData, saveSharedTrainingData } from '../services/firestoreService';
 import { db } from '../firebase';
 import { doc, writeBatch } from 'firebase/firestore';
 
@@ -224,12 +224,16 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({
       setEscalaConfig(escala);
 
       const config = await getAppConfig();
+      // Load training from the SHARED doc (what the bot reads) — falls back to per-user copy
+      const sharedTraining = await getSharedTrainingData();
+      if (sharedTraining && sharedTraining.length > 50) {
+        setTrainingData(sharedTraining);
+      } else if (config && config.trainingData && config.trainingData.length > 50) {
+        setTrainingData(config.trainingData);
+      } else {
+        setTrainingData("");
+      }
       if (config) {
-        if (config.trainingData && config.trainingData.length > 50) {
-          setTrainingData(config.trainingData);
-        } else {
-          setTrainingData("");
-        }
         if (config.geminiApiKey) {
           setGeminiApiKey(config.geminiApiKey);
           if (typeof window !== 'undefined' && !window.localStorage.getItem('unitec_gemini_api_key')) {
@@ -457,7 +461,13 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({
 
   const handleSaveTraining = async () => {
     setIsSavingTraining(true);
+    // Save to the SHARED config/main doc — this is what /api/chat injects into
+    // every AI call, so the training reaches the bot on ALL origins & embeds.
+    await saveSharedTrainingData(trainingData);
+    // Also keep the legacy per-user copy for backwards compatibility
     await saveAppConfig({ trainingData });
+    // And sync localStorage so the CURRENT device picks it up instantly
+    try { window.localStorage.setItem('unitec_training_data', trainingData); } catch (e) { /* ignore */ }
     setTimeout(() => setIsSavingTraining(false), 1000);
   };
 

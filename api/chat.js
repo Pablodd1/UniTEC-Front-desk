@@ -14,6 +14,45 @@ function isRateLimited(ip, limit = 120, windowMs = 60000) {
 // never adds latency to the user's chat response.
 import { inspectConversation } from './health.js';
 
+// Shared training data from Firestore config/main — the dashboard's Training module
+// writes here; injecting it server-side makes training reach the bot on EVERY origin
+// (including embedded widgets) without depending on browser localStorage.
+import { createRequire } from 'module';
+const require_ = createRequire(import.meta.url);
+const firebaseConfig = require_('../firebase-applet-config.json');
+
+let trainingCache = { data: '', fetchedAt: 0 };
+const TRAINING_TTL_MS = 5 * 60 * 1000; // re-fetch every 5 min
+
+async function getSharedTraining() {
+  if (Date.now() - trainingCache.fetchedAt < TRAINING_TTL_MS && trainingCache.data !== '') {
+    return trainingCache.data;
+  }
+  try {
+    const apiKey = firebaseConfig.apiKey;
+    const projectId = firebaseConfig.projectId;
+    const authRes = await fetch(`https://identitytoolkit.googleapis.com/v1/accounts:signUp?key=${apiKey}`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ returnSecureToken: true }),
+    });
+    if (!authRes.ok) return trainingCache.data;
+    const { idToken } = await authRes.json();
+    const docRes = await fetch(
+      `https://firestore.googleapis.com/v1/projects/${projectId}/databases/(default)/documents/config/main?fields.fields=trainingData`,
+      { headers: { Authorization: `Bearer ${idToken}` } }
+    );
+    if (!docRes.ok) return trainingCache.data;
+    const doc = await docRes.json();
+    const data = doc?.fields?.trainingData?.stringValue || '';
+    trainingCache = { data, fetchedAt: Date.now() };
+    return data;
+  } catch (e) {
+    console.warn('getSharedTraining failed:', e?.message);
+    return trainingCache.data;
+  }
+}
+
 // Cap transcript sent to the AI. Long conversations fill the context window and make the bot
 // slow then unresponsive. Keeping the last ~30 turns preserves enough continuity while bound
 // the request size (mirrors the voice-mode trim in geminiService.ts).
@@ -76,7 +115,7 @@ export default async function handler(req, res) {
   }
 
   try {
-    const { message, history: rawHistory, instructions, brandId = 'unitec' } = req.body;
+    const { message, history: rawHistory, instructions: clientInstructions, brandId = 'unitec' } = req.body;
     const origin = req.headers.origin || 'https://chatbuildinginnovation.us';
     if (!message) {
       return res.status(400).json({ error: 'Missing message in request body' });
@@ -84,6 +123,19 @@ export default async function handler(req, res) {
 
     // Apply the transcript cap to bound the AI context (prevents the slowdown described above).
     const history = trimHistory(rawHistory);
+
+    // ── Shared training injection ──────────────────────────────────────
+    // Merge the dashboard-managed training (config/main.trainingData) into the
+    // system instructions so the bot follows the pautas on every origin.
+    let instructions = clientInstructions || '';
+    try {
+      const sharedTraining = await getSharedTraining();
+      if (sharedTraining && sharedTraining.length > 30 && !instructions.includes('[CUSTOM MODEL TRAINING]')) {
+        instructions += `\n\n[CUSTOM MODEL TRAINING - FOLLOW THESE PAUTAS/RESPONSE GUIDELINES EXACTLY]:\n${sharedTraining}`;
+      }
+    } catch (e) {
+      console.warn('Training injection skipped:', e?.message);
+    }
 
     // Context/memory watchdog — fire-and-forget async alert if the conversation is filling up.
     inspectConversation({ history: rawHistory || [], newMessage: message, brand: brandId })
