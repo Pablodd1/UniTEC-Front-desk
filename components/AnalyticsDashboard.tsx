@@ -622,7 +622,7 @@ const AnalyticsDashboard: React.FC<AnalyticsDashboardProps> = ({ sessions, googl
               {filteredSessions.map((s) => (
                 <tr key={s.id} className="border-b border-slate-100 hover:bg-slate-50">
                   <td className="px-4 py-3 text-xs">{new Date(s.createdAt).toLocaleString('es')}</td>
-                  <td className="px-4 py-3 text-brand-600 font-medium text-xs">{s.id.slice(-10)}</td>
+                  <td className="px-4 py-3 text-brand-600 font-medium text-xs">{s.id ? s.id.slice(-10) : '—'}</td>
                   <td className="px-4 py-3">
                     <span className={`px-2 py-1 rounded-full text-[10px] uppercase font-bold ${
                       s.status === 'active' ? 'bg-emerald-100 text-emerald-700' :

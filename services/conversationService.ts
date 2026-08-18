@@ -488,7 +488,7 @@ export const getConversations = async (
   try {
     const q = query(collection(db, COLLECTIONS.sessions), orderBy('lastUpdated', 'desc'));
     const snapshot = await getDocs(q);
-    let docs = snapshot.docs.map(doc => doc.data() as ConversationSession);
+    let docs = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() } as ConversationSession));
     if (filters?.status) {
       docs = docs.filter(s => s.status === filters.status);
     }
@@ -567,7 +567,7 @@ export const subscribeToConversations = (
   let unsubSnapshot = () => {};
   try {
     unsubSnapshot = onSnapshot(q, (snapshot) => {
-      const sessions = snapshot.docs.map(doc => doc.data() as ConversationSession);
+      const sessions = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() } as ConversationSession));
       const local = getLocalSessions();
       const merged = [...sessions];
       local.forEach(l => {
@@ -1121,7 +1121,7 @@ export const getSessionsWithSummaries = async (
       orderBy('lastUpdated', 'desc')
     );
     const snapshot = await getDocs(q);
-    let docs = snapshot.docs.map(doc => doc.data() as ConversationSession);
+    let docs = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() } as ConversationSession));
     docs = docs.filter(s => s.status === 'completed');
     if (dateFrom) {
       const fromTime = new Date(dateFrom).getTime();
