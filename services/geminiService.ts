@@ -113,7 +113,10 @@ export async function* sendMessageToGemini(
   isVoiceMode: boolean = false
 ): AsyncGenerator<any, void, unknown> {
 
-  const localTraining = typeof window !== 'undefined' ? (localStorage.getItem('unitec_training_data') || undefined) : undefined;
+  // Authoritative training comes from the server (/api/chat injects Firestore
+  // config/main.trainingData). Do NOT read a browser-cached copy — stale localStorage
+  // was overriding the dashboard's latest pautas. Keep it undefined so the server wins.
+  const localTraining = undefined;
   let instructions = getSystemInstruction(language, customGreeting, brandId, localTraining, isVoiceMode);
   if (emergencyMode) instructions += '\n\n[SYSTEM OVERRIDE: EMERGENCY MODE ACTIVE]. Respond concisely.';
 
@@ -175,7 +178,7 @@ export const connectLiveSession = async (
   let recognition: any = null;
   let voiceState: 'idle' | 'listening' | 'processing' | 'speaking' | 'stopped' = 'idle';
   const messageHistory: any[] = []; // Conversation context for AI calls
-  const localTraining = typeof window !== 'undefined' ? (localStorage.getItem('unitec_training_data') || undefined) : undefined;
+  const localTraining = undefined; // server training is authoritative (see sendMessageToGemini)
   const instructions = getSystemInstruction(language, customGreeting, brandId, localTraining, true);
 
   const setState = (s: typeof voiceState) => {

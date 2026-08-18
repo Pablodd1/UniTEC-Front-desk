@@ -274,7 +274,11 @@ export const getSystemInstruction = (
 - Consultas Generales | Tel: +1 (786) 968-5783
 `;
 
-  const trainingSnippet = customTrainingData || (typeof window !== 'undefined' ? localStorage.getItem('unitec_training_data') : '') || '';
+  // Training is injected AUTHORITATIVELY server-side by /api/chat (reads Firestore
+  // config/main.trainingData fresh each request). Do NOT inject a browser-cached copy
+  // here — a stale localStorage block was overriding the current training so the bot
+  // wasn't reflecting the dashboard's latest pautas. Server training is the single source.
+  const trainingSnippet = customTrainingData || '';
 
   return `
 # ROLE & IDENTITY
