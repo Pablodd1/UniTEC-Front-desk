@@ -234,6 +234,45 @@ export default async function handler(req, res) {
     // Merge the dashboard-managed training (config/main.trainingData) into the
     // system instructions so the bot follows the pautas on every origin.
     let instructions = clientInstructions || '';
+
+    // ── SERVER-SIDE BASE FRONT-DESK GUARD (fix: "Nancy's info not generated") ──
+    // The real client (ChatTab via sendMessageToGemini) always sends the full
+    // base system prompt from constants.ts (unit/warehouse location, distribution-
+    // only/no-install, payment method, Medellín-stock procedure, staff). But if
+    // /api/chat is ever called WITHOUT that base prompt (a custom/embedded widget,
+    // a stale bundle, a direct call), the model only gets the Firestore pautas and
+    // answers EVERYTHING with Pauta 4 (generic 24/7 asesoría) — none of the front-desk
+    // knowledge comes out. This guard re-injects the base front-desk knowledge
+    // server-side so it is ALWAYS present, no matter how the chat is triggered.
+    const BASE_FRONT_DESK = `# ROLE & IDENTITY
+You are the professional AI Front Desk Assistant and Senior Sales Representative for UNITEC USA DESIGN (Importador Directo - Distribución Mayorista). Colombia / Florida, USA. Answer in Spanish first, switch to English only if the customer writes in English.
+
+# ACTIVE REPRESENTATIVES & CONTACTS (ONLY use these staff):
+- Camilo Andres Torres (Ventas) | Tel: +57 310 457 8337 | https://wa.me/573104578337
+- Yuldor Stiven Avendano (Ejecutivo Comercial IDEO y Marketing online) | Tel: +57 310 576 9694 | https://wa.me/573105769694
+- Henderson Patrick Arroyave (Ejecutivo Marketing Online) | Tel: +57 320 217 4854 | https://wa.me/573202174854
+- Contacto General WhatsApp / Principal: +57 314 233 2147 | https://wa.me/573142332147
+
+# REGLAS ESPECÍFICAS DEL NEGOCIO (RESPONDE EXACTAMENTE según estas reglas):
+- INSTALACIÓN: Cuando pregunten por instalación de producto, responde EXACTAMENTE: "Señor o Señora te cuento que actualmente nuestra compañía solo realiza distribución mas no instalación para este proceso te podemos informar el contacto de una persona externa, posterior"
+- UBICACIÓN / PUNTO FÍSICO: Si preguntan por la ubicación, dirección o dónde está la bodega, responde que el punto físico se encuentra en el Centro Comercial Ideo (Local 274), pero la bodega principal está en Guarne, de donde se realizan todos los despachos.
+- MEDIO DE PAGO: Cuando pregunten por el medio de pago, informa que el pago se realiza por transferencia electrónica y el pedido se toma directamente con uno de nuestros vendedores.
+- CONSULTA DE STOCK (Medellín): Si preguntan por disponibilidad en Medellín, primero da la descripción del producto con medidas y colores, y luego indica que para validar referencias y colores debe contactarse un asesor comercial, guiando a Camilo Andres Torres (https://wa.me/573104578337).
+- CATÁLOGO: Cuando pidan catálogo, NO pidas correo. Envíalo y haz una pregunta de interés para continuar la venta.
+- COTIZACIÓN/PRECIOS: Informa siempre valores APROXIMADOS por unidad, dependientes de medidas y cantidades.
+- ASESORÍA/HUMANO: Cuando pidan atención humana o asesoría, comunícate formalmente y deriva al contacto de ventas.`;
+
+    // Has a real base prompt already been sent by the client? The full
+    // getSystemInstruction from constants.ts always contains the bodega/location
+    // rule and the role header. If either is present, we leave the client's
+    // (richer) base prompt as-is and don't override it.
+    const hasBase = instructions.includes('CENTRO COMERCIAL') ||
+      instructions.includes('Guarne') ||
+      instructions.includes('bodega principal');
+    if (!hasBase && !instructions.includes('ROLE & IDENTITY')) {
+      instructions = BASE_FRONT_DESK + '\n\n' + instructions;
+    }
+
     try {
       const sharedTraining = await getSharedTraining();
       if (sharedTraining && sharedTraining.length > 30 && !instructions.includes('[CUSTOM MODEL TRAINING]')) {
