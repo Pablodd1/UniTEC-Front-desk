@@ -318,7 +318,7 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({
           requestNotificationPermission().then(granted => {
             if (granted) showBrowserNotification('Intervencion Urgente', alert.reason || 'Cliente solicitó atención del personal');
           });
-          const msg = '?? INTERVENCION URGENTE\n\nSesion: ' + alert.sessionId + '\nRazon: ' + (alert.reason || 'Cliente solicito hablar con alguien') + '\nHora: ' + new Date(alert.requestedAt).toLocaleTimeString('es') + '\n\nAbrir dashboard: ' + window.location.origin + '/?admin=true';
+          const msg = '🚨 INTERVENCIÓN URGENTE\n\nSesión: ' + alert.sessionId + '\nRazón: ' + (alert.reason || 'El cliente pidió hablar con alguien') + '\nHora: ' + new Date(alert.requestedAt).toLocaleTimeString('es-CO', { timeZone: 'America/Bogota' }) + '\n\nAbrir panel: ' + window.location.origin + '/?admin=true';
           fetch('/api/notify-telegram', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
@@ -424,7 +424,7 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          message: '<b>System Alert:</b>\nLive CRM telemetry and active sessions synced.'
+          message: '<b>Alerta del sistema:</b>\nTelemetría CRM y sesiones activas sincronizadas.'
         })
       });
       
@@ -489,11 +489,11 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({
       try { window.localStorage.setItem('unitec_training_data', trainingData); } catch { /* ignore */ }
       setTrainingSaveStatus(json.loaded === false || json.telegram?.sent === false ? 'error' : 'ok');
       if (json.loaded === false) {
-        setTrainingSaveMessage(json.message || 'Saved, but reload did not match.');
+        setTrainingSaveMessage(json.message || 'Se guardó, pero la recarga no coincide.');
       } else if (json.telegram?.sent) {
-        setTrainingSaveMessage('Accepted and loaded. Telegram approval sent. Ready for every client question.');
+        setTrainingSaveMessage('Aceptado y cargado. Alerta de Telegram enviada. Listo para cada pregunta del cliente.');
       } else {
-        setTrainingSaveMessage(`Accepted and loaded, but Telegram was not sent: ${json.telegram?.error || 'not configured'}. The assistant will still use this on the next message.`);
+        setTrainingSaveMessage(`Aceptado y cargado, pero Telegram no se envió: ${json.telegram?.error || 'no configurado'}. El asistente igual usará esto en el próximo mensaje.`);
       }
     } catch (e: any) {
       setTrainingSaveStatus('error');

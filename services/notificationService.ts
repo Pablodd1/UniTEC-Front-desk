@@ -167,11 +167,11 @@ function generateEmailTemplate(payload: NotificationPayload): string {
   };
   
   const titles = {
-    intervention_request: '🚨 Intervention Request',
-    intervention_accepted: '✅ Intervention Accepted',
-    new_message: '💬 New Message',
-    call_ended: '📞 Call Ended',
-    system_alert: '⚠️ System Alert',
+    intervention_request: '🚨 Solicitud de intervención',
+    intervention_accepted: '✅ Intervención aceptada',
+    new_message: '💬 Nuevo mensaje',
+    call_ended: '📞 Llamada finalizada',
+    system_alert: '⚠️ Alerta del sistema',
   };
   
   return `
@@ -204,7 +204,7 @@ function generateEmailTemplate(payload: NotificationPayload): string {
           </div>
         </div>
         <div class="footer">
-          <p>UniTEC AI Front Desk - Automated Notification</p>
+          <p>Recepción AI UniTEC — Notificación automática</p>
         </div>
       </div>
     </body>
@@ -214,41 +214,47 @@ function generateEmailTemplate(payload: NotificationPayload): string {
 
 function generateEmailSubject(payload: NotificationPayload): string {
   const subjects = {
-    intervention_request: `[${payload.priority.toUpperCase()}] Customer Needs Human Assistance`,
-    intervention_accepted: `Staff Taking Over Conversation`,
-    new_message: `New Message from ${payload.customerName || 'Customer'}`,
-    call_ended: `Call Ended - Session ${payload.sessionId}`,
-    system_alert: `[${payload.priority.toUpperCase()}] System Alert`,
+    intervention_request: `[${payload.priority.toUpperCase()}] El cliente necesita un asesor humano`,
+    intervention_accepted: `El equipo tomó la conversación`,
+    new_message: `Nuevo mensaje de ${payload.customerName || 'un cliente'}`,
+    call_ended: `Llamada finalizada — sesión ${payload.sessionId}`,
+    system_alert: `[${payload.priority.toUpperCase()}] Alerta del sistema`,
   };
   return subjects[payload.type];
 }
 
 function generateTelegramMessage(payload: NotificationPayload): string {
-  const icons = {
-    intervention_request: '🚨',
-    intervention_accepted: '✅',
-    new_message: '💬',
-    call_ended: '📞',
-    system_alert: '⚠️',
+  const titles = {
+    intervention_request: '🚨 SOLICITUD DE INTERVENCIÓN',
+    intervention_accepted: '✅ INTERVENCIÓN ACEPTADA',
+    new_message: '💬 NUEVO MENSAJE',
+    call_ended: '📞 LLAMADA FINALIZADA',
+    system_alert: '⚠️ ALERTA DEL SISTEMA',
   };
-  
+  const priorityLabel: Record<string, string> = {
+    low: 'BAJA',
+    medium: 'MEDIA',
+    high: 'ALTA',
+    urgent: 'URGENTE',
+  };
+
   const lines = [
-    `<b>${icons[payload.type]} ${payload.type.replace('_', ' ').toUpperCase()}</b>`,
+    `<b>${titles[payload.type] || payload.type}</b>`,
     ``,
-    `<b>Priority:</b> ${payload.priority.toUpperCase()}`,
-    `<b>Session:</b> ${payload.sessionId}`,
+    `<b>Prioridad:</b> ${priorityLabel[payload.priority] || payload.priority.toUpperCase()}`,
+    `<b>Sesión:</b> ${payload.sessionId}`,
   ];
-  
+
   if (payload.customerName) {
-    lines.push(`<b>Customer:</b> ${payload.customerName}`);
+    lines.push(`<b>Cliente:</b> ${payload.customerName}`);
   }
-  
+
   if (payload.message) {
-    lines.push(`<b>Message:</b> ${payload.message.substring(0, 200)}${payload.message.length > 200 ? '...' : ''}`);
+    lines.push(`<b>Mensaje:</b> ${payload.message.substring(0, 200)}${payload.message.length > 200 ? '...' : ''}`);
   }
-  
-  lines.push(`<b>Time:</b> ${new Date(payload.timestamp).toLocaleString()}`);
-  lines.push(`<a href="${window.location.origin}/admin">View Dashboard</a>`);
-  
+
+  lines.push(`<b>Hora:</b> ${new Date(payload.timestamp).toLocaleString('es-CO', { timeZone: 'America/Bogota' })}`);
+  lines.push(`<a href="${window.location.origin}/admin">Ver panel</a>`);
+
   return lines.join('\n');
 }
