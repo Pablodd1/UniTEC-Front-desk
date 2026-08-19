@@ -28,8 +28,8 @@ export function invalidateTrainingCache() {
   trainingCache = { data: '', fetchedAt: 0 };
 }
 
-export async function getSharedTraining() {
-  if (Date.now() - trainingCache.fetchedAt < TRAINING_TTL_MS && trainingCache.data !== '') {
+export async function getSharedTraining({ force = false } = {}) {
+  if (!force && Date.now() - trainingCache.fetchedAt < TRAINING_TTL_MS && trainingCache.data !== '') {
     return trainingCache.data;
   }
   try {

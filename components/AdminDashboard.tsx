@@ -487,8 +487,14 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({
       try { await saveSharedTrainingData(trainingData); } catch { /* server write is source of truth */ }
       try { await saveAppConfig({ trainingData }); } catch { /* optional per-user copy */ }
       try { window.localStorage.setItem('unitec_training_data', trainingData); } catch { /* ignore */ }
-      setTrainingSaveStatus('ok');
-      setTrainingSaveMessage('Saved. The assistant will use this information on the next message.');
+      setTrainingSaveStatus(json.loaded === false || json.telegram?.sent === false ? 'error' : 'ok');
+      if (json.loaded === false) {
+        setTrainingSaveMessage(json.message || 'Saved, but reload did not match.');
+      } else if (json.telegram?.sent) {
+        setTrainingSaveMessage('Accepted and loaded. Telegram approval sent. Ready for every client question.');
+      } else {
+        setTrainingSaveMessage(`Accepted and loaded, but Telegram was not sent: ${json.telegram?.error || 'not configured'}. The assistant will still use this on the next message.`);
+      }
     } catch (e: any) {
       setTrainingSaveStatus('error');
       setTrainingSaveMessage(e?.message || 'Could not save training. Try again.');
