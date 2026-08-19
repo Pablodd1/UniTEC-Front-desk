@@ -13,45 +13,14 @@ function isRateLimited(ip, limit = 120, windowMs = 60000) {
 // alerts BEFORE the AI context fills up and slows or stops the bot. Fire-and-forget so it
 // never adds latency to the user's chat response.
 import { inspectConversation } from './health.js';
-
-// Shared training data from Firestore config/main — the dashboard's Training module
-// writes here; injecting it server-side makes training reach the bot on EVERY origin
-// (including embedded widgets) without depending on browser localStorage.
+import { getSharedTraining } from './shared-training.js';
 import { createRequire } from 'module';
 const require_ = createRequire(import.meta.url);
 const firebaseConfig = require_('../firebase-applet-config.json');
 
-let trainingCache = { data: '', fetchedAt: 0 };
-const TRAINING_TTL_MS = 5 * 60 * 1000; // re-fetch every 5 min
-
-async function getSharedTraining() {
-  if (Date.now() - trainingCache.fetchedAt < TRAINING_TTL_MS && trainingCache.data !== '') {
-    return trainingCache.data;
-  }
-  try {
-    const apiKey = firebaseConfig.apiKey;
-    const projectId = firebaseConfig.projectId;
-    const authRes = await fetch(`https://identitytoolkit.googleapis.com/v1/accounts:signUp?key=${apiKey}`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ returnSecureToken: true }),
-    });
-    if (!authRes.ok) return trainingCache.data;
-    const { idToken } = await authRes.json();
-    const docRes = await fetch(
-      `https://firestore.googleapis.com/v1/projects/${projectId}/databases/(default)/documents/config/main`,
-      { headers: { Authorization: `Bearer ${idToken}` } }
-    );
-    if (!docRes.ok) return trainingCache.data;
-    const doc = await docRes.json();
-    const data = doc?.fields?.trainingData?.stringValue || '';
-    trainingCache = { data, fetchedAt: Date.now() };
-    return data;
-  } catch (e) {
-    console.warn('getSharedTraining failed:', e?.message);
-    return trainingCache.data;
-  }
-}
+// Shared training data from Firestore config/main — the dashboard's Training module
+// writes here via /api/training; injecting it server-side makes training reach the bot
+// on EVERY origin (including embedded widgets) without depending on browser localStorage.
 
 // ── Server-side session/message recording ─────────────────────────────
 // The client-side recording was racy (setDoc full-replace wiped counters,
@@ -275,7 +244,7 @@ You are the professional AI Front Desk Assistant and Senior Sales Representative
 
     try {
       const sharedTraining = await getSharedTraining();
-      if (sharedTraining && sharedTraining.length > 30 && !instructions.includes('[CUSTOM MODEL TRAINING]')) {
+      if (sharedTraining && sharedTraining.trim().length > 0 && !instructions.includes('[CUSTOM MODEL TRAINING]')) {
         instructions += `\n\n[CUSTOM MODEL TRAINING - FOLLOW THESE PAUTAS/RESPONSE GUIDELINES EXACTLY]:\n${sharedTraining}`;
       }
     } catch (e) {

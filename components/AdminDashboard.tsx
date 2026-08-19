@@ -118,6 +118,8 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({
   // Model Training State
   const [trainingData, setTrainingData] = useState<string>('');
   const [isSavingTraining, setIsSavingTraining] = useState(false);
+  const [trainingSaveStatus, setTrainingSaveStatus] = useState<'idle' | 'ok' | 'error'>('idle');
+  const [trainingSaveMessage, setTrainingSaveMessage] = useState('');
 
   // Visuals State
   const [imagePrompt, setImagePrompt] = useState('');
@@ -224,14 +226,23 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({
       setEscalaConfig(escala);
 
       const config = await getAppConfig();
-      // Load training from the SHARED doc (what the bot reads) — falls back to per-user copy
-      const sharedTraining = await getSharedTrainingData();
-      if (sharedTraining && sharedTraining.length > 50) {
-        setTrainingData(sharedTraining);
-      } else if (config && config.trainingData && config.trainingData.length > 50) {
-        setTrainingData(config.trainingData);
-      } else {
-        setTrainingData("");
+      // Load what the bot actually reads — /api/training is the same store /api/chat injects.
+      try {
+        const res = await fetch('/api/training');
+        const json = await res.json();
+        if (res.ok && typeof json.trainingData === 'string' && json.trainingData.length > 0) {
+          setTrainingData(json.trainingData);
+        } else {
+          const sharedTraining = await getSharedTrainingData();
+          if (sharedTraining) setTrainingData(sharedTraining);
+          else if (config?.trainingData) setTrainingData(config.trainingData);
+          else setTrainingData('');
+        }
+      } catch {
+        const sharedTraining = await getSharedTrainingData();
+        if (sharedTraining) setTrainingData(sharedTraining);
+        else if (config?.trainingData) setTrainingData(config.trainingData);
+        else setTrainingData('');
       }
       if (config) {
         if (config.geminiApiKey) {
@@ -461,14 +472,29 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({
 
   const handleSaveTraining = async () => {
     setIsSavingTraining(true);
-    // Save to the SHARED config/main doc — this is what /api/chat injects into
-    // every AI call, so the training reaches the bot on ALL origins & embeds.
-    await saveSharedTrainingData(trainingData);
-    // Also keep the legacy per-user copy for backwards compatibility
-    await saveAppConfig({ trainingData });
-    // And sync localStorage so the CURRENT device picks it up instantly
-    try { window.localStorage.setItem('unitec_training_data', trainingData); } catch (e) { /* ignore */ }
-    setTimeout(() => setIsSavingTraining(false), 1000);
+    setTrainingSaveStatus('idle');
+    setTrainingSaveMessage('');
+    try {
+      const res = await fetch('/api/training', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ trainingData }),
+      });
+      const json = await res.json().catch(() => ({}));
+      if (!res.ok || json.ok === false) {
+        throw new Error(json.error || `Save failed (${res.status})`);
+      }
+      try { await saveSharedTrainingData(trainingData); } catch { /* server write is source of truth */ }
+      try { await saveAppConfig({ trainingData }); } catch { /* optional per-user copy */ }
+      try { window.localStorage.setItem('unitec_training_data', trainingData); } catch { /* ignore */ }
+      setTrainingSaveStatus('ok');
+      setTrainingSaveMessage('Saved. The assistant will use this information on the next message.');
+    } catch (e: any) {
+      setTrainingSaveStatus('error');
+      setTrainingSaveMessage(e?.message || 'Could not save training. Try again.');
+    } finally {
+      setIsSavingTraining(false);
+    }
   };
 
   const handleGenerateImage = async () => {
@@ -1094,12 +1120,17 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({
                             <label className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Knowledge Base Content</label>
                             <textarea
                                 value={trainingData}
-                                onChange={(e) => setTrainingData(e.target.value)}
+                                onChange={(e) => { setTrainingData(e.target.value); setTrainingSaveStatus('idle'); }}
                                 className="w-full h-96 p-4 bg-slate-50 border border-slate-200 rounded-xl text-sm text-slate-700 font-mono focus:ring-2 focus:ring-brand-500 outline-none resize-none"
                                 placeholder="Enter custom instructions, FAQs, or product details here..."
                             />
+                            {trainingSaveMessage && (
+                                <p className={`text-xs font-bold ${trainingSaveStatus === 'ok' ? 'text-emerald-600' : 'text-red-600'}`}>
+                                    {trainingSaveMessage}
+                                </p>
+                            )}
                             <p className="text-[10px] text-slate-400 italic">
-                                This content will be injected into the system prompt for both Chat and Voice interactions.
+                                This content is saved to the shared knowledge base and injected into Chat and Voice on the next message.
                             </p>
                         </div>
                         
