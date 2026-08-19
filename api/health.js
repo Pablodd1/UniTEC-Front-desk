@@ -71,15 +71,15 @@ export function getHealth() {
 async function fireAlert(severity, payload, meta) {
   const pct = Math.round((payload.contextTokens / CONTEXT_BUDGET) * 1000) / 10;
   const text = (
-    `<b>🧠 UNITEC AI CONTEXT ${severity === 'critical' ? 'CRITICAL' : 'WARNING'}</b>\n\n` +
-    `<b>Conversation context at ${pct}%</b> of the model's memory.\n` +
-    `<b>Tokens:</b> ${payload.contextTokens.toLocaleString()}\n` +
-    `<b>Messages in this conversation:</b> ${payload.conversationMsgs}\n` +
-    `<b>Brand:</b> ${meta.brand || 'unknown'}\n` +
-    `<b>Time:</b> ${new Date().toISOString()}\n\n` +
+    `<b>🧠 MEMORIA DEL ASISTENTE ${severity === 'critical' ? 'CRÍTICA' : 'EN ALERTA'}</b>\n\n` +
+    `<b>El contexto de la conversación está al ${pct}%</b> de la memoria del modelo.\n` +
+    `<b>Tokens:</b> ${payload.contextTokens.toLocaleString('es-CO')}\n` +
+    `<b>Mensajes en esta conversación:</b> ${payload.conversationMsgs}\n` +
+    `<b>Marca:</b> ${meta.brand || 'desconocida'}\n` +
+    `<b>Hora:</b> ${new Date().toISOString()}\n\n` +
     (severity === 'critical'
-      ? `⚠️ The bot risks <b>stopping or slowing</b> soon. Consider ending/reassigning this conversation or asking the user to start fresh.`
-      : `🔸 Head this off now — cap the transcript or reassign before it hits the limit and the bot slows down.`)
+      ? `⚠️ El bot puede <b>detenerse o volverse lento</b> pronto. Cierre o reasigne esta conversación, o pida al cliente que inicie de nuevo.`
+      : `🔸 Actúe ahora: recorte el historial o reasigne antes de que se llene la memoria y el bot se ralentice.`)
   );
 
   const results = {};
@@ -119,8 +119,8 @@ async function fireAlert(severity, payload, meta) {
         body: JSON.stringify({
           from: 'UniTEC AI Desk <onboarding@resend.dev>',
           to: [adminEmail],
-          subject: `[${severity.toUpperCase()}] UniTEC AI context ${pct}% — bot at risk of slowdown`,
-          html: `<h2>🧠 UniTEC AI Context ${severity.toUpperCase()}</h2><p>Conversation context at <b>${pct}%</b> of the model memory.</p><p>Tokens: <b>${payload.contextTokens.toLocaleString()}</b></p><p>Messages: <b>${payload.conversationMsgs}</b></p><p>Brand: ${meta.brand || 'unknown'}</p><p>Time: ${new Date().toISOString()}</p>`,
+          subject: `[${severity === 'critical' ? 'CRÍTICO' : 'ALERTA'}] Memoria del asistente UniTEC al ${pct}%`,
+          html: `<h2>🧠 Memoria del asistente UniTEC — ${severity === 'critical' ? 'CRÍTICO' : 'ALERTA'}</h2><p>El contexto de la conversación está al <b>${pct}%</b> de la memoria del modelo.</p><p>Tokens: <b>${payload.contextTokens.toLocaleString('es-CO')}</b></p><p>Mensajes: <b>${payload.conversationMsgs}</b></p><p>Marca: ${meta.brand || 'desconocida'}</p><p>Hora: ${new Date().toISOString()}</p>`,
         }),
         signal: AbortSignal.timeout(8000),
       });
@@ -137,7 +137,7 @@ async function fireAlert(severity, payload, meta) {
         const r = await fetch('https://api.sent.dm/v3/messages', {
           method: 'POST',
           headers: { 'x-api-key': apiKey, 'Content-Type': 'application/json' },
-          body: JSON.stringify({ to: [adminPhone], text: `🧠 UNITEC AI Context ${pct}% (${severity}) - conversational memory filling up - bot may slow. Tokens ${payload.contextTokens.toLocaleString()} - Msgs ${payload.conversationMsgs}`, channel: ['whatsapp', 'sms'] }),
+          body: JSON.stringify({ to: [adminPhone], text: `🧠 Memoria del asistente UniTEC al ${pct}% (${severity === 'critical' ? 'crítico' : 'alerta'}). La conversación se está llenando y el bot puede volverse lento. Tokens ${payload.contextTokens.toLocaleString('es-CO')} — Mensajes ${payload.conversationMsgs}`, channel: ['whatsapp', 'sms'] }),
           signal: AbortSignal.timeout(8000),
         });
         results.whatsapp = r.ok || r.status === 202;

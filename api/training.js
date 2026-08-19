@@ -35,24 +35,24 @@ export default async function handler(req, res) {
       const preview = (reloaded || '').trim().slice(0, 420);
       const telegramText = loaded
         ? [
-            '✅ <b>TRAINING ACCEPTED</b>',
+            '✅ <b>ENTRENAMIENTO ACEPTADO</b>',
             '',
-            'Status: saved + reloaded from live knowledge base',
-            'Ready: YES — used on every client question (chat + voice)',
-            `Chars: ${saved.length}`,
-            `Updated: ${saved.updatedAt}`,
+            'Estado: guardado y recargado desde la base de conocimiento en vivo',
+            'Listo: SÍ — se usa en cada pregunta del cliente (chat y voz)',
+            `Caracteres: ${saved.length}`,
+            `Actualizado: ${saved.updatedAt}`,
             '',
-            '<b>Preview</b>',
+            '<b>Vista previa</b>',
             `<pre>${escapeHtml(preview)}${(reloaded || '').length > 420 ? '…' : ''}</pre>`,
             '',
-            'The Front Desk assistant will follow this on the next message.',
+            'El asistente de recepción seguirá estas pautas en el próximo mensaje.',
           ].join('\n')
         : [
-            '⚠️ <b>TRAINING SAVE MISMATCH</b>',
+            '⚠️ <b>ENTRENAMIENTO NO COINCIDE</b>',
             '',
-            'Write succeeded but reload did not match. Do not assume it is live.',
-            `Wrote: ${trainingData.length} chars · Reloaded: ${(reloaded || '').length} chars`,
-            `Updated: ${saved.updatedAt}`,
+            'Se guardó, pero la recarga no coincide. No asuma que ya está en vivo.',
+            `Escrito: ${trainingData.length} caracteres · Recargado: ${(reloaded || '').length} caracteres`,
+            `Actualizado: ${saved.updatedAt}`,
           ].join('\n');
 
       let telegram = { sent: false };
@@ -67,9 +67,9 @@ export default async function handler(req, res) {
         loaded,
         message: loaded
           ? (telegram.sent
-            ? 'Training accepted, loaded, and Telegram approval sent. Ready for every client question.'
-            : 'Training accepted and loaded. Telegram approval could not be sent.')
-          : 'Saved, but reload did not match. Check Telegram / try again.',
+            ? 'Entrenamiento aceptado, cargado y alerta de Telegram enviada. Listo para cada pregunta del cliente.'
+            : 'Entrenamiento aceptado y cargado. No se pudo enviar la alerta de Telegram.')
+          : 'Se guardó, pero la recarga no coincide. Revise Telegram o intente de nuevo.',
         telegram,
         ...saved,
       });

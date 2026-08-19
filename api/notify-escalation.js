@@ -222,28 +222,29 @@ async function sendWhatsAppAndSMS(phones, text) {
 // --- Templates ---
 function buildTelegramMessage(d) {
   const icon = d.type === 'quote' ? '💰' : d.type === 'staff' ? '🧑‍💼' : '🚨';
+  const typeLabel = d.type === 'quote' ? 'COTIZACIÓN' : d.type === 'staff' ? 'ASESOR HUMANO' : 'ESCALAMIENTO';
   const lines = [
-    `<b>${icon} ESCALATION ALERT</b>`,
+    `<b>${icon} ALERTA DE ESCALAMIENTO</b>`,
     ``,
-    `<b>Type:</b> ${d.type.toUpperCase()}`,
-    `<b>Customer:</b> ${d.customerName || 'Unknown'}`,
-    `<b>Phone:</b> ${d.customerPhone || 'Not provided'}`,
+    `<b>Tipo:</b> ${typeLabel}`,
+    `<b>Cliente:</b> ${d.customerName || 'Desconocido'}`,
+    `<b>Teléfono:</b> ${d.customerPhone || 'No indicado'}`,
   ];
-  if (d.customerEmail) lines.push(`<b>Email:</b> ${d.customerEmail}`);
+  if (d.customerEmail) lines.push(`<b>Correo:</b> ${d.customerEmail}`);
   lines.push(``);
-  lines.push(`<b>Message:</b>`);
+  lines.push(`<b>Mensaje:</b>`);
   lines.push(d.message ? d.message.substring(0, 500) : 'N/A');
   lines.push(``);
-  lines.push(`<b>Brand:</b> ${d.brand || 'Unknown'}`);
-  lines.push(`<b>Session:</b> ${d.sessionId || 'N/A'}`);
-  lines.push(`<b>Time:</b> ${new Date(d.timestamp).toLocaleString()}`);
-  if (d.dashboardUrl) lines.push(`<a href="${d.dashboardUrl}">📋 Take over in Dashboard</a>`);
+  lines.push(`<b>Marca:</b> ${d.brand || 'Desconocida'}`);
+  lines.push(`<b>Sesión:</b> ${d.sessionId || 'N/A'}`);
+  lines.push(`<b>Hora:</b> ${new Date(d.timestamp).toLocaleString('es-CO', { timeZone: 'America/Bogota' })}`);
+  if (d.dashboardUrl) lines.push(`<a href="${d.dashboardUrl}">📋 Tomar el chat en el panel</a>`);
   return lines.join('\n');
 }
 
 function buildEmailHtml(d) {
   const color = d.priority === 'urgent' ? '#dc2626' : d.priority === 'high' ? '#ea580c' : '#ca8a04';
-  const title = d.type === 'quote' ? '💰 Quote Request' : d.type === 'staff' ? '🧑‍💼 Staff Requested' : '🚨 Escalation';
+  const title = d.type === 'quote' ? '💰 Solicitud de cotización' : d.type === 'staff' ? '🧑‍💼 Cliente pidió un asesor' : '🚨 Escalamiento';
   return `<!DOCTYPE html><html><head><style>
   body{font-family:Arial,sans-serif;line-height:1.6;color:#333}
   .container{max-width:600px;margin:0 auto;padding:20px}
@@ -254,18 +255,18 @@ function buildEmailHtml(d) {
   </style></head><body><div class="container">
   <div class="header"><h2>${title}</h2></div>
   <div class="content">
-  <p><strong>Customer:</strong> ${d.customerName || 'Unknown'}</p>
-  <p><strong>Phone:</strong> ${d.customerPhone || 'Not provided'}</p>
-  ${d.customerEmail ? `<p><strong>Email:</strong> ${d.customerEmail}</p>` : ''}
-  <p><strong>Brand:</strong> ${d.brand || 'Unknown'}</p>
-  <p><strong>Message:</strong></p>
+  <p><strong>Cliente:</strong> ${d.customerName || 'Desconocido'}</p>
+  <p><strong>Teléfono:</strong> ${d.customerPhone || 'No indicado'}</p>
+  ${d.customerEmail ? `<p><strong>Correo:</strong> ${d.customerEmail}</p>` : ''}
+  <p><strong>Marca:</strong> ${d.brand || 'Desconocida'}</p>
+  <p><strong>Mensaje:</strong></p>
   <blockquote>${d.message || 'N/A'}</blockquote>
   <div class="meta">
-  <p>Session: ${d.sessionId || 'N/A'}</p>
-  <p>Time: ${new Date(d.timestamp).toLocaleString()}</p>
-  ${d.dashboardUrl ? `<p><a href="${d.dashboardUrl}">Open Dashboard</a></p>` : ''}
+  <p>Sesión: ${d.sessionId || 'N/A'}</p>
+  <p>Hora: ${new Date(d.timestamp).toLocaleString('es-CO', { timeZone: 'America/Bogota' })}</p>
+  ${d.dashboardUrl ? `<p><a href="${d.dashboardUrl}">Abrir panel</a></p>` : ''}
   </div>
-  </div><div class="footer"><p>UniTEC AI Front Desk — Automated Escalation</p></div>
+  </div><div class="footer"><p>Recepción AI UniTEC — Escalamiento automático</p></div>
   </div></body></html>`;
 }
 
@@ -325,7 +326,7 @@ export default async function handler(req, res) {
   const [telegram, email, twilioSms, twilioWa, whatsapp] = await Promise.allSettled([
     sendTelegram(buildTelegramMessage(d)),
     sendEmail(
-      `[${d.priority.toUpperCase()}] ${d.type === 'quote' ? 'Quote Request' : d.type === 'staff' ? 'Staff Requested' : 'Escalation'} — ${customerName || 'Customer'}`,
+      `[${d.priority.toUpperCase()}] ${d.type === 'quote' ? 'Solicitud de cotización' : d.type === 'staff' ? 'Cliente pidió un asesor' : 'Escalamiento'} — ${customerName || 'Cliente'}`,
       buildEmailHtml(d)
     ),
     sendTwilioSMS(targetPhones, buildWhatsAppText(d)),
