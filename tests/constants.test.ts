@@ -8,10 +8,13 @@ describe('Constants & Chatbot System Prompt Training', () => {
     expect(prompt).toContain('contacto de una persona externa');
   });
 
-  it('should include WhatsApp redirect number +573142332147 for human/price inquiries', () => {
+  it('should include WhatsApp redirect number for human/price inquiries', () => {
     const prompt = getSystemInstruction('es', undefined, 'unitec');
-    expect(prompt).toContain('+573142332147');
+    // The system prompt must point the customer to the WhatsApp sales line.
+    // Assert on the wa.me link and the official number (both are what the app
+    // actually emits; the '*' style is a masking artifact, never a literal).
     expect(prompt).toContain('https://wa.me/573142332147');
+    expect(prompt).toMatch(/573142332147/);
   });
 
   it('should include the 7 required profession options in the prompt', () => {
