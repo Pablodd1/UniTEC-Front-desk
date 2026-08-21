@@ -698,9 +698,11 @@ const ChatTab: React.FC<ChatTabProps> = ({ quickActions, initialMessage, emergen
         console.error('Chat error detail:', error.message || String(error));
         
         // Friendly message for customers - no technical details
+        // Give a clear, actionable retry message. If escalations are enabled,
+        // also surface the WhatsApp fallback so the customer is never stuck.
         let errorText = language === 'en'
-          ? 'Oops! I had a temporary hiccup. Please send your message again, I am ready to help!'
-          : 'Ups, tuve un problema momentaneo. Por favor, envia tu mensaje de nuevo, estoy aqui para ayudarte!';
+          ? 'Oops! I lost the connection for a moment. Please send your message again — I am here to help! If it keeps happening, reach us on WhatsApp: https://wa.me/573142332147'
+          : 'Ups, tuve un problema momentaneo con la conexion. Por favor envia tu mensaje de nuevo, estoy aqui para ayudarte! Si continua fallando, escribenos por WhatsApp: https://wa.me/573142332147';
 
         // Show inline warning in chat history, but do not set global error to keep the input enabled for retry
         setMessages(prev => [...prev, {

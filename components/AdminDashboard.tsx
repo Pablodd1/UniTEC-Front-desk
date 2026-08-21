@@ -1312,30 +1312,48 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({
                                         const isSelected = selectedSessionId === session.id;
                                         const isCall = session.source === 'phone';
                                         return (
-                                            <button
+                                            <div
                                                 key={session.id}
+                                                className={`w-full p-4 rounded-xl border text-left transition-all flex flex-col gap-2 cursor-pointer ${isSelected ? 'border-brand-500 bg-brand-50/20 shadow-sm' : 'border-slate-100 hover:border-slate-200 bg-white'}`}
                                                 onClick={() => setselectedSessionId(session.id)}
-                                                className={`w-full p-4 rounded-xl border text-left transition-all flex flex-col gap-2 ${isSelected ? 'border-brand-500 bg-brand-50/20 shadow-sm' : 'border-slate-100 hover:border-slate-200 bg-white'}`}
                                             >
-                                                <div className="flex justify-between items-center">
-                                                    <div className="flex items-center gap-2 max-w-[65%]">
-                                                        {isCall ? <Phone size={12} className="text-orange-500" /> : <MessageSquare size={12} className="text-blue-500" />}
-                                                        <span className="text-[10px] font-black uppercase text-slate-700 font-mono truncate">{session.customerName || session.id}</span>
+                                                <div className="flex justify-between items-center gap-2">
+                                                    <div className="flex items-center gap-2 min-w-0">
+                                                        {isCall ? <Phone size={12} className="text-orange-500 shrink-0" /> : <MessageSquare size={12} className="text-blue-500 shrink-0" />}
+                                                        <span className="text-[10px] font-black uppercase text-slate-700 font-mono truncate">
+                                                            {session.extractedData?.name || session.customerName || 'Visitante'}
+                                                        </span>
                                                     </div>
-                                                    <span className={`text-[8px] font-black uppercase px-2 py-0.5 rounded-full border ${
+                                                    <span className={`text-[8px] font-black uppercase px-2 py-0.5 rounded-full border shrink-0 ${
                                                         status === 'human_assigned' ? 'bg-red-50 text-red-500 border-red-100' :
                                                         status === 'completed' ? 'bg-slate-100 text-slate-500 border-slate-200' : 'bg-emerald-50 text-emerald-500 border-emerald-100'
                                                     }`}>
                                                         {status === 'human_assigned' ? 'Staff' : status === 'completed' ? 'Closed' : 'AI'}
                                                     </span>
                                                 </div>
-                                                <p className="text-[9px] text-slate-400 font-bold">{new Date(session.lastUpdated).toLocaleTimeString()}</p>
-                                                {session.intentCategory && (
+                                                {/* COPYABLE SESSION ID — the handle you use to find/open this conversation */}
+                                                <div className="flex items-center gap-1 mt-0.5">
+                                                    <code className="text-[9px] font-mono text-slate-500 bg-slate-100 rounded px-1.5 py-0.5 truncate select-all">{session.id}</code>
+                                                    <button
+                                                        title="Copiar identificador de la conversación"
+                                                        onClick={(e) => { e.stopPropagation(); handleCopy(session.id, `conv-${session.id}`); }}
+                                                        className="text-[9px] font-black text-brand-600 hover:text-brand-800 px-1 py-0.5 rounded border border-slate-200 hover:bg-brand-50 shrink-0"
+                                                    >
+                                                        {copyStatus === `conv-${session.id}` ? <Check size={10} className="inline" /> : <Copy size={10} className="inline" />} copiar id
+                                                    </button>
+                                                </div>
+                                                <div className="flex items-center justify-between gap-2">
+                                                    <p className="text-[9px] text-slate-400 font-bold">{new Date(session.lastUpdated).toLocaleTimeString()}</p>
+                                                    <span className="text-[8px] text-slate-400 font-bold">
+                                                        {session.analytics?.messageCount != null ? `${session.analytics.messageCount} msgs` : ''}
+                                                    </span>
+                                                </div>
+                                                {(session.intentCategory || session.topics?.length) && (
                                                     <span className="text-[8px] font-bold text-brand-600 bg-brand-50 border border-brand-100 self-start px-2 py-0.5 rounded">
-                                                        Intent: {session.intentCategory}
+                                                        {(session.intentCategory || session.topics?.join(', '))}
                                                     </span>
                                                 )}
-                                            </button>
+                                            </div>
                                         );
                                     })
                                 )}
@@ -1347,10 +1365,17 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({
                                     <div className="flex-1 flex flex-col overflow-hidden h-full">
                                         <div className="bg-white border-b border-slate-100 p-4 flex justify-between items-center shrink-0">
                                             <div>
-                                                <p className="text-[10px] font-black text-slate-700 uppercase font-mono">{selectedSession.id}</p>
+                                                <p className="text-[10px] font-black text-slate-700 uppercase font-mono truncate max-w-[260px]">{selectedSession.id}</p>
                                                 <p className="text-[8px] text-slate-400 font-bold mt-0.5">Status: {selectedSession.status || 'active'}</p>
                                             </div>
-                                            <div className="flex gap-2">
+                                            <div className="flex items-center gap-2">
+                                                <button
+                                                    onClick={() => handleCopy(selectedSession.id, 'detail-session-id')}
+                                                    className="flex items-center gap-1 text-[9px] font-black text-brand-600 hover:text-brand-800 px-2 py-1 rounded-lg border border-slate-200 hover:bg-brand-50"
+                                                    title="Copiar identificador de la conversación"
+                                                >
+                                                    {copyStatus === 'detail-session-id' ? <><Check size={10} className="inline" /> Copiado</> : <><Copy size={10} className="inline" /> Copiar ID</>}
+                                                </button>
                                                 {(selectedSession.status || 'active') === 'active' && (
                                                     <button
                                                         onClick={() => handleTakeOver(selectedSession.id)}
