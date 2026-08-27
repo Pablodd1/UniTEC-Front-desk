@@ -6,9 +6,11 @@ import { ConversationSession } from '../services/conversationService';
 interface AnalyticsDashboardProps {
   sessions: ConversationSession[];
   googleAnalyticsVisits?: string;
+  /** Fired when the user clicks the "Ver Conversación" hyperlink — opens that client's full chat history. */
+  onOpenConversation?: (session: ConversationSession) => void;
 }
 
-const AnalyticsDashboard: React.FC<AnalyticsDashboardProps> = ({ sessions, googleAnalyticsVisits }) => {
+const AnalyticsDashboard: React.FC<AnalyticsDashboardProps> = ({ sessions, googleAnalyticsVisits, onOpenConversation }) => {
   const [timeFilter, setTimeFilter] = useState<'all' | 'today' | 'week' | 'month'>('all');
   const [_liveTime, setLiveTime] = useState(new Date());
 
@@ -583,16 +585,26 @@ const AnalyticsDashboard: React.FC<AnalyticsDashboardProps> = ({ sessions, googl
                         </span>
                       </td>
                       <td className="px-4 py-3 text-right">
-                        <button
-                          onClick={() => {
-                            const details = `Lead de Cotización:\n----------------------\nNombre: ${name}\nTeléfono: ${phone}\nEmail: ${email}\nTipo: ${projectType}\nPresupuesto: ${budget}\nTiempo: ${timeline}\nMarca: ${s.brandId === 'unitec' ? 'UNITEC' : 'Building Innovation'}`;
-                            navigator.clipboard.writeText(details);
-                            alert('Detalles de contacto copiados al portapapeles.');
-                          }}
-                          className="px-3 py-1 bg-slate-100 hover:bg-brand-50 hover:text-brand-600 rounded-lg text-[10px] font-bold text-slate-600 transition-all active:scale-95"
-                        >
-                          Copiar Ficha
-                        </button>
+                        <div className="flex flex-col items-end gap-1.5">
+                          <button
+                            onClick={() => {
+                              const details = `Lead de Cotización:\n----------------------\nNombre: ${name}\nTeléfono: ${phone}\nEmail: ${email}\nTipo: ${projectType}\nPresupuesto: ${budget}\nTiempo: ${timeline}\nMarca: ${s.brandId === 'unitec' ? 'UNITEC' : 'Building Innovation'}`;
+                              navigator.clipboard.writeText(details);
+                              alert('Detalles de contacto copiados al portapapeles.');
+                            }}
+                            className="px-3 py-1 bg-slate-100 hover:bg-brand-50 hover:text-brand-600 rounded-lg text-[10px] font-bold text-slate-600 transition-all active:scale-95"
+                          >
+                            Copiar Ficha
+                          </button>
+                          <button
+                            type="button"
+                            onClick={() => onOpenConversation && onOpenConversation(s)}
+                            title="Ir al historial de la conversación de este cliente"
+                            className="inline-flex items-center gap-1 px-3 py-1 rounded-lg text-[10px] font-bold text-brand-600 bg-brand-50 hover:bg-brand-100 hover:text-brand-800 underline underline-offset-2 transition-all active:scale-95"
+                          >
+                            💬 Ver Conversación
+                          </button>
+                        </div>
                       </td>
                     </tr>
                   );

@@ -2077,6 +2077,7 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({
                 <div className="h-[calc(100vh-200px)] animate-in slide-in-from-bottom-2 duration-500">
                     <ConversationMonitor 
                         sessions={conversations}
+                        focusSessionId={_selectedConversation?.id ?? null}
                         onSelectSession={(session) => {
                             _setSelectedConversation(session);
                         }}
@@ -2102,7 +2103,23 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({
         case 'analytics':
             return (
                 <div className="h-[calc(100vh-200px)] animate-in slide-in-from-bottom-2 duration-500">
-                    <AnalyticsDashboard sessions={conversations} googleAnalyticsVisits={googleAnalyticsVisits} />
+                    <AnalyticsDashboard 
+                        sessions={conversations} 
+                        googleAnalyticsVisits={googleAnalyticsVisits}
+                        onOpenConversation={async (session) => {
+                            // Deep-link: set the session to open, then switch to the monitor view
+                            _setSelectedConversation(session);
+                            setActiveSubTab('conversations');
+                            // Activate: mark it as an active staff intervention (human takeover)
+                            if (session && session.id && session.status !== 'human_assigned') {
+                                try {
+                                    await updateSessionStatus(session.id, 'human_assigned', 'staff_001');
+                                } catch (e) {
+                                    console.error('Failed to take over session from analytics link', e);
+                                }
+                            }
+                        }}
+                    />
                 </div>
             );
             
