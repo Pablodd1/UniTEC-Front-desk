@@ -2106,10 +2106,18 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({
                     <AnalyticsDashboard 
                         sessions={conversations} 
                         googleAnalyticsVisits={googleAnalyticsVisits}
-                        onOpenConversation={(session) => {
+                        onOpenConversation={async (session) => {
                             // Deep-link: set the session to open, then switch to the monitor view
                             _setSelectedConversation(session);
                             setActiveSubTab('conversations');
+                            // Activate: mark it as an active staff intervention (human takeover)
+                            if (session && session.id && session.status !== 'human_assigned') {
+                                try {
+                                    await updateSessionStatus(session.id, 'human_assigned', 'staff_001');
+                                } catch (e) {
+                                    console.error('Failed to take over session from analytics link', e);
+                                }
+                            }
                         }}
                     />
                 </div>
