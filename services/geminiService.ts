@@ -128,7 +128,7 @@ export async function* sendMessageToGemini(
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ message, history, instructions, brandId, sessionId: currentSessionId || undefined }),
-        signal: AbortSignal.timeout(20000) // 20s — allows for cold start + AI latency
+        signal: AbortSignal.timeout(40000) // 40s — covers Vercel cold start (~15-20s) + AI latency, so a first-after-idle chat never shows "not responding"
       });
 
       if (proxyRes.status === 429) {
