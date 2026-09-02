@@ -1,4 +1,5 @@
-﻿import { getApiKey } from './geminiService';
+﻿// getApiKey removed 2026-09-02: Gemini health is checked server-side via
+// /api/system-health (the raw key no longer leaves the server).
 import { db } from '../firebase';
 import { getDoc, doc } from 'firebase/firestore';
 
@@ -126,32 +127,23 @@ const getContextHealth = async (): Promise<ContextStatus> => {
 };
 
 const checkGeminiStatus = async (): Promise<ServiceStatus> => {
-  const start = Date.now();
+  // 2026-09-02: the raw key no longer leaves the server (security fix — the
+  // /api/gemini-key endpoint is now admin-only). Health is checked server-side
+  // by /api/system-health, which returns status only, never the key.
   try {
-    const apiKey = await getApiKey();
-    if (!apiKey) {
-      return { status: 'down', latency: 0, lastChecked: new Date().toISOString(), error: 'No API key configured' };
+    const response = await fetch('/api/system-health', { cache: 'no-store' });
+    if (!response.ok) {
+      return { status: 'degraded', latency: 0, lastChecked: new Date().toISOString(), error: `HTTP ${response.status}` };
     }
-    
-    const isOpenRouter = apiKey.startsWith('sk-') || apiKey.includes('openrouter');
-    const endpoint = isOpenRouter 
-      ? 'https://openrouter.ai/api/v1/models'
-      : `https://generativelanguage.googleapis.com/v1beta/models?key=${apiKey}`;
-    const headers = isOpenRouter ? { 'Authorization': `Bearer ${apiKey}` } : undefined;
-    const response = await fetch(endpoint, {
-      method: 'GET',
-      headers: headers
-    });
-    
-    const latency = Date.now() - start;
-    
-    if (response.ok) {
-      return { status: 'up', latency, lastChecked: new Date().toISOString() };
-    } else {
-      return { status: 'degraded', latency, lastChecked: new Date().toISOString(), error: `HTTP ${response.status}` };
-    }
+    const data = await response.json();
+    return {
+      status: data.status || 'down',
+      latency: data.latency || 0,
+      lastChecked: data.lastChecked || new Date().toISOString(),
+      error: data.error
+    };
   } catch (e: any) {
-    return { status: 'down', latency: Date.now() - start, lastChecked: new Date().toISOString(), error: e.message };
+    return { status: 'down', latency: 0, lastChecked: new Date().toISOString(), error: e.message };
   }
 };
 
