@@ -471,6 +471,11 @@ export default async function handler(req, res) {
 
     let telegramBotToken = process.env.TELEGRAM_BOT_TOKEN || '';
     let telegramChatId = process.env.TELEGRAM_CHAT_ID || '';
+    // Personal/extra daily destinations — stored in separate config fields the client
+    // dashboard never reads or displays (added 2026-09-04 so the owner also receives
+    // the daily report without mixing credentials into the client's Telegram settings).
+    let telegramBotTokenExtra = '';
+    let telegramChatIdExtra = '';
     let telegramReportTime = '09:00';
     let googleAnalyticsVisits = '3188';
     let lastAnalyticsReportDate = '';
@@ -487,6 +492,8 @@ export default async function handler(req, res) {
       const fields = configData.fields || {};
       if (fields.telegramBotToken?.stringValue) telegramBotToken = fields.telegramBotToken.stringValue;
       if (fields.telegramChatId?.stringValue) telegramChatId = fields.telegramChatId.stringValue;
+      if (fields.telegramBotTokenExtra?.stringValue) telegramBotTokenExtra = fields.telegramBotTokenExtra.stringValue;
+      if (fields.telegramChatIdExtra?.stringValue) telegramChatIdExtra = fields.telegramChatIdExtra.stringValue;
       if (fields.telegramReportTime?.stringValue) telegramReportTime = fields.telegramReportTime.stringValue;
       if (fields.googleAnalyticsVisits?.stringValue) googleAnalyticsVisits = fields.googleAnalyticsVisits.stringValue;
       if (fields.lastAnalyticsReportDate?.stringValue) lastAnalyticsReportDate = fields.lastAnalyticsReportDate.stringValue;
@@ -593,40 +600,52 @@ export default async function handler(req, res) {
 
     const telegramResults = [];
     const telegramDocResults = [];
+    // Combined delivery list: primary (client config) + extra (owner's personal chat).
+    // Each extra entry carries its own bot token so no client credentials are mixed.
+    const allDestinations = [];
     if (telegramBotToken && telegramChatId) {
       const botTokens = telegramBotToken.split(',').map(t => t.trim()).filter(Boolean);
       const chatIds = telegramChatId.split(',').map(id => id.trim()).filter(Boolean);
-
       for (let i = 0; i < chatIds.length; i++) {
-        const chatId = chatIds[i];
-        const token = botTokens[i] || botTokens[0];
-        if (!token) continue;
+        allDestinations.push({ chatId: chatIds[i], token: botTokens[i] || botTokens[0], kind: 'client' });
+      }
+    }
+    if (telegramBotTokenExtra && telegramChatIdExtra) {
+      const extraBots = telegramBotTokenExtra.split(',').map(t => t.trim()).filter(Boolean);
+      const extraChats = telegramChatIdExtra.split(',').map(id => id.trim()).filter(Boolean);
+      for (let i = 0; i < extraChats.length; i++) {
+        allDestinations.push({ chatId: extraChats[i], token: extraBots[i] || extraBots[0], kind: 'extra' });
+      }
+    }
+
+    for (const dest of allDestinations) {
+      const { chatId, token } = dest;
+      if (!token) continue;
+      try {
+        const tgUrl = `https://api.telegram.org/bot${token}/sendMessage`;
+        const tgRes = await fetch(tgUrl, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ chat_id: chatId, text: reportText, parse_mode: 'HTML' })
+        });
+        const tgOk = tgRes.ok;
+        const tgData = await tgRes.json().catch(() => ({}));
+        telegramResults.push({ chatId, ok: tgOk, messageId: tgData?.result?.message_id, error: tgOk ? undefined : JSON.stringify(tgData).slice(0, 200) });
+      } catch (tgErr) {
+        console.error(`Telegram send failed for chat_id ${chatId}:`, tgErr);
+        telegramResults.push({ chatId, ok: false, error: String(tgErr).slice(0, 200) });
+      }
+      // Attach the Excel document right after the text report
+      if (excelBuffer) {
         try {
-          const tgUrl = `https://api.telegram.org/bot${token}/sendMessage`;
-          const tgRes = await fetch(tgUrl, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ chat_id: chatId, text: reportText, parse_mode: 'HTML' })
-          });
-          const tgOk = tgRes.ok;
-          const tgData = await tgRes.json().catch(() => ({}));
-          telegramResults.push({ chatId, ok: tgOk, messageId: tgData?.result?.message_id, error: tgOk ? undefined : JSON.stringify(tgData).slice(0, 200) });
-        } catch (tgErr) {
-          console.error(`Telegram send failed for chat_id ${chatId}:`, tgErr);
-          telegramResults.push({ chatId, ok: false, error: String(tgErr).slice(0, 200) });
-        }
-        // Attach the Excel document right after the text report
-        if (excelBuffer) {
-          try {
-            const docRes = await sendTelegramDocument(
-              token, chatId, excelFilename, excelBuffer,
-              `📎 ${isWeekly ? 'Reporte semanal' : 'Reporte diario'} ${dateLabel} — analítica real (Excel)`
-            );
-            telegramDocResults.push({ chatId, ...docRes });
-          } catch (docErr) {
-            console.error(`Telegram document send failed for chat_id ${chatId}:`, docErr);
-            telegramDocResults.push({ chatId, ok: false, error: String(docErr).slice(0, 200) });
-          }
+          const docRes = await sendTelegramDocument(
+            token, chatId, excelFilename, excelBuffer,
+            `📎 ${isWeekly ? 'Reporte semanal' : 'Reporte diario'} ${dateLabel} — analítica real (Excel)`
+          );
+          telegramDocResults.push({ chatId, ...docRes });
+        } catch (docErr) {
+          console.error(`Telegram document send failed for chat_id ${chatId}:`, docErr);
+          telegramDocResults.push({ chatId, ok: false, error: String(docErr).slice(0, 200) });
         }
       }
     }
