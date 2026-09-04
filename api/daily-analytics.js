@@ -634,6 +634,7 @@ export default async function handler(req, res) {
     // 8. Send email via Resend (if configured) with the Excel attached
     const RESEND_API_KEY = process.env.RESEND_API_KEY;
     const ADMIN_EMAIL = process.env.ADMIN_EMAIL || 'lidermarketingonline@espaciosimportados.com.co';
+    let emailResult = { configured: !!RESEND_API_KEY, ok: false };
     if (RESEND_API_KEY) {
       try {
         const emailBody = {
@@ -648,13 +649,17 @@ export default async function handler(req, res) {
             content: excelBuffer.toString('base64')
           }];
         }
-        await fetch('https://api.resend.com/emails', {
+        const emailRes = await fetch('https://api.resend.com/emails', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${RESEND_API_KEY}` },
           body: JSON.stringify(emailBody)
         });
+        emailResult.ok = emailRes.ok;
+        if (!emailRes.ok) emailResult.error = (await emailRes.text()).slice(0, 200);
+        else emailResult.to = ADMIN_EMAIL;
       } catch (emailErr) {
         console.error("Email send failed:", emailErr);
+        emailResult.error = String(emailErr).slice(0, 200);
       }
     }
 
@@ -665,7 +670,8 @@ export default async function handler(req, res) {
       period: isWeekly ? 'weekly' : 'daily',
       excelAttached: !!excelBuffer,
       telegram: telegramResults,
-      telegramDocuments: telegramDocResults
+      telegramDocuments: telegramDocResults,
+      email: emailResult
     });
 
   } catch (error) {
