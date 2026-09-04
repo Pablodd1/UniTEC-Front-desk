@@ -1,6 +1,7 @@
 import { createRequire } from 'module';
 const require = createRequire(import.meta.url);
 const firebaseConfig = require('../firebase-applet-config.json');
+import ExcelJS from 'exceljs';
 
 /** Format seconds into a human-readable string */
 function formatDuration(seconds) {
@@ -84,6 +85,105 @@ async function generateAIExecutiveSummary(sessions, metrics, apiKey) {
     console.error("Error generating executive summary:", e);
   }
   return '';
+}
+
+/** Build a styled Excel workbook (Buffer) with the real analytics for the period */
+async function buildDailyWorkbook(sessions, metrics, periodLabel, isWeekly) {
+  const wb = new ExcelJS.Workbook();
+  wb.creator = 'UniTEC AI Desk';
+  const DARK = '1F4E78', GREEN = '1E7A46', AMBER = 'B45309', RED = 'B91C1C', GRAY = '475569';
+
+  const headerStyle = (fill) => ({ font: { bold: true, color: { argb: 'FFFFFFFF' } }, fill: { type: 'pattern', pattern: 'solid', fgColor: { argb: fill } }, alignment: { vertical: 'middle' } });
+
+  // ── Hoja 1: Resumen ──
+  const ws1 = wb.addWorksheet('Resumen', { views: [{ state: 'frozen', ySplit: 1 }] });
+  ws1.columns = [{ width: 42 }, { width: 12 }, { width: 80 }];
+  ws1.getCell('A1').value = `UNITEC — Reporte ${isWeekly ? 'Semanal' : 'Diario'} Chatbot · ${periodLabel}`;
+  ws1.getCell('A1').font = { bold: true, size: 14, color: { argb: 'FFFFFFFF' } };
+  ws1.getCell('A1').fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: DARK } };
+  ws1.mergeCells('A1:C1');
+  ws1.getRow(1).height = 26;
+  ws1.getCell('A2').value = 'Métricas reales (solo sesiones donde el usuario escribió ≥1 mensaje; pruebas técnicas excluidas)';
+  ws1.getCell('A2').font = { size: 9, italic: true, color: { argb: GRAY } };
+  ws1.mergeCells('A2:C2');
+  const rows = [
+    ['Indicador', 'Valor', 'Nota'],
+    ['Sesiones en el período (cargas chatbot)', metrics.total, 'Total de conversaciones creadas.'],
+    ['Interacción REAL (usuario escribió)', metrics.realInteractions ?? 0, 'Base para conversión real.'],
+    ['Abrieron y NO escribieron (solo saludo)', metrics.welcomeOnly ?? 0, 'El bot guardó su saludo automático.'],
+    ['Sin mensaje guardado', metrics.noMessage ?? 0, 'Abrieron pero no se registró mensaje.'],
+    ['Pruebas técnicas excluidas', metrics.testCount ?? 0, 'Sesiones diag/test del desarrollo.'],
+    ['Solicitudes de cotización/precio', metrics.quoteRequested ?? 0, 'Detectadas por texto del usuario.'],
+    ['Completaron flujo', metrics.completed, 'Status completed.'],
+    ['Intervención humana', metrics.humanRequested, 'human_requested + human_assigned.'],
+    ['Tasa reales / cargas (%)', metrics.responseRate ?? '0.0', 'Interacciones reales ÷ cargas.'],
+    ['Msgs promedio usuario/chat real', metrics.avgMessages ?? '0', 'Solo interacciones reales.'],
+    ['Tiempo hasta primer mensaje', metrics.avgTimeToFirstMsg, 'Primer mensaje del usuario.'],
+  ];
+  let r = 3;
+  rows.forEach((row, i) => {
+    row.forEach((v, c) => { ws1.getCell(r, c + 1).value = v; });
+    if (i === 0) ws1.getRow(r).eachCell(cell => { cell.font = { bold: true, color: { argb: 'FFFFFFFF' } }; cell.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: DARK } }; });
+    else if (i === 2) ws1.getRow(r).eachCell(cell => { cell.font = { bold: true, color: { argb: RED } }; });
+    else if (i === 3 || i === 4) ws1.getRow(r).eachCell(cell => { cell.font = { color: { argb: AMBER } }; });
+    ws1.getRow(r).height = 18;
+    r++;
+  });
+
+  // ── Hoja 2: Interacciones reales ──
+  const ws2 = wb.addWorksheet('Interacciones reales', { views: [{ state: 'frozen', ySplit: 1 }] });
+  ws2.columns = [{ width: 16 }, { width: 28 }, { width: 18 }, { width: 22 }, { width: 14 }, { width: 70 }];
+  ws2.getRow(1).values = ['Fecha (COL)', 'Sesión', 'Teléfono', 'Nombre', 'Intención', 'Último mensaje del usuario'];
+  ws2.getRow(1).eachCell(cell => Object.assign(cell, { font: headerStyle(DARK).font, fill: headerStyle(DARK).fill }));
+  const realSessions = sessions
+    .filter(s => !isTestSession(s.id) && (s.analytics?.userMessageCount || 0) > 0)
+    .sort((a, b) => new Date(b.lastUpdated).getTime() - new Date(a.lastUpdated).getTime());
+  if (realSessions.length === 0) {
+    ws2.getCell('A2').value = 'No hubo interacciones reales en el período.';
+  } else {
+    realSessions.forEach((s, i) => {
+      const row = i + 2;
+      const dt = new Date(s.createdAt);
+      ws2.getCell('A' + row).value = dt.toLocaleString('es-CO', { timeZone: 'America/Bogota' });
+      ws2.getCell('B' + row).value = s.id;
+      ws2.getCell('C' + row).value = s.customerPhone || s.extractedData?.phone || '';
+      ws2.getCell('D' + row).value = s.customerName || s.extractedData?.name || '';
+      ws2.getCell('E' + row).value = classifyIntent(s.lastMessage || '');
+      ws2.getCell('F' + row).value = (s.lastMessage || '').slice(0, 300);
+      ws2.getRow(row).height = 30;
+    });
+  }
+
+  // ── Hoja 3: Todas las sesiones ──
+  const ws3 = wb.addWorksheet('Log sesiones', { views: [{ state: 'frozen', ySplit: 1 }] });
+  ws3.columns = [{ width: 16 }, { width: 30 }, { width: 12 }, { width: 10 }, { width: 12 }, { width: 20 }, { width: 70 }];
+  ws3.getRow(1).values = ['Fecha (COL)', 'Sesión', 'Mensajes', 'Del usuario', 'Marca', 'Nombre', 'Último mensaje'];
+  ws3.getRow(1).eachCell(cell => Object.assign(cell, { font: headerStyle(DARK).font, fill: headerStyle(DARK).fill }));
+  sessions.slice(0, 500).forEach((s, i) => {
+    const row = i + 2;
+    const dt = new Date(s.createdAt);
+    ws3.getCell('A' + row).value = dt.toLocaleString('es-CO', { timeZone: 'America/Bogota' });
+    ws3.getCell('B' + row).value = s.id;
+    ws3.getCell('C' + row).value = s.analytics?.messageCount || 0;
+    ws3.getCell('D' + row).value = s.analytics?.userMessageCount || 0;
+    ws3.getCell('E' + row).value = s.brandId || '';
+    ws3.getCell('F' + row).value = s.customerName || s.extractedData?.name || '';
+    ws3.getCell('G' + row).value = (s.lastMessage || '').slice(0, 300);
+  });
+
+  const buf = await wb.xlsx.writeBuffer();
+  return Buffer.from(buf);
+}
+
+/** Send an attached Excel document to a Telegram chat */
+async function sendTelegramDocument(botToken, chatId, filename, buffer, caption) {
+  const form = new FormData();
+  form.append('chat_id', String(chatId));
+  form.append('caption', caption || '');
+  form.append('document', new Blob([buffer], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' }), filename);
+  const res = await fetch(`https://api.telegram.org/bot${botToken}/sendDocument`, { method: 'POST', body: form });
+  const data = await res.json().catch(() => ({}));
+  return { ok: res.ok, messageId: data?.result?.message_id, error: res.ok ? undefined : JSON.stringify(data).slice(0, 200) };
 }
 
 /** Build the HTML Telegram report (daily or weekly) */
@@ -480,8 +580,19 @@ export default async function handler(req, res) {
       }
     }
 
-    // 7. Send to Telegram (supports multiple bots) — report delivery outcome
+    // 7. Build the daily Excel attachment (real analytics) and send to Telegram
+    let excelBuffer = null;
+    let excelFilename = `UniTEC_Chatbot_${isWeekly ? 'Semanal' : 'Diario'}_${dateLabel.replace(/\//g, '-')}.xlsx`;
+    try {
+      excelBuffer = metrics
+        ? await buildDailyWorkbook(filteredSessions, metrics, dateLabel, isWeekly)
+        : null;
+    } catch (wbErr) {
+      console.error('Excel build failed (report still sent as text):', wbErr);
+    }
+
     const telegramResults = [];
+    const telegramDocResults = [];
     if (telegramBotToken && telegramChatId) {
       const botTokens = telegramBotToken.split(',').map(t => t.trim()).filter(Boolean);
       const chatIds = telegramChatId.split(',').map(id => id.trim()).filter(Boolean);
@@ -504,23 +615,43 @@ export default async function handler(req, res) {
           console.error(`Telegram send failed for chat_id ${chatId}:`, tgErr);
           telegramResults.push({ chatId, ok: false, error: String(tgErr).slice(0, 200) });
         }
+        // Attach the Excel document right after the text report
+        if (excelBuffer) {
+          try {
+            const docRes = await sendTelegramDocument(
+              token, chatId, excelFilename, excelBuffer,
+              `📎 ${isWeekly ? 'Reporte semanal' : 'Reporte diario'} ${dateLabel} — analítica real (Excel)`
+            );
+            telegramDocResults.push({ chatId, ...docRes });
+          } catch (docErr) {
+            console.error(`Telegram document send failed for chat_id ${chatId}:`, docErr);
+            telegramDocResults.push({ chatId, ok: false, error: String(docErr).slice(0, 200) });
+          }
+        }
       }
     }
 
-    // 8. Send email via Resend (if configured)
+    // 8. Send email via Resend (if configured) with the Excel attached
     const RESEND_API_KEY = process.env.RESEND_API_KEY;
     const ADMIN_EMAIL = process.env.ADMIN_EMAIL || 'lidermarketingonline@espaciosimportados.com.co';
     if (RESEND_API_KEY) {
       try {
+        const emailBody = {
+          from: 'UniTEC AI Desk <onboarding@resend.dev>',
+          to: [ADMIN_EMAIL],
+          subject: `Reporte ${isWeekly ? 'Semanal' : 'Diario'} Chatbot - ${dateLabel}`,
+          html: reportText.replace(/\n/g, '<br/>')
+        };
+        if (excelBuffer) {
+          emailBody.attachments = [{
+            filename: excelFilename,
+            content: excelBuffer.toString('base64')
+          }];
+        }
         await fetch('https://api.resend.com/emails', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${RESEND_API_KEY}` },
-          body: JSON.stringify({
-            from: 'UniTEC AI Desk <onboarding@resend.dev>',
-            to: [ADMIN_EMAIL],
-            subject: `Reporte ${isWeekly ? 'Semanal' : 'Diario'} Chatbot - ${dateLabel}`,
-            html: reportText.replace(/\n/g, '<br/>')
-          })
+          body: JSON.stringify(emailBody)
         });
       } catch (emailErr) {
         console.error("Email send failed:", emailErr);
@@ -532,7 +663,9 @@ export default async function handler(req, res) {
       sessionsReported: filteredSessions.length,
       metrics: metrics || {},
       period: isWeekly ? 'weekly' : 'daily',
-      telegram: telegramResults
+      excelAttached: !!excelBuffer,
+      telegram: telegramResults,
+      telegramDocuments: telegramDocResults
     });
 
   } catch (error) {
