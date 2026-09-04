@@ -10,6 +10,32 @@ function formatDuration(seconds) {
   return m > 0 ? `${m}m ${s}s` : `${s}s`;
 }
 
+/** Diagnostic/test session ids created during development — EXCLUDED from real metrics */
+const TEST_ID_RE = /^(diag|lat-test|analytics-verify|post-fix|warm-check|secret-verify|verify-|test-|diag-)/i;
+function isTestSession(id) {
+  return TEST_ID_RE.test(String(id || ''));
+}
+
+/**
+ * Keyword intent classification.
+ * NOTE: intentCategory is never populated server-side (CTO audit 2026-09-04), so the
+ * report derives intent from the LAST USER MESSAGE stored in the session (lastMessage).
+ */
+function classifyIntent(text) {
+  const t = String(text || '').toLowerCase();
+  if (/(cotiz|presupuesto|precio|quote|budget|cuanto cuesta|cuanto vale|cost|costo|valor)/.test(t)) return 'Cotización / Precio';
+  if (/(asesor|humano|staff|agent|llamar|call|hablar con|atencion|atención)/.test(t)) return 'Atención humana / Staff';
+  if (/(whatsapp|wa\.me|guasap|whats)/.test(t)) return 'WhatsApp / Contacto';
+  if (/(stock|disponibilidad|disponible|disponibles|hay en|existencia)/.test(t)) return 'Stock / Disponibilidad';
+  if (/(catalogo|catálogo|productos|lista|folio)/.test(t)) return 'Catálogo / Productos';
+  if (/(instalac|instalador|montaje|instalación)/.test(t)) return 'Instalación';
+  if (/(ubicad|donde estan|donde quedan|donde están|direccion|dirección|bodega|punto fisico|local)/.test(t)) return 'Ubicación';
+  if (/(pedido|comprar|orden|factura|carrito)/.test(t)) return 'Pedido / Compra';
+  if (/(envio|envío|despacho|entrega|domicilio)/.test(t)) return 'Envío / Entrega';
+  if (/(pago|transferencia|medio de pago)/.test(t)) return 'Medio de pago';
+  return 'Consulta general';
+}
+
 /** Generate an AI executive summary with Gemini */
 async function generateAIExecutiveSummary(sessions, metrics, apiKey) {
   if (!apiKey || sessions.length === 0) return '';
@@ -17,7 +43,7 @@ async function generateAIExecutiveSummary(sessions, metrics, apiKey) {
   const condensed = sessions.map(s => ({
     name: s.customerName || s.extractedData?.name || 'Anónimo',
     profession: s.extractedData?.profession || 'No especificada',
-    intent: s.intentCategory || 'Consulta General',
+    intent: classifyIntent(s.lastMessage || ''),
     sentiment: s.sentimentScore > 0.3 ? 'Positivo' : s.sentimentScore < -0.3 ? 'Negativo' : 'Neutral',
     status: s.status,
     source: s.source,
@@ -25,13 +51,15 @@ async function generateAIExecutiveSummary(sessions, metrics, apiKey) {
   })).slice(0, 20);
 
   const metricsContext = `
-- Usuarios Totales: ${metrics.total}
-- Abandonaron en Saludo: ${metrics.abandonedAtGreeting}
-- Abandonaron Parcialmente: ${metrics.abandonedPartial}
-- Completaron: ${metrics.completed}
-- Tasa de Conversión: ${metrics.conversionRate}%
-- Tiempo Promedio de Conversación: ${metrics.avgDuration}
-- Promedio de Mensajes por Usuario: ${metrics.avgMessages}`;
+- Usuarios Totales (cargas): ${metrics.total}
+- Interacciones REALES (escribieron): ${metrics.realInteractions}
+- Solo saludo (abrieron y NO escribieron): ${metrics.welcomeOnly}
+- Sin mensaje guardado: ${metrics.noMessage}
+- Pruebas técnicas excluidas: ${metrics.testCount}
+- Solicitudes de cotización/precio: ${metrics.quoteRequested}
+- Tasa real (reales / cargas): ${metrics.responseRate}%
+- Completaron flujo: ${metrics.completed}
+- Intervención humana: ${metrics.humanRequested}`;
 
   try {
     const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${apiKey}`, {
@@ -40,7 +68,7 @@ async function generateAIExecutiveSummary(sessions, metrics, apiKey) {
       body: JSON.stringify({
         contents: [{
           parts: [{
-            text: `Eres el CTO de Unitec USA Design. Analiza estas métricas del chatbot y ofrece un resumen ejecutivo conciso de 2-3 frases en español, mencionando los puntos más críticos y una recomendación de acción inmediata para el equipo de ventas:\n\nMÉTRICAS:\n${metricsContext}\n\nINTERACCIONES RECIENTES:\n${JSON.stringify(condensed)}`
+            text: `Eres el CTO de Unitec USA Design. Analiza estas métricas del chatbot y ofrece un resumen ejecutivo conciso de 2-3 frases en español, mencionando los puntos más críticos y una recomendación de acción inmediata para el equipo de ventas:\n\nMÉTRICAS:\n${metricsContext}\n\nINTERACCIONES RECIENTES (reales):\n${JSON.stringify(condensed)}`
           }]
         }]
       })
@@ -67,96 +95,113 @@ function buildReportText(sessions, metrics, periodLabel, reportTime, isWeekly, g
              `📅 Período: <b>${periodLabel}</b>\n` +
              `⏰ Generado: <b>${reportTime} (COL)</b>\n\n`;
 
-  // ── SECCIÓN 1: FLUJO DE USUARIOS ──────────────────────────
+  // ── SECCIÓN 1: FLUJO DE USUARIOS (métricas REALES) ────────
   const gaVisits = parseInt(googleAnalyticsVisits || '3188', 10) || 3188;
-  const startedChatSessions = sessions.filter(s => (s.analytics?.messageCount || 0) > 0).length;
-  const gaConversionRate = gaVisits > 0 ? ((startedChatSessions / gaVisits) * 100).toFixed(1) : '0.0';
+  const realChats = metrics.realInteractions || 0;
+  const loadRate = metrics.total > 0 ? ((realChats / metrics.total) * 100).toFixed(1) : '0.0';
+  const gaConversionRate = gaVisits > 0 ? ((realChats / gaVisits) * 100).toFixed(2) : '0.0';
 
   text += `🔀 <b>Flujo de Usuarios:</b>\n`;
   text += `┌─────────────────────────────────────────\n`;
   text += `│ 📈 Visitas Web (GA):          <b>${gaVisits.toLocaleString('es')}</b>\n`;
   text += `│ 👤 Cargas de Chatbot (Loads): <b>${metrics.total}</b>\n`;
-  text += `│ 💬 Chats Iniciados:           <b>${startedChatSessions}</b> (${gaConversionRate}% conv. real)\n`;
-  text += `│ 👋 Solo vieron el saludo:     <b>${metrics.abandonedAtGreeting}</b>\n`;
-  text += `│ 🔄 Abandono parcial:          <b>${metrics.abandonedPartial}</b>\n`;
+  text += `│ 💬 Interacción REAL (escribieron): <b>${realChats}</b>\n`;
+  text += `│    └ ${loadRate}% de cargas · ${gaConversionRate}% de visitas GA\n`;
+  text += `│ 👋 Abrieron, NO escribieron:  <b>${metrics.welcomeOnly ?? 0}</b> (solo saludo)\n`;
+  text += `│ 📴 Sin mensaje guardado:      <b>${metrics.noMessage ?? 0}</b>\n`;
+  text += `│ 🧪 Pruebas técnicas excluidas: <b>${metrics.testCount ?? 0}</b>\n`;
   text += `│ ✅ Completaron flujo:         <b>${metrics.completed}</b>\n`;
   text += `│ 🆘 Intervención humana:       <b>${metrics.humanRequested}</b>\n`;
   text += `└─────────────────────────────────────────\n\n`;
 
-  // ── SECCIÓN 2: TASA DE CONVERSIÓN ─────────────────────────
+  // ── SECCIÓN 2: CONVERSIÓN REAL ────────────────────────────
   text += `📈 <b>Tasa de Conversión:</b>\n`;
-  text += `• Completados / Total:   <b>${metrics.conversionRate}%</b>\n`;
-  text += `• Respondieron algo:     <b>${metrics.responseRate}%</b> (${metrics.total - metrics.abandonedAtGreeting} de ${metrics.total})\n`;
-  text += `• Solo saludo (no resp): <b>${metrics.greetingAbandonRate}%</b>\n\n`;
+  text += `• Reales / Cargas chatbot: <b>${loadRate}%</b> (${realChats} de ${metrics.total})\n`;
+  text += `• Reales / Visitas GA:     <b>${gaConversionRate}%</b>\n`;
+  text += `• Abandonaron en saludo:   <b>${metrics.abandonedAtGreeting}</b>\n`;
+  text += `• Abandono parcial:        <b>${metrics.abandonedPartial}</b>\n\n`;
 
-  // ── SECCIÓN 3: TIEMPOS PROMEDIO ───────────────────────────
+  // ── SECCIÓN 3: SOLICITUDES CLAVE ──────────────────────────
+  text += `🎯 <b>Solicitudes detectadas (intención por mensaje):</b>\n`;
+  const intents = (metrics.topIntents || []).slice(0, 5);
+  if (intents.length === 0) {
+    text += `  • Sin solicitudes con texto en el período\n`;
+  } else {
+    intents.forEach(([intent, count]) => {
+      text += `  • ${intent}: <b>${count}</b>\n`;
+    });
+  }
+  text += `  └ Cotización/Precio pedidos: <b>${metrics.quoteRequested ?? 0}</b>\n\n`;
+
+  // ── SECCIÓN 4: TIEMPOS PROMEDIO ───────────────────────────
   text += `⏱️ <b>Tiempos Promedio:</b>\n`;
   text += `• Hasta primer mensaje:  <b>${metrics.avgTimeToFirstMsg}</b>\n`;
   text += `• Hasta finalización:    <b>${metrics.avgCompletionTime}</b>\n`;
-  text += `• Hasta abandono:        <b>${metrics.avgAbandonTime}</b>\n\n`;
+  text += `• Prom. msgs usuario/chat real: <b>${metrics.avgMessages}</b>\n\n`;
 
-  // ── SECCIÓN 4: INTERACCIONES ──────────────────────────────
-  text += `💬 <b>Interacciones por Usuario:</b>\n`;
-  text += `• Mensajes promedio/usuario: <b>${metrics.avgMessages}</b>\n`;
-  text += `• Interacciones de UI (botones): <b>${metrics.totalUIInteractions}</b>\n\n`;
+  // ── SECCIÓN 5: SENTIMIENTO (solo si hay datos) ────────────
+  if (metrics.sentimentAvailable) {
+    text += `🧠 <b>Sentimiento:</b>\n`;
+    text += `🟢 Positivo: <b>${metrics.positive}</b> | 🟡 Neutral: <b>${metrics.neutral}</b> | 🔴 Negativo: <b>${metrics.negative}</b>\n\n`;
+  } else {
+    text += `🧠 <b>Sentimiento:</b> No disponible (enriquecimiento pendiente)\n\n`;
+  }
 
-  // ── SECCIÓN 5: SENTIMIENTO ────────────────────────────────
-  text += `🧠 <b>Sentimiento:</b>\n`;
-  text += `🟢 Positivo: <b>${metrics.positive}</b> | 🟡 Neutral: <b>${metrics.neutral}</b> | 🔴 Negativo: <b>${metrics.negative}</b>\n\n`;
-
-  // ── SECCIÓN 6: SEGMENTACIÓN POR FUENTE ───────────────────
+  // ── SECCIÓN 6: FUENTE DE INGRESO ──────────────────────────
   text += `📡 <b>Fuente de Ingreso:</b>\n`;
   text += `• 🌐 Web: <b>${metrics.sourceWeb}</b> | 📱 WhatsApp: <b>${metrics.sourceWhatsapp}</b> | 📞 Teléfono: <b>${metrics.sourcePhone}</b>\n\n`;
 
-  // ── SECCIÓN 7: INTENCIONES TOP ────────────────────────────
-  if (metrics.topIntents && metrics.topIntents.length > 0) {
-    text += `🎯 <b>Principales Intenciones:</b>\n`;
-    metrics.topIntents.forEach(([intent, count]) => {
-      text += `  • ${intent}: <b>${count}</b>\n`;
-    });
-    text += '\n';
-  }
-
-  // ── SECCIÓN 8: HORA PICO ──────────────────────────────────
+  // ── SECCIÓN 7: HORA PICO ──────────────────────────────────
   if (metrics.peakHour) {
     text += `⚡ <b>Hora Pico:</b> <b>${metrics.peakHour}</b>\n\n`;
   }
 
-  // ── SECCIÓN 9: ÚLTIMAS INTERACCIONES (max 5) ──────────────
-  const recentSessions = sessions.slice(0, 5);
-  if (recentSessions.length > 0) {
-    text += `👥 <b>Últimas Interacciones:</b>\n`;
-    recentSessions.forEach((s, i) => {
-      const name = s.customerName || s.extractedData?.name || 'Anónimo';
-      const phone = s.customerPhone || s.extractedData?.phone || 'N/A';
-      const msg = (s.lastMessage || 'Sin mensajes').slice(0, 55);
+  // ── SECCIÓN 8: ÚLTIMAS INTERACCIONES REALES (max 5) ───────
+  const recentReal = metrics.recentReal || [];
+  if (recentReal.length > 0) {
+    text += `👥 <b>Últimas Interacciones REALES:</b>\n`;
+    recentReal.forEach((s, i) => {
+      const name = s.name || 'Anónimo';
+      const phone = s.phone || 'N/A';
+      const msg = String(s.msg || 'Sin mensaje').slice(0, 50);
       text += `  ${i + 1}. <b>${name}</b> (📞<code>${phone}</code>): <i>"${msg}…"</i>\n`;
     });
     text += '\n';
+  } else {
+    text += `👥 <b>Últimas Interacciones:</b> No hubo interacciones reales en el período.\n\n`;
   }
 
   text += `🔗 <i>Panel Admin: https://unitec-front-desk.vercel.app/?admin=true</i>`;
   return text;
 }
 
-/** Compute all metrics from a list of parsed sessions */
+/** Compute all metrics from a list of parsed sessions (excludes diagnostic/test sessions) */
 function computeMetrics(sessions) {
-  const total = sessions.length;
+  const realSessions = sessions.filter(s => !isTestSession(s.id));
+  const total = realSessions.length;
   if (total === 0) return null;
 
-  const completed = sessions.filter(s => s.status === 'completed').length;
-  const abandonedAtGreeting = sessions.filter(s => s.status === 'abandoned_at_greeting').length;
-  const abandonedPartial = sessions.filter(s => s.status === 'abandoned').length;
-  const humanRequested = sessions.filter(s => s.status === 'human_requested' || s.status === 'human_assigned').length;
+  const withUserMsg = realSessions.filter(s => (s.analytics?.userMessageCount || 0) > 0);
+  const realInteractions = withUserMsg.length;
+  const welcomeOnly = realSessions.filter(s =>
+    (s.analytics?.messageCount || 0) > 0 && !(s.analytics?.userMessageCount || 0)).length;
+  const noMessage = realSessions.filter(s => !(s.analytics?.messageCount || 0)).length;
+  const testCount = sessions.length - realSessions.length;
 
-  const conversionRate = total > 0 ? ((completed / total) * 100).toFixed(1) : '0.0';
-  const responseRate = total > 0 ? (((total - abandonedAtGreeting) / total) * 100).toFixed(1) : '0.0';
-  const greetingAbandonRate = total > 0 ? ((abandonedAtGreeting / total) * 100).toFixed(1) : '0.0';
+  const completed = realSessions.filter(s => s.status === 'completed').length;
+  const abandonedAtGreeting = realSessions.filter(s => s.status === 'abandoned_at_greeting').length;
+  const abandonedPartial = realSessions.filter(s => s.status === 'abandoned').length;
+  const humanRequested = realSessions.filter(s => s.status === 'human_requested' || s.status === 'human_assigned').length;
+  const quoteRequested = withUserMsg.filter(s => /(cotiz|presupuesto|precio|quote|budget|cuanto cuesta|cuanto vale|cost|costo|valor)/i.test(s.lastMessage || '')).length;
+
+  const conversionRate = total > 0 ? ((realInteractions / total) * 100).toFixed(1) : '0.0';
+  const responseRate = conversionRate;
+  const greetingAbandonRate = total > 0 ? (((welcomeOnly + abandonedAtGreeting) / total) * 100).toFixed(1) : '0.0';
 
   // Time metrics
-  const completedWithDuration = sessions.filter(s => s.status === 'completed' && s.duration > 0);
-  const abandonedWithDuration = sessions.filter(s => (s.status === 'abandoned' || s.status === 'abandoned_at_greeting') && s.duration > 0);
-  const withFirstMsgTime = sessions.filter(s => s.firstUserMessageAt && s.createdAt);
+  const completedWithDuration = realSessions.filter(s => s.status === 'completed' && s.duration > 0);
+  const abandonedWithDuration = realSessions.filter(s => (s.status === 'abandoned' || s.status === 'abandoned_at_greeting') && s.duration > 0);
+  const withFirstMsgTime = realSessions.filter(s => s.firstUserMessageAt && s.createdAt);
 
   const avgCompletionTime = completedWithDuration.length > 0
     ? formatDuration(completedWithDuration.reduce((sum, s) => sum + s.duration, 0) / completedWithDuration.length)
@@ -172,45 +217,45 @@ function computeMetrics(sessions) {
       }, 0) / withFirstMsgTime.length))
     : 'N/A';
 
-  // Avg messages per user
-  const sessionsWithMsgs = sessions.filter(s => s.analytics?.messageCount > 0);
-  const avgMessages = sessionsWithMsgs.length > 0
-    ? (sessionsWithMsgs.reduce((sum, s) => sum + (s.analytics?.messageCount || 0), 0) / sessionsWithMsgs.length).toFixed(1)
+  // Avg user messages per REAL interaction (messageCount field includes the auto-saved greeting — do not use it)
+  const avgMessages = withUserMsg.length > 0
+    ? (withUserMsg.reduce((sum, s) => sum + (s.analytics?.userMessageCount || 0), 0) / withUserMsg.length).toFixed(1)
     : '0';
 
   // UI interactions total
-  const totalUIInteractions = sessions.reduce((sum, s) => sum + (s.uiInteractions || 0), 0);
+  const totalUIInteractions = realSessions.reduce((sum, s) => sum + (s.uiInteractions || 0), 0);
 
   // Average duration overall
-  const allWithDuration = sessions.filter(s => s.duration > 0);
+  const allWithDuration = realSessions.filter(s => s.duration > 0);
   const avgDuration = allWithDuration.length > 0
     ? formatDuration(allWithDuration.reduce((sum, s) => sum + s.duration, 0) / allWithDuration.length)
     : 'N/A';
 
-  // Sentiment
+  // Sentiment — only meaningful when actually populated (it never is today: CTO audit 2026-09-04)
+  const anySentiment = realSessions.some(s => s.sentimentScore !== undefined && s.sentimentScore !== null && s.sentimentScore !== 0);
   let positive = 0, neutral = 0, negative = 0;
-  sessions.forEach(s => {
+  realSessions.forEach(s => {
     if (s.sentimentScore > 0.3) positive++;
     else if (s.sentimentScore < -0.3) negative++;
     else neutral++;
   });
 
   // Source segmentation
-  const sourceWeb = sessions.filter(s => s.source === 'web').length;
-  const sourceWhatsapp = sessions.filter(s => s.source === 'whatsapp').length;
-  const sourcePhone = sessions.filter(s => s.source === 'phone').length;
+  const sourceWeb = realSessions.filter(s => s.source === 'web').length;
+  const sourceWhatsapp = realSessions.filter(s => s.source === 'whatsapp').length;
+  const sourcePhone = realSessions.filter(s => s.source === 'phone').length;
 
-  // Top intents
+  // Top intents from last user message (intentCategory field is never populated server-side)
   const intentCounts = {};
-  sessions.forEach(s => {
-    const intent = s.intentCategory || 'General / Desconocido';
+  withUserMsg.forEach(s => {
+    const intent = classifyIntent(s.lastMessage || '');
     intentCounts[intent] = (intentCounts[intent] || 0) + 1;
   });
-  const topIntents = Object.entries(intentCounts).sort((a, b) => b[1] - a[1]).slice(0, 3);
+  const topIntents = Object.entries(intentCounts).sort((a, b) => b[1] - a[1]).slice(0, 5);
 
   // Peak hour
   const hourlyCounts = {};
-  sessions.forEach(s => {
+  realSessions.forEach(s => {
     const hr = new Date(new Date(s.createdAt).toLocaleString('en-US', { timeZone: 'America/Bogota' })).getHours();
     hourlyCounts[hr] = (hourlyCounts[hr] || 0) + 1;
   });
@@ -222,14 +267,22 @@ function computeMetrics(sessions) {
     ? `${String(peakHour).padStart(2, '0')}:00 - ${String(peakHour + 1).padStart(2, '0')}:00 (${maxCount} sesiones)`
     : null;
 
+  // Recent REAL interactions (sorted desc by lastUpdated — sessions arrive ordered desc already)
+  const recentReal = withUserMsg.slice(0, 5).map(s => ({
+    name: s.customerName || s.extractedData?.name || 'Anónimo',
+    phone: s.customerPhone || s.extractedData?.phone || '',
+    msg: s.lastMessage || ''
+  }));
+
   return {
-    total, completed, abandonedAtGreeting, abandonedPartial, humanRequested,
+    total, realInteractions, welcomeOnly, noMessage, testCount,
+    completed, abandonedAtGreeting, abandonedPartial, humanRequested, quoteRequested,
     conversionRate, responseRate, greetingAbandonRate,
     avgCompletionTime, avgAbandonTime, avgTimeToFirstMsg, avgDuration,
     avgMessages, totalUIInteractions,
-    positive, neutral, negative,
+    positive, neutral, negative, sentimentAvailable: anySentiment,
     sourceWeb, sourceWhatsapp, sourcePhone,
-    topIntents, peakHour: peakHourStr
+    topIntents, peakHour: peakHourStr, recentReal
   };
 }
 
@@ -350,6 +403,7 @@ export default async function handler(req, res) {
     }
 
     // 3. Time check (Colombia) & deduplication
+    //    NOTE: vercel.json cron runs 0 14 * * * = 14:00 UTC = 09:00 COL (fixed timezone bug 2026-09-04)
     const isForce = req.query.force === 'true' || req.body?.force === true;
     const isWeekly = req.query.weekly === 'true' || req.body?.weekly === true;
     const nowBogota = new Date(new Date().toLocaleString('en-US', { timeZone: 'America/Bogota' }));
@@ -396,7 +450,7 @@ export default async function handler(req, res) {
       return (nowBogota.getTime() - new Date(s.lastUpdated).getTime()) <= windowMs;
     });
 
-    // 6. Compute all metrics
+    // 6. Compute all metrics (real interactions only; test sessions excluded)
     const metrics = computeMetrics(filteredSessions);
 
     let reportText = '';
@@ -409,11 +463,14 @@ export default async function handler(req, res) {
                    `📅 <b>${dateLabel}</b>\n\n` +
                    `ℹ️ No se registraron interacciones en este período. ¡El sistema sigue operativo!`;
     } else {
-      // AI Executive Summary
+      // AI Executive Summary (real interactions only)
       let aiSummary = '';
       if (analyticsPreferences.includeAIExecutiveSummary) {
         const geminiKey = process.env.GEMINI_API_KEY || process.env.VITE_GEMINI_API_KEY;
-        aiSummary = await generateAIExecutiveSummary(filteredSessions, metrics, geminiKey);
+        const realOnly = filteredSessions
+          .filter(s => !isTestSession(s.id) && (s.analytics?.userMessageCount || 0) > 0)
+          .sort((a, b) => new Date(b.lastUpdated).getTime() - new Date(a.lastUpdated).getTime());
+        aiSummary = await generateAIExecutiveSummary(realOnly, metrics, geminiKey);
       }
 
       reportText = buildReportText(filteredSessions, metrics, dateLabel, telegramReportTime, isWeekly, googleAnalyticsVisits);
