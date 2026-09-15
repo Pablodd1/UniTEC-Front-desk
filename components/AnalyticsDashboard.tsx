@@ -20,6 +20,29 @@ const AnalyticsDashboard: React.FC<AnalyticsDashboardProps> = ({ sessions, googl
     return () => clearInterval(t);
   }, []);
 
+  // ── Embudo real (Mission Control) ─────────────────────────────────────────
+  // Se consulta al servidor (/api/analytics) para usar EXACTAMENTE el mismo motor que
+  // el informe diario (api/_analytics-core.js). Antes el panel recalculaba los KPIs en
+  // el navegador con otra definición (contaba el saludo del bot como interacción) y los
+  // números del panel y del informe no coincidían nunca.
+  const [funnelData, setFunnelData] = useState<any>(null);
+  useEffect(() => {
+    const bogotaDay = (offsetDays = 0) =>
+      new Date(Date.now() - offsetDays * 86400000).toLocaleDateString('en-CA', { timeZone: 'America/Bogota' });
+    const toDay = bogotaDay(0);
+    const from = timeFilter === 'today' ? toDay
+      : timeFilter === 'week' ? bogotaDay(6)
+        : timeFilter === 'month' ? `${toDay.slice(0, 7)}-01`
+          : '';
+    const qs = from ? `?from=${from}&to=${toDay}` : '';
+    let alive = true;
+    fetch(`/api/analytics${qs}`)
+      .then(r => (r.ok ? r.json() : null))
+      .then(d => { if (alive && d) setFunnelData(d); })
+      .catch(() => { /* el panel sigue funcionando con los KPIs locales */ });
+    return () => { alive = false; };
+  }, [timeFilter]);
+
   const exportToCSV = () => {
     const headers = [
       'Session ID', 'Created At', 'Last Updated', 'Brand', 'Language', 
@@ -117,8 +140,11 @@ const AnalyticsDashboard: React.FC<AnalyticsDashboardProps> = ({ sessions, googl
   const totalSessions = filteredSessions.length;
   const humanRequested = filteredSessions.filter(s => s.status === 'human_requested').length;
   const humanAssigned = filteredSessions.filter(s => s.status === 'human_assigned').length;
-  const startedChatSessions = filteredSessions.filter(s => (s.analytics?.messageCount || 0) > 0).length;
+  const startedChatSessions = filteredSessions.filter(s => (s.analytics?.userMessageCount || 0) > 0).length;
   const noChatSessions = filteredSessions.filter(s => (s.analytics?.messageCount || 0) === 0).length;
+  // El saludo automático del bot cuenta como messageCount pero NO es interacción del usuario.
+  const greetingOnlySessions = filteredSessions.filter(s =>
+    (s.analytics?.messageCount || 0) > 0 && (s.analytics?.userMessageCount || 0) === 0).length;
   const conversionRate = totalSessions > 0
     ? ((startedChatSessions / totalSessions) * 100).toFixed(1)
     : '0.0';
@@ -350,7 +376,7 @@ const AnalyticsDashboard: React.FC<AnalyticsDashboardProps> = ({ sessions, googl
       </div>
 
       {/* KPI Cards */}
-      <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-7 gap-4">
+      <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-8 gap-4">
         <div className="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm">
           <div className="flex items-center gap-2 mb-2">
             <div className="p-2 bg-sky-50 rounded-lg"><Activity size={14} className="text-sky-600" /></div>
@@ -369,9 +395,10 @@ const AnalyticsDashboard: React.FC<AnalyticsDashboardProps> = ({ sessions, googl
         <div className="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm">
           <div className="flex items-center gap-2 mb-2">
             <div className="p-2 bg-emerald-50 rounded-lg"><BarChart3 size={14} className="text-emerald-600" /></div>
-            <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Tasa Conversión</span>
+            <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Interacción Real</span>
           </div>
           <p className="text-2xl font-black text-slate-800">{conversionRate}%</p>
+          <p className="text-[10px] text-emerald-600 font-bold mt-1">Usuarios que escribieron</p>
         </div>
         <div className="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm">
           <div className="flex items-center gap-2 mb-2">
@@ -384,10 +411,10 @@ const AnalyticsDashboard: React.FC<AnalyticsDashboardProps> = ({ sessions, googl
         <div className="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm">
           <div className="flex items-center gap-2 mb-2">
             <div className="p-2 bg-blue-50 rounded-lg"><MessageSquare size={14} className="text-blue-600" /></div>
-            <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Cotizaciones / Ventas</span>
+            <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Contactos Capturados</span>
           </div>
           <p className="text-2xl font-black text-slate-800">{salesContactCount}</p>
-          <p className="text-[10px] text-blue-600 font-bold mt-1">Contactos comerciales entregados</p>
+          <p className="text-[10px] text-blue-600 font-bold mt-1">Teléfonos/cotizaciones pedidas · no son ventas cerradas</p>
         </div>
         <div className="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm">
           <div className="flex items-center gap-2 mb-2">
@@ -403,7 +430,64 @@ const AnalyticsDashboard: React.FC<AnalyticsDashboardProps> = ({ sessions, googl
           </div>
           <p className="text-2xl font-black text-slate-800">{noChatSessions}</p>
         </div>
+        <div className="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm">
+          <div className="flex items-center gap-2 mb-2">
+            <div className="p-2 bg-slate-100 rounded-lg"><MessageSquare size={14} className="text-slate-500" /></div>
+            <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Solo Saludo (bot)</span>
+          </div>
+          <p className="text-2xl font-black text-slate-800">{greetingOnlySessions}</p>
+          <p className="text-[10px] text-slate-500 font-bold mt-1">Abrieron y no escribieron</p>
+        </div>
       </div>
+
+      {/* ── Embudo real: mismas cifras que el informe diario (api/_analytics-core.js) ── */}
+      {funnelData?.funnel?.steps && (
+        <div className="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm">
+          <div className="flex flex-wrap items-center justify-between gap-2 mb-1">
+            <h3 className="font-bold text-slate-800">Embudo del chatbot</h3>
+            <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">
+              {funnelData.range?.from ? `${funnelData.range.from} → ${funnelData.range.to}` : 'todo el período'} ·
+              pruebas excluidas: {funnelData.funnel.testsExcluded}
+            </span>
+          </div>
+          <p className="text-xs text-slate-500 mb-4">
+            Cada sesión se cuenta en la etapa más lejana que alcanzó. Misma fuente que el informe diario y el Excel adjunto.
+          </p>
+          <div className="h-72 mb-4">
+            <ResponsiveContainer width="100%" height="100%">
+              <BarChart
+                data={funnelData.funnel.steps.map((st: any) => ({
+                  name: st.step === 'engaged' ? 'Conversación real' : String(st.label).replace(/^\d+\.\s*/, ''),
+                  sesiones: st.reached,
+                  pct: st.pctOfTotal,
+                }))}
+                layout="vertical"
+                margin={{ left: 8, right: 32, top: 4, bottom: 4 }}
+              >
+                <CartesianGrid strokeDasharray="3 3" stroke="#f1f5f9" />
+                <XAxis type="number" tick={{ fontSize: 11 }} allowDecimals={false} />
+                <YAxis type="category" dataKey="name" width={200} tick={{ fontSize: 10 }} />
+                <Tooltip formatter={(v: any) => [`${v} sesiones`, 'Llegan']} />
+                <Bar dataKey="sesiones" fill="#0f766e" radius={[0, 6, 6, 0]} />
+              </BarChart>
+            </ResponsiveContainer>
+          </div>
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+            {[
+              { label: 'Iniciaron conversación', value: funnelData.funnel.wroteSomething, hint: 'Escribieron al menos un mensaje' },
+              { label: 'Interacción parcial', value: funnelData.funnel.partialOnboarding, hint: 'Avanzaron y se fueron a mitad del flujo' },
+              { label: 'Onboarding completo', value: funnelData.funnel.completedOnboarding, hint: 'Nombre + perfil entregados' },
+              { label: 'Conversación real', value: funnelData.funnel.realConversations, hint: 'Preguntaron y recibieron respuesta' },
+            ].map((k) => (
+              <div key={k.label} className="p-3 rounded-xl border border-slate-200 bg-slate-50">
+                <p className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">{k.label}</p>
+                <p className="text-xl font-black text-slate-800">{k.value ?? 0}</p>
+                <p className="text-[10px] text-slate-500">{k.hint}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
 
       {/* Historical Hourly Chart */}
       {timeFilter !== 'today' && (

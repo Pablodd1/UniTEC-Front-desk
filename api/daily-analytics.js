@@ -11,11 +11,12 @@ function formatDuration(seconds) {
   return m > 0 ? `${m}m ${s}s` : `${s}s`;
 }
 
-/** Diagnostic/test session ids created during development — EXCLUDED from real metrics */
-const TEST_ID_RE = /^(diag|lat-test|analytics-verify|post-fix|warm-check|secret-verify|verify-|test-|diag-)/i;
-function isTestSession(id) {
-  return TEST_ID_RE.test(String(id || ''));
-}
+/**
+ * Session ids de diagnóstico/prueba — el filtro vive en `_analytics-core.js`
+ * para que el panel Mission Control y este informe excluyan EXACTAMENTE lo mismo.
+ * (Antes cada superficie tenía su propia lista y los números divergían.)
+ */
+import { isTestSession, funnel, STEP_ORDER } from './_analytics-core.js';
 
 /**
  * Keyword intent classification.
@@ -171,6 +172,54 @@ async function buildDailyWorkbook(sessions, metrics, periodLabel, isWeekly) {
     ws3.getCell('G' + row).value = (s.lastMessage || '').slice(0, 300);
   });
 
+  // ── Hoja 4: Embudo paso a paso (mismas cifras que el panel Mission Control) ──
+  const fnl = metrics.funnel;
+  if (fnl && fnl.steps) {
+    const ws4 = wb.addWorksheet('Embudo', { views: [{ state: 'frozen', ySplit: 1 }] });
+    ws4.columns = [{ width: 42 }, { width: 20 }, { width: 14 }, { width: 18 }, { width: 52 }];
+    ws4.getRow(1).values = ['Paso del flujo', 'Sesiones que llegan', '% del total', 'Se detienen aquí', 'Qué significa'];
+    ws4.getRow(1).eachCell(cell => Object.assign(cell, { font: headerStyle(DARK).font, fill: headerStyle(DARK).fill }));
+    fnl.steps.forEach((st, i) => {
+      const row = i + 2;
+      ws4.getCell('A' + row).value = st.label;
+      ws4.getCell('B' + row).value = st.reached;
+      ws4.getCell('C' + row).value = st.pctOfTotal / 100;
+      ws4.getCell('C' + row).numFmt = '0.00%';
+      ws4.getCell('D' + row).value = st.stoppedHere;
+      ws4.getCell('E' + row).value = st.step === 'engaged'
+        ? 'Interacción efectiva: el usuario preguntó y recibió respuesta.'
+        : st.step === 'load'
+          ? 'Todas las sesiones creadas en el período (widget abierto).'
+          : `Se quedaron en "${st.label}".`;
+    });
+    const noteRow = fnl.steps.length + 3;
+    ws4.getCell('A' + noteRow).value = `Sesiones: ${fnl.total} · Escribieron: ${fnl.wroteSomething} · Interacción parcial: ${fnl.partialOnboarding} · Onboarding completo: ${fnl.completedOnboarding} · Conversación real: ${fnl.realConversations} · Pruebas excluidas: ${fnl.testsExcluded}`;
+    ws4.getCell('A' + noteRow).font = { italic: true, size: 9 };
+    ws4.getCell('A' + (noteRow + 1)).value = 'Los pasos del onboarding (nombre/teléfono/perfil) se registran ahora en el servidor. Los usuarios que escribieron y se fueron se cuentan desde su primera intervención.';
+    ws4.getCell('A' + (noteRow + 1)).font = { italic: true, size: 9 };
+  }
+
+  // ── Hoja 5: Conversaciones reales (con contacto y etapa) ──
+  const realConvs = sessions.filter(s => !isTestSession(s.id) && (s.analytics?.userMessageCount || 0) > 0);
+  if (realConvs.length > 0) {
+    const ws5 = wb.addWorksheet('Conversaciones reales', { views: [{ state: 'frozen', ySplit: 1 }] });
+    ws5.columns = [{ width: 18 }, { width: 30 }, { width: 22 }, { width: 16 }, { width: 18 }, { width: 12 }, { width: 60 }];
+    ws5.getRow(1).values = ['Fecha (COL)', 'Sesión', 'Nombre', 'Teléfono', 'Etapa alcanzada', 'Msgs usuario', 'Último mensaje'];
+    ws5.getRow(1).eachCell(cell => Object.assign(cell, { font: headerStyle(DARK).font, fill: headerStyle(DARK).fill }));
+    realConvs.slice(0, 500).forEach((s, i) => {
+      const row = i + 2;
+      const dt = new Date(s.createdAt);
+      ws5.getCell('A' + row).value = dt.toLocaleString('es-CO', { timeZone: 'America/Bogota' });
+      ws5.getCell('B' + row).value = s.id;
+      ws5.getCell('C' + row).value = s.customerName || s.extractedData?.name || 'Anónimo';
+      ws5.getCell('D' + row).value = s.customerPhone || s.extractedData?.phone || '';
+      ws5.getCell('E' + row).value = s.funnelStep || '';
+      ws5.getCell('F' + row).value = s.analytics?.userMessageCount || 0;
+      ws5.getCell('G' + row).value = (s.lastMessage || '').slice(0, 300);
+      ws5.getRow(row).height = 28;
+    });
+  }
+
   const buf = await wb.xlsx.writeBuffer();
   return Buffer.from(buf);
 }
@@ -220,6 +269,25 @@ function buildReportText(sessions, metrics, periodLabel, reportTime, isWeekly, g
   text += `• Reales / Visitas GA:     <b>${gaConversionRate}%</b>\n`;
   text += `• Abandonaron en saludo:   <b>${metrics.abandonedAtGreeting}</b>\n`;
   text += `• Abandono parcial:        <b>${metrics.abandonedPartial}</b>\n\n`;
+
+  // ── SECCIÓN 2.b: EMBUDO PASO A PASO ───────────────────────
+  // Responde la pregunta del cliente: cuántos iniciaron, cuántos avanzaron parcialmente
+  // y cuántos llegaron al final. Misma fuente que el panel (/api/_analytics-core.js).
+  const fnl = metrics.funnel;
+  if (fnl && fnl.steps) {
+    text += `🪜 <b>Embudo del chatbot:</b>\n`;
+    fnl.steps.forEach((st) => {
+      const bar = '█'.repeat(Math.max(0, Math.round((st.pctOfTotal / 100) * 12)));
+      const paso = st.step === 'engaged' ? '💬 Conversación real' : st.step === 'menu' ? '✅ Terminó el onboarding' : st.label;
+      text += `  ${bar} <b>${st.reached}</b> — ${paso}`;
+      if (st.step !== 'load') text += ` <i>(${st.pctOfTotal}%, −${st.droppedBefore} en el paso anterior)</i>`;
+      text += `\n`;
+    });
+    if (fnl.wroteSomething !== undefined) {
+      text += `  ↳ Escribieron: <b>${fnl.wroteSomething}</b> · Parcial: <b>${fnl.partialOnboarding}</b> · Onboarding completo: <b>${fnl.completedOnboarding}</b> · Conversación real: <b>${fnl.realConversations}</b>\n`;
+    }
+    text += `\n`;
+  }
 
   // ── SECCIÓN 3: SOLICITUDES CLAVE ──────────────────────────
   text += `🎯 <b>Solicitudes detectadas (intención por mensaje):</b>\n`;
@@ -290,7 +358,8 @@ function computeMetrics(sessions) {
 
   const completed = realSessions.filter(s => s.status === 'completed').length;
   const abandonedAtGreeting = realSessions.filter(s => s.status === 'abandoned_at_greeting').length;
-  const abandonedPartial = realSessions.filter(s => s.status === 'abandoned').length;
+  // Cualquier abandono con etapa (abandoned_at_name/phone/profession o el histórico 'abandoned')
+  const abandonedPartial = realSessions.filter(s => s.status === 'abandoned' || /^abandoned_at_(name|phone|profession|menu|engaged)$/.test(String(s.status || ''))).length;
   const humanRequested = realSessions.filter(s => s.status === 'human_requested' || s.status === 'human_assigned').length;
   const quoteRequested = withUserMsg.filter(s => /(cotiz|presupuesto|precio|quote|budget|cuanto cuesta|cuanto vale|cost|costo|valor)/i.test(s.lastMessage || '')).length;
 
@@ -382,7 +451,9 @@ function computeMetrics(sessions) {
     avgMessages, totalUIInteractions,
     positive, neutral, negative, sentimentAvailable: anySentiment,
     sourceWeb, sourceWhatsapp, sourcePhone,
-    topIntents, peakHour: peakHourStr, recentReal
+    topIntents, peakHour: peakHourStr, recentReal,
+    // Embudo real (misma función que alimenta el panel Mission Control vía /api/analytics)
+    funnel: funnel(sessions)
   };
 }
 
