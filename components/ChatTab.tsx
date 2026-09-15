@@ -16,6 +16,43 @@ import { UI_TRANSLATIONS } from '../constants';
 import Markdown from 'react-markdown';
 import { motion } from 'motion/react';
 
+/**
+ * Registra un turno del onboarding en el servidor (SIN coste de IA).
+ * Antes los pasos nombre/teléfono/perfil se respondían solo en el navegador: se
+ * hacía `return` antes de tocar el servidor, así que esos mensajes no quedaban
+ * registrados en ninguna parte y el panel los contaba como "sin interacción".
+ */
+const recordOnboardingTurn = async (
+  sessionId: string | null,
+  userText: string,
+  replyText: string,
+  stage: 'name' | 'phone' | 'profession' | 'menu',
+  brand: string = 'unitec',
+): Promise<void> => {
+  if (!sessionId || !userText) return;
+  try {
+    await fetch('/api/record-turn', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ sessionId, userText, replyText, brand, stage }),
+    });
+  } catch (e) {
+    console.warn('recordOnboardingTurn failed', e);
+  }
+};
+
+// El primer mensaje del visitante suele ser su PREGUNTA, no su nombre. Si se guarda
+// como nombre ("¡Un gusto conocerte, Buenas días dónde están ubicados!"), la pregunta
+// se pierde y el usuario abandona. Con esto se detecta y se responde.
+const INTENT_RE = /(precio|cotiz|valor|cu[aá]nto|stock|disponib|env[ií]o|despach|instala|m[aá]rmol|pvc|wpc|spc|d[oó]nde|ubicad|producto|cat[aá]logo|comprar|pedido|mayorista|descuento|ficha|asesor|necesito|quiero|quisiera|informaci[oó]n)/i;
+const GREETING_RE = /^(hola+|buenas|buenos d[ií]as|buenas tardes|buenas noches|hi|hello|hey|qu[eé] tal)[\s!.,]*$/i;
+const looksLikeIntent = (t: string): boolean => {
+  const s = String(t || '').trim();
+  if (!s) return false;
+  if (INTENT_RE.test(s)) return true;
+  return s.split(/\s+/).length > 4 && !GREETING_RE.test(s);
+};
+
 interface ChatTabProps {
   quickActions: QuickAction[];
   initialMessage?: string;
@@ -188,7 +225,7 @@ const ChatTab: React.FC<ChatTabProps> = ({ quickActions, initialMessage, emergen
 
   useEffect(() => {
     if (!conversationId || messages.length === 0) return;
-    // During streaming, the model message is incomplete ï¿½ wait until done
+    // During streaming, the model message is incomplete  wait until done
     if (isLoading) return;
 
     // Save every message that hasn't been saved yet
@@ -462,7 +499,15 @@ const ChatTab: React.FC<ChatTabProps> = ({ quickActions, initialMessage, emergen
     setMessages(prev => [...prev, userMsg]);
     setInputText('');
 
-    if (onboardingStage === 'name') {
+    if (onboardingStage === 'name' && looksLikeIntent(text)) {
+      // El visitante entró preguntando algo (no presentándose): se registra el turno,
+      // se marca el nombre como no capturado y NO se retorna, para que la IA responda
+      // su pregunta por el flujo normal.
+      setExtractedPii(prev => ({ ...(prev || {}), name: prev?.name || 'Cliente' } as typeof prev));
+      setOnboardingStage('ready');
+      // El turno lo registra el flujo normal (/api/chat) — aquí NO se registra para
+      // no contar el mismo mensaje dos veces.
+    } else if (onboardingStage === 'name') {
       let name = text.trim();
       const nameRegex = /^(?:hola[\s,]+)?(?:me\s+llamo\s+|soy\s+|mi\s+nombre\s+es\s+)?([a-zA-ZÁÉÍÓÚáéíóúñÑ\s]+)$/i;
       const match = name.match(nameRegex);
@@ -490,6 +535,7 @@ const ChatTab: React.FC<ChatTabProps> = ({ quickActions, initialMessage, emergen
         text: phonePrompt,
         timestamp: new Date()
       }]);
+      recordOnboardingTurn(conversationId, text, phonePrompt, 'name', brandId).catch(() => {});
       return;
     }
 
@@ -522,6 +568,7 @@ const ChatTab: React.FC<ChatTabProps> = ({ quickActions, initialMessage, emergen
         text: professionPrompt,
         timestamp: new Date()
       }]);
+      recordOnboardingTurn(conversationId, text, professionPrompt, 'phone', brandId).catch(() => {});
       return;
     }
 
@@ -571,6 +618,7 @@ const ChatTab: React.FC<ChatTabProps> = ({ quickActions, initialMessage, emergen
         text: startingText,
         timestamp: new Date()
       }]);
+      recordOnboardingTurn(conversationId, text, startingText, 'menu', brandId).catch(() => {});
       return;
     }
 
