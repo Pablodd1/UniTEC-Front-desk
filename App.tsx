@@ -113,7 +113,7 @@ const App: React.FC = () => {
     const isUnitec = currentBrandId === 'unitec';
     document.documentElement.lang = 'es';
     document.title = isUnitec
-      ? 'UNITEC USA Design | Recepcionista Virtual IA | Distribuciï¿½n Mayorista'
+      ? 'UNITEC USA Design | Recepcionista Virtual IA | Distribución Mayorista'
       : 'Building Innovation | Asistente Virtual IA | Miami, Florida';
 
     let metaDesc = document.querySelector<HTMLMetaElement>('meta[name="description"]');
@@ -123,8 +123,8 @@ const App: React.FC = () => {
       document.head.appendChild(metaDesc);
     }
     metaDesc.content = isUnitec
-      ? 'Recepcionista virtual IA para distribuciï¿½n mayorista de materiales de construcciï¿½n. Consulta catï¿½logo, stock en Florida y cotizaciones al instante.'
-      : 'Asistente virtual IA de Building Innovation. Consulta productos, stock en Miami y conecta con ventas. Atenciï¿½n inmediata 24/7.';
+      ? 'Recepcionista virtual IA para distribución mayorista de materiales de construcción. Consulta catálogo, stock en Florida y cotizaciones al instante.'
+      : 'Asistente virtual IA de Building Innovation. Consulta productos, stock en Miami y conecta con ventas. Atención inmediata 24/7.';
 
     const setOg = (property: string, val: string) => {
       let el = document.querySelector<HTMLMetaElement>(`meta[property="${property}"]`);
@@ -133,8 +133,8 @@ const App: React.FC = () => {
     };
     setOg('og:title', isUnitec ? 'UNITEC USA Design | Asistente Virtual IA' : 'Building Innovation | Asistente Virtual IA');
     setOg('og:description', isUnitec
-      ? 'Consulta catï¿½logo, stock y cotizaciones en tiempo real. Distribuidor mayorista de materiales de construcciï¿½n premium.'
-      : 'Paneles WPC, pisos SPC, fachadas y mï¿½s. Consulta disponibilidad y cotiza ahora mismo.');
+      ? 'Consulta catálogo, stock y cotizaciones en tiempo real. Distribuidor mayorista de materiales de construcción premium.'
+      : 'Paneles WPC, pisos SPC, fachadas y más. Consulta disponibilidad y cotiza ahora mismo.');
     setOg('og:locale', 'es_ES');
 
     const unitecSvg = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64"><rect width="64" height="64" rx="14" fill="#0c4a6e"/><text x="32" y="46" font-family="Arial,sans-serif" font-weight="900" font-size="38" fill="white" text-anchor="middle">U</text></svg>';
@@ -171,7 +171,7 @@ const App: React.FC = () => {
 
   const renderContent = () => {
     if (!isAuthReady) {
-      return <div className="h-full w-full flex itemÃ¡s-center justify-center bg-slate-50"><div className="animate-spin rounded-full h-8 w-8 border-b-2 border-brand-600"></div></div>;
+      return <div className="h-full w-full flex itemás-center justify-center bg-slate-50"><div className="animate-spin rounded-full h-8 w-8 border-b-2 border-brand-600"></div></div>;
     }
 
     if ((activeTab === Tab.ADMIN_SETTINGS || activeTab === Tab.CALENDAR) && !isLoggedIn) {
@@ -204,7 +204,7 @@ const App: React.FC = () => {
             onConsultProduct={(productName) => {
               const initMsg = language === 'en' 
                 ? "I would like to know more about " + productName 
-                : "Me gustarï¿½a saber mï¿½s sobre " + productName;
+                : "Me gustaría saber más sobre " + productName;
               window.history.pushState({}, '', '?initialMessage=' + encodeURIComponent(initMsg));
               setActiveTab(Tab.CHAT);
             }}
