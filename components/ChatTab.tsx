@@ -10,7 +10,7 @@ import { sendMessageToGemini, setCurrentChatSessionId } from '../services/gemini
 import { createConversation, addMessage, requestIntervention, extractCustomerData, updateSessionStatus, subscribeToConversation, subscribeToMessages } from '../services/conversationService';
 import { notifyStaffIntervention, triggerEscalation } from '../services/notificationService';
 import { sendTwilioWhatsApp } from '../services/twilioWhatsappService';
-import { Send, User, Box, DollarSign, Hammer, BookOpen, CheckCircle2, Truck, FileText, RefreshCcw, Percent, Headphones, CreditCard, Lock, MessageSquare } from 'lucide-react';
+import { Send, User, Box, DollarSign, Hammer, BookOpen, CheckCircle2, Truck, FileText, RefreshCcw, Percent, Headphones, CreditCard, Lock, MessageSquare, MapPin } from 'lucide-react';
 import { GenerateContentResponse } from '@google/genai';
 import { UI_TRANSLATIONS } from '../constants';
 import Markdown from 'react-markdown';
@@ -97,8 +97,8 @@ const ChatTab: React.FC<ChatTabProps> = ({ quickActions, initialMessage, emergen
     
     const brandName = brandId === 'unitec' ? 'Unitec USA Design' : 'Building Innovation';
     const welcomeText = language === 'en'
-      ? `Hello, 👋 Welcome to ${brandName}, your partner in constructive solutions and alternatives.\n\nMy name is Decky👷 and I will be here accompanying you to browse our portfolio of more than 500 products and choose the best constructive options aligned with your project.\n\nBefore continuing, I would like to know you. Tell me, what is your name?`
-      : `Hola, 👋 Bienvenido a ${brandName}, tu aliado en soluciones y alternativas constructivas.\n\nMi nombre es Decky👷 y estaré por este medio acompañándote a recorrer nuestro portafolio de más de 500 productos y a escoger las mejores opciones constructivas alineadas a tu proyecto.\n\nAntes de continuar quisiera conocerte. Cuéntame, ¿cómo te llamas?`;
+      ? `Hello, 👋 Welcome to ${brandName}, your partner in constructive solutions and alternatives.\n\nMy name is Decky👷 and I will help you find, among more than 500 products, what your project needs.\n\nSo I can help you right away: what product are you looking for, or what do you need a quote for?`
+      : `Hola, 👋 Bienvenido a ${brandName}, tu aliado en soluciones y alternativas constructivas.\n\nMi nombre es Decky👷 y te voy a ayudar a encontrar, entre más de 500 productos, lo que tu proyecto necesita.\n\nPara ayudarte de una vez, cuéntame: ¿qué producto buscas o qué necesitas cotizar?`;
 
     return [
       {
@@ -222,6 +222,12 @@ const ChatTab: React.FC<ChatTabProps> = ({ quickActions, initialMessage, emergen
   // ===== FULL MEMORY: Save ALL messages to Firestore, never skip any =====
   // Track which message IDs have already been successfully saved to avoid duplicates
   const savedMessageIds = useRef<Set<string>>(new Set());
+
+  // Contacto a demanda: el teléfono se pide UNA sola vez y solo cuando el visitante
+  // pide una cotización (antes se pedían nombre + teléfono + perfil antes de dejarlo
+  // escribir, y la mayoría se iba sin preguntar nada).
+  const pendingPhoneRequest = useRef(false);
+  const phoneAlreadyAsked = useRef(false);
 
   useEffect(() => {
     if (!conversationId || messages.length === 0) return;
@@ -475,10 +481,21 @@ const ChatTab: React.FC<ChatTabProps> = ({ quickActions, initialMessage, emergen
         ? `💰 He enviado tu solicitud de cotización a nuestro equipo de ventas. Un asesor te responderá en breve. Para atención inmediata, escríbenos por WhatsApp: ${waLink}`
         : `🧑‍💼 He notificado a nuestro equipo. Alguien tomará esta conversación en breve. Para urgencias, WhatsApp: ${waLink}`;
 
+    // Contacto a demanda: se pide el WhatsApp UNA sola vez, en el momento en que el
+    // visitante pide cotización (así el dato se consigue cuando tiene valor para él).
+    const needsPhone = type === 'quote' && !extractedPii?.phone && !phoneAlreadyAsked.current;
+    const phoneAsk = isEn
+      ? 'To send you the exact quote, may I have your WhatsApp number? (or type "later")'
+      : 'Para enviarte la cotización exacta, ¿me compartes tu número de WhatsApp? (o escribe "después")';
+    if (needsPhone) {
+      phoneAlreadyAsked.current = true;
+      pendingPhoneRequest.current = true;
+    }
+
     setMessages(prev => [...prev, {
       id: `escalation-${Date.now()}`,
       role: 'model',
-      text: replyText,
+      text: needsPhone ? `${replyText}\n\n${phoneAsk}` : replyText,
       timestamp: new Date().toISOString(),
     }]);
   };
@@ -499,127 +516,56 @@ const ChatTab: React.FC<ChatTabProps> = ({ quickActions, initialMessage, emergen
     setMessages(prev => [...prev, userMsg]);
     setInputText('');
 
-    if (onboardingStage === 'name' && looksLikeIntent(text)) {
-      // El visitante entró preguntando algo (no presentándose): se registra el turno,
-      // se marca el nombre como no capturado y NO se retorna, para que la IA responda
-      // su pregunta por el flujo normal.
-      setExtractedPii(prev => ({ ...(prev || {}), name: prev?.name || 'Cliente' } as typeof prev));
-      setOnboardingStage('ready');
-      // El turno lo registra el flujo normal (/api/chat) — aquí NO se registra para
-      // no contar el mismo mensaje dos veces.
-    } else if (onboardingStage === 'name') {
-      let name = text.trim();
-      const nameRegex = /^(?:hola[\s,]+)?(?:me\s+llamo\s+|soy\s+|mi\s+nombre\s+es\s+)?([a-zA-ZÁÉÍÓÚáéíóúñÑ\s]+)$/i;
-      const match = name.match(nameRegex);
-      if (match && match[1]) {
-        name = match[1].trim();
-        name = name.charAt(0).toUpperCase() + name.slice(1);
-      }
-      setExtractedPii(prev => {
-        const merged = { ...prev, name };
-        if (conversationId) {
-          extractCustomerData(conversationId, merged).catch(console.warn);
-        }
-        return merged;
-      });
-      
-      setOnboardingStage('phone');
-      
-      const phonePrompt = language === 'en'
-        ? `Nice to meet you, ${name}! What is your phone number? (Type "skip" to continue)`
-        : `¡Un gusto conocerte, ${name}! Cuéntame, ¿cuál es tu número telefónico? (Escribe "saltar" si prefieres no compartirlo)`;
-        
-      setMessages(prev => [...prev, {
-        id: Date.now().toString(),
-        role: 'model',
-        text: phonePrompt,
-        timestamp: new Date()
-      }]);
-      recordOnboardingTurn(conversationId, text, phonePrompt, 'name', brandId).catch(() => {});
-      return;
-    }
-
-    if (onboardingStage === 'phone') {
-      const phoneInput = text.trim().toLowerCase();
-      const skipTerms = ['no', 'skip', 'saltar', 'n', 'no gracias', 'no thanks', 'skip phone', 'saltar telefono'];
-      const isSkip = skipTerms.includes(phoneInput);
-      
-      const updatedPii = { ...extractedPii };
-      if (!isSkip) {
-        updatedPii.phone = text.trim();
+    // ── Contacto a demanda: si le pedimos el WhatsApp, este mensaje es su respuesta ──
+    if (pendingPhoneRequest.current) {
+      pendingPhoneRequest.current = false;
+      const skip = /^(no|despu[eé]s|luego|saltar|skip|n|no gracias)$/i.test(text.trim());
+      const phoneMatch = text.match(/(\+?\d[\d\s\-().]{6,})/);
+      if (!skip && phoneMatch) {
+        const phone = phoneMatch[1].trim();
         setExtractedPii(prev => {
-          const merged = { ...prev, phone: text.trim() };
-          if (conversationId) {
-            extractCustomerData(conversationId, merged).catch(console.warn);
-          }
+          const merged = { ...(prev || {}), phone } as typeof prev;
+          if (conversationId) extractCustomerData(conversationId, merged).catch(console.warn);
           return merged;
         });
+        const ack = language === 'en'
+          ? 'Got it! An advisor will contact you on WhatsApp with your quote. Anything else I can check for you?'
+          : '¡Listo! Un asesor te contacta por WhatsApp con tu cotización. ¿Algo más que quieras consultar?';
+        setMessages(prev => [...prev, { id: Date.now().toString(), role: 'model', text: ack, timestamp: new Date() }]);
+        recordOnboardingTurn(conversationId, text, ack, 'phone', brandId).catch(() => {});
+        return;
       }
-      
-      setOnboardingStage('profession');
-      
-      const professionPrompt = language === 'en'
-        ? `Great! Lastly, what do you do? Please choose one of the options below:\n\n1. Architect\n2. Builder\n3. Designer\n4. Distributor\n5. Wholesaler\n6. End Customer\n7. Other`
-        : `¡Perfecto! Por último, ¿Cuéntame a que te dedicas? Elige una opción:\n\n1. Arquitecto\n2. Constructor\n3. Diseñador\n4. Distribuidor\n5. Mayorista\n6. Cliente Final\n7. Otro`;
-        
-      setMessages(prev => [...prev, {
-        id: Date.now().toString(),
-        role: 'model',
-        text: professionPrompt,
-        timestamp: new Date()
-      }]);
-      recordOnboardingTurn(conversationId, text, professionPrompt, 'phone', brandId).catch(() => {});
-      return;
+      // dijo "después" o no parece un número: se ignora y el flujo sigue normal
     }
 
-    if (onboardingStage === 'profession') {
-      const selection = text.trim();
-      let profession = selection;
-      
-      if (language === 'en') {
-        const mapping: Record<string, string> = {
-          '1': 'Architect',
-          '2': 'Builder',
-          '3': 'Designer',
-          '4': 'Distributor',
-          '5': 'End Customer',
-          '6': 'Other'
-        };
-        if (mapping[selection]) profession = mapping[selection];
-      } else {
-        const mapping: Record<string, string> = {
-          '1': 'Arquitecto',
-          '2': 'Constructor',
-          '3': 'Diseñador',
-          '4': 'Distribuidor',
-          '5': 'Cliente Final',
-          '6': 'Otro'
-        };
-        if (mapping[selection]) profession = mapping[selection];
+    // ── Bienvenida de 1 paso ───────────────────────────────────────────────────
+    // El primer mensaje del visitante ya es su necesidad: se responde de inmediato.
+    // El nombre se captura solo si lo escribe ("me llamo X" / "soy X" / su nombre a secas);
+    // el teléfono se pide después y únicamente cuando pide una cotización.
+    if (onboardingStage === 'name') {
+      const explicit = text.match(/(?:me\s+llamo|mi\s+nombre\s+es|soy)\s+([a-záéíóúñ]{2,30})/i);
+      const bareName = /^[a-záéíóúñ\s]{2,30}$/i.test(text.trim()) && !looksLikeIntent(text);
+      const captured = explicit?.[1] || (bareName ? text.trim() : '');
+      setOnboardingStage('ready');
+
+      if (captured) {
+        const pretty = captured.charAt(0).toUpperCase() + captured.slice(1);
+        setExtractedPii(prev => {
+          const merged = { ...(prev || {}), name: pretty } as typeof prev;
+          if (conversationId) extractCustomerData(conversationId, merged).catch(console.warn);
+          return merged;
+        });
+        const ack = language === 'en'
+          ? `Nice to meet you, ${pretty}! Tell me, what product are you looking for or what do you need a quote for?`
+          : `¡Un gusto conocerte, ${pretty}! Cuéntame, ¿qué producto buscas o qué necesitas cotizar?`;
+        setMessages(prev => [...prev, { id: Date.now().toString(), role: 'model', text: ack, timestamp: new Date() }]);
+        recordOnboardingTurn(conversationId, text, ack, 'name', brandId).catch(() => {});
+        return;
       }
 
-      setExtractedPii(prev => {
-        const merged = { ...prev, profession };
-        if (conversationId) {
-          extractCustomerData(conversationId, merged).catch(console.warn);
-        }
-        return merged;
-      });
-      
-      setOnboardingStage('ready');
-      
-      const startingText = language === 'en'
-        ? `Perfect, now it is much easier for me to help you with everything you need. How can I assist you today?`
-        : `Perfecto, ahora para mí es mucho más fácil ayudarte con todo lo que me indicas que se ajuste a tus necesidades. ¿En qué puedo ayudarte hoy?`;
-        
-      setMessages(prev => [...prev, {
-        id: Date.now().toString(),
-        role: 'model',
-        text: startingText,
-        timestamp: new Date()
-      }]);
-      recordOnboardingTurn(conversationId, text, startingText, 'menu', brandId).catch(() => {});
-      return;
+      setExtractedPii(prev => ({ ...(prev || {}), name: prev?.name || 'Cliente' } as typeof prev));
+      // El turno lo registra el flujo normal (/api/chat): aquí NO se registra para no
+      // contar dos veces el mismo mensaje. Sin `return`: la IA responde su pregunta.
     }
 
     if (sessionStatus === 'human_assigned') {
@@ -778,6 +724,7 @@ const ChatTab: React.FC<ChatTabProps> = ({ quickActions, initialMessage, emergen
       case 'FileText': return <FileText size={16} />;
       case 'RefreshCcw': return <RefreshCcw size={16} />;
       case 'Percent': return <Percent size={16} />;
+      case 'MapPin': return <MapPin size={16} />;
       default: return <Box size={16} />;
     }
   };
