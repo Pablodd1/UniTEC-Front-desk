@@ -149,10 +149,13 @@ const AnalyticsDashboard: React.FC<AnalyticsDashboardProps> = ({ sessions, googl
     ? ((startedChatSessions / totalSessions) * 100).toFixed(1)
     : '0.0';
 
-  const gaVisits = parseInt(googleAnalyticsVisits || '3188', 10) || 3188;
-  const gaConversionRate = gaVisits > 0
-    ? ((startedChatSessions / gaVisits) * 100).toFixed(1)
-    : '0.0';
+  // Visitas reales de GA4: `config/main.googleAnalyticsVisits` lo escribe /api/ga-visits.
+  // Sin dato NO se muestra un número fijo (antes: 3.188 hardcodeado, que nadie actualizaba).
+  const gaVisitsParsed = parseInt(String(googleAnalyticsVisits || ''), 10);
+  const gaVisits = Number.isFinite(gaVisitsParsed) && gaVisitsParsed > 0 ? gaVisitsParsed : null;
+  const gaConversionRate = gaVisits
+    ? ((startedChatSessions / gaVisits) * 100).toFixed(2)
+    : '—';
 
   // Average Handling Time (AHT) calculation
   const sessionsWithDuration = filteredSessions.filter(s => s.duration && s.duration > 0);
@@ -382,8 +385,8 @@ const AnalyticsDashboard: React.FC<AnalyticsDashboardProps> = ({ sessions, googl
             <div className="p-2 bg-sky-50 rounded-lg"><Activity size={14} className="text-sky-600" /></div>
             <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Visitas Web (GA)</span>
           </div>
-          <p className="text-2xl font-black text-slate-800">{gaVisits.toLocaleString('es')}</p>
-          <p className="text-[10px] text-sky-600 font-bold mt-1">{gaConversionRate}% conv. real</p>
+          <p className="text-2xl font-black text-slate-800">{gaVisits ? gaVisits.toLocaleString('es') : '—'}</p>
+          <p className="text-[10px] text-sky-600 font-bold mt-1">{gaVisits ? `${gaConversionRate}% conv. real` : 'sin conectar (GA4)'}</p>
         </div>
         <div className="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm">
           <div className="flex items-center gap-2 mb-2">

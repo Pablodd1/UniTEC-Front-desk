@@ -245,14 +245,17 @@ function buildReportText(sessions, metrics, periodLabel, reportTime, isWeekly, g
              `⏰ Generado: <b>${reportTime} (COL)</b>\n\n`;
 
   // ── SECCIÓN 1: FLUJO DE USUARIOS (métricas REALES) ────────
-  const gaVisits = parseInt(googleAnalyticsVisits || '3188', 10) || 3188;
+  // Visitas web reales (GA4): las escribe el cron /api/ga-visits en config/main.
+  // Sin dato configurado NO se inventa una cifra (antes: 3.188 hardcodeado).
+  const gaParsed = parseInt(String(googleAnalyticsVisits || ''), 10);
+  const gaVisits = Number.isFinite(gaParsed) && gaParsed > 0 ? gaParsed : null;
   const realChats = metrics.realInteractions || 0;
   const loadRate = metrics.total > 0 ? ((realChats / metrics.total) * 100).toFixed(1) : '0.0';
-  const gaConversionRate = gaVisits > 0 ? ((realChats / gaVisits) * 100).toFixed(2) : '0.0';
+  const gaConversionRate = gaVisits ? ((realChats / gaVisits) * 100).toFixed(2) : 'n/d';
 
   text += `🔀 <b>Flujo de Usuarios:</b>\n`;
   text += `┌─────────────────────────────────────────\n`;
-  text += `│ 📈 Visitas Web (GA):          <b>${gaVisits.toLocaleString('es')}</b>\n`;
+  text += `│ 📈 Visitas Web (GA):          <b>${gaVisits ? gaVisits.toLocaleString('es') : 'sin dato'}</b>\n`;
   text += `│ 👤 Cargas de Chatbot (Loads): <b>${metrics.total}</b>\n`;
   text += `│ 💬 Interacción REAL (escribieron): <b>${realChats}</b>\n`;
   text += `│    └ ${loadRate}% de cargas · ${gaConversionRate}% de visitas GA\n`;
@@ -548,7 +551,7 @@ export default async function handler(req, res) {
     let telegramBotTokenExtra = '';
     let telegramChatIdExtra = '';
     let telegramReportTime = '09:00';
-    let googleAnalyticsVisits = '3188';
+    let googleAnalyticsVisits = '';
     let lastAnalyticsReportDate = '';
     let analyticsPreferences = {
       includeTraffic: true,

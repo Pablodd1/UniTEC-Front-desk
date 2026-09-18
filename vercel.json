@@ -16,6 +16,10 @@
     {
       "path": "/api/lifecycle-sweep",
       "schedule": "*/15 * * * *"
+    },
+    {
+      "path": "/api/ga-visits",
+      "schedule": "0 13 * * *"
     }
   ]
 }
