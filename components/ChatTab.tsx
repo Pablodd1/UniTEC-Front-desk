@@ -298,8 +298,8 @@ const ChatTab: React.FC<ChatTabProps> = ({ quickActions, initialMessage, emergen
     if (messages.length === 1 && messages[0].id === 'welcome') {
         const brandName = brandId === 'unitec' ? 'Unitec USA Design' : 'Building Innovation';
         const welcomeText = language === 'en'
-          ? `Hello, 👋 Welcome to ${brandName}, your partner in constructive solutions and alternatives.\n\nMy name is Decky👷 and I will be here accompanying you to browse our portfolio of more than 500 products and choose the best constructive options aligned with your project.\n\nBefore continuing, I would like to know you. Tell me, what is your name?`
-          : `Hola, 👋 Bienvenido a ${brandName}, tu aliado en soluciones y alternativas constructivas.\n\nMi nombre es Decky👷 y estaré por este medio acompañándote a recorrer nuestro portafolio de más de 500 productos y a escoger las mejores opciones constructivas alineadas a tu proyecto.\n\nAntes de continuar quisiera conocerte. Cuéntame, ¿cómo te llamas?`;
+          ? `Hello, 👋 Welcome to ${brandName}, your partner in constructive solutions and alternatives.\n\nMy name is Decky👷 and I will help you find, among more than 500 products, what your project needs.\n\nSo I can help you right away: what product are you looking for, or what do you need a quote for?`
+          : `Hola, 👋 Bienvenido a ${brandName}, tu aliado en soluciones y alternativas constructivas.\n\nMi nombre es Decky👷 y te voy a ayudar a encontrar, entre más de 500 productos, lo que tu proyecto necesita.\n\nPara ayudarte de una vez, cuéntame: ¿qué producto buscas o qué necesitas cotizar?`;
         
         setMessages([{
             id: 'welcome',
