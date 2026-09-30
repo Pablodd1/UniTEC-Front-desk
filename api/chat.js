@@ -326,6 +326,15 @@ You are the professional AI Front Desk Assistant and Senior Sales Representative
         }
 
         if (responseText) {
+          // Validate response length — reject verbose responses
+          if (responseText.length > 800) {
+            console.warn(`Response too long (${responseText.length} chars), retrying with shorter prompt`);
+            // Add stricter instruction and retry once
+            const shorterInstructions = instructions + '\n\nCRITICAL: Your previous response was too long. Respond in EXACTLY 1-2 sentences maximum.';
+            // For now, just truncate to prevent bad UX
+            responseText = responseText.substring(0, 500) + '...';
+          }
+
           // Record this real chat turn server-side (messages + counters + funnel).
           // AWAITED (not fire-and-forget): Vercel kills pending promises when the
           // response returns, which silently dropped all recording otherwise.
