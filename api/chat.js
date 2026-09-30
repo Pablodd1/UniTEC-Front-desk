@@ -344,13 +344,17 @@ GOOD EXAMPLE: "¡Hola! ¿En qué producto te interesa?"`;
         }
 
         if (responseText) {
-          // Validate response length — reject verbose responses
-          if (responseText.length > 800) {
-            console.warn(`Response too long (${responseText.length} chars), retrying with shorter prompt`);
-            // Add stricter instruction and retry once
-            const shorterInstructions = instructions + '\n\nCRITICAL: Your previous response was too long. Respond in EXACTLY 1-2 sentences maximum.';
-            // For now, just truncate to prevent bad UX
-            responseText = responseText.substring(0, 500) + '...';
+          // HARD LENGTH ENFORCEMENT: 2-3 sentences max, ~200 chars limit
+          const sentences = responseText.split(/(?<=[.!?¡¿])\s+/).filter(s => s.trim().length > 0);
+          if (sentences.length > 3 || responseText.length > 300) {
+            console.warn(`[StyleGuard] Response too long: ${sentences.length} sentences, ${responseText.length} chars. Truncating.`);
+            // Keep max 2 sentences
+            const shortSentences = sentences.slice(0, 2);
+            responseText = shortSentences.join(' ');
+            // If still too long, hard truncate at 250 chars
+            if (responseText.length > 250) {
+              responseText = responseText.substring(0, 247) + '...';
+            }
           }
 
           // Record this real chat turn server-side (messages + counters + funnel).
