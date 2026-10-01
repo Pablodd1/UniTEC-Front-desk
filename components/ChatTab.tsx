@@ -541,7 +541,7 @@ const ChatTab: React.FC<ChatTabProps> = ({ quickActions, initialMessage, emergen
       role: 'user',
       text: text,
       timestamp: new Date(),
-      skipFirestore: onboardingStage === 'ready'
+      skipFirestore: true
     };
 
     setMessages(prev => [...prev, userMsg]);
@@ -624,19 +624,10 @@ const ChatTab: React.FC<ChatTabProps> = ({ quickActions, initialMessage, emergen
     }, 30000);
 
     try {
-      // Detect escalation type for auto-reply BEFORE firing alerts
-      const lowerText = text.toLowerCase();
-      const isQuoteIntent = ['price', 'precio', 'costo', 'valor', 'cotiz', 'presupuesto', 'budget', 'quote', 'cuanto', 'how much'].some(kw => lowerText.includes(kw));
-      const isStaffIntent = ['asesor', 'humano', 'staff', 'human', 'agent', 'llamar', 'call me', 'speak to someone', 'talk to someone', 'contacto', 'atencion', 'atención'].some(kw => lowerText.includes(kw));
-      const hasEscalationIntent = isQuoteIntent || isStaffIntent;
-
       checkAndTriggerWhatsAppAlert(text);
 
-      // Show auto-reply to user immediately (don't wait for AI response)
-      if (hasEscalationIntent) {
-        showEscalationAutoReply(isQuoteIntent ? 'quote' : 'staff');
-      }
-      // Prepare history for Gemini
+      // Una sola respuesta al cliente. La alerta al equipo sigue, pero no se
+      // agrega una segunda burbuja encima de la respuesta de la IA.
       const history = messages.slice(1).map(m => ({
         role: m.role as 'user' | 'model',
         parts: [{ text: m.text }]
