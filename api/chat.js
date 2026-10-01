@@ -15,6 +15,8 @@ function isRateLimited(ip, limit = 120, windowMs = 60000) {
 import { inspectConversation } from './health.js';
 import { getSharedTraining } from './shared-training.js';
 import { recordChatTurn } from './_record-chat-turn.js';
+import { normalizeHistory } from './turn-text.js';
+import { alertAnomaly } from './anomaly-alert.js';
 import { createRequire } from 'module';
 const require_ = createRequire(import.meta.url);
 const firebaseConfig = require_('../firebase-applet-config.json');
@@ -92,7 +94,7 @@ export default async function handler(req, res) {
     }
 
     // Apply the transcript cap to bound the AI context (prevents the slowdown described above).
-    const history = trimHistory(rawHistory);
+    const history = trimHistory(normalizeHistory(rawHistory));
 
     // ── Shared training injection ──────────────────────────────────────
     // Merge the dashboard-managed training (config/main.trainingData) into the
@@ -182,6 +184,7 @@ GOOD EXAMPLE: "¡Hola! ¿En qué producto te interesa?"`;
     ].filter(Boolean);
 
     if (keys.length === 0) {
+      await alertAnomaly('SIN_LLAVE_IA', 'No hay API keys de IA en el servidor. El bot no puede responder.');
       return res.status(500).json({ error: 'No AI API keys configured on server.' });
     }
 
@@ -361,7 +364,10 @@ GOOD EXAMPLE: "¡Hola! ¿En qué producto te interesa?"`;
           // AWAITED (not fire-and-forget): Vercel kills pending promises when the
           // response returns, which silently dropped all recording otherwise.
           if (clientSessionId && !String(responseText).includes('actualización de credenciales')) {
-            await recordChatTurn({ sessionId: clientSessionId, userText: message, replyText: responseText, brand: brandId });
+            const recorded = await recordChatTurn({ sessionId: clientSessionId, userText: message, replyText: responseText, brand: brandId });
+            if (recorded && recorded.recorded === false) {
+              await alertAnomaly('REGISTRO_FALLIDO', recorded.reason || 'El turno se respondió pero no quedó guardado.', clientSessionId);
+            }
           }
 
           // ponytail: server-side escalation intent detection — catches quote/staff requests
@@ -399,11 +405,13 @@ GOOD EXAMPLE: "¡Hola! ¿En qué producto te interesa?"`;
 
     // Graceful Fallback: If all API keys fail or are expired (401), return a polite receptionist fallback response
     const fallbackText = "¡Hola! Gracias por contactar a UNITEC USA Design. En este momento nuestra pasarela de Inteligencia Artificial se encuentra en actualización de credenciales. Para ser atendido inmediatamente por un asesor de ventas humano, por favor comunícate a nuestro WhatsApp oficial: https://wa.me/573142332147";
+    await alertAnomaly('BOT_SIN_RESPUESTA', lastErrorDetails || 'Todas las llaves de IA fallaron.', clientSessionId);
 
     return res.status(200).json({ text: fallbackText, success: true, isFallback: true, lastError: lastErrorDetails });
   } catch (error) {
     console.error("Proxy Chat Error:", error);
-    return res.status(200).json({ 
+    await alertAnomaly('ERROR_CHAT', error?.message || String(error), req.body?.sessionId);
+    return res.status(200).json({
       text: "¡Hola! Gracias por contactar a UNITEC USA Design. Para asistencia inmediata, comunícate a nuestro WhatsApp oficial: https://wa.me/573142332147",
       success: true,
       isFallback: true 
