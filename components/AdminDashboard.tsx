@@ -31,6 +31,7 @@ interface AdminDashboardProps {
   onUpdateBackground?: (url: string) => void;
   language?: 'en' | 'es';
   onBack?: () => void;
+  initialSessionId?: string;
 }
 
 const GEMINI_VOICE_DESCRIPTIONS: Record<string, { gender: 'Male' | 'Female', style: string }> = {
@@ -49,9 +50,10 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({
     onToggleBrand,
     onUpdateBackground,
     onBack,
-    language
+    language,
+    initialSessionId
 }) => {
-  const [activeSubTab, setActiveSubTab] = useState<'chats' | 'catalogs' | 'usage' | 'voice' | 'visuals' | 'training' | 'integrations' | 'telegram' | 'deploy' | 'functionalities' | 'general' | 'conversations' | 'interventions' | 'analytics' | 'health' | 'retraining'>('chats');
+  const [activeSubTab, setActiveSubTab] = useState<'chats' | 'catalogs' | 'usage' | 'voice' | 'visuals' | 'training' | 'integrations' | 'telegram' | 'deploy' | 'functionalities' | 'general' | 'conversations' | 'interventions' | 'analytics' | 'health' | 'retraining'>(initialSessionId ? 'conversations' : 'chats');
   
   // NEW: Conversation Tracking States
   const [conversations, setConversations] = useState<ConversationSession[]>([]);
@@ -318,7 +320,7 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({
           requestNotificationPermission().then(granted => {
             if (granted) showBrowserNotification('Intervencion Urgente', alert.reason || 'Cliente solicitó atención del personal');
           });
-          const msg = '🚨 INTERVENCIÓN URGENTE\n\nSesión: ' + alert.sessionId + '\nRazón: ' + (alert.reason || 'El cliente pidió hablar con alguien') + '\nHora: ' + new Date(alert.requestedAt).toLocaleTimeString('es-CO', { timeZone: 'America/Bogota' }) + '\n\nAbrir panel: ' + window.location.origin + '/?admin=true';
+          const msg = '🚨 INTERVENCIÓN URGENTE\n\nSesión: ' + alert.sessionId + '\nRazón: ' + (alert.reason || 'El cliente pidió hablar con alguien') + '\nHora: ' + new Date(alert.requestedAt).toLocaleTimeString('es-CO', { timeZone: 'America/Bogota' }) + '\n\nAbrir panel: ' + window.location.origin + '/?admin=true&session=' + alert.sessionId;
           fetch('/api/notify-telegram', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
@@ -2077,7 +2079,7 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({
                 <div className="h-[calc(100vh-200px)] animate-in slide-in-from-bottom-2 duration-500">
                     <ConversationMonitor 
                         sessions={conversations}
-                        focusSessionId={_selectedConversation?.id ?? null}
+                        focusSessionId={_selectedConversation?.id ?? initialSessionId ?? null}
                         onSelectSession={(session) => {
                             _setSelectedConversation(session);
                         }}

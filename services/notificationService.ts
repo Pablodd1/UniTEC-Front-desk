@@ -29,7 +29,7 @@ export const triggerEscalation = async (data: EscalationData): Promise<{ success
       body: JSON.stringify({
         ...data,
         priority: data.priority || 'high',
-        dashboardUrl: `${window.location.origin}/admin`,
+        dashboardUrl: `${window.location.origin}/?admin=true${data.sessionId ? `&session=${encodeURIComponent(data.sessionId)}` : ''}`,
       }),
     });
     const json = await res.json();
@@ -200,7 +200,7 @@ function generateEmailTemplate(payload: NotificationPayload): string {
           ${payload.message ? `<p><strong>Message:</strong> ${payload.message}</p>` : ''}
           <div class="meta">
             <p>Timestamp: ${new Date(payload.timestamp).toLocaleString()}</p>
-            <p>View in Dashboard: <a href="${window.location.origin}/admin">Open Dashboard</a></p>
+            <p>View in Dashboard: <a href="${window.location.origin}/?admin=true&session=${encodeURIComponent(payload.sessionId)}">Open Dashboard</a></p>
           </div>
         </div>
         <div class="footer">
@@ -254,7 +254,7 @@ function generateTelegramMessage(payload: NotificationPayload): string {
   }
 
   lines.push(`<b>Hora:</b> ${new Date(payload.timestamp).toLocaleString('es-CO', { timeZone: 'America/Bogota' })}`);
-  lines.push(`<a href="${window.location.origin}/admin">Ver panel</a>`);
+  lines.push(`<a href="${window.location.origin}/?admin=true&session=${encodeURIComponent(payload.sessionId)}">Ver panel</a>`);
 
   return lines.join('\n');
 }

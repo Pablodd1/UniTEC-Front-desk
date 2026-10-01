@@ -225,17 +225,19 @@ const ConversationMonitor: React.FC<ConversationMonitorProps> = ({
     }
   };
 
-  // Deep-link: when a session is requested from elsewhere (e.g. Analytics "Ver Conversación"),
-  // open that session's conversation automatically.
+  // Deep-link: when a session is requested from elsewhere (e.g. Analytics "Ver Conversación",
+  // or a Telegram alert deep link via ?session=), open that session's conversation automatically.
+  // Retries when `sessions` loads late; fires once per focusSessionId so it never fights the user.
+  const handledFocusRef = useRef<string | null>(null);
   useEffect(() => {
     if (!focusSessionId) return;
-    if (selectedSessionId === focusSessionId) return;
+    if (handledFocusRef.current === focusSessionId) return;
     const target = sessions.find((s) => s.id === focusSessionId);
-    if (target) {
-      handleSelectSession(target);
-    }
+    if (!target) return; // sessions may still be loading — retried when the list updates
+    handledFocusRef.current = focusSessionId;
+    if (selectedSessionId !== target.id) handleSelectSession(target);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [focusSessionId]);
+  }, [focusSessionId, sessions]);
 
   const handleSendAsStaff = async () => {
     if (!staffResponse.trim() || !selectedSessionId) return;

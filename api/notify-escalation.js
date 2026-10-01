@@ -303,7 +303,7 @@ export default async function handler(req, res) {
     type, priority: priority || 'high',
     customerName, customerPhone, customerEmail,
     message, brand, sessionId,
-    dashboardUrl: dashboardUrl || (req.headers.origin ? `${req.headers.origin}/admin` : ''),
+    dashboardUrl: dashboardUrl || (req.headers.origin ? `${req.headers.origin}/?admin=true${sessionId ? `&session=${encodeURIComponent(sessionId)}` : ''}` : ''),
     timestamp: new Date().toISOString(),
   };
 

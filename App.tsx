@@ -16,8 +16,19 @@ import { resetChatSession } from './services/geminiService';
 import { auth, logOut } from './firebase';
 import { onAuthStateChanged, signInAnonymously } from 'firebase/auth';
 
+// Deep-link support: /admin must behave like ?admin=true (telegram alert buttons point here)
+const isAdminPath = (): boolean =>
+  typeof window !== 'undefined' && /^\/admin\/?$/i.test(window.location.pathname);
+
 const App: React.FC = () => {
   const isEmbedMode = new URLSearchParams(window.location.search).get('embed') === 'true';
+
+  // Deep-link target from Telegram alerts (?admin=true&session=<id>)
+  const [adminDeepLinkSession] = useState<string | undefined>(() => {
+    if (typeof window === 'undefined') return undefined;
+    const sid = new URLSearchParams(window.location.search).get('session') || '';
+    return /^[\w-]{1,80}$/.test(sid) ? sid : undefined;
+  });
 
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [isAuthReady, setIsAuthReady] = useState(false);
@@ -26,7 +37,7 @@ const App: React.FC = () => {
     if (typeof window !== 'undefined') {
       const search = window.location.search;
       const hash = window.location.hash;
-      if (search.includes('admin=true') || hash === '#admin' || localStorage.getItem('unitec_show_admin') === 'true') {
+      if (search.includes('admin=true') || hash === '#admin' || isAdminPath() || localStorage.getItem('unitec_show_admin') === 'true') {
         return Tab.ADMIN_SETTINGS;
       }
     }
@@ -41,7 +52,7 @@ const App: React.FC = () => {
     if (typeof window !== 'undefined') {
       const search = window.location.search;
       const hash = window.location.hash;
-      return search.includes('admin=true') || hash === '#admin' || localStorage.getItem('unitec_show_admin') === 'true';
+      return search.includes('admin=true') || hash === '#admin' || isAdminPath() || localStorage.getItem('unitec_show_admin') === 'true';
     }
     return false;
   });
@@ -89,7 +100,7 @@ const App: React.FC = () => {
     const checkAdminMode = () => {
       const hash = window.location.hash;
       const search = window.location.search;
-      const hasAdminParam = search.includes('admin=true') || hash === '#admin';
+      const hasAdminParam = search.includes('admin=true') || hash === '#admin' || isAdminPath();
       const hasStoredAdmin = localStorage.getItem('unitec_show_admin') === 'true';
       
       if (hasAdminParam || hasStoredAdmin) {
@@ -227,6 +238,7 @@ const App: React.FC = () => {
         return <CalendarTab />;
       case Tab.ADMIN_SETTINGS:
         return <AdminDashboard 
+            initialSessionId={adminDeepLinkSession}
             emergencyMode={emergencyMode}
             setEmergencyMode={setEmergencyMode}
             voiceName={voiceName}
@@ -300,6 +312,7 @@ const App: React.FC = () => {
     return (
       <div className="min-h-[100dvh] w-full bg-slate-50 flex flex-col font-sans">
         <AdminDashboard 
+            initialSessionId={adminDeepLinkSession}
             emergencyMode={emergencyMode}
             setEmergencyMode={setEmergencyMode}
             voiceName={voiceName}
