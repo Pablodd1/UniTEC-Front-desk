@@ -82,7 +82,7 @@ export interface ConversationSession {
   sentimentScore?: number;
   topics: string[];
   duration?: number;
-  source: 'web' | 'phone' | 'whatsapp';
+  source: 'web' | 'website' | 'phone' | 'whatsapp';
   userAgent?: string;
   ipAddress?: string;
   referrer?: string;
@@ -163,7 +163,7 @@ const COLLECTIONS = {
 export const createConversation = async (
   brandId: 'unitec' | 'building',
   language: 'en' | 'es' = 'es',
-  source: 'web' | 'phone' | 'whatsapp' = 'web',
+  source: 'web' | 'website' | 'phone' | 'whatsapp' = 'web',
   metadata?: { userAgent?: string; ipAddress?: string }
 ): Promise<string> => {
   const sessionId = `session_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;

@@ -413,7 +413,7 @@ function computeMetrics(sessions) {
   });
 
   // Source segmentation
-  const sourceWeb = realSessions.filter(s => s.source === 'web').length;
+  const sourceWeb = realSessions.filter(s => s.source === 'web' || s.source === 'website').length;
   const sourceWhatsapp = realSessions.filter(s => s.source === 'whatsapp').length;
   const sourcePhone = realSessions.filter(s => s.source === 'phone').length;
 

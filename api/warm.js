@@ -6,6 +6,7 @@
 // used by /api/chat's server-side session recording.
 
 import { createRequire } from 'module';
+import { checkWidget } from './widget-status.js';
 const require_ = createRequire(import.meta.url);
 const firebaseConfig = require_('../firebase-applet-config.json');
 
@@ -30,10 +31,16 @@ export default async function handler(req, res) {
   }
   try {
     const token = await getFirestoreToken();
+    const widget = await checkWidget().catch((e) => ({ ok: false, problems: [e.message] }));
+    if (!widget.ok) {
+      const { alertAnomaly } = await import('./anomaly-alert.js');
+      await alertAnomaly('WIDGET_WEB', (widget.problems || []).join('; ')).catch(() => {});
+    }
     return res.status(200).json({
       ok: true,
       warm: true,
       firebaseAuth: !!token,
+      widgetOk: !!widget.ok,
       ts: new Date().toISOString()
     });
   } catch (e) {

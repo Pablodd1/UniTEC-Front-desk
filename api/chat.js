@@ -87,7 +87,7 @@ export default async function handler(req, res) {
   }
 
   try {
-    const { message, history: rawHistory, instructions: clientInstructions, sessionId: clientSessionId, brandId = 'unitec' } = req.body;
+    const { message, history: rawHistory, instructions: clientInstructions, sessionId: clientSessionId, brandId = 'unitec', parentHost } = req.body;
     const origin = req.headers.origin || 'https://chatbuildinginnovation.us';
     if (!message) {
       return res.status(400).json({ error: 'Missing message in request body' });
@@ -96,7 +96,7 @@ export default async function handler(req, res) {
     const directCatalog = catalogReply(message);
     if (directCatalog) {
       if (clientSessionId) {
-        await recordChatTurn({ sessionId: clientSessionId, userText: message, replyText: directCatalog, brand: brandId }).catch(() => {});
+        await recordChatTurn({ sessionId: clientSessionId, userText: message, replyText: directCatalog, brand: brandId, parentHost }).catch(() => {});
       }
       return res.status(200).json({ text: directCatalog, success: true, direct: 'catalog' });
     }
@@ -364,7 +364,7 @@ GOOD EXAMPLE: "¡Hola! ¿En qué producto te interesa?"`;
           // AWAITED (not fire-and-forget): Vercel kills pending promises when the
           // response returns, which silently dropped all recording otherwise.
           if (clientSessionId && !String(responseText).includes('actualización de credenciales')) {
-            const recorded = await recordChatTurn({ sessionId: clientSessionId, userText: message, replyText: responseText, brand: brandId });
+            const recorded = await recordChatTurn({ sessionId: clientSessionId, userText: message, replyText: responseText, brand: brandId, parentHost });
             if (recorded && recorded.recorded === false) {
               await alertAnomaly('REGISTRO_FALLIDO', recorded.reason || 'El turno se respondió pero no quedó guardado.', clientSessionId);
             }

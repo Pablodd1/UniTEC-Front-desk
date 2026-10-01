@@ -26,7 +26,7 @@ const PROTECTED_STATUSES = new Set(['human_requested', 'human_assigned']);
  * @param {string} [stage]      etapa del embudo alcanzada con ESTE turno (name|phone|profession|menu|engaged)
  * @returns {Promise<{recorded:boolean, reason?:string}>}
  */
-export async function recordChatTurn({ sessionId, userText, replyText, brand = 'unitec', stage }) {
+export async function recordChatTurn({ sessionId, userText, replyText, brand = 'unitec', stage, parentHost }) {
   if (!sessionId) return { recorded: false, reason: 'no_session' };
   try {
     const idToken = await getFirestoreToken();
@@ -72,13 +72,18 @@ export async function recordChatTurn({ sessionId, userText, replyText, brand = '
       id: { stringValue: sessionId },
       ...statusFields,
       brandId: { stringValue: brand || 'unitec' },
-      source: { stringValue: 'web' },
+      source: { stringValue: String(parentHost || '').includes('unitecusadesign') ? 'website' : 'web' },
       language: { stringValue: 'es' },
       lastMessage: { stringValue: String(userText || replyText || '').slice(0, 200) },
       lastUpdated: { stringValue: now },
     };
     const sessionMask = ['id', 'brandId', 'source', 'language', 'lastMessage', 'lastUpdated']
       .concat(PROTECTED_STATUSES.has(currentStatus) ? [] : ['status']);
+
+    if (parentHost) {
+      sessionFields.parentHost = { stringValue: String(parentHost).slice(0, 160) };
+      sessionMask.push('parentHost');
+    }
 
     const writes = [
       { updateMask: { fieldPaths: sessionMask }, update: { name: docPath, fields: sessionFields } },
