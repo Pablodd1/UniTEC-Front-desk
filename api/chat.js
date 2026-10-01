@@ -15,7 +15,7 @@ function isRateLimited(ip, limit = 120, windowMs = 60000) {
 import { inspectConversation } from './health.js';
 import { getSharedTraining } from './shared-training.js';
 import { recordChatTurn } from './_record-chat-turn.js';
-import { normalizeHistory } from './turn-text.js';
+import { normalizeHistory, catalogReply, tightenReply } from './turn-text.js';
 import { alertAnomaly } from './anomaly-alert.js';
 import { createRequire } from 'module';
 const require_ = createRequire(import.meta.url);
@@ -93,7 +93,14 @@ export default async function handler(req, res) {
       return res.status(400).json({ error: 'Missing message in request body' });
     }
 
-    // Apply the transcript cap to bound the AI context (prevents the slowdown described above).
+    const directCatalog = catalogReply(message);
+    if (directCatalog) {
+      if (clientSessionId) {
+        await recordChatTurn({ sessionId: clientSessionId, userText: message, replyText: directCatalog, brand: brandId }).catch(() => {});
+      }
+      return res.status(200).json({ text: directCatalog, success: true, direct: 'catalog' });
+    }
+
     const history = trimHistory(normalizeHistory(rawHistory));
 
     // ── Shared training injection ──────────────────────────────────────
@@ -164,6 +171,10 @@ GOOD EXAMPLE: "¡Hola! ¿En qué producto te interesa?"`;
       }
     } catch (e) {
       console.warn('Training injection skipped:', e?.message);
+    }
+
+    if (/color/.test(String(message).toLowerCase())) {
+      instructions += '\n\n[ESTA PREGUNTA ES DE COLORES] Responde en UNA frase. Nombra como máximo 4 colores, o di que cambian según la referencia. No listes productos, precios ni la empresa. Cierra con una pregunta corta.';
     }
 
     // Context/memory watchdog — fire-and-forget async alert if the conversation is filling up.
@@ -347,18 +358,7 @@ GOOD EXAMPLE: "¡Hola! ¿En qué producto te interesa?"`;
         }
 
         if (responseText) {
-          // HARD LENGTH ENFORCEMENT: 2-3 sentences max, ~200 chars limit
-          const sentences = responseText.split(/(?<=[.!?¡¿])\s+/).filter(s => s.trim().length > 0);
-          if (sentences.length > 3 || responseText.length > 300) {
-            console.warn(`[StyleGuard] Response too long: ${sentences.length} sentences, ${responseText.length} chars. Truncating.`);
-            // Keep max 2 sentences
-            const shortSentences = sentences.slice(0, 2);
-            responseText = shortSentences.join(' ');
-            // If still too long, hard truncate at 250 chars
-            if (responseText.length > 250) {
-              responseText = responseText.substring(0, 247) + '...';
-            }
-          }
+          responseText = tightenReply(responseText);
 
           // Record this real chat turn server-side (messages + counters + funnel).
           // AWAITED (not fire-and-forget): Vercel kills pending promises when the
