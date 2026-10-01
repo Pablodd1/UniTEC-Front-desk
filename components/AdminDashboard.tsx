@@ -2,7 +2,7 @@
 import React, { useState, useEffect } from 'react';
 import { Plug, Phone, ShieldCheck, Database, Mic2, Save, RefreshCw, Check, Loader2, Volume2, TrendingUp, Zap, Gauge, Building2, Store, Brain, Code, Copy, ExternalLink, Rocket, ToggleRight, ToggleLeft, DollarSign, MessageSquare, Headphones, BarChart3, AlertTriangle, X, Send } from 'lucide-react';
 import { EscalaConfig, VoiceName, VoiceProvider, BillingInvoice, ConversationSession, InterventionRequest, ConversationMessage } from '../types';
-import { playGeminiTTS } from '../services/geminiService';
+import { playGeminiTTS, generateEmbedding } from '../services/geminiService';
 import { getEscalaConfig, saveEscalaConfig, testEscalaConnection } from '../services/escalaService';
 import { getUsageStats, getProfitEstimate, generateInvoice, trackUsage } from '../services/usageService';
 import { generateImage, editImage } from '../services/imageService';
@@ -1150,7 +1150,6 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({
                                 </div>
                                 <button 
                                     onClick={async () => {
-                                        const { generateEmbedding } = await import('../services/geminiService');
                                         const sampleText = "Test embedding generation";
                                         const result = await generateEmbedding(sampleText);
                                         if (result) {

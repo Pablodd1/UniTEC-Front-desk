@@ -1,0 +1,91 @@
+name: Jev Error Monitor
+
+# Automated web error monitoring for UniTEC Front Desk.
+# Jev (TypeSafe System One) classifies every failure in one parallel pass of three typed
+# questions — is_operational / severity / should_alert — and only then does anyone get pinged.
+
+on:
+  schedule:
+    - cron: '0 */6 * * *'      # every 6 hours
+  push:
+    branches: [main, master]
+  workflow_dispatch:
+    inputs:
+      base_url:
+        description: 'Override the audited site'
+        required: false
+        default: ''
+
+permissions:
+  contents: read
+
+concurrency:
+  group: jev-monitor-${{ github.ref }}
+  cancel-in-progress: false
+
+env:
+  BASE_URL: ${{ inputs.base_url || vars.BASE_URL || 'https://unitec-front-desk.vercel.app' }}
+  TYPESAFE_API_KEY: ${{ secrets.TYPESAFE_API_KEY }}
+  RESEND_API_KEY: ${{ secrets.RESEND_API_KEY }}
+  NOTIFICATION_EMAIL: ${{ vars.NOTIFICATION_EMAIL || secrets.NOTIFICATION_EMAIL }}
+  TYPESAFE_MODEL: ${{ vars.TYPESAFE_MODEL || 'jev-latest' }}
+
+jobs:
+  audit:
+    name: Audit key routes with Jev
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Install dependencies
+        run: |
+          if [ -f package-lock.json ]; then npm ci --no-audit --no-fund; else npm install --no-audit --no-fund; fi
+
+      - name: Confirm the Jev key is present
+        run: |
+          if [ -z "$TYPESAFE_API_KEY" ]; then
+            echo "::warning title=Jev key missing::TYPESAFE_API_KEY is not set — the audit will run in heuristic mode (no Jev classification)."
+          else
+            echo "Jev key present (${#TYPESAFE_API_KEY} chars) — model $TYPESAFE_MODEL"
+          fi
+
+      - name: Run the audit
+        id: audit
+        continue-on-error: true
+        run: |
+          mkdir -p reports
+          node scripts/jev-audit.mjs --json --out reports/jev-audit.json | tee reports/jev-audit.stdout
+          echo "exit=$?" >> "$GITHUB_OUTPUT"
+
+      - name: Job summary
+        if: always()
+        run: |
+          {
+            echo "## Jev error monitor"
+            echo ""
+            echo "- target: \`$BASE_URL\`"
+            echo "- report: \`reports/jev-audit.json\`"
+            echo ""
+            echo '```'
+            node -e "const r=require('./reports/jev-audit.json'); console.log(r.checked+' routes · '+r.errors+' broken · '+r.missing+' unexpected · '+r.duration_ms+' ms · classifier '+r.model); for (const p of r.routes) console.log((p.status||'---')+'  '+p.path); for (const i of r.incidents) console.log('INCIDENT '+i.path+' severity='+i.verdict.severity_label+' operational='+i.verdict.is_operational+' alert='+i.verdict.should_alert);" || echo "(no report produced)"
+            echo '```'
+          } >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Upload the audit report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: jev-audit-${{ github.run_number }}
+          path: reports/
+          retention-days: 30
+
+      - name: Fail the job when a route is broken
+        if: steps.audit.outcome == 'failure'
+        run: |
+          echo "::error title=Jev found a broken route::See the job summary and the jev-audit artifact."
+          exit 1
