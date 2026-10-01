@@ -100,9 +100,12 @@ export async function recordChatTurn({ sessionId, userText, replyText, brand = '
     if (oneTime.includes('funnelStep')) { sessionFields.funnelStep = { stringValue: bestStage }; sessionMask.push('funnelStep'); }
 
     // Tiempo de respuesta (Fase 3): últimos ms + media móvil, calculados del estado previo leído.
+    // IMPORTANTE: los campos del mapa `analytics` van ANIDADOS como mapValue; una clave plana
+    // tipo 'analytics.x' NO coincide con el updateMask 'analytics.x' y se descarta en silencio
+    // (verificado en producción: el commit se acepta pero el campo nunca aparece).
     if (Number.isFinite(latencyMs) && replyText) {
       const msRounded = Math.round(latencyMs);
-      sessionFields['analytics.lastResponseTimeMs'] = { integerValue: String(msRounded) };
+      const analyticsFields = { lastResponseTimeMs: { integerValue: String(msRounded) } };
       sessionMask.push('analytics.lastResponseTimeMs');
       const prevAvg = Number(
         current.analytics?.mapValue?.fields?.avgResponseTime?.doubleValue ??
@@ -112,9 +115,10 @@ export async function recordChatTurn({ sessionId, userText, replyText, brand = '
       const nextN = prevN + (userText ? 1 : 0);
       if (nextN > 0) {
         const nextAvg = (prevAvg * prevN + msRounded) / nextN;
-        sessionFields['analytics.avgResponseTime'] = { doubleValue: Math.round(nextAvg) };
+        analyticsFields.avgResponseTime = { doubleValue: Math.round(nextAvg) };
         sessionMask.push('analytics.avgResponseTime');
       }
+      sessionFields.analytics = { mapValue: { fields: analyticsFields } };
     }
 
     const writes = [
