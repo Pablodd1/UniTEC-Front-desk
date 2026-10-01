@@ -127,8 +127,18 @@ export async function* sendMessageToGemini(
       const proxyRes = await fetch('/api/chat', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ message, history, instructions, brandId, sessionId: currentSessionId || undefined }),
-        signal: AbortSignal.timeout(20000) // 20s — allows for cold start + AI latency
+        body: JSON.stringify({
+          message,
+          history: (history || []).map((h) => ({
+            role: h.role,
+            text: h.text || h.parts?.[0]?.text || h.content || '',
+            parts: h.parts,
+          })),
+          instructions,
+          brandId,
+          sessionId: currentSessionId || undefined,
+        }),
+        signal: AbortSignal.timeout(28000)
       });
 
       if (proxyRes.status === 429) {

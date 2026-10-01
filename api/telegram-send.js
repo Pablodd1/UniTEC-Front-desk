@@ -65,5 +65,24 @@ export async function sendTelegramAlert(message) {
   }
 
   const sent = results.some((r) => r.ok);
-  return { sent, results, error: sent ? undefined : (results[0]?.error || 'Telegram send failed') };
+
+  const hermesToken = process.env.HERMES_ALERT_BOT_TOKEN || '';
+  const hermesChat = process.env.HERMES_ALERT_CHAT_ID || '';
+  if (hermesToken && hermesChat && !chatIds.includes(hermesChat)) {
+    try {
+      const r = await fetch(`https://api.telegram.org/bot${hermesToken}/sendMessage`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ chat_id: hermesChat, text: message, parse_mode: 'HTML' }),
+        signal: AbortSignal.timeout(10000),
+      });
+      const data = await r.json().catch(() => ({}));
+      results.push({ chatId: hermesChat, ok: r.ok, via: 'hermes', error: r.ok ? undefined : (data.description || r.status) });
+    } catch (e) {
+      results.push({ chatId: hermesChat, ok: false, via: 'hermes', error: e.message });
+    }
+  }
+
+  const anySent = results.some((r) => r.ok);
+  return { sent: anySent, results, error: anySent ? undefined : (results[0]?.error || 'Telegram send failed'), staffSent: sent };
 }

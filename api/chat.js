@@ -14,6 +14,8 @@ function isRateLimited(ip, limit = 120, windowMs = 60000) {
 // never adds latency to the user's chat response.
 import { inspectConversation } from './health.js';
 import { getSharedTraining } from './shared-training.js';
+import { normalizeHistory } from './turn-text.js';
+import { alertAnomaly } from './anomaly-alert.js';
 import { createRequire } from 'module';
 const require_ = createRequire(import.meta.url);
 const firebaseConfig = require_('../firebase-applet-config.json');
@@ -48,7 +50,7 @@ async function recordChatTurn({ sessionId, userText, replyText, brand }) {
   if (!sessionId) return;
   try {
     const idToken = await getFirestoreToken();
-    if (!idToken) return;
+    if (!idToken) return false;
     const projectId = firebaseConfig.projectId;
     const base = `https://firestore.googleapis.com/v1/projects/${projectId}/databases/(default)/documents`;
     const auth = { Authorization: `Bearer ${idToken}`, 'Content-Type': 'application/json' };
@@ -86,10 +88,11 @@ async function recordChatTurn({ sessionId, userText, replyText, brand }) {
           text: { stringValue: String(replyText).slice(0, 2000) }, timestamp: { stringValue: now },
         }}});
     }
-    await fetch(`https://firestore.googleapis.com/v1/projects/${projectId}/databases/(default)/documents:commit`, {
+    const commitRes = await fetch(`https://firestore.googleapis.com/v1/projects/${projectId}/databases/(default)/documents:commit`, {
       method: 'POST', headers: auth,
       body: JSON.stringify({ writes }),
     });
+    if (!commitRes.ok) return false;
 
     // COMMIT 2: atomic counter increments on the session doc
     await fetch(`https://firestore.googleapis.com/v1/projects/${projectId}/databases/(default)/documents:commit`, {
@@ -125,7 +128,9 @@ async function recordChatTurn({ sessionId, userText, replyText, brand }) {
     }
   } catch (e) {
     console.warn('recordChatTurn failed:', e?.message);
+    return false;
   }
+  return true;
 }
 
 // Cap transcript sent to the AI. Long conversations fill the context window and make the bot
@@ -136,6 +141,8 @@ function trimHistory(history) {
   if (history.length <= 60) return history;
   return history.slice(-60);
 }
+
+export const maxDuration = 60;
 
 export default async function handler(req, res) {
   const clientIp = req.headers['x-forwarded-for']?.split(',')[0]?.trim() || req.socket?.remoteAddress || 'unknown';
@@ -197,7 +204,7 @@ export default async function handler(req, res) {
     }
 
     // Apply the transcript cap to bound the AI context (prevents the slowdown described above).
-    const history = trimHistory(rawHistory);
+    const history = trimHistory(normalizeHistory(rawHistory));
 
     // ── Shared training injection ──────────────────────────────────────
     // Merge the dashboard-managed training (config/main.trainingData) into the
@@ -269,6 +276,7 @@ You are the professional AI Front Desk Assistant and Senior Sales Representative
     ].filter(Boolean);
 
     if (keys.length === 0) {
+      await alertAnomaly('SIN_LLAVE_IA', 'No hay API keys de IA en el servidor. El bot no puede responder.');
       return res.status(500).json({ error: 'No AI API keys configured on server.' });
     }
 
@@ -435,7 +443,10 @@ You are the professional AI Front Desk Assistant and Senior Sales Representative
           // AWAITED (not fire-and-forget): Vercel kills pending promises when the
           // response returns, which silently dropped all recording otherwise.
           if (clientSessionId && !String(responseText).includes('actualización de credenciales')) {
-            await recordChatTurn({ sessionId: clientSessionId, userText: message, replyText: responseText, brand: brandId });
+            const recorded = await recordChatTurn({ sessionId: clientSessionId, userText: message, replyText: responseText, brand: brandId });
+            if (!recorded) {
+              await alertAnomaly('REGISTRO_FALLIDO', 'El turno se respondió pero no quedó guardado en Firestore.', clientSessionId);
+            }
           }
 
           // ponytail: server-side escalation intent detection — catches quote/staff requests
@@ -473,11 +484,13 @@ You are the professional AI Front Desk Assistant and Senior Sales Representative
 
     // Graceful Fallback: If all API keys fail or are expired (401), return a polite receptionist fallback response
     const fallbackText = "¡Hola! Gracias por contactar a UNITEC USA Design. En este momento nuestra pasarela de Inteligencia Artificial se encuentra en actualización de credenciales. Para ser atendido inmediatamente por un asesor de ventas humano, por favor comunícate a nuestro WhatsApp oficial: https://wa.me/573142332147";
+    await alertAnomaly('BOT_SIN_RESPUESTA', lastErrorDetails || 'Todas las llaves de IA fallaron.', clientSessionId);
 
     return res.status(200).json({ text: fallbackText, success: true, isFallback: true, lastError: lastErrorDetails });
   } catch (error) {
     console.error("Proxy Chat Error:", error);
-    return res.status(200).json({ 
+    await alertAnomaly('ERROR_CHAT', error?.message || String(error), req.body?.sessionId);
+    return res.status(200).json({
       text: "¡Hola! Gracias por contactar a UNITEC USA Design. Para asistencia inmediata, comunícate a nuestro WhatsApp oficial: https://wa.me/573142332147",
       success: true,
       isFallback: true 

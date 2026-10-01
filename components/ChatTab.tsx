@@ -109,6 +109,7 @@ const ChatTab: React.FC<ChatTabProps> = ({ quickActions, initialMessage, emergen
   
   // ===== NEW: Conversation Tracking =====
   const [conversationId, setConversationId] = useState<string | null>(null);
+  const conversationIdRef = useRef<string | null>(null);
   const [showInterventionRequest, setShowInterventionRequest] = useState(false);
   const [interventionReason, setInterventionReason] = useState('');
   const [isRequestingIntervention, setIsRequestingIntervention] = useState(false);
@@ -152,20 +153,15 @@ const ChatTab: React.FC<ChatTabProps> = ({ quickActions, initialMessage, emergen
         // Create a new session if:
         // 1. No existing session ID in localStorage
         // 2. Previous session is older than 12 hours (new visit/day)
-        const isExpired = !lastSessionTime || (now - parseInt(lastSessionTime, 10) > 12 * 60 * 60 * 1000);
+        const isExpired = !!lastSessionTime && (now - parseInt(lastSessionTime, 10) > 12 * 60 * 60 * 1000);
 
         if (!existingId || isExpired) {
-          const newId = await createConversation(
-            brandId || 'unitec',
-            language,
-            'web',
-            { userAgent: navigator.userAgent, ipAddress: 'unknown' }
-          );
-          existingId = newId;
-          if (typeof window !== 'undefined') {
-            localStorage.setItem(storageKey, newId);
-            localStorage.setItem(timestampKey, now.toString());
+          if (typeof window !== 'undefined' && isExpired) {
+            localStorage.removeItem(storageKey);
+            localStorage.removeItem(timestampKey);
           }
+          // First real message creates the session. Page loads must not.
+          return;
         }
         // else: KEEP the existing session — do NOT create a duplicate.
         // (Old behavior created a new empty session on every reload, which
@@ -174,6 +170,7 @@ const ChatTab: React.FC<ChatTabProps> = ({ quickActions, initialMessage, emergen
         // Expose the session id to the chat proxy so /api/chat records every
         // real turn server-side (analytics ground truth, works on all origins).
         setCurrentChatSessionId(existingId);
+        conversationIdRef.current = existingId;
         setConversationId(existingId);
       } catch (e) {
         console.warn('Failed to initialize conversation session:', e);
@@ -195,6 +192,7 @@ const ChatTab: React.FC<ChatTabProps> = ({ quickActions, initialMessage, emergen
     messages.forEach((msg) => {
       if (savedMessageIds.current.has(msg.id)) return; // Already saved
       if (!msg.text || msg.text.trim() === '') return;   // Skip empty
+      if (msg.skipFirestore) return; // /api/chat already records this turn
 
       savedMessageIds.current.add(msg.id);
       addMessage(conversationId, {
@@ -341,12 +339,15 @@ const ChatTab: React.FC<ChatTabProps> = ({ quickActions, initialMessage, emergen
           ? "Are you still there? If you don't respond in a minute, I'll close the chat."
           : "Señor/a, ¿aún continuas en línea? Si no hay respuesta en un minuto, cerraré la conversación.";
           
-        setMessages(prev => [...prev, {
-          id: `idle_warning_${Date.now()}`,
-          role: 'model',
-          text: warningText,
-          timestamp: new Date()
-        }]);
+        setMessages(prev => {
+          if (prev.some(m => String(m.id).startsWith('idle_warning_'))) return prev;
+          return [...prev, {
+            id: `idle_warning_${Date.now()}`,
+            role: 'model',
+            text: warningText,
+            timestamp: new Date()
+          }];
+        });
       } else {
         warningTimer = setTimeout(() => {
           console.log('Session idle for 4 minutes. Sending warning.');
@@ -354,12 +355,15 @@ const ChatTab: React.FC<ChatTabProps> = ({ quickActions, initialMessage, emergen
             ? "Are you still there? If you don't respond in a minute, I'll close the chat."
             : "Señor/a, ¿aún continuas en línea? Si no hay respuesta en un minuto, cerraré la conversación.";
             
-          setMessages(prev => [...prev, {
-            id: `idle_warning_${Date.now()}`,
-            role: 'model',
-            text: warningText,
-            timestamp: new Date()
-          }]);
+          setMessages(prev => {
+            if (prev.some(m => String(m.id).startsWith('idle_warning_'))) return prev;
+            return [...prev, {
+              id: `idle_warning_${Date.now()}`,
+              role: 'model',
+              text: warningText,
+              timestamp: new Date()
+            }];
+          });
         }, remainingTime);
       }
     }
@@ -368,7 +372,7 @@ const ChatTab: React.FC<ChatTabProps> = ({ quickActions, initialMessage, emergen
       if (warningTimer) clearTimeout(warningTimer);
       if (closeTimer) clearTimeout(closeTimer);
     };
-  }, [messages.filter(m => m.role === 'user').length, inputText, sessionStatus, conversationId, language]);
+  }, [messages[messages.length - 1]?.id, messages.filter(m => m.role === 'user').length, sessionStatus, conversationId, language]);
 
   // Robust Auto-Scroll Implementation
   const scrollToBottom = (behavior: ScrollBehavior = 'smooth') => {
@@ -408,7 +412,7 @@ const ChatTab: React.FC<ChatTabProps> = ({ quickActions, initialMessage, emergen
       customerPhone: extractedPii?.phone || '',
       customerEmail: extractedPii?.email || '',
       message: textText,
-      brand: currentBrand || 'unitec',
+      brand: brandId || 'unitec',
       sessionId: conversationId || '',
     }).catch(console.error);
 
@@ -446,8 +450,34 @@ const ChatTab: React.FC<ChatTabProps> = ({ quickActions, initialMessage, emergen
     }]);
   };
 
+  const ensureSession = async () => {
+    if (conversationIdRef.current) return conversationIdRef.current;
+    const storageKey = `unitec_chat_conversation_id_${brandId || 'unitec'}`;
+    const timestampKey = `unitec_chat_session_time_${brandId || 'unitec'}`;
+    let existingId = typeof window !== 'undefined' ? localStorage.getItem(storageKey) : null;
+    const lastSessionTime = typeof window !== 'undefined' ? localStorage.getItem(timestampKey) : null;
+    const expired = !lastSessionTime || (Date.now() - parseInt(lastSessionTime, 10) > 12 * 60 * 60 * 1000);
+    if (!existingId || expired) {
+      existingId = await createConversation(
+        brandId || 'unitec',
+        language,
+        'web',
+        { userAgent: navigator.userAgent, ipAddress: 'unknown' }
+      );
+      if (typeof window !== 'undefined') {
+        localStorage.setItem(storageKey, existingId);
+        localStorage.setItem(timestampKey, Date.now().toString());
+      }
+    }
+    conversationIdRef.current = existingId;
+    setCurrentChatSessionId(existingId);
+    setConversationId(existingId);
+    return existingId;
+  };
+
   const handleSendMessage = async (text: string) => {
     if (!text.trim() || isLoading) return;
+    const activeSessionId = await ensureSession().catch(() => conversationIdRef.current);
     
     // Clear previous errors
     setError(null);
@@ -456,7 +486,8 @@ const ChatTab: React.FC<ChatTabProps> = ({ quickActions, initialMessage, emergen
       id: Date.now().toString(),
       role: 'user',
       text: text,
-      timestamp: new Date()
+      timestamp: new Date(),
+      skipFirestore: onboardingStage === 'ready'
     };
 
     setMessages(prev => [...prev, userMsg]);
@@ -665,7 +696,8 @@ const ChatTab: React.FC<ChatTabProps> = ({ quickActions, initialMessage, emergen
         id: botMsgId,
         role: 'model',
         text: '', // Start empty for streaming
-        timestamp: new Date()
+        timestamp: new Date(),
+        skipFirestore: true
       }]);
 
       let fullText = '';
@@ -747,7 +779,7 @@ const ChatTab: React.FC<ChatTabProps> = ({ quickActions, initialMessage, emergen
         customerPhone: extractedPii?.phone || '',
         customerEmail: extractedPii?.email || '',
         message: interventionReason.trim(),
-        brand: currentBrand || 'unitec',
+        brand: brandId || 'unitec',
         sessionId: conversationId,
       }).catch(console.error);
       await notifyStaffIntervention(conversationId, interventionReason.trim(), 'high');
