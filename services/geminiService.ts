@@ -138,6 +138,7 @@ export async function* sendMessageToGemini(
           brandId,
           sessionId: currentSessionId || undefined,
           parentHost: typeof document !== 'undefined' ? (document.referrer || '') : '',
+          stream: true,
         }),
         signal: AbortSignal.timeout(40000)
       });
@@ -152,6 +153,38 @@ export async function* sendMessageToGemini(
       }
 
       if (proxyRes.ok) {
+        const contentType = proxyRes.headers.get('content-type') || '';
+        if (contentType.includes('text/event-stream') && proxyRes.body) {
+          // ── Streaming (SSE): yield each delta as it arrives so the bubble fills live ──
+          const reader = proxyRes.body.getReader();
+          const decoder = new TextDecoder();
+          let buffer = '';
+          let gotAny = false;
+          try {
+            for (;;) {
+              const { done, value } = await reader.read();
+              if (done) break;
+              buffer += decoder.decode(value, { stream: true });
+              const parts = buffer.split('\n\n');
+              buffer = parts.pop() || '';
+              for (const part of parts) {
+                const dataLine = part.split('\n').find(l => l.startsWith('data:'));
+                if (!dataLine) continue;
+                let evt: any;
+                try { evt = JSON.parse(dataLine.slice(5).trim()); } catch { continue; }
+                if (evt.delta) { gotAny = true; yield evt.delta; }
+                if (evt.done) return;
+              }
+            }
+          } catch (streamErr) {
+            if (gotAny) return; // keep the partial reply on screen; no error bubble mid-stream
+            throw streamErr;
+          }
+          if (gotAny) return;
+          lastProxyError = new Error('EMPTY_STREAM');
+          if (attempt === 0) continue;
+          throw new Error('PROXY_UNREACHABLE');
+        }
         const data = await proxyRes.json();
         if (data.text) {
           yield data.text;

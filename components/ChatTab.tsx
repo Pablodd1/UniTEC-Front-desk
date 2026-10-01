@@ -529,6 +529,16 @@ const ChatTab: React.FC<ChatTabProps> = ({ quickActions, initialMessage, emergen
     return existingId;
   };
 
+  // Prewarm: crea/restaura la sesión en cuanto el visitante empieza a escribir,
+  // para que el primer envío no espere la escritura en Firestore.
+  // (ensureSession sigue await-eándose en el envío como respaldo).
+  const sessionPrewarmRef = useRef(false);
+  const prewarmSession = () => {
+    if (sessionPrewarmRef.current || conversationIdRef.current) return;
+    sessionPrewarmRef.current = true;
+    ensureSession().catch(() => { sessionPrewarmRef.current = false; });
+  };
+
   const handleSendMessage = async (text: string) => {
     if (!text.trim() || isLoading) return;
     const activeSessionId = await ensureSession().catch(() => conversationIdRef.current);
@@ -1236,7 +1246,7 @@ const ChatTab: React.FC<ChatTabProps> = ({ quickActions, initialMessage, emergen
           <input
             type="text"
             value={inputText}
-            onChange={(e) => setInputText(e.target.value)}
+            onChange={(e) => { setInputText(e.target.value); if (e.target.value.trim().length >= 2) prewarmSession(); }}
             onKeyDown={(e) => e.key === 'Enter' && handleSendMessage(inputText)}
             placeholder={error ? (language === 'en' ? "Chat disabled" : "Chat deshabilitado") : t.chatPlaceholder}
             className="flex-1 bg-transparent border-none outline-none text-sm px-2 text-gray-800 placeholder-gray-400 disabled:text-gray-400"

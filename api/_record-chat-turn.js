@@ -24,9 +24,10 @@ const PROTECTED_STATUSES = new Set(['human_requested', 'human_assigned']);
  * @param {string} [replyText]  respuesta del bot, si la hubo
  * @param {string} [brand]      'unitec' | 'building'
  * @param {string} [stage]      etapa del embudo alcanzada con ESTE turno (name|phone|profession|menu|engaged)
+ * @param {number} [latencyMs]  ms desde el inicio del handler hasta tener la respuesta (Fase 3)
  * @returns {Promise<{recorded:boolean, reason?:string}>}
  */
-export async function recordChatTurn({ sessionId, userText, replyText, brand = 'unitec', stage, parentHost }) {
+export async function recordChatTurn({ sessionId, userText, replyText, brand = 'unitec', stage, parentHost, latencyMs }) {
   if (!sessionId) return { recorded: false, reason: 'no_session' };
   try {
     const idToken = await getFirestoreToken();
@@ -67,7 +68,14 @@ export async function recordChatTurn({ sessionId, userText, replyText, brand = '
       .filter(Boolean)
       .sort((a, b) => stepIndex(b) - stepIndex(a))[0] || '';
 
-    // ── COMMIT 1: sesión (merge por updateMask) + docs de mensajes ──
+    // ── ÚNICO COMMIT: sesión (merge por updateMask) + mensajes + contadores + embudo ──
+    // Antes: lectura + 3 commits por turno → ahora lectura + 1 (menos round-trips → menos latencia).
+    const oneTime = [];
+    if (userText && !current.firstUserMessageAt) oneTime.push('firstUserMessageAt');
+    if (!current.createdAt) oneTime.push('createdAt');
+    if (userText && current.flowStage?.stringValue !== 'engaging') oneTime.push('flowStage');
+    if (bestStage && stepIndex(bestStage) > stepIndex(currentFunnelStep)) oneTime.push('funnelStep');
+
     const sessionFields = {
       id: { stringValue: sessionId },
       ...statusFields,
@@ -83,6 +91,30 @@ export async function recordChatTurn({ sessionId, userText, replyText, brand = '
     if (parentHost) {
       sessionFields.parentHost = { stringValue: String(parentHost).slice(0, 160) };
       sessionMask.push('parentHost');
+    }
+
+    // Campos de embudo de una sola escritura (o que avanzan) — fusionados en este commit.
+    if (oneTime.includes('firstUserMessageAt')) { sessionFields.firstUserMessageAt = { stringValue: now }; sessionMask.push('firstUserMessageAt'); }
+    if (oneTime.includes('createdAt')) { sessionFields.createdAt = { stringValue: now }; sessionMask.push('createdAt'); }
+    if (oneTime.includes('flowStage')) { sessionFields.flowStage = { stringValue: 'engaging' }; sessionMask.push('flowStage'); }
+    if (oneTime.includes('funnelStep')) { sessionFields.funnelStep = { stringValue: bestStage }; sessionMask.push('funnelStep'); }
+
+    // Tiempo de respuesta (Fase 3): últimos ms + media móvil, calculados del estado previo leído.
+    if (Number.isFinite(latencyMs) && replyText) {
+      const msRounded = Math.round(latencyMs);
+      sessionFields['analytics.lastResponseTimeMs'] = { integerValue: String(msRounded) };
+      sessionMask.push('analytics.lastResponseTimeMs');
+      const prevAvg = Number(
+        current.analytics?.mapValue?.fields?.avgResponseTime?.doubleValue ??
+        current.analytics?.mapValue?.fields?.avgResponseTime?.integerValue ?? 0
+      );
+      const prevN = currentUserCount;
+      const nextN = prevN + (userText ? 1 : 0);
+      if (nextN > 0) {
+        const nextAvg = (prevAvg * prevN + msRounded) / nextN;
+        sessionFields['analytics.avgResponseTime'] = { doubleValue: Math.round(nextAvg) };
+        sessionMask.push('analytics.avgResponseTime');
+      }
     }
 
     const writes = [
@@ -103,15 +135,25 @@ export async function recordChatTurn({ sessionId, userText, replyText, brand = '
       });
     }
     if (replyText) {
+      const botFields = {
+        id: { stringValue: `srv_b_${ts}` },
+        role: { stringValue: 'model' },
+        text: { stringValue: String(replyText).slice(0, 2000) },
+        timestamp: { stringValue: now },
+      };
+      if (Number.isFinite(latencyMs)) botFields.latencyMs = { integerValue: String(Math.round(latencyMs)) };
+      writes.push({ update: { name: `${docPath}/messages/srv_b_${ts}`, fields: botFields } });
+    }
+
+    // Contadores atómicos en el MISMO commit (solo turnos con texto de usuario).
+    if (userText) {
       writes.push({
-        update: {
-          name: `${docPath}/messages/srv_b_${ts}`,
-          fields: {
-            id: { stringValue: `srv_b_${ts}` },
-            role: { stringValue: 'model' },
-            text: { stringValue: String(replyText).slice(0, 2000) },
-            timestamp: { stringValue: now },
-          },
+        transform: {
+          document: docPath,
+          fieldTransforms: [
+            { fieldPath: 'analytics.messageCount', increment: { integerValue: replyText ? '2' : '1' } },
+            { fieldPath: 'analytics.userMessageCount', increment: { integerValue: '1' } },
+          ],
         },
       });
     }
@@ -120,45 +162,6 @@ export async function recordChatTurn({ sessionId, userText, replyText, brand = '
       method: 'POST', headers: auth, body: JSON.stringify({ writes }),
     });
     if (!commitRes.ok) return { recorded: false, reason: `commit_failed_${commitRes.status}` };
-
-    // ── COMMIT 2: contadores atómicos ──
-    if (userText) {
-      await fetch(`https://firestore.googleapis.com/v1/projects/${projectId}/databases/(default)/documents:commit`, {
-        method: 'POST', headers: auth,
-        body: JSON.stringify({
-          writes: [
-            {
-              transform: {
-                document: docPath,
-                fieldTransforms: [
-                  { fieldPath: 'analytics.messageCount', increment: { integerValue: replyText ? '2' : '1' } },
-                  { fieldPath: 'analytics.userMessageCount', increment: { integerValue: '1' } },
-                ],
-              },
-            },
-          ],
-        }),
-      });
-    }
-
-    // ── COMMIT 3: campos de embudo que solo se escriben una vez (o avanzan) ──
-    const oneTime = [];
-    if (userText && !current.firstUserMessageAt) oneTime.push('firstUserMessageAt');
-    if (!current.createdAt) oneTime.push('createdAt');
-    if (userText && current.flowStage?.stringValue !== 'engaging') oneTime.push('flowStage');
-    if (bestStage && stepIndex(bestStage) > stepIndex(currentFunnelStep)) oneTime.push('funnelStep');
-
-    if (oneTime.length > 0) {
-      const fields = {};
-      if (oneTime.includes('firstUserMessageAt')) fields.firstUserMessageAt = { stringValue: now };
-      if (oneTime.includes('createdAt')) fields.createdAt = { stringValue: now };
-      if (oneTime.includes('flowStage')) fields.flowStage = { stringValue: 'engaging' };
-      if (oneTime.includes('funnelStep')) fields.funnelStep = { stringValue: bestStage };
-      const mask = oneTime.map((p) => `updateMask.fieldPaths=${p}`).join('&');
-      await fetch(`${base}/conversations/${sessionId}?${mask}`, {
-        method: 'PATCH', headers: auth, body: JSON.stringify({ fields }),
-      }).catch(() => {});
-    }
 
     return { recorded: true, funnelStep: bestStage || currentFunnelStep || null };
   } catch (e) {

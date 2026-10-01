@@ -34,7 +34,50 @@ function trimHistory(history) {
   return history.slice(-60);
 }
 
+// ── Canonical origin + product cache (server-side fetch; never the request origin — review fix) ──
+const CANONICAL_ORIGIN = 'https://unitec-front-desk.vercel.app';
+let productsCache = { data: null, fetchedAt: 0 };
+const PRODUCTS_TTL_MS = 10 * 60 * 1000;
+async function getProducts() {
+  if (productsCache.data && Date.now() - productsCache.fetchedAt < PRODUCTS_TTL_MS) return productsCache.data;
+  const r = await fetch(`${CANONICAL_ORIGIN}/products.json`);
+  const data = await r.json();
+  productsCache = { data, fetchedAt: Date.now() };
+  return data;
+}
+
+// ── Reads an upstream SSE stream (Gemini alt=sse or OpenAI-style) and forwards text deltas ──
+async function readSseStream(body, extractDelta, onDelta, shouldStop) {
+  const reader = body.getReader();
+  const decoder = new TextDecoder();
+  let buffer = '';
+  try {
+    for (;;) {
+      if (shouldStop && shouldStop()) { try { await reader.cancel(); } catch (_) {} return; }
+      const { done, value } = await reader.read();
+      if (done) return;
+      buffer += decoder.decode(value, { stream: true });
+      const lines = buffer.split('\n');
+      buffer = lines.pop() || '';
+      for (const raw of lines) {
+        const line = raw.trim();
+        if (!line.startsWith('data:')) continue;
+        const payload = line.slice(5).trim();
+        if (!payload || payload === '[DONE]') continue;
+        let obj;
+        try { obj = JSON.parse(payload); } catch (_) { continue; }
+        const delta = extractDelta(obj);
+        if (delta) onDelta(delta);
+      }
+    }
+  } catch (e) {
+    // upstream broke mid-stream — caller decides (partial text already forwarded stays)
+    console.warn('readSseStream ended:', e?.message);
+  }
+}
+
 export default async function handler(req, res) {
+  const latencyStart = Date.now();
   const clientIp = req.headers['x-forwarded-for']?.split(',')[0]?.trim() || req.socket?.remoteAddress || 'unknown';
   if (isRateLimited(clientIp, 120, 60000)) {
     return res.status(429).json({
@@ -87,7 +130,7 @@ export default async function handler(req, res) {
   }
 
   try {
-    const { message, history: rawHistory, instructions: clientInstructions, sessionId: clientSessionId, brandId = 'unitec', parentHost } = req.body;
+    const { message, history: rawHistory, instructions: clientInstructions, sessionId: clientSessionId, brandId = 'unitec', parentHost, stream: wantStream } = req.body;
     const origin = req.headers.origin || 'https://chatbuildinginnovation.us';
     if (!message) {
       return res.status(400).json({ error: 'Missing message in request body' });
@@ -201,6 +244,161 @@ GOOD EXAMPLE: "¡Hola! ¿En qué producto te interesa?"`;
 
     let lastErrorDetails = null;
 
+    // Builds the Gemini-native payload (shared by the streaming and non-streaming paths).
+    const buildGeminiPayload = async () => {
+      const contents = [
+        ...(history || []).map(h => ({
+          role: h.role === 'model' ? 'model' : 'user',
+          parts: [{ text: h.text || h.content || '' }]
+        })),
+        { role: 'user', parts: [{ text: message }] }
+      ];
+      const payload = {
+        systemInstruction: instructions ? { parts: [{ text: instructions }] } : undefined,
+        contents,
+        generationConfig: { temperature: 0.7, maxOutputTokens: 180 }
+      };
+
+      // ponytail: if message looks like a product query, inject matching products as context
+      const productKeywords = ['precio', 'price', 'costo', 'cost', 'cuanto', 'how much', 'panel', 'piso', 'floor', 'wpc', 'spc', 'stock', 'disponibilidad', 'availability', 'catalogo', 'catalog'];
+      const isProductQuery = productKeywords.some(kw => message.toLowerCase().includes(kw));
+
+      if (isProductQuery) {
+        try {
+          const products = await getProducts();
+          const lowerMsg = message.toLowerCase();
+          const words = lowerMsg.split(/\s+/);
+          const matched = products.filter(p => {
+            const pName = p.name.toLowerCase();
+            const pId = p.id.toLowerCase();
+            return words.some(w => w.length > 2 && (pName.includes(w) || pId.includes(w)));
+          }).slice(0, 5);
+
+          if (matched.length > 0) {
+            const productContext = matched.map(p =>
+              `RefCode: ${p.id} | ${p.name} | Precio: ${brandId === 'unitec' ? (p.price_cop || p.price) : (p.price_usd || p.price)} por ${p.unit || 'unidad'} | Stock: ${p.stock_status || 'Consultar'}`
+            ).join('\n');
+            const contextMsg = `\n\n[SYSTEM CONTEXT - Product data for this query]:\n${productContext}\nUse this data to answer. If the product is not listed, say "Consultar precio".`;
+            payload.contents = [
+              ...contents.slice(0, -1),
+              { role: 'user', parts: [{ text: message + contextMsg }] }
+            ];
+          }
+        } catch (e) {
+          console.warn('Failed to inject product context:', e);
+        }
+      }
+      return payload;
+    };
+
+    const candidateModels = ['gemini-3.6-flash', 'gemini-3.5-flash', 'gemini-2.5-flash', 'gemini-2.5-flash-lite'];
+
+    // ═══ STREAMING PATH (stream:true) — SSE deltas as they arrive; non-stream path below is untouched ═══
+    if (wantStream) {
+      res.setHeader('Content-Type', 'text/event-stream; charset=utf-8');
+      res.setHeader('Cache-Control', 'no-cache, no-transform');
+      res.setHeader('Connection', 'keep-alive');
+      res.setHeader('X-Accel-Buffering', 'no');
+      try { res.flushHeaders?.(); } catch (_) {}
+      try { res.write(': open\n\n'); } catch (_) {}
+
+      let streamedText = '';
+      const hasUrl = () => /https?:\/\//.test(streamedText);
+      const capsHit = () => streamedText.length >= (hasUrl() ? 700 : 360);
+      const forward = (d) => {
+        if (capsHit()) return; // silently stop the tail — keeps the displayed text close to today's tightened length
+        streamedText += d;
+        try { res.write(`data: ${JSON.stringify({ delta: d })}\n\n`); } catch (_) {}
+      };
+
+      const formattedMessages = [
+        { role: 'system', content: instructions || '' },
+        ...(history || []).map(h => ({ role: h.role === 'model' ? 'assistant' : 'user', content: h.text || h.content || '' })),
+        { role: 'user', content: message }
+      ];
+
+      let sawError = null;
+      let anyText = false;
+
+      for (const apiKey of keys) {
+        if (anyText || capsHit()) break;
+        const isXAI = apiKey.startsWith('xai-');
+        const isOpenRouter = apiKey.startsWith('sk-or-') || apiKey.startsWith('sk-proj-');
+        try {
+          if (isXAI || isOpenRouter) {
+            const sseUrl = isXAI ? 'https://api.x.ai/v1/chat/completions' : 'https://openrouter.ai/api/v1/chat/completions';
+            const headers = isXAI
+              ? { 'Authorization': `Bearer ${apiKey}`, 'Content-Type': 'application/json' }
+              : { 'Authorization': `Bearer ${apiKey}`, 'Content-Type': 'application/json', 'HTTP-Referer': origin || CANONICAL_ORIGIN, 'X-Title': 'UniTEC AI Desk' };
+            const sseBody = { model: isXAI ? 'grok-latest' : 'google/gemini-3.6-flash', messages: formattedMessages, temperature: 0.7, stream: true };
+            const r = await fetch(sseUrl, { method: 'POST', headers, body: JSON.stringify(sseBody), signal: AbortSignal.timeout(25000) });
+            if (!r.ok || !r.body) { sawError = `${isXAI ? 'xAI' : 'OpenRouter'} ${r.status}: ${(await r.text().catch(() => '')).slice(0, 160)}`; continue; }
+            await readSseStream(r.body, (j) => j.choices?.[0]?.delta?.content || '', (d) => { forward(d); anyText = true; }, capsHit);
+          } else {
+            const payload = await buildGeminiPayload();
+            for (const modelName of candidateModels) {
+              if (anyText || capsHit()) break;
+              try {
+                const r = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${modelName}:streamGenerateContent?alt=sse&key=${apiKey}`, {
+                  method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload), signal: AbortSignal.timeout(25000)
+                });
+                if (!r.ok || !r.body) { sawError = `${modelName} ${r.status}: ${(await r.text().catch(() => '')).slice(0, 160)}`; continue; }
+                await readSseStream(r.body, (j) => (j.candidates?.[0]?.content?.parts || []).map(p => p?.text || '').join(''), (d) => { forward(d); anyText = true; }, capsHit);
+              } catch (mErr) { sawError = mErr?.message || String(mErr); }
+            }
+          }
+        } catch (keyErr) { sawError = keyErr?.message || String(keyErr); }
+      }
+
+      const latencyMs = Date.now() - latencyStart;
+
+      if (!streamedText) {
+        // All providers failed before any delta → same fallback copy as the JSON path.
+        const fallbackText = "¡Hola! Gracias por contactar a UNITEC USA Design. En este momento nuestra pasarela de Inteligencia Artificial se encuentra en actualización de credenciales. Para ser atendido inmediatamente por un asesor de ventas humano, por favor comunícate a nuestro WhatsApp oficial: https://wa.me/573142332147";
+        forward(fallbackText);
+        await alertAnomaly('BOT_SIN_RESPUESTA', sawError || 'Todas las llaves de IA fallaron (stream).', clientSessionId);
+      }
+
+      const finalText = streamedText;
+      if (clientSessionId && finalText && !finalText.includes('actualización de credenciales')) {
+        const recorded = await recordChatTurn({ sessionId: clientSessionId, userText: message, replyText: finalText, brand: brandId, parentHost, latencyMs });
+        if (recorded && recorded.recorded === false) {
+          await alertAnomaly('REGISTRO_FALLIDO', recorded.reason || 'El turno se respondió pero no quedó guardado.', clientSessionId);
+        }
+      }
+
+      const lowerMsg = (message || '').toLowerCase();
+      const escalationKeywords = [
+        'cotiz', 'presupuesto', 'quote', 'budget',
+        'precio', 'costo', 'valor', 'price', 'cost',
+        'asesor', 'humano', 'staff', 'human', 'agent',
+        'llamar', 'call me', 'telefono', 'contacto', 'atencion', 'atención',
+        'whatsapp', 'speak to someone', 'talk to someone'
+      ];
+      const isEscalation = escalationKeywords.some(kw => lowerMsg.includes(kw));
+      const isQuote = ['cotiz', 'presupuesto', 'quote', 'budget', 'precio', 'costo', 'valor', 'price', 'cost'].some(kw => lowerMsg.includes(kw));
+      const isStaff = ['asesor', 'humano', 'staff', 'human', 'agent', 'llamar', 'call me', 'contacto', 'atencion', 'atención', 'speak to someone', 'talk to someone'].some(kw => lowerMsg.includes(kw));
+
+      try {
+        res.write(`data: ${JSON.stringify({
+          done: true,
+          text: finalText,
+          success: true,
+          ...(req.headers['x-diag'] ? { ms: latencyMs } : {}),
+          ...(isEscalation && {
+            escalation: {
+              type: isQuote ? 'quote' : isStaff ? 'staff' : 'custom',
+              priority: 'high',
+              trigger: 'server_detected',
+              originalMessage: message,
+            }
+          })
+        })}\n\n`);
+      } catch (_) {}
+      try { res.end(); } catch (_) {}
+      return;
+    }
+
     for (const apiKey of keys) {
       try {
         const isOpenRouter = apiKey.startsWith('sk-or-') || apiKey.startsWith('sk-proj-');
@@ -277,57 +475,9 @@ GOOD EXAMPLE: "¡Hola! ¿En qué producto te interesa?"`;
           responseText = data.choices?.[0]?.message?.content || '';
         } else {
           // Native Google Gemini REST API — verified valid model IDs (July 2026)
-          const contents = [
-            ...(history || []).map(h => ({
-              role: h.role === 'model' ? 'model' : 'user',
-              parts: [{ text: h.text || h.content || '' }]
-            })),
-            { role: 'user', parts: [{ text: message }] }
-          ];
+          const payload = await buildGeminiPayload();
 
-          const payload = {
-            systemInstruction: instructions ? { parts: [{ text: instructions }] } : undefined,
-            contents,
-            generationConfig: { temperature: 0.7 }
-          };
-
-          // ponytail: if message looks like a product query, inject matching products as context
-          const productKeywords = ['precio', 'price', 'costo', 'cost', 'cuanto', 'how much', 'panel', 'piso', 'floor', 'wpc', 'spc', 'stock', 'disponibilidad', 'availability', 'catalogo', 'catalog'];
-          const isProductQuery = productKeywords.some(kw => message.toLowerCase().includes(kw));
-          
-          if (isProductQuery) {
-            try {
-              const productsRes = await fetch(`${origin}/products.json`);
-              const products = await productsRes.json();
-              const lowerMsg = message.toLowerCase();
-              
-              // Extract potential product refs or names from message
-              const words = lowerMsg.split(/\s+/);
-              const matched = products.filter(p => {
-                const pName = p.name.toLowerCase();
-                const pId = p.id.toLowerCase();
-                return words.some(w => w.length > 2 && (pName.includes(w) || pId.includes(w)));
-              }).slice(0, 5);
-              
-              if (matched.length > 0) {
-                const productContext = matched.map(p => 
-                  `RefCode: ${p.id} | ${p.name} | Precio: ${brandId === 'unitec' ? (p.price_cop || p.price) : (p.price_usd || p.price)} por ${p.unit || 'unidad'} | Stock: ${p.stock_status || 'Consultar'}`
-                ).join('\n');
-                
-                // Inject as system context
-                const contextMsg = `\n\n[SYSTEM CONTEXT - Product data for this query]:\n${productContext}\nUse this data to answer. If the product is not listed, say "Consultar precio".`;
-                payload.contents = [
-                  ...contents.slice(0, -1),
-                  { role: 'user', parts: [{ text: message + contextMsg }] }
-                ];
-              }
-            } catch (e) {
-              console.warn('Failed to inject product context:', e);
-            }
-          }
-
-          // ponytail: ordered by preference — 3.6 is latest stable, then fallbacks
-          const candidateModels = ['gemini-3.6-flash', 'gemini-3.5-flash', 'gemini-2.5-flash', 'gemini-2.5-flash-lite'];
+          // candidateModels is declared above (shared with the streaming path)
           for (const modelName of candidateModels) {
             try {
               const apiRes = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${modelName}:generateContent?key=${apiKey}`, {
@@ -357,6 +507,8 @@ GOOD EXAMPLE: "¡Hola! ¿En qué producto te interesa?"`;
           }
         }
 
+        const latencyMs = Date.now() - latencyStart;
+
         if (responseText) {
           responseText = tightenReply(responseText);
 
@@ -364,7 +516,7 @@ GOOD EXAMPLE: "¡Hola! ¿En qué producto te interesa?"`;
           // AWAITED (not fire-and-forget): Vercel kills pending promises when the
           // response returns, which silently dropped all recording otherwise.
           if (clientSessionId && !String(responseText).includes('actualización de credenciales')) {
-            const recorded = await recordChatTurn({ sessionId: clientSessionId, userText: message, replyText: responseText, brand: brandId, parentHost });
+            const recorded = await recordChatTurn({ sessionId: clientSessionId, userText: message, replyText: responseText, brand: brandId, parentHost, latencyMs });
             if (recorded && recorded.recorded === false) {
               await alertAnomaly('REGISTRO_FALLIDO', recorded.reason || 'El turno se respondió pero no quedó guardado.', clientSessionId);
             }
@@ -387,6 +539,7 @@ GOOD EXAMPLE: "¡Hola! ¿En qué producto te interesa?"`;
           return res.status(200).json({
             text: responseText,
             success: true,
+            ...(req.headers['x-diag'] ? { ms: latencyMs } : {}),
             ...(isEscalation && {
               escalation: {
                 type: isQuote ? 'quote' : isStaff ? 'staff' : 'custom',
