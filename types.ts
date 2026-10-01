@@ -189,7 +189,7 @@ export interface ConversationSession {
   sentimentScore?: number;
   topics: string[];
   duration?: number;
-  source: 'web' | 'phone' | 'whatsapp';
+  source: 'web' | 'website' | 'phone' | 'whatsapp';
   userAgent?: string;
   ipAddress?: string;
   referrer?: string;

@@ -137,6 +137,7 @@ export async function* sendMessageToGemini(
           instructions,
           brandId,
           sessionId: currentSessionId || undefined,
+          parentHost: typeof document !== 'undefined' ? (document.referrer || '') : '',
         }),
         signal: AbortSignal.timeout(40000)
       });
