@@ -251,7 +251,12 @@ GOOD EXAMPLE: "¡Hola! ¿En qué producto te interesa?"`;
     let lastErrorDetails = null;
 
     // Builds the Gemini-native payload (shared by the streaming and non-streaming paths).
-    const buildGeminiPayload = async () => {
+    const GEMINI_GENCONFIGS = [
+      { temperature: 0.7, maxOutputTokens: 300, thinkingConfig: { thinkingBudget: 0 } },
+      { temperature: 0.7, maxOutputTokens: 300, thinkingConfig: { thinkingLevel: 'low' } },
+      { temperature: 0.7, maxOutputTokens: 300 },
+    ];
+    const buildGeminiPayload = async (variant = 0) => {
       const contents = [
         ...(history || []).map(h => ({
           role: h.role === 'model' ? 'model' : 'user',
@@ -262,7 +267,7 @@ GOOD EXAMPLE: "¡Hola! ¿En qué producto te interesa?"`;
       const payload = {
         systemInstruction: instructions ? { parts: [{ text: instructions }] } : undefined,
         contents,
-        generationConfig: { temperature: 0.7, maxOutputTokens: 180 }
+        generationConfig: GEMINI_GENCONFIGS[Math.min(variant, GEMINI_GENCONFIGS.length - 1)]
       };
 
       // ponytail: if message looks like a product query, inject matching products as context
@@ -342,17 +347,23 @@ GOOD EXAMPLE: "¡Hola! ¿En qué producto te interesa?"`;
             if (!r.ok || !r.body) { sawError = `${isXAI ? 'xAI' : 'OpenRouter'} ${r.status}: ${(await r.text().catch(() => '')).slice(0, 160)}`; continue; }
             dbgStats = await readSseStream(r.body, (j) => j.choices?.[0]?.delta?.content || '', (d) => { forward(d); anyText = true; }, capsHit);
           } else {
-            const payload = await buildGeminiPayload();
             for (const modelName of candidateModels) {
               if (anyText || capsHit()) break;
-              try {
-                const r = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${modelName}:streamGenerateContent?alt=sse&key=${apiKey}`, {
-                  method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload), signal: AbortSignal.timeout(25000)
-                });
-                if (!r.ok || !r.body) { sawError = `${modelName} ${r.status}: ${(await r.text().catch(() => '')).slice(0, 160)}`; continue; }
-                dbgStats = await readSseStream(r.body, (j) => (j.candidates?.[0]?.content?.parts || []).map(p => p?.text || '').join(''), (d) => { forward(d); anyText = true; }, capsHit);
-                sawError = sawError || (dbgStats && dbgStats.err ? `${modelName}: ${dbgStats.err}` : null);
-              } catch (mErr) { sawError = mErr?.message || String(mErr); }
+              let modelDone = false;
+              for (let v = 0; v < GEMINI_GENCONFIGS.length && !modelDone; v++) {
+                const payload = await buildGeminiPayload(v);
+                try {
+                  const r = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${modelName}:streamGenerateContent?alt=sse&key=${apiKey}`, {
+                    method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload), signal: AbortSignal.timeout(25000)
+                  });
+                  if (!r.ok || !r.body) { sawError = `${modelName} v${v} ${r.status}: ${(await r.text().catch(() => '')).slice(0, 160)}`; continue; }
+                  dbgStats = await readSseStream(r.body, (j) => (j.candidates?.[0]?.content?.parts || []).map(p => p?.text || '').join(''), (d) => { forward(d); anyText = true; }, capsHit);
+                  if (dbgStats) { dbgStats.model = modelName; dbgStats.variant = v; }
+                  sawError = sawError || (dbgStats && dbgStats.err ? `${modelName}: ${dbgStats.err}` : null);
+                  modelDone = true;
+                } catch (mErr) { sawError = `${modelName} v${v}: ${mErr?.message || String(mErr)}`; }
+              }
+              if (modelDone) break;
             }
           }
         } catch (keyErr) { sawError = keyErr?.message || String(keyErr); }
@@ -483,35 +494,40 @@ GOOD EXAMPLE: "¡Hola! ¿En qué producto te interesa?"`;
           responseText = data.choices?.[0]?.message?.content || '';
         } else {
           // Native Google Gemini REST API — verified valid model IDs (July 2026)
-          const payload = await buildGeminiPayload();
-
-          // candidateModels is declared above (shared with the streaming path)
+          // candidateModels + GEMINI_GENCONFIGS are declared above (shared with the streaming
+          // path). The variant loop turns off 3.x "thinking" so it cannot eat the whole
+          // maxOutputTokens allowance (done that: finishReason MAX_TOKENS at ~24 chars).
           for (const modelName of candidateModels) {
-            try {
-              const apiRes = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${modelName}:generateContent?key=${apiKey}`, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(payload),
-                signal: AbortSignal.timeout(12000)
-              });
+            let modelDone = false;
+            for (let v = 0; v < GEMINI_GENCONFIGS.length && !modelDone; v++) {
+              const payload = await buildGeminiPayload(v);
+              try {
+                const apiRes = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${modelName}:generateContent?key=${apiKey}`, {
+                  method: 'POST',
+                  headers: { 'Content-Type': 'application/json' },
+                  body: JSON.stringify(payload),
+                  signal: AbortSignal.timeout(12000)
+                });
 
-              if (!apiRes.ok) {
-                const errText = await apiRes.text();
-                console.warn(`Gemini model ${modelName} failed:`, errText.slice(0, 200));
-                lastErrorDetails = errText;
-                continue;
+                if (!apiRes.ok) {
+                  const errText = await apiRes.text();
+                  console.warn(`Gemini model ${modelName} v${v} failed:`, errText.slice(0, 200));
+                  lastErrorDetails = errText;
+                  continue;
+                }
+
+                const data = await apiRes.json();
+                const candidate = data.candidates?.[0];
+                const part = candidate?.content?.parts?.[0];
+
+                responseText = part?.text || '';
+                if (responseText) { modelDone = true; break; }
+              } catch (mErr) {
+                console.warn(`Gemini model ${modelName} v${v} error:`, mErr.message);
+                lastErrorDetails = mErr.message;
               }
-
-              const data = await apiRes.json();
-              const candidate = data.candidates?.[0];
-              const part = candidate?.content?.parts?.[0];
-              
-              responseText = part?.text || '';
-              if (responseText) break;
-            } catch (mErr) {
-              console.warn(`Gemini model ${modelName} error:`, mErr.message);
-              lastErrorDetails = mErr.message;
             }
+            if (modelDone) break;
           }
         }
 
