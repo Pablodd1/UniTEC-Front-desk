@@ -51,11 +51,13 @@ async function readSseStream(body, extractDelta, onDelta, shouldStop) {
   const reader = body.getReader();
   const decoder = new TextDecoder();
   let buffer = '';
+  const stats = { reads: 0, bytes: 0, events: 0, textLen: 0, finish: null, err: null };
   try {
     for (;;) {
-      if (shouldStop && shouldStop()) { try { await reader.cancel(); } catch (_) {} return; }
+      if (shouldStop && shouldStop()) { try { await reader.cancel(); } catch (_) {} stats.err = 'stopped_early'; return stats; }
       const { done, value } = await reader.read();
-      if (done) return;
+      if (done) return stats;
+      stats.reads++; stats.bytes += value?.length || 0;
       buffer += decoder.decode(value, { stream: true });
       const lines = buffer.split('\n');
       buffer = lines.pop() || '';
@@ -66,14 +68,18 @@ async function readSseStream(body, extractDelta, onDelta, shouldStop) {
         if (!payload || payload === '[DONE]') continue;
         let obj;
         try { obj = JSON.parse(payload); } catch (_) { continue; }
+        stats.events++;
+        stats.finish = obj?.candidates?.[0]?.finishReason || obj?.choices?.[0]?.finish_reason || stats.finish || null;
         const delta = extractDelta(obj);
-        if (delta) onDelta(delta);
+        if (delta) { stats.textLen = (stats.textLen || 0) + delta.length; onDelta(delta); }
       }
     }
   } catch (e) {
     // upstream broke mid-stream — caller decides (partial text already forwarded stays)
-    console.warn('readSseStream ended:', e?.message);
+    stats.err = e?.message || String(e);
+    console.warn('readSseStream ended:', stats.err);
   }
+  return stats;
 }
 
 export default async function handler(req, res) {
@@ -319,6 +325,7 @@ GOOD EXAMPLE: "¡Hola! ¿En qué producto te interesa?"`;
 
       let sawError = null;
       let anyText = false;
+      let dbgStats = null;
 
       for (const apiKey of keys) {
         if (anyText || capsHit()) break;
@@ -333,7 +340,7 @@ GOOD EXAMPLE: "¡Hola! ¿En qué producto te interesa?"`;
             const sseBody = { model: isXAI ? 'grok-latest' : 'google/gemini-3.6-flash', messages: formattedMessages, temperature: 0.7, stream: true };
             const r = await fetch(sseUrl, { method: 'POST', headers, body: JSON.stringify(sseBody), signal: AbortSignal.timeout(25000) });
             if (!r.ok || !r.body) { sawError = `${isXAI ? 'xAI' : 'OpenRouter'} ${r.status}: ${(await r.text().catch(() => '')).slice(0, 160)}`; continue; }
-            await readSseStream(r.body, (j) => j.choices?.[0]?.delta?.content || '', (d) => { forward(d); anyText = true; }, capsHit);
+            dbgStats = await readSseStream(r.body, (j) => j.choices?.[0]?.delta?.content || '', (d) => { forward(d); anyText = true; }, capsHit);
           } else {
             const payload = await buildGeminiPayload();
             for (const modelName of candidateModels) {
@@ -343,7 +350,8 @@ GOOD EXAMPLE: "¡Hola! ¿En qué producto te interesa?"`;
                   method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload), signal: AbortSignal.timeout(25000)
                 });
                 if (!r.ok || !r.body) { sawError = `${modelName} ${r.status}: ${(await r.text().catch(() => '')).slice(0, 160)}`; continue; }
-                await readSseStream(r.body, (j) => (j.candidates?.[0]?.content?.parts || []).map(p => p?.text || '').join(''), (d) => { forward(d); anyText = true; }, capsHit);
+                dbgStats = await readSseStream(r.body, (j) => (j.candidates?.[0]?.content?.parts || []).map(p => p?.text || '').join(''), (d) => { forward(d); anyText = true; }, capsHit);
+                sawError = sawError || (dbgStats && dbgStats.err ? `${modelName}: ${dbgStats.err}` : null);
               } catch (mErr) { sawError = mErr?.message || String(mErr); }
             }
           }
@@ -384,7 +392,7 @@ GOOD EXAMPLE: "¡Hola! ¿En qué producto te interesa?"`;
           done: true,
           text: finalText,
           success: true,
-          ...(req.headers['x-diag'] ? { ms: latencyMs } : {}),
+          ...(req.headers['x-diag'] ? { ms: latencyMs, dbg: { sawError, stats: dbgStats } } : {}),
           ...(isEscalation && {
             escalation: {
               type: isQuote ? 'quote' : isStaff ? 'staff' : 'custom',
