@@ -17,7 +17,10 @@ const LoginScreen: React.FC<LoginScreenProps> = ({ onLogin }) => {
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (user) => {
-      if (user) {
+      // SECURITY: only REAL (non-anonymous) sessions may skip the credentials form.
+      // The app creates an anonymous session for every visitor (Firestore access),
+      // so treating any user as logged-in would auto-open the admin panel for anyone.
+      if (user && !user.isAnonymous) {
         onLogin();
       }
     });
