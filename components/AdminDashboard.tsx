@@ -602,7 +602,7 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({
     // Save only non-sensitive config (privacy mode).
     try {
       await saveAppConfig({ 
-        // geminiApiKey deliberately NOT included Ã¢â‚¬â€ keys stay client+server only
+        // geminiApiKey deliberately NOT included ‗ keys stay client+server only
       });
     } catch (e) {
       console.error("Failed to save config to Firestore:", e);
@@ -782,7 +782,7 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({
 
                     {/* Admin Dispatch Controls + Live Overwatch Grid */}
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                        {/* ÃƒÂ°Ã…Â¸Ã¢â‚¬Å“Ã‚Â¬ ADMIN DISPATCH CONTROLS */}
+                        {/* 📬 ADMIN DISPATCH CONTROLS */}
                         <div className="bg-white rounded-2xl border border-slate-200 shadow-sm p-6 flex flex-col justify-between">
                             <div>
                                 <h3 className="text-xs font-black text-slate-800 uppercase tracking-wider mb-2 flex items-center gap-2">
@@ -830,7 +830,7 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({
                             </div>
                         </div>
 
-                        {/* ÃƒÂ°Ã…Â¸Ã¢â‚¬ÂÃ‚Â´ LIVE TELEMETRY OVERWATCH TERMINAL */}
+                        {/*  LIVE TELEMETRY OVERWATCH TERMINAL */}
                         <div className="bg-slate-900 rounded-2xl border border-slate-800 p-6 flex flex-col justify-between">
                             <div className="flex flex-col h-full justify-between w-full">
                                 <div className="mb-3">
@@ -925,7 +925,7 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({
                                                 </div>
                                                 {details && (
                                                     <p className="text-[10px] text-slate-500 font-medium">
-                                                        {details.style} ÃƒÂ¢Ã¢â€šÂ¬Ã‚Â¢ {details.gender}
+                                                        {details.style} • {details.gender}
                                                     </p>
                                                 )}
                                             </button>
@@ -980,7 +980,7 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({
                                 <div className="w-6 h-6 rounded-full bg-brand-100 text-brand-600 flex items-center justify-center text-xs font-bold shrink-0 mt-0.5">3</div>
                                 <div className="flex-1">
                                     <p className="text-sm text-slate-700 font-bold">Set Environment Variables:</p>
-                                    <p className="text-xs text-slate-500 mt-1">In Vercel Dashboard ÃƒÂ¢Ã¢â‚¬Â Ã¢â‚¬â„¢ Settings ÃƒÂ¢Ã¢â‚¬Â Ã¢â‚¬â„¢ Environment Variables, add:</p>
+                                    <p className="text-xs text-slate-500 mt-1">In Vercel Dashboard ' Settings ' Environment Variables, add:</p>
                                     <div className="mt-2 space-y-2">
                                         <div className="p-3 bg-slate-50 rounded-xl border border-slate-200 flex items-center justify-between">
                                             <code className="text-xs font-mono text-brand-700">VITE_API_KEY</code>
@@ -1086,7 +1086,7 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({
                                             </div>
                                             <div>
                                                 <p className="text-sm font-bold text-slate-800">Product Catalog 2026 - Unitec</p>
-                                                <p className="text-[10px] text-slate-400">English ÃƒÂ¢Ã¢â€šÂ¬Ã‚Â¢ General</p>
+                                                <p className="text-[10px] text-slate-400">English • General</p>
                                             </div>
                                         </div>
                                         <span className="px-2 py-1 bg-emerald-50 text-emerald-600 text-[10px] font-bold uppercase rounded-md">Activo</span>
@@ -1312,30 +1312,48 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({
                                         const isSelected = selectedSessionId === session.id;
                                         const isCall = session.source === 'phone';
                                         return (
-                                            <button
+                                            <div
                                                 key={session.id}
+                                                className={`w-full p-4 rounded-xl border text-left transition-all flex flex-col gap-2 cursor-pointer ${isSelected ? 'border-brand-500 bg-brand-50/20 shadow-sm' : 'border-slate-100 hover:border-slate-200 bg-white'}`}
                                                 onClick={() => setselectedSessionId(session.id)}
-                                                className={`w-full p-4 rounded-xl border text-left transition-all flex flex-col gap-2 ${isSelected ? 'border-brand-500 bg-brand-50/20 shadow-sm' : 'border-slate-100 hover:border-slate-200 bg-white'}`}
                                             >
-                                                <div className="flex justify-between items-center">
-                                                    <div className="flex items-center gap-2 max-w-[65%]">
-                                                        {isCall ? <Phone size={12} className="text-orange-500" /> : <MessageSquare size={12} className="text-blue-500" />}
-                                                        <span className="text-[10px] font-black uppercase text-slate-700 font-mono truncate">{session.customerName || session.id}</span>
+                                                <div className="flex justify-between items-center gap-2">
+                                                    <div className="flex items-center gap-2 min-w-0">
+                                                        {isCall ? <Phone size={12} className="text-orange-500 shrink-0" /> : <MessageSquare size={12} className="text-blue-500 shrink-0" />}
+                                                        <span className="text-[10px] font-black uppercase text-slate-700 font-mono truncate">
+                                                            {session.extractedData?.name || session.customerName || 'Visitante'}
+                                                        </span>
                                                     </div>
-                                                    <span className={`text-[8px] font-black uppercase px-2 py-0.5 rounded-full border ${
+                                                    <span className={`text-[8px] font-black uppercase px-2 py-0.5 rounded-full border shrink-0 ${
                                                         status === 'human_assigned' ? 'bg-red-50 text-red-500 border-red-100' :
                                                         status === 'completed' ? 'bg-slate-100 text-slate-500 border-slate-200' : 'bg-emerald-50 text-emerald-500 border-emerald-100'
                                                     }`}>
                                                         {status === 'human_assigned' ? 'Staff' : status === 'completed' ? 'Closed' : 'AI'}
                                                     </span>
                                                 </div>
-                                                <p className="text-[9px] text-slate-400 font-bold">{new Date(session.lastUpdated).toLocaleTimeString()}</p>
-                                                {session.intentCategory && (
+                                                {/* COPYABLE SESSION ID — the handle you use to find/open this conversation */}
+                                                <div className="flex items-center gap-1 mt-0.5">
+                                                    <code className="text-[9px] font-mono text-slate-500 bg-slate-100 rounded px-1.5 py-0.5 truncate select-all">{session.id}</code>
+                                                    <button
+                                                        title="Copiar identificador de la conversación"
+                                                        onClick={(e) => { e.stopPropagation(); handleCopy(session.id, `conv-${session.id}`); }}
+                                                        className="text-[9px] font-black text-brand-600 hover:text-brand-800 px-1 py-0.5 rounded border border-slate-200 hover:bg-brand-50 shrink-0"
+                                                    >
+                                                        {copyStatus === `conv-${session.id}` ? <Check size={10} className="inline" /> : <Copy size={10} className="inline" />} copiar id
+                                                    </button>
+                                                </div>
+                                                <div className="flex items-center justify-between gap-2">
+                                                    <p className="text-[9px] text-slate-400 font-bold">{new Date(session.lastUpdated).toLocaleTimeString()}</p>
+                                                    <span className="text-[8px] text-slate-400 font-bold">
+                                                        {session.analytics?.messageCount != null ? `${session.analytics.messageCount} msgs` : ''}
+                                                    </span>
+                                                </div>
+                                                {(session.intentCategory || session.topics?.length) && (
                                                     <span className="text-[8px] font-bold text-brand-600 bg-brand-50 border border-brand-100 self-start px-2 py-0.5 rounded">
-                                                        Intent: {session.intentCategory}
+                                                        {(session.intentCategory || session.topics?.join(', '))}
                                                     </span>
                                                 )}
-                                            </button>
+                                            </div>
                                         );
                                     })
                                 )}
@@ -1347,10 +1365,17 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({
                                     <div className="flex-1 flex flex-col overflow-hidden h-full">
                                         <div className="bg-white border-b border-slate-100 p-4 flex justify-between items-center shrink-0">
                                             <div>
-                                                <p className="text-[10px] font-black text-slate-700 uppercase font-mono">{selectedSession.id}</p>
+                                                <p className="text-[10px] font-black text-slate-700 uppercase font-mono truncate max-w-[260px]">{selectedSession.id}</p>
                                                 <p className="text-[8px] text-slate-400 font-bold mt-0.5">Status: {selectedSession.status || 'active'}</p>
                                             </div>
-                                            <div className="flex gap-2">
+                                            <div className="flex items-center gap-2">
+                                                <button
+                                                    onClick={() => handleCopy(selectedSession.id, 'detail-session-id')}
+                                                    className="flex items-center gap-1 text-[9px] font-black text-brand-600 hover:text-brand-800 px-2 py-1 rounded-lg border border-slate-200 hover:bg-brand-50"
+                                                    title="Copiar identificador de la conversación"
+                                                >
+                                                    {copyStatus === 'detail-session-id' ? <><Check size={10} className="inline" /> Copiado</> : <><Copy size={10} className="inline" /> Copiar ID</>}
+                                                </button>
                                                 {(selectedSession.status || 'active') === 'active' && (
                                                     <button
                                                         onClick={() => handleTakeOver(selectedSession.id)}
@@ -1672,7 +1697,7 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({
                                     value={escalaConfig.apiKey}
                                     onChange={e => setEscalaConfig(p => ({ ...p, apiKey: e.target.value }))}
                                     className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-sm focus:ring-2 focus:ring-brand-500 outline-none"
-                                    placeholder="ÃƒÂ¢Ã¢â€šÂ¬Ã‚Â¢ÃƒÂ¢Ã¢â€šÂ¬Ã‚Â¢ÃƒÂ¢Ã¢â€šÂ¬Ã‚Â¢ÃƒÂ¢Ã¢â€šÂ¬Ã‚Â¢ÃƒÂ¢Ã¢â€šÂ¬Ã‚Â¢ÃƒÂ¢Ã¢â€šÂ¬Ã‚Â¢ÃƒÂ¢Ã¢â€šÂ¬Ã‚Â¢ÃƒÂ¢Ã¢â€šÂ¬Ã‚Â¢ÃƒÂ¢Ã¢â€šÂ¬Ã‚Â¢ÃƒÂ¢Ã¢â€šÂ¬Ã‚Â¢ÃƒÂ¢Ã¢â€šÂ¬Ã‚Â¢ÃƒÂ¢Ã¢â€šÂ¬Ã‚Â¢ÃƒÂ¢Ã¢â€šÂ¬Ã‚Â¢ÃƒÂ¢Ã¢â€šÂ¬Ã‚Â¢ÃƒÂ¢Ã¢â€šÂ¬Ã‚Â¢ÃƒÂ¢Ã¢â€šÂ¬Ã‚Â¢"
+                                    placeholder="••••••••••••••••"
                                 />
                             </div>
                         </div>
@@ -1772,7 +1797,7 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({
                                       value={twilioConfig.authToken}
                                       onChange={e => setTwilioConfig(p => ({ ...p, authToken: e.target.value }))}
                                       className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-sm focus:ring-2 focus:ring-brand-500 outline-none"
-                                      placeholder="ÃƒÂ¢Ã¢â€šÂ¬Ã‚Â¢ÃƒÂ¢Ã¢â€šÂ¬Ã‚Â¢ÃƒÂ¢Ã¢â€šÂ¬Ã‚Â¢ÃƒÂ¢Ã¢â€šÂ¬Ã‚Â¢ÃƒÂ¢Ã¢â€šÂ¬Ã‚Â¢ÃƒÂ¢Ã¢â€šÂ¬Ã‚Â¢ÃƒÂ¢Ã¢â€šÂ¬Ã‚Â¢ÃƒÂ¢Ã¢â€šÂ¬Ã‚Â¢ÃƒÂ¢Ã¢â€šÂ¬Ã‚Â¢ÃƒÂ¢Ã¢â€šÂ¬Ã‚Â¢ÃƒÂ¢Ã¢â€šÂ¬Ã‚Â¢ÃƒÂ¢Ã¢â€šÂ¬Ã‚Â¢"
+                                      placeholder="••••••••••••"
                                   />
                               </div>
                               <div className="space-y-2">
@@ -2052,6 +2077,7 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({
                 <div className="h-[calc(100vh-200px)] animate-in slide-in-from-bottom-2 duration-500">
                     <ConversationMonitor 
                         sessions={conversations}
+                        focusSessionId={_selectedConversation?.id ?? null}
                         onSelectSession={(session) => {
                             _setSelectedConversation(session);
                         }}
@@ -2077,7 +2103,23 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({
         case 'analytics':
             return (
                 <div className="h-[calc(100vh-200px)] animate-in slide-in-from-bottom-2 duration-500">
-                    <AnalyticsDashboard sessions={conversations} googleAnalyticsVisits={googleAnalyticsVisits} />
+                    <AnalyticsDashboard 
+                        sessions={conversations} 
+                        googleAnalyticsVisits={googleAnalyticsVisits}
+                        onOpenConversation={async (session) => {
+                            // Deep-link: set the session to open, then switch to the monitor view
+                            _setSelectedConversation(session);
+                            setActiveSubTab('conversations');
+                            // Activate: mark it as an active staff intervention (human takeover)
+                            if (session && session.id && session.status !== 'human_assigned') {
+                                try {
+                                    await updateSessionStatus(session.id, 'human_assigned', 'staff_001');
+                                } catch (e) {
+                                    console.error('Failed to take over session from analytics link', e);
+                                }
+                            }
+                        }}
+                    />
                 </div>
             );
             
@@ -2108,8 +2150,8 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({
                 <AlertTriangle size={18} className="shrink-0 mt-0.5 text-red-200" />
                 <div className="flex-1 min-w-0">
                   <p className="text-xs font-black uppercase tracking-wider text-red-100">?? Cliente necesita ayuda</p>
-                  <p className="text-sm font-medium truncate mt-0.5">{alert.reason || 'SolicitÃ³ hablar con un agente'}</p>
-                  <p className="text-[10px] text-red-200 mt-0.5">SesiÃ³n: {alert.sessionId.slice(-12)} Â· {new Date(alert.requestedAt).toLocaleTimeString('es')}</p>
+                  <p className="text-sm font-medium truncate mt-0.5">{alert.reason || 'Solicitó hablar con un agente'}</p>
+                  <p className="text-[10px] text-red-200 mt-0.5">Sesión: {alert.sessionId.slice(-12)} · {new Date(alert.requestedAt).toLocaleTimeString('es')}</p>
                 </div>
                 <div className="flex gap-2 shrink-0">
                   <button
@@ -2132,7 +2174,7 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({
         {/* Retention toast */}
         {retentionResult && retentionResult.archived > 0 && (
           <div className="flex items-center justify-between gap-2 px-4 py-2 bg-emerald-50 border-b border-emerald-200 shrink-0">
-            <span className="text-[11px] text-emerald-700 font-medium">??? {retentionResult.archived} conversaciones archivadas y eliminadas automÃ¡ticamente (polÃ­tica 30 dÃ­as)</span>
+            <span className="text-[11px] text-emerald-700 font-medium">??? {retentionResult.archived} conversaciones archivadas y eliminadas automáticamente (política 30 días)</span>
             <button onClick={() => setRetentionResult(null)} className="text-emerald-500 hover:text-emerald-700"><X size={12} /></button>
           </div>
         )}
@@ -2146,7 +2188,7 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({
                      onClick={onBack}
                      className="px-2.5 py-1 bg-slate-100 hover:bg-slate-200 text-slate-700 text-[10px] font-bold uppercase rounded-lg transition-colors flex items-center gap-1 border border-slate-200"
                    >
-                     â† {language === 'en' ? 'Back to Site' : 'Volver a la Web'}
+                     → {language === 'en' ? 'Back to Site' : 'Volver a la Web'}
                    </button>
                  )}
                  <span className="text-[9px] font-black uppercase tracking-[0.2em] text-slate-400">Panel de Control</span>

@@ -138,7 +138,7 @@ export async function* sendMessageToGemini(
           brandId,
           sessionId: currentSessionId || undefined,
         }),
-        signal: AbortSignal.timeout(28000)
+        signal: AbortSignal.timeout(40000)
       });
 
       if (proxyRes.status === 429) {

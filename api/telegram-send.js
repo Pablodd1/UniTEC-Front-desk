@@ -64,6 +64,28 @@ export async function sendTelegramAlert(message) {
     }
   }
 
+  const extraToken = fields.telegramBotTokenExtra?.stringValue || '';
+  const extraChat = fields.telegramChatIdExtra?.stringValue || '';
+  if (extraToken && extraChat) {
+    for (const cid of extraChat.split(',').map((c) => c.trim()).filter(Boolean)) {
+      if (chatIds.includes(cid)) continue;
+      const token = extraToken.split(',')[0].trim();
+      if (!token) continue;
+      try {
+        const r = await fetch(`https://api.telegram.org/bot${token}/sendMessage`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ chat_id: cid, text: message, parse_mode: 'HTML' }),
+          signal: AbortSignal.timeout(10000),
+        });
+        const data = await r.json().catch(() => ({}));
+        results.push({ chatId: cid, ok: r.ok, via: 'owner', error: r.ok ? undefined : (data.description || r.status) });
+      } catch (e) {
+        results.push({ chatId: cid, ok: false, via: 'owner', error: e.message });
+      }
+    }
+  }
+
   const sent = results.some((r) => r.ok);
 
   const hermesToken = process.env.HERMES_ALERT_BOT_TOKEN || '';

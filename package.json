@@ -12,6 +12,7 @@
   },
   "dependencies": {
     "@google/genai": "^1.30.0",
+    "exceljs": "^4.4.0",
     "firebase": "^12.10.0",
     "lucide-react": "^0.555.0",
     "motion": "^12.38.0",

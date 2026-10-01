@@ -80,14 +80,15 @@ export const BUSINESS_CONFIG = BUILDING_INNOVATION_CONFIG;
 
 export const QUICK_ACTIONS: QuickAction[] = [
   { id: 'stock', title: 'Consultar Stock', message: 'Quiero consultar el stock y disponibilidad de un producto.', iconName: 'Box' },
-  { id: 'quote', title: 'Cotizar', message: 'Quiero solicitar una cotizaciÃ³n para un producto.', iconName: 'DollarSign' },
-  { id: 'install', title: 'InstalaciÃ³n', message: 'Necesito informaciÃ³n sobre como instalar un producto.', iconName: 'Hammer' },
+  { id: 'quote', title: 'Cotizar', message: 'Quiero solicitar una cotización para un producto.', iconName: 'DollarSign' },
+  { id: 'install', title: 'Instalación', message: 'Necesito información sobre como instalar un producto.', iconName: 'Hammer' },
   { id: 'general', title: 'Consulta General', message: 'Tengo una consulta general sobre sus productos y servicios.', iconName: 'MessageCircle' },
-  { id: 'contact', title: 'Contactar Ventas', message: 'Por favor, comunÃ­came con un representante de ventas.', iconName: 'BookOpen' },
-  { id: 'shipping', title: 'EnvÃ­os', message: 'Me gustarÃ­a saber cuÃ¡les son las opciones de envÃ­o y tiempos de entrega.', iconName: 'Truck' },
-  { id: 'specs', title: 'Ficha TÃ©cnica', message: 'Necesito las especificaciones tÃ©cnicas de un producto.', iconName: 'FileText' },
-  { id: 'returns', title: 'Devoluciones', message: 'Â¿CuÃ¡l es su politica de devoluciones y cambios?', iconName: 'RefreshCcw' },
-  { id: 'discount', title: 'Descuento Mayorista', message: 'Â¿Ofrecen descuentos para compras al por mayor?', iconName: 'Percent' },
+  { id: 'contact', title: 'Contactar Ventas', message: 'Por favor, comunícame con un representante de ventas.', iconName: 'BookOpen' },
+  { id: 'shipping', title: 'Envíos', message: 'Me gustaría saber cuáles son las opciones de envío y tiempos de entrega.', iconName: 'Truck' },
+  { id: 'location', title: 'Ubicación', message: '¿Dónde están ubicados y cómo llego al showroom?', iconName: 'MapPin' },
+  { id: 'specs', title: 'Ficha Técnica', message: 'Necesito las especificaciones técnicas de un producto.', iconName: 'FileText' },
+  { id: 'returns', title: 'Devoluciones', message: '¿Cuál es su politica de devoluciones y cambios?', iconName: 'RefreshCcw' },
+  { id: 'discount', title: 'Descuento Mayorista', message: '¿Ofrecen descuentos para compras al por mayor?', iconName: 'Percent' },
 ];
 
 // --- Tools Definition ---
@@ -298,6 +299,12 @@ ${isVoiceMode ? `
 - EMOTIONAL TONE: Your tone should match the moment — warm and welcoming for greetings, enthusiastic when presenting products, empathetic when addressing concerns. This emotional quality is now conveyed through voice synthesis.
 - END WITH AN INTERACTIVE QUESTION: Always prompt the caller with a short question to keep the conversation moving (e.g., "¿Qué área deseas remodelar?", "¿Te gustaría hablar con un asesor?").
 ` : ''}
+# RESPONSE STYLE RULES (CRITICAL — ALWAYS FOLLOW)
+- Keep ALL responses to a maximum of 2-3 sentences. NO EXCEPTIONS.
+- Answer ONLY what was asked. Do NOT add unsolicited information.
+- NO lists, NO bullet points, NO headers — plain conversational text only.
+- ONE question maximum per response.
+
 # SPANISH-FIRST PROTOCOLS & LANGUAGE CONTROL
 - PREFERRED SYSTEM LANGUAGE: ${language}
 - DEFAULT CONVERSATION LANGUAGE: SPANISH. Since this chatbot widget resides on websites in Spanish-dominant markets, you MUST ALWAYS greet and converse in SPANISH first.
@@ -412,6 +419,7 @@ export const UI_TRANSLATIONS = {
       { id: 'general', title: 'General Inquiry', message: 'I have a general inquiry about your products and services.', iconName: 'MessageCircle' },
       { id: 'contact', title: 'Contact Sales', message: 'Can you connect me with a sales representative?', iconName: 'BookOpen' },
       { id: 'shipping', title: 'Shipping Options', message: 'What are your delivery options?', iconName: 'Truck' },
+      { id: 'location', title: 'Location', message: 'Where are you located and how do I get to the showroom?', iconName: 'MapPin' },
       { id: 'specs', title: 'Technical Specs', message: 'Where can I find technical data sheets?', iconName: 'FileText' },
       { id: 'returns', title: 'Returns Policy', message: 'What is your return policy?', iconName: 'RefreshCcw' },
       { id: 'discount', title: 'Wholesale Discount', message: 'Do you offer bulk discounts?', iconName: 'Percent' },
@@ -420,61 +428,62 @@ export const UI_TRANSLATIONS = {
   es: {
     chatPlaceholder: "Escribe tu mensaje...",
     send: "Enviar",
-    chatWelcome: "Â¡Hola! Bienvenido a Building Innovation. Puedo ayudarte con el catÃ¡logo, stock en Florida, guÃ­as de instalaciÃ³n o conectarte con ventas. Â¿En quÃ© puedo ayudarte hoy?",
+    chatWelcome: "¡Hola! Bienvenido a Building Innovation. Puedo ayudarte con el catálogo, stock en Florida, guías de instalación o conectarte con ventas. ¿En qué puedo ayudarte hoy?",
     voiceTitle: "Recepcionista de Voz",
-    tapToStart: "Toca el micrÃ³fono para iniciar",
+    tapToStart: "Toca el micrófono para iniciar",
     connecting: "Conectando...",
-    connected: "ConversaciÃ³n en Vivo",
-    connectionFailed: "Error de ConexiÃ³n",
+    connected: "Conversación en Vivo",
+    connectionFailed: "Error de Conexión",
     tryAsking: "Intenta preguntar",
-    startConversation: "Iniciar ConversaciÃ³n",
+    startConversation: "Iniciar Conversación",
     endCall: "Terminar Llamada",
-    secureConnection: "ConexiÃ³n Segura Encriptada",
+    secureConnection: "Conexión Segura Encriptada",
     navChat: "Chat",
     navCall: "Llamar",
     navServices: "Servicios",
     navInfo: "Info",
-    productCatalog: "CatÃ¡logo de Productos",
+    productCatalog: "Catálogo de Productos",
     details: "Detalles",
-    contactInfo: "InformaciÃ³n de Contacto",
+    contactInfo: "Información de Contacto",
     promotions: "Promociones Actuales",
-    businessHours: "Horario de AtenciÃ³n",
+    businessHours: "Horario de Atención",
     monFri: "Lunes - Viernes",
-    sat: "SÃ¡bado",
+    sat: "Sábado",
     sun: "Domingo",
     closed: "Cerrado",
     byAppt: "Cita Previa",
     suggestions: [
-      "Â¿Tienen stock en Florida?",
-      "HÃ¡blame de los Paneles WPC",
-      "Â¿CÃ³mo instalo con PEGATEC?",
+      "¿Tienen stock en Florida?",
+      "Háblame de los Paneles WPC",
+      "¿Cómo instalo con PEGATEC?",
       "Agendar una cita",
-      "Necesito cotizaciÃ³n mayorista"
+      "Necesito cotización mayorista"
     ],
-    bookingConfirmed: "Â¡Cita agendada! Se ha enviado una confirmaciÃ³n por correo/SMS.",
-    category: "CategorÃ­a",
+    bookingConfirmed: "¡Cita agendada! Se ha enviado una confirmación por correo/SMS.",
+    category: "Categoría",
     price: "Precio",
-    description: "DescripciÃ³n",
+    description: "Descripción",
     stockStatus: "Estado de Stock",
-    techSheet: "Ficha TÃ©cnica",
+    techSheet: "Ficha Técnica",
     styleTags: "Etiquetas de Estilo",
     back: "Volver",
     stockActive: "Stock en Florida Activo",
-    confirmed: "Â¡Confirmado!",
+    confirmed: "¡Confirmado!",
     appointmentDetails: "Detalles de la Cita",
-    greatThanks: "Â¡Genial, gracias!",
+    greatThanks: "¡Genial, gracias!",
     welcomeToSupport: "Bienvenido a Soporte",
-    howCanWeAssist: "Â¿CÃ³mo podemos ayudarle con su proyecto de construcciÃ³n hoy?",
+    howCanWeAssist: "¿Cómo podemos ayudarle con su proyecto de construcción hoy?",
     quickActions: [
   { id: 'stock', title: 'Consultar Stock', message: 'Quiero consultar el stock y disponibilidad de un producto.', iconName: 'Box' },
-  { id: 'quote', title: 'Cotizar', message: 'Quiero solicitar una cotizaciÃ³n para un producto.', iconName: 'DollarSign' },
-  { id: 'install', title: 'InstalaciÃ³n', message: 'Necesito informaciÃ³n sobre como instalar un producto.', iconName: 'Hammer' },
+  { id: 'quote', title: 'Cotizar', message: 'Quiero solicitar una cotización para un producto.', iconName: 'DollarSign' },
+  { id: 'install', title: 'Instalación', message: 'Necesito información sobre como instalar un producto.', iconName: 'Hammer' },
   { id: 'general', title: 'Consulta General', message: 'Tengo una consulta general sobre sus productos y servicios.', iconName: 'MessageCircle' },
-  { id: 'contact', title: 'Contactar Ventas', message: 'Por favor, comunÃ­came con un representante de ventas.', iconName: 'BookOpen' },
-  { id: 'shipping', title: 'EnvÃ­os', message: 'Me gustarÃ­a saber cuÃ¡les son las opciones de envÃ­o y tiempos de entrega.', iconName: 'Truck' },
-  { id: 'specs', title: 'Ficha TÃ©cnica', message: 'Necesito las especificaciones tÃ©cnicas de un producto.', iconName: 'FileText' },
-  { id: 'returns', title: 'Devoluciones', message: 'Â¿CuÃ¡l es su politica de devoluciones y cambios?', iconName: 'RefreshCcw' },
-      { id: 'discount', title: 'Descuento Mayorista', message: 'Â¿Ofrecen descuentos para compras al por mayor?', iconName: 'Percent' },
+  { id: 'contact', title: 'Contactar Ventas', message: 'Por favor, comunícame con un representante de ventas.', iconName: 'BookOpen' },
+  { id: 'shipping', title: 'Envíos', message: 'Me gustaría saber cuáles son las opciones de envío y tiempos de entrega.', iconName: 'Truck' },
+  { id: 'location', title: 'Ubicación', message: '¿Dónde están ubicados y cómo llego al showroom?', iconName: 'MapPin' },
+  { id: 'specs', title: 'Ficha Técnica', message: 'Necesito las especificaciones técnicas de un producto.', iconName: 'FileText' },
+  { id: 'returns', title: 'Devoluciones', message: '¿Cuál es su politica de devoluciones y cambios?', iconName: 'RefreshCcw' },
+      { id: 'discount', title: 'Descuento Mayorista', message: '¿Ofrecen descuentos para compras al por mayor?', iconName: 'Percent' },
     ],
   }
 };

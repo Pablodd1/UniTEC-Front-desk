@@ -39,7 +39,7 @@ async function generateSummaryWithGemini(
       .map(m => `${m.role === 'user' ? 'Cliente' : 'Bot'}: ${m.text.substring(0, 300)}`)
       .join('\n');
 
-    const prompt = `Eres un asistente que resume conversaciones de chatbot para archivo. Resume esta conversacion en 2-3 oraciones en espaï¿½ol. Incluye: tema principal, si el cliente quiso hablar con humano, y resultado.\n\nCONVERSACION:\n${conversationText}\n\nRESUMEN:`;
+    const prompt = `Eres un asistente que resume conversaciones de chatbot para archivo. Resume esta conversacion en 2-3 oraciones en español. Incluye: tema principal, si el cliente quiso hablar con humano, y resultado.\n\nCONVERSACION:\n${conversationText}\n\nRESUMEN:`;
 
     const res = await fetch(
       `https://generativelanguage.googleapis.com/v1beta/models/gemini-3.6-flash:generateContent?key=${apiKey}`,

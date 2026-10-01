@@ -176,7 +176,7 @@ export interface ConversationSession {
   customerName?: string;
   customerEmail?: string;
   customerPhone?: string;
-  status: 'active' | 'human_requested' | 'human_assigned' | 'completed' | 'abandoned';
+  status: 'active' | 'human_requested' | 'human_assigned' | 'completed' | 'abandoned' | 'abandoned_at_greeting';
   brandId: 'unitec' | 'building';
   language: 'en' | 'es';
   messages?: ConversationMessage[];

@@ -235,5 +235,5 @@ export default async function handler(req, res) {
   }
 
   // GET /api/health or /api/ctx-health -> live dashboard/cron metrics
-  return res.status(200).json({ ok: true, ...getHealth() });
+  return res.status(200).json({ ok: true, version: '2.1-styleguard', ...getHealth() });
 }

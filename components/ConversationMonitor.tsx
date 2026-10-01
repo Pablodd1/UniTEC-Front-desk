@@ -16,6 +16,8 @@ interface ConversationMonitorProps {
   onRequestIntervention: (sessionId: string) => void;
   staffId?: string;
   staffName?: string;
+  /** When set, the monitor opens this session's conversation automatically (deep-link target). */
+  focusSessionId?: string | null;
 }
 
 // Canned responses templates
@@ -71,7 +73,8 @@ const ConversationMonitor: React.FC<ConversationMonitorProps> = ({
   onSelectSession,
   onRequestIntervention,
   staffId = 'staff_001',
-  staffName = 'Admin'
+  staffName = 'Admin',
+  focusSessionId = null,
 }) => {
   const [selectedSessionId, setSelectedSessionId] = useState<string | null>(null);
   const [selectedSession, setSelectedSession] = useState<ConversationSession | null>(null);
@@ -221,6 +224,18 @@ const ConversationMonitor: React.FC<ConversationMonitorProps> = ({
       setFirstResponseTime(Date.now());
     }
   };
+
+  // Deep-link: when a session is requested from elsewhere (e.g. Analytics "Ver Conversación"),
+  // open that session's conversation automatically.
+  useEffect(() => {
+    if (!focusSessionId) return;
+    if (selectedSessionId === focusSessionId) return;
+    const target = sessions.find((s) => s.id === focusSessionId);
+    if (target) {
+      handleSelectSession(target);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [focusSessionId]);
 
   const handleSendAsStaff = async () => {
     if (!staffResponse.trim() || !selectedSessionId) return;

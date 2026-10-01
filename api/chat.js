@@ -14,6 +14,7 @@ function isRateLimited(ip, limit = 120, windowMs = 60000) {
 // never adds latency to the user's chat response.
 import { inspectConversation } from './health.js';
 import { getSharedTraining } from './shared-training.js';
+import { recordChatTurn } from './_record-chat-turn.js';
 import { normalizeHistory } from './turn-text.js';
 import { alertAnomaly } from './anomaly-alert.js';
 import { createRequire } from 'module';
@@ -24,115 +25,6 @@ const firebaseConfig = require_('../firebase-applet-config.json');
 // writes here via /api/training; injecting it server-side makes training reach the bot
 // on EVERY origin (including embedded widgets) without depending on browser localStorage.
 
-// ── Server-side session/message recording ─────────────────────────────
-// The client-side recording was racy (setDoc full-replace wiped counters,
-// reloads created duplicate empty sessions, user messages were lost).
-// /api/chat is the ground truth of every real chat turn, so we record here
-// via Firestore REST (verified working): message + counters + funnel fields.
-
-// Cached anonymous idToken (they last ~1h) to avoid a signUp round-trip per chat turn
-let cachedIdToken = { token: '', exp: 0 };
-
-async function getFirestoreToken() {
-  if (cachedIdToken.token && Date.now() < cachedIdToken.exp) return cachedIdToken.token;
-  const authRes = await fetch(`https://identitytoolkit.googleapis.com/v1/accounts:signUp?key=${firebaseConfig.apiKey}`, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ returnSecureToken: true }),
-  });
-  if (!authRes.ok) return null;
-  const data = await authRes.json();
-  cachedIdToken = { token: data.idToken, exp: Date.now() + (parseInt(data.expiresIn || '3600', 10) - 300) * 1000 };
-  return data.idToken;
-}
-
-async function recordChatTurn({ sessionId, userText, replyText, brand }) {
-  if (!sessionId) return;
-  try {
-    const idToken = await getFirestoreToken();
-    if (!idToken) return false;
-    const projectId = firebaseConfig.projectId;
-    const base = `https://firestore.googleapis.com/v1/projects/${projectId}/databases/(default)/documents`;
-    const auth = { Authorization: `Bearer ${idToken}`, 'Content-Type': 'application/json' };
-    const now = new Date().toISOString();
-    const ts = Date.now();
-    const docPath = `projects/${projectId}/databases/(default)/documents/conversations/${sessionId}`;
-
-    // COMMIT 1: merge session fields (updateMask at WRITE level = merge, no wipe) + both messages
-    // (one write per document — Firestore constraint). Verified structure.
-    // NOTE: createdAt is intentionally NOT in the mask — it must never be rewritten
-    // on later turns (a rewritten createdAt lands AFTER firstUserMessageAt, producing
-    // negative time-to-first-message metrics).
-    const writes = [
-      { updateMask: { fieldPaths: ['id', 'status', 'brandId', 'source', 'language', 'lastMessage', 'lastUpdated'] },
-        update: { name: docPath,
-        fields: {
-          id: { stringValue: sessionId },
-          status: { stringValue: 'active' },
-          brandId: { stringValue: brand || 'unitec' },
-          source: { stringValue: 'web' },
-          language: { stringValue: 'es' },
-          lastMessage: { stringValue: String(userText).slice(0, 200) },
-          lastUpdated: { stringValue: now },
-        }}},
-      { update: { name: `${docPath}/messages/srv_u_${ts}`,
-        fields: {
-          id: { stringValue: `srv_u_${ts}` }, role: { stringValue: 'user' },
-          text: { stringValue: String(userText).slice(0, 2000) }, timestamp: { stringValue: now },
-        }}},
-    ];
-    if (replyText) {
-      writes.push({ update: { name: `${docPath}/messages/srv_b_${ts}`,
-        fields: {
-          id: { stringValue: `srv_b_${ts}` }, role: { stringValue: 'model' },
-          text: { stringValue: String(replyText).slice(0, 2000) }, timestamp: { stringValue: now },
-        }}});
-    }
-    const commitRes = await fetch(`https://firestore.googleapis.com/v1/projects/${projectId}/databases/(default)/documents:commit`, {
-      method: 'POST', headers: auth,
-      body: JSON.stringify({ writes }),
-    });
-    if (!commitRes.ok) return false;
-
-    // COMMIT 2: atomic counter increments on the session doc
-    await fetch(`https://firestore.googleapis.com/v1/projects/${projectId}/databases/(default)/documents:commit`, {
-      method: 'POST', headers: auth,
-      body: JSON.stringify({ writes: [
-        { transform: { document: docPath,
-          fieldTransforms: [
-            { fieldPath: 'analytics.messageCount', increment: { integerValue: replyText ? '2' : '1' } },
-            { fieldPath: 'analytics.userMessageCount', increment: { integerValue: '1' } },
-          ]}},
-      ]}),
-    });
-
-    // Funnel: set firstUserMessageAt/flowStage (and createdAt if missing) — read first, write only if absent
-    const docRes = await fetch(`${base}/conversations/${sessionId}`, { headers: auth });
-    if (docRes.ok) {
-      const doc = await docRes.json();
-      const f = doc.fields || {};
-      const missing = [];
-      if (!f.firstUserMessageAt) missing.push('firstUserMessageAt');
-      if (!f.createdAt) missing.push('createdAt');
-      if (f.flowStage?.stringValue !== 'engaging') missing.push('flowStage');
-      if (missing.length > 0) {
-        const fields = {};
-        if (missing.includes('firstUserMessageAt')) fields.firstUserMessageAt = { stringValue: now };
-        if (missing.includes('createdAt')) fields.createdAt = { stringValue: now };
-        if (missing.includes('flowStage')) fields.flowStage = { stringValue: 'engaging' };
-        await fetch(`${base}/conversations/${sessionId}?${missing.map(p => `updateMask.fieldPaths=${p}`).join('&')}`, {
-          method: 'PATCH', headers: auth,
-          body: JSON.stringify({ fields }),
-        }).catch(() => {});
-      }
-    }
-  } catch (e) {
-    console.warn('recordChatTurn failed:', e?.message);
-    return false;
-  }
-  return true;
-}
-
 // Cap transcript sent to the AI. Long conversations fill the context window and make the bot
 // slow then unresponsive. Keeping the last ~30 turns preserves enough continuity while bound
 // the request size (mirrors the voice-mode trim in geminiService.ts).
@@ -141,8 +33,6 @@ function trimHistory(history) {
   if (history.length <= 60) return history;
   return history.slice(-60);
 }
-
-export const maxDuration = 60;
 
 export default async function handler(req, res) {
   const clientIp = req.headers['x-forwarded-for']?.split(',')[0]?.trim() || req.socket?.remoteAddress || 'unknown';
@@ -236,7 +126,19 @@ You are the professional AI Front Desk Assistant and Senior Sales Representative
 - CONSULTA DE STOCK (Medellín): Si preguntan por disponibilidad en Medellín, primero da la descripción del producto con medidas y colores, y luego indica que para validar referencias y colores debe contactarse un asesor comercial, guiando a Camilo Andres Torres (https://wa.me/573104578337).
 - CATÁLOGO: Cuando pidan catálogo, NO pidas correo. Envíalo y haz una pregunta de interés para continuar la venta.
 - COTIZACIÓN/PRECIOS: Informa siempre valores APROXIMADOS por unidad, dependientes de medidas y cantidades.
-- ASESORÍA/HUMANO: Cuando pidan atención humana o asesoría, comunícate formalmente y deriva al contacto de ventas.`;
+- ASESORÍA/HUMANO: Cuando pidan atención humana o asesoría, comunícate formalmente y deriva al contacto de ventas.
+
+# RESPONSE STYLE RULES (CRITICAL — ALWAYS FOLLOW):
+- MAXIMUM 2-3 SHORT SENTENCES per response. NO EXCEPTIONS.
+- Answer ONLY what was asked. Do NOT add unsolicited product lists, descriptions, or company info.
+- NO bullet points, NO numbered lists, NO headers, NO bold text in responses.
+- NEVER mention product names, prices, or services unless the customer specifically asks about them.
+- Ask ONE follow-up question maximum, only if needed to help the customer.
+- Keep responses SHORT, DIRECT, and CONVERSATIONAL like a real WhatsApp chat.
+
+BAD EXAMPLE (NEVER DO THIS): "¡Hola! Somos importadores directos y distribuidores mayoristas de acabados arquitectónicos y decorativos. Contamos con Fachadas Deck, Cubiertas Termoacústicas, Foam Board, y mucho más. ¿En qué te podemos ayudar? Aquí tienes nuestra lista de productos: ✨ Fachada Deck..."
+
+GOOD EXAMPLE: "¡Hola! ¿En qué producto te interesa?"`;
 
     // Has a real base prompt already been sent by the client? The full
     // getSystemInstruction from constants.ts always contains the bodega/location
@@ -247,6 +149,12 @@ You are the professional AI Front Desk Assistant and Senior Sales Representative
       instructions.includes('bodega principal');
     if (!hasBase && !instructions.includes('ROLE & IDENTITY')) {
       instructions = BASE_FRONT_DESK + '\n\n' + instructions;
+    }
+
+    // Response style guard — ensure style rules are ALWAYS present even if client
+    // sends its own instructions that lack them.
+    if (!instructions.includes('RESPONSE STYLE RULES')) {
+      instructions += '\n\n# RESPONSE STYLE RULES (CRITICAL — ALWAYS FOLLOW):\n- MAXIMUM 2-3 SHORT SENTENCES per response. NO EXCEPTIONS.\n- Answer ONLY what was asked. Do NOT add unsolicited product lists, descriptions, or company info.\n- NO bullet points, NO numbered lists, NO headers, NO bold text in responses.\n- NEVER mention product names, prices, or services unless the customer specifically asks about them.\n- Ask ONE follow-up question maximum, only if needed to help the customer.\n- Keep responses SHORT, DIRECT, and CONVERSATIONAL like a real WhatsApp chat.';
     }
 
     try {
@@ -439,13 +347,26 @@ You are the professional AI Front Desk Assistant and Senior Sales Representative
         }
 
         if (responseText) {
+          // HARD LENGTH ENFORCEMENT: 2-3 sentences max, ~200 chars limit
+          const sentences = responseText.split(/(?<=[.!?¡¿])\s+/).filter(s => s.trim().length > 0);
+          if (sentences.length > 3 || responseText.length > 300) {
+            console.warn(`[StyleGuard] Response too long: ${sentences.length} sentences, ${responseText.length} chars. Truncating.`);
+            // Keep max 2 sentences
+            const shortSentences = sentences.slice(0, 2);
+            responseText = shortSentences.join(' ');
+            // If still too long, hard truncate at 250 chars
+            if (responseText.length > 250) {
+              responseText = responseText.substring(0, 247) + '...';
+            }
+          }
+
           // Record this real chat turn server-side (messages + counters + funnel).
           // AWAITED (not fire-and-forget): Vercel kills pending promises when the
           // response returns, which silently dropped all recording otherwise.
           if (clientSessionId && !String(responseText).includes('actualización de credenciales')) {
             const recorded = await recordChatTurn({ sessionId: clientSessionId, userText: message, replyText: responseText, brand: brandId });
-            if (!recorded) {
-              await alertAnomaly('REGISTRO_FALLIDO', 'El turno se respondió pero no quedó guardado en Firestore.', clientSessionId);
+            if (recorded && recorded.recorded === false) {
+              await alertAnomaly('REGISTRO_FALLIDO', recorded.reason || 'El turno se respondió pero no quedó guardado.', clientSessionId);
             }
           }
 
@@ -497,3 +418,4 @@ You are the professional AI Front Desk Assistant and Senior Sales Representative
     });
   }
 }
+// force redeploy Thu Oct  1 07:11:47 AM CST 2026
