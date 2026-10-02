@@ -41,16 +41,32 @@ const recordOnboardingTurn = async (
   }
 };
 
-// El primer mensaje del visitante suele ser su PREGUNTA, no su nombre. Si se guarda
-// como nombre ("¡Un gusto conocerte, Buenas días dónde están ubicados!"), la pregunta
-// se pierde y el usuario abandona. Con esto se detecta y se responde.
-const INTENT_RE = /(precio|cotiz|valor|cu[aá]nto|stock|disponib|env[ií]o|despach|instala|m[aá]rmol|pvc|wpc|spc|d[oó]nde|ubicad|producto|cat[aá]logo|comprar|pedido|mayorista|descuento|ficha|asesor|necesito|quiero|quisiera|informaci[oó]n)/i;
+// El primer mensaje del visitante suele ser su PREGUNTA, no su nombre. Novedades Chatbot 8:
+// solo se saluda por su nombre si lo escribió EXPLÍCITAMENTE ("me llamo X", "mi nombre es X",
+// "soy X"). Un nombre "a secas" NO se acepta: aceptarlo produjo "¡Un gusto conocerte, Piso deck!"
+// y dejó sin responder la pregunta del cliente.
+const NAME_PATTERN = /(?:me\s+llamo|mi\s+nombre\s+es|soy)\s+([a-záéíóúñ]{2,30})/i;
+// "soy distribuidor", "soy cliente final"… no son nombres
+const NOT_A_NAME = /^(distribuidor|distribuidora|mayorista|cliente|final|arquitecto|arquitecta|constructor|constructora|dise[nñ]ador|dise[nñ]adora|contratista|ingeniero|ingeniera|maestro|de|del|la|el|un|una|interesado|interesada|proveedor)$/i;
+const INTENT_RE = /(precio|cotiz|valor|cu[aá]nto|stock|disponib|env[ií]o|despach|instala|m[aá]rmol|pvc|wpc|spc|d[oó]nde|ubicad|producto|cat[aá]logo|comprar|pedido|mayorista|descuento|ficha|asesor|necesito|quiero|quisiera|informaci[oó]n|piso|deck|panel|pared|fachada|cubierta|teja|l[aá]mina|cielo|cornisa|list[oó]n|muroflex|uniflex|arqunitec|arqnitec|acolchad|ac[uú]stic|foam|board|policarbonato|jard[ií]n|led|z[oó]calo|omega|vigueta|[aá]ngulo|caballete|perfil|tornillo|clip|esquinero|cinta|adhesivo|pegat|transformador|control|referencia|metros?|m2|m²|medidas?|área|area|obra|remodela)/i;
 const GREETING_RE = /^(hola+|buenas|buenos d[ií]as|buenas tardes|buenas noches|hi|hello|hey|qu[eé] tal)[\s!.,]*$/i;
 const looksLikeIntent = (t: string): boolean => {
   const s = String(t || '').trim();
   if (!s) return false;
   if (INTENT_RE.test(s)) return true;
-  return s.split(/\s+/).length > 4 && !GREETING_RE.test(s);
+  return s.split(/\s+/).length > 2 && !GREETING_RE.test(s);
+};
+// Devuelve el nombre SOLO si viene de una frase explícita ("me llamo Ana") y no es un
+// producto, una profesión ni una necesidad.
+const explicitName = (t: string): string => {
+  const s = String(t || '').trim();
+  const m = s.match(NAME_PATTERN);
+  if (!m) return '';
+  const candidate = m[1].trim();
+  if (NOT_A_NAME.test(candidate) || INTENT_RE.test(candidate)) return '';
+  // "soy X" con una consulta larga detrás no es un saludo por nombre
+  if (!/me\s+llamo|mi\s+nombre\s+es/i.test(s) && looksLikeIntent(s) && s.split(/\s+/).length > 3) return '';
+  return candidate;
 };
 
 interface ChatTabProps {
@@ -581,12 +597,11 @@ const ChatTab: React.FC<ChatTabProps> = ({ quickActions, initialMessage, emergen
 
     // ── Bienvenida de 1 paso ───────────────────────────────────────────────────
     // El primer mensaje del visitante ya es su necesidad: se responde de inmediato.
-    // El nombre se captura solo si lo escribe ("me llamo X" / "soy X" / su nombre a secas);
-    // el teléfono se pide después y únicamente cuando pide una cotización.
+    // Novedades Chatbot 8: NO se interpreta ese primer mensaje como su nombre; el nombre
+    // solo se usa si lo escribió explícitamente ("me llamo X" / "mi nombre es X" / "soy X").
+    // El teléfono se pide después y únicamente cuando se va a escalar la cotización.
     if (onboardingStage === 'name') {
-      const explicit = text.match(/(?:me\s+llamo|mi\s+nombre\s+es|soy)\s+([a-záéíóúñ]{2,30})/i);
-      const bareName = /^[a-záéíóúñ\s]{2,30}$/i.test(text.trim()) && !looksLikeIntent(text);
-      const captured = explicit?.[1] || (bareName ? text.trim() : '');
+      const captured = explicitName(text);
       setOnboardingStage('ready');
 
       if (captured) {
@@ -604,9 +619,8 @@ const ChatTab: React.FC<ChatTabProps> = ({ quickActions, initialMessage, emergen
         return;
       }
 
-      setExtractedPii(prev => ({ ...(prev || {}), name: prev?.name || 'Cliente' } as typeof prev));
-      // El turno lo registra el flujo normal (/api/chat): aquí NO se registra para no
-      // contar dos veces el mismo mensaje. Sin `return`: la IA responde su pregunta.
+      // Sin nombre explícito: la IA responde su consulta. No se inventa un nombre
+      // ("Cliente") ni se cuenta dos veces el mensaje (lo registra /api/chat).
     }
 
     if (sessionStatus === 'human_assigned') {

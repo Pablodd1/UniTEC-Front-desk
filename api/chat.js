@@ -15,7 +15,7 @@ function isRateLimited(ip, limit = 120, windowMs = 60000) {
 import { inspectConversation } from './health.js';
 import { getSharedTraining } from './shared-training.js';
 import { recordChatTurn } from './_record-chat-turn.js';
-import { normalizeHistory, catalogReply, tightenReply } from './turn-text.js';
+import { normalizeHistory, catalogReply, tightenReply, detectEscalation } from './turn-text.js';
 import { alertAnomaly } from './anomaly-alert.js';
 import { createRequire } from 'module';
 const require_ = createRequire(import.meta.url);
@@ -44,6 +44,44 @@ async function getProducts() {
   const data = await r.json();
   productsCache = { data, fetchedAt: Date.now() };
   return data;
+}
+
+// ── Authoritative price list (client sheet, published as public/precios-2026.json) ──
+// Novedades Chatbot 8: prices are quoted ONLY when the customer asks, ALWAYS as an
+// approximate per-unit value, and ONLY from this list — never invented, never a range.
+// Regenerate with: node scripts/build-prices.mjs "<LISTA DE PRECIOS MES.xlsx>"
+let priceCache = { data: null, fetchedAt: 0 };
+const PRICE_TTL_MS = 10 * 60 * 1000;
+const PRICE_INTENT_RE = /(precio|precios|vale|valor|costo|costar|cu[aá]nto|cuanto cuesta|cotiz|presupuesto|price|cost)/i;
+
+async function getPriceTable() {
+  if (priceCache.data && Date.now() - priceCache.fetchedAt < PRICE_TTL_MS) return priceCache.data;
+  const r = await fetch(`${CANONICAL_ORIGIN}/precios-2026.json`);
+  const data = await r.json();
+  priceCache = { data, fetchedAt: Date.now() };
+  return data;
+}
+
+const priceTokens = (s) => String(s || '')
+  .normalize('NFD').replace(/[\u0300-\u036f]/g, '')
+  .toLowerCase().replace(/[^a-z0-9]+/g, ' ').trim().split(/\s+/)
+  .filter((t) => t.length > 2);
+
+// Rows of the client's list that overlap the question — the model may quote ONLY these.
+function priceRowsFor(message, table, limit = 6) {
+  const rows = (table?.sections || []).flatMap((s) => (s.items || []).map((i) => ({ ...i, section: s.name })));
+  const msg = new Set(priceTokens(message));
+  if (!msg.size) return [];
+  return rows
+    .map((row) => {
+      const rt = priceTokens(row.name);
+      const hits = rt.filter((t) => msg.has(t) || [...msg].some((m) => m.length > 4 && (t.startsWith(m) || m.startsWith(t))));
+      return { row, score: hits.length / Math.max(rt.length, 1), hits: hits.length };
+    })
+    .filter((r) => r.hits > 0)
+    .sort((a, b) => b.hits - a.hits || b.score - a.score)
+    .slice(0, limit)
+    .map((r) => r.row);
 }
 
 // ── Reads an upstream SSE stream (Gemini alt=sse or OpenAI-style) and forwards text deltas ──
@@ -169,20 +207,37 @@ export default async function handler(req, res) {
     const BASE_FRONT_DESK = `# ROLE & IDENTITY
 You are the professional AI Front Desk Assistant and Senior Sales Representative for UNITEC USA DESIGN (Importador Directo - Distribución Mayorista). Colombia / Florida, USA. Answer in Spanish first, switch to English only if the customer writes in English.
 
-# ACTIVE REPRESENTATIVES & CONTACTS (ONLY use these staff):
-- Camilo Andres Torres (Ventas) | Tel: +57 310 457 8337 | https://wa.me/573104578337
-- Yuldor Stiven Avendano (Ejecutivo Comercial IDEO y Marketing online) | Tel: +57 310 576 9694 | https://wa.me/573105769694
-- Henderson Patrick Arroyave (Ejecutivo Marketing Online) | Tel: +57 320 217 4854 | https://wa.me/573202174854
-- Contacto General WhatsApp / Principal: +57 314 233 2147 | https://wa.me/573142332147
+# CONTACTO OFICIAL PARA ESCALAR (EL ÚNICO PERMITIDO)
+- WhatsApp oficial de la compañía: +57 314 233 2147 | https://wa.me/573142332147
+- NUNCA entregues el número ni el enlace de WhatsApp de un asesor individual al escalar.
+
+# PERSONALIDAD Y TONO (SIEMPRE — ES LO QUE MÁS NOTA EL CLIENTE):
+- Eres "Decky", el asistente de recepción de UNITEC USA DESIGN: cálido, cercano, servicial y humano. Nunca robótico ni acartonado.
+- Hablas como un buen asesor colombiano por WhatsApp: amable, natural, tuteando ("cuéntame", "con gusto", "claro que sí").
+- Tu prioridad es AYUDAR de verdad con la información de la compañía que sí tienes (productos y medidas, usos, precios aproximados, ubicación, medios de pago, distribución): responde primero, pregunta después.
+- Empatía real: si el cliente está apurado o no entiende algo, reconócelo con naturalidad y ofrécele la salida más simple.
+- NUNCA hagas sentir al cliente que el chatbot solo sirve para remitirlo a un asesor: intenta resolver su consulta tú mismo.
+- Cierra con un tono humano y UNA pregunta breve que ayude a avanzar.
+
+# PAUTAS DE CONVERSACIÓN (OBLIGATORIAS — Novedades Chatbot 8):
+1. NOMBRE: NO preguntes el nombre al inicio de la conversación. Usa un nombre SOLO si el cliente lo dio explícitamente ("me llamo X", "mi nombre es X", "soy X") o si lo escribió después de que se lo pidieras. NUNCA interpretes su primer mensaje como su nombre: si escribe "Piso deck", "Buenas días dónde están ubicados" o cualquier producto/necesidad, ESO ES SU CONSULTA — respóndela y no lo llames por ese texto.
+2. UNA SOLA PREGUNTA POR MENSAJE. Nunca dos.
+3. ORDEN DE CALIFICACIÓN (guía tú, sin interrogar): 1) producto → 2) cantidad o m² → 3) uso (residencial o comercial) → 4) perfil (cliente final, arquitecto, constructor, diseñador, distribuidor, mayorista) → 5) ubicación → 6) datos de contacto → 7) UN ÚNICO escalamiento al final.
+4. NO REPITAS: si el cliente ya dijo algo (producto, m², uso, ubicación), no lo vuelvas a preguntar ni lo repitas como si fuera nuevo.
+5. UN SOLO CAMINO: nunca entregues un contacto y al mismo tiempo sigas haciendo preguntas. Primero recopilas; al final entregas el contacto UNA sola vez.
+6. PRIMERO RESUELVE: resuelve con la información disponible. Escala SOLO si (a) se requiere una cotización formal, (b) falta información que no tienes, o (c) el cliente pide hablar con una persona. No le preguntes al cliente con qué asesor desea hablar.
+7. PRECIOS: solo si el cliente los pide. Informa siempre que es un VALOR APROXIMADO POR UNIDAD que depende de medidas, cantidades y referencia. Usa EXCLUSIVAMENTE los precios del bloque [LISTA DE PRECIOS] cuando venga en el contexto; si el producto no está allí di "Consultar precio" y ofrece pasar los datos al equipo comercial. PROHIBIDO inventar precios o rangos de precio.
+8. CATÁLOGO: si piden el catálogo de un producto, envía la ficha técnica y el catálogo DE ESE PRODUCTO (usa los enlaces del [SYSTEM CONTEXT]). NO envíes el enlace del Drive completo. Solo si piden el catálogo COMPLETO: 📂 CATÁLOGO DE PRODUCTOS 2026 https://canva.link/l7fu4xk4lp5jed2
+9. BREVEDAD: máximo 2-3 frases, sin listas ni viñetas, tono natural de WhatsApp.
 
 # REGLAS ESPECÍFICAS DEL NEGOCIO (RESPONDE EXACTAMENTE según estas reglas):
 - INSTALACIÓN: Cuando pregunten por instalación de producto, responde EXACTAMENTE: "Señor o Señora te cuento que actualmente nuestra compañía solo realiza distribución mas no instalación para este proceso te podemos informar el contacto de una persona externa, posterior"
 - UBICACIÓN / PUNTO FÍSICO: Si preguntan por la ubicación, dirección o dónde está la bodega, responde que el punto físico se encuentra en el Centro Comercial Ideo (Local 274), pero la bodega principal está en Guarne, de donde se realizan todos los despachos.
 - MEDIO DE PAGO: Cuando pregunten por el medio de pago, informa que el pago se realiza por transferencia electrónica y el pedido se toma directamente con uno de nuestros vendedores.
-- CONSULTA DE STOCK (Medellín): Si preguntan por disponibilidad en Medellín, primero da la descripción del producto con medidas y colores, y luego indica que para validar referencias y colores debe contactarse un asesor comercial, guiando a Camilo Andres Torres (https://wa.me/573104578337).
-- CATÁLOGO: Cuando pidan catálogo, NO pidas correo. Envíalo y haz una pregunta de interés para continuar la venta.
-- COTIZACIÓN/PRECIOS: Informa siempre valores APROXIMADOS por unidad, dependientes de medidas y cantidades.
-- ASESORÍA/HUMANO: Cuando pidan atención humana o asesoría, comunícate formalmente y deriva al contacto de ventas.
+- CONSULTA DE STOCK (Medellín): Si preguntan por disponibilidad en Medellín, primero da la descripción del producto con medidas y colores, y luego indica que para validar referencias y colores un asesor comercial debe contactarlo, compartiendo el WhatsApp oficial https://wa.me/573142332147.
+- CATÁLOGO: Cuando pidan catálogo, NO pidas correo. Envía la ficha técnica y el catálogo DEL PRODUCTO preguntado y haz UNA pregunta de interés para continuar la venta. Solo si piden el catálogo COMPLETO: 📂 CATÁLOGO DE PRODUCTOS 2026 https://canva.link/l7fu4xk4lp5jed2
+- COTIZACIÓN/PRECIOS: Informa valores APROXIMADOS solo si el cliente pide el precio, siempre POR UNIDAD y aclarando que depende de medidas y cantidades. Nunca inventes precios: si no está en [LISTA DE PRECIOS], responde "Consultar precio".
+- ASESORÍA/HUMANO: Cuando pidan atención humana o asesoría, comunícate formalmente y entrega el WhatsApp oficial https://wa.me/573142332147 (una sola vez, al final).
 
 # RESPONSE STYLE RULES (CRITICAL — ALWAYS FOLLOW):
 - MAXIMUM 2-3 SHORT SENTENCES per response. NO EXCEPTIONS.
@@ -270,34 +325,66 @@ GOOD EXAMPLE: "¡Hola! ¿En qué producto te interesa?"`;
         generationConfig: GEMINI_GENCONFIGS[Math.min(variant, GEMINI_GENCONFIGS.length - 1)]
       };
 
-      // ponytail: if message looks like a product query, inject matching products as context
-      const productKeywords = ['precio', 'price', 'costo', 'cost', 'cuanto', 'how much', 'panel', 'piso', 'floor', 'wpc', 'spc', 'stock', 'disponibilidad', 'availability', 'catalogo', 'catalog'];
-      const isProductQuery = productKeywords.some(kw => message.toLowerCase().includes(kw));
+      // ── Context injection ──────────────────────────────────────────────────
+      // 1) products matching the question (+ their own ficha técnica / image, so the bot can
+      //    send the PER-PRODUCT catalog instead of the whole Drive folder), and
+      // 2) when the customer asks for a price, the rows of the client's authoritative list —
+      //    the only prices the model is allowed to quote (always as an approximation).
+      const blocks = [];
+      const STOPWORDS = new Set(['que', 'qué', 'para', 'con', 'los', 'las', 'del', 'una', 'uno', 'por',
+        'como', 'cómo', 'mas', 'más', 'me', 'mi', 'es', 'el', 'la', 'de', 'y', 'o', 'en', 'un', 'al',
+        'se', 'lo', 'su', 'sus', 'valor', 'precio', 'precios', 'cuanto', 'cuánto', 'cuesta', 'vale',
+        'quisiera', 'necesito', 'quiero', 'tienen', 'tiene', 'hay', 'the', 'and', 'for', 'how', 'much']);
+      const msgWords = String(message).toLowerCase().split(/[^a-z0-9áéíóúñ]+/)
+        .filter((w) => w.length > 2 && !STOPWORDS.has(w));
 
-      if (isProductQuery) {
+      if (msgWords.length) {
         try {
           const products = await getProducts();
-          const lowerMsg = message.toLowerCase();
-          const words = lowerMsg.split(/\s+/);
-          const matched = products.filter(p => {
-            const pName = p.name.toLowerCase();
-            const pId = p.id.toLowerCase();
-            return words.some(w => w.length > 2 && (pName.includes(w) || pId.includes(w)));
+          const matched = products.filter((p) => {
+            const pName = String(p.name || '').toLowerCase();
+            const pId = String(p.id || '').toLowerCase();
+            return msgWords.some((w) => pName.includes(w) || pId.includes(w));
           }).slice(0, 5);
 
           if (matched.length > 0) {
-            const productContext = matched.map(p =>
-              `RefCode: ${p.id} | ${p.name} | Precio: ${brandId === 'unitec' ? (p.price_cop || p.price) : (p.price_usd || p.price)} por ${p.unit || 'unidad'} | Stock: ${p.stock_status || 'Consultar'}`
-            ).join('\n');
-            const contextMsg = `\n\n[SYSTEM CONTEXT - Product data for this query]:\n${productContext}\nUse this data to answer. If the product is not listed, say "Consultar precio".`;
-            payload.contents = [
-              ...contents.slice(0, -1),
-              { role: 'user', parts: [{ text: message + contextMsg }] }
-            ];
+            const productContext = matched.map((p) => {
+              const price = brandId === 'unitec' ? (p.price_cop || p.price) : (p.price_usd || p.price);
+              const bits = [
+                `RefCode: ${p.id}`,
+                p.name,
+                `Precio: ${price} por ${p.unit || 'Unidad'}${p.price_approx ? ' (APROXIMADO)' : ''}`,
+                `Stock: ${p.stock_status || 'Consultar'}`,
+              ];
+              if (p.pdf_tech_sheet) bits.push(`Ficha técnica / catálogo del producto: ${p.pdf_tech_sheet}`);
+              if (p.image_url) bits.push(`Imagen: ${p.image_url}`);
+              return '- ' + bits.join(' | ');
+            }).join('\n');
+            blocks.push(`[SYSTEM CONTEXT - Productos que coinciden con la consulta]:\n${productContext}\nUsa estos datos para responder. Si el producto consultado no está en la lista, di "Consultar precio". Si el cliente pide el catálogo o la ficha técnica de ESTE producto, envía su enlace de ficha técnica (NUNCA el enlace del Drive completo; el catálogo completo solo si lo piden explícitamente).`);
           }
         } catch (e) {
           console.warn('Failed to inject product context:', e);
         }
+      }
+
+      if (PRICE_INTENT_RE.test(String(message))) {
+        try {
+          const table = await getPriceTable();
+          const rows = priceRowsFor(message, table);
+          if (rows.length > 0) {
+            const list = rows.map((r) => `- ${r.name} (${r.section}): $ ${Number(r.price).toLocaleString('es-CO')} por unidad`).join('\n');
+            blocks.push(`[LISTA DE PRECIOS ${table.month || ''} - LISTA MARKETING cliente final]:\n${list}\n${table.note || 'Valores aproximados por unidad.'}\nCita SOLO la fila que corresponde al producto preguntado, aclara que es un valor APROXIMADO por unidad que depende de medidas y cantidades, y NO listes la tabla completa. Si el producto no aparece arriba, di "Consultar precio".`);
+          }
+        } catch (e) {
+          console.warn('Failed to inject price list:', e);
+        }
+      }
+
+      if (blocks.length > 0) {
+        payload.contents = [
+          ...contents.slice(0, -1),
+          { role: 'user', parts: [{ text: `${message}\n\n${blocks.join('\n\n')}` }] }
+        ];
       }
       return payload;
     };
@@ -386,17 +473,9 @@ GOOD EXAMPLE: "¡Hola! ¿En qué producto te interesa?"`;
         }
       }
 
-      const lowerMsg = (message || '').toLowerCase();
-      const escalationKeywords = [
-        'cotiz', 'presupuesto', 'quote', 'budget',
-        'precio', 'costo', 'valor', 'price', 'cost',
-        'asesor', 'humano', 'staff', 'human', 'agent',
-        'llamar', 'call me', 'telefono', 'contacto', 'atencion', 'atención',
-        'whatsapp', 'speak to someone', 'talk to someone'
-      ];
-      const isEscalation = escalationKeywords.some(kw => lowerMsg.includes(kw));
-      const isQuote = ['cotiz', 'presupuesto', 'quote', 'budget', 'precio', 'costo', 'valor', 'price', 'cost'].some(kw => lowerMsg.includes(kw));
-      const isStaff = ['asesor', 'humano', 'staff', 'human', 'agent', 'llamar', 'call me', 'contacto', 'atencion', 'atención', 'speak to someone', 'talk to someone'].some(kw => lowerMsg.includes(kw));
+      // Price questions are NOT an escalation (Novedades Chatbot 8): the bot qualifies
+      // first and escalates once, at the end. Shared detector — see turn-text.js.
+      const { isEscalation, isQuote, isStaff } = detectEscalation(message);
 
       try {
         res.write(`data: ${JSON.stringify({
@@ -546,19 +625,7 @@ GOOD EXAMPLE: "¡Hola! ¿En qué producto te interesa?"`;
             }
           }
 
-          // ponytail: server-side escalation intent detection — catches quote/staff requests
-          // even if client-side keyword matching misses them
-          const escalationKeywords = [
-            'cotiz', 'presupuesto', 'quote', 'budget',
-            'precio', 'costo', 'valor', 'price', 'cost',
-            'asesor', 'humano', 'staff', 'human', 'agent',
-            'llamar', 'call me', 'telefono', 'contacto', 'atencion', 'atención',
-            'whatsapp', 'speak to someone', 'talk to someone'
-          ];
-          const lowerMsg = (message || '').toLowerCase();
-          const isEscalation = escalationKeywords.some(kw => lowerMsg.includes(kw));
-          const isQuote = ['cotiz', 'presupuesto', 'quote', 'budget', 'precio', 'costo', 'valor', 'price', 'cost'].some(kw => lowerMsg.includes(kw));
-          const isStaff = ['asesor', 'humano', 'staff', 'human', 'agent', 'llamar', 'call me', 'contacto', 'atencion', 'atención', 'speak to someone', 'talk to someone'].some(kw => lowerMsg.includes(kw));
+          const { isEscalation, isQuote, isStaff } = detectEscalation(message);
 
           return res.status(200).json({
             text: responseText,

@@ -27,12 +27,40 @@ export function normalizeHistory(history) {
     .filter((entry) => entry.text);
 }
 
-export const CATALOG_URL = 'https://drive.google.com/drive/folders/1Avy6LdvEt7tnnj1mfrIM2FN6kfbDZ6uw';
+// The ONLY catalog link the client authorises for the COMPLETE catalog
+// (Novedades Chatbot 8, 2026-10-02): the Drive folder is no longer sent.
+export const CATALOG_URL = 'https://canva.link/l7fu4xk4lp5jed2';
+export const CATALOG_LABEL = '📂 CATÁLOGO DE PRODUCTOS 2026';
+
+// Does the message name a product/category? If so the catalogue is answered by the
+// AI with that product's own ficha técnica + catalog, never the whole-catalog link.
+const PRODUCT_HINT_RE = new RegExp(
+  '(piso|deck|panel|pared|paredes|fachada|cubierta|teja|lamina|l[aá]mina|cielo|cornisa|liston|list[oó]n|' +
+  'muroflex|uniflex|arqunitec|arqnitec|acolchad|acustic|m[aá]rmol|marmol|spc|wpc|pvc|ps\\b|foam|board|' +
+  'policarbonato|jard[ií]n|jardin|led|zocalo|z[oó]calo|omega|vigueta|[aá]ngulo|angulo|caballete|perfil|' +
+  'tornillo|clip|plastina|platinas|esquinero|cinta|adhesivo|pegat|transformador|control|referencia)', 'i');
 
 export function catalogReply(message) {
   const text = String(message || '').toLowerCase();
-  if (!/(cat[aá]logo|catalog)/.test(text)) return '';
-  return `Claro. Aquí está el catálogo: ${CATALOG_URL} ¿Qué producto te interesa?`;
+  if (!/(cat[aá]logo|catalog|ficha t[eé]cnica)/.test(text)) return '';
+  if (PRODUCT_HINT_RE.test(text)) return ''; // product named → the AI sends that product's catalog
+  return `Claro. ${CATALOG_LABEL}: ${CATALOG_URL} ¿Qué producto te interesa? Te envío su catálogo y ficha técnica.`;
+}
+
+// ── Escalation intent (single source; was duplicated in both /api/chat paths) ──
+// Per Novedades Chatbot 8 the bot must NOT treat a price question as an escalation: it
+// qualifies first (producto → m² → uso → perfil → ubicación → datos) and escalates ONCE,
+// at the end, to the company's generic WhatsApp. Prices/quotes alone no longer page a human.
+const STAFF_WORDS = ['asesor', 'humano', 'staff', 'human', 'agent', 'llamar', 'call me',
+  'telefono', 'teléfono', 'contacto', 'atencion', 'atención', 'whatsapp', 'speak to someone',
+  'talk to someone', 'hablar con alguien', 'persona real'];
+const QUOTE_WORDS = ['cotiz', 'presupuesto', 'quote', 'budget'];
+
+export function detectEscalation(message) {
+  const text = String(message || '').toLowerCase();
+  const isStaff = STAFF_WORDS.some((kw) => text.includes(kw));
+  const isQuote = QUOTE_WORDS.some((kw) => text.includes(kw));
+  return { isEscalation: isStaff || isQuote, isQuote, isStaff };
 }
 
 export function tightenReply(text) {

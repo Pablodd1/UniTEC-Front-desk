@@ -1,4 +1,4 @@
-import { getSharedTraining, setSharedTraining, invalidateTrainingCache } from './shared-training.js';
+import { getSharedTraining, setSharedTraining, invalidateTrainingCache, getSharedTrainingMeta } from './shared-training.js';
 import { sendTelegramAlert, escapeHtml } from './telegram-send.js';
 
 function setCors(req, res) {
@@ -20,6 +20,9 @@ export default async function handler(req, res) {
         ok: true,
         trainingData: trainingData || '',
         length: (trainingData || '').length,
+        // "en vivo": cuándo se guardó por última vez y cuánto texto quedó como respaldo
+        updatedAt: getSharedTrainingMeta().updatedAt,
+        prevLength: getSharedTrainingMeta().prevLength,
       });
     }
 
@@ -28,18 +31,25 @@ export default async function handler(req, res) {
       if (typeof trainingData !== 'string') {
         return res.status(400).json({ ok: false, error: 'trainingData string is required' });
       }
-      const saved = await setSharedTraining(trainingData);
+      // append:true AÑADE las nuevas pautas al final (con separador) en lugar de reemplazar
+      // el entrenamiento completo. El texto anterior siempre queda respaldado en
+      // config/main.trainingDataPrev, así que una nota nueva ya no borra lo anterior.
+      const append = req.body?.append === true || req.body?.mode === 'append';
+      const saved = await setSharedTraining(trainingData, { append });
       invalidateTrainingCache();
       const reloaded = await getSharedTraining({ force: true });
-      const loaded = reloaded === trainingData;
+      // Con append el texto en vivo es la suma (anterior + nuevo), así que se compara por
+      // longitud contra lo guardado; sin append debe coincidir exactamente.
+      const loaded = append ? reloaded.length === saved.length : reloaded === trainingData;
       const preview = (reloaded || '').trim().slice(0, 420);
       const telegramText = loaded
         ? [
             '✅ <b>ENTRENAMIENTO ACEPTADO</b>',
             '',
-            'Estado: guardado y recargado desde la base de conocimiento en vivo',
+            `Estado: ${saved.appended ? 'AÑADIDO al entrenamiento existente (no reemplazó lo anterior)' : 'guardado y recargado desde la base de conocimiento en vivo'}`,
             'Listo: SÍ — se usa en cada pregunta del cliente (chat y voz)',
             `Caracteres: ${saved.length}`,
+            `Respaldo del texto anterior: ${saved.prevLength} caracteres (trainingDataPrev)`,
             `Actualizado: ${saved.updatedAt}`,
             '',
             '<b>Vista previa</b>',

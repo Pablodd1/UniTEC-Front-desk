@@ -1,0 +1,619 @@
+{
+  "source": "LISTA DE PRECIOS OCTUBRE.xlsx",
+  "listName": "LISTA MARKETING (cliente final)",
+  "month": "OCTUBRE",
+  "currency": "COP",
+  "unit": "Unidad",
+  "note": "Valores APROXIMADOS por unidad. Dependen de medidas, cantidades y referencia. Informar SIEMPRE que es un aproximado.",
+  "sections": [
+    {
+      "name": "DESCRIPCION",
+      "items": []
+    },
+    {
+      "name": "CIELO RASO (PVC)",
+      "items": [
+        {
+          "name": "LAMINA PVC",
+          "price": 27000
+        },
+        {
+          "name": "CORNISA PVC",
+          "price": 9500
+        }
+      ]
+    },
+    {
+      "name": "CUBIERTAS UPVC",
+      "items": [
+        {
+          "name": "CABALLETE CODO 90° UPVC COLONIAL 2.5mm",
+          "price": 45372
+        },
+        {
+          "name": "CABALLETE PVC AZUL",
+          "price": 34510
+        },
+        {
+          "name": "CABALLETE PVC ROJO 590*1.07*2.5",
+          "price": 34510
+        },
+        {
+          "name": "CABALLETE T TRES AGUAS UPVC COLONIAL 2.5mm",
+          "price": 37022
+        },
+        {
+          "name": "CABALLETE UPVC BLANCO 2.0mm O.B",
+          "price": 18989
+        },
+        {
+          "name": "CABALLETE UPVC BLANCO 2.5mm O.A",
+          "price": 23092
+        },
+        {
+          "name": "CABALLETE UPVC COLONIAL CORTO-LIMATESA 2.5MM",
+          "price": 31059
+        },
+        {
+          "name": "CABALLETE UPVC ROMA 2.5MM",
+          "price": 31059
+        },
+        {
+          "name": "CABALLETE Y TRES AGUAS UPVC COLONIAL 2.5mm",
+          "price": 34562
+        },
+        {
+          "name": "CABALLETE TAPA FINAL COLONIAL 2.5mm",
+          "price": 13500
+        },
+        {
+          "name": "CABALLETE TERRACOTA COLONIAL",
+          "price": 44940
+        },
+        {
+          "name": "CUBIERTA ONDULADA ROMA",
+          "price": 395626
+        },
+        {
+          "name": "CUBIERTA TERMOACUSTICA UPVC 2.0mm BLANCA O.B",
+          "price": 287567
+        },
+        {
+          "name": "CUBIERTA TERMOACUSTICA UPVC 2.5mm BLANCA O.A",
+          "price": 361109
+        },
+        {
+          "name": "CUBIERTA TERMOACUSTICA UPVC 2.0mm BLANCA O.A",
+          "price": 333850
+        },
+        {
+          "name": "CUBIERTA TRASLUCIDA ONDA ALTA OPAL",
+          "price": 561918
+        },
+        {
+          "name": "TEJA PVC TERRACOTA COLONIAL 11,80*1.05 DE 2,5MM",
+          "price": 374671
+        },
+        {
+          "name": "CUBIERTA ACANALADA UPVC 10mm BLANCA 11.80",
+          "price": 325000
+        },
+        {
+          "name": "TERMINACION LIMATESA",
+          "price": 30000
+        },
+        {
+          "name": "TORNILLO KIT PARA UPVC 2.0mm BLANCO",
+          "price": 800
+        },
+        {
+          "name": "ACCESORIOS CUBIERTA ACANALADA UPVC",
+          "price": 6000
+        },
+        {
+          "name": "TORNILLO KIT PARA UPVC 2.5mm BLANCO",
+          "price": 800
+        },
+        {
+          "name": "TORNILLO KIT PARA UPVC COLONIAL",
+          "price": 900
+        }
+      ]
+    },
+    {
+      "name": "POLICARBONATO",
+      "items": [
+        {
+          "name": "LAMINA ALVEOLAR POLICARBONATO",
+          "price": 402834
+        }
+      ]
+    },
+    {
+      "name": "FACHADAS",
+      "items": [
+        {
+          "name": "FACHADA DECK",
+          "price": 45500
+        },
+        {
+          "name": "POLIFACHADA",
+          "price": 78000
+        }
+      ]
+    },
+    {
+      "name": "PERFILERIA",
+      "items": [
+        {
+          "name": "OMEGA",
+          "price": 3480
+        },
+        {
+          "name": "VIGUETA",
+          "price": 3480
+        },
+        {
+          "name": "ANGULO",
+          "price": 2321
+        }
+      ]
+    },
+    {
+      "name": "PISO SPC",
+      "items": [
+        {
+          "name": "PISO SPC  (4mm-122*18.3cm)",
+          "price": 12000
+        },
+        {
+          "name": "PISO SPC (4.5mm-122*22.8cm)",
+          "price": 19500
+        },
+        {
+          "name": "ZOCALO SPC ROBLE CLARO IXPE S010",
+          "price": 20000
+        }
+      ]
+    },
+    {
+      "name": "PISO DECK",
+      "items": [
+        {
+          "name": "PISO DECK EXTERIOR",
+          "price": 78000
+        },
+        {
+          "name": "ANGULO TERMINACION PISO DECK",
+          "price": 29500
+        },
+        {
+          "name": "CLIP Y TORNILLO EN ACERO INOXIDABLE PISO DECK",
+          "price": 500
+        }
+      ]
+    },
+    {
+      "name": "PARED MARMOL",
+      "items": [
+        {
+          "name": "LAMINA MARMOL MATE PIGMENTO M-14-2.90",
+          "price": 108000
+        },
+        {
+          "name": "LAMINA MARMOL MATE PIEDRA ANGULAR M-16-2.90",
+          "price": 108000
+        },
+        {
+          "name": "LAMINA MARMOL   2.44",
+          "price": 105000
+        },
+        {
+          "name": "CINTA ADHESIVA METALICA 30*5",
+          "price": 18300
+        },
+        {
+          "name": "ACCESORIO MARMOL",
+          "price": 14755
+        },
+        {
+          "name": "ESQUINERO EXTERIOR DORADO",
+          "price": 16480
+        },
+        {
+          "name": "ESQUINERO INTERIOR DORADO",
+          "price": 16480
+        },
+        {
+          "name": "ESQUINERO INTERIOR PLATEADO",
+          "price": 16480
+        },
+        {
+          "name": "LAMINA SINTETICA PIEDRA DEL SOL",
+          "price": 230000
+        },
+        {
+          "name": "LAMINA SINTETICA CREMA SELECTA",
+          "price": 454000
+        }
+      ]
+    },
+    {
+      "name": "PANEL WPC",
+      "items": [
+        {
+          "name": "PANEL WPC RENURADO",
+          "price": 23000
+        },
+        {
+          "name": "PANEL WPC REDONDO",
+          "price": 35000
+        },
+        {
+          "name": "PANEL WPC PLANO",
+          "price": 25000
+        },
+        {
+          "name": "PLATINAS METALICAS",
+          "price": 850
+        },
+        {
+          "name": "ANGULO WPC",
+          "price": 15100
+        }
+      ]
+    },
+    {
+      "name": "CINTA LED",
+      "items": [
+        {
+          "name": "CINTA LED 1.2M",
+          "price": 25000
+        },
+        {
+          "name": "CINTA LED 0.7M",
+          "price": 17000
+        },
+        {
+          "name": "CINTA LED 0.5M",
+          "price": 14000
+        },
+        {
+          "name": "TRANSFORMADOR CINTA LED",
+          "price": 60500
+        },
+        {
+          "name": "CONTROL CINTA LED",
+          "price": 33000
+        }
+      ]
+    },
+    {
+      "name": "LISTON PVC",
+      "items": [
+        {
+          "name": "KIT TAPONES LISTON PVC ESTRUCTURAL 10CM",
+          "price": 7000
+        },
+        {
+          "name": "LISTON PVC CIELO  9CM",
+          "price": 40000
+        },
+        {
+          "name": "LISTON PVC ESTRUCTURAL 10CM",
+          "price": 55000
+        },
+        {
+          "name": "PERFIL BASE METALICO NEGRO LISTON CIELO RASO",
+          "price": 18000
+        },
+        {
+          "name": "LISTON PVC ESTRUCTURAL  10CM",
+          "price": 40000
+        }
+      ]
+    },
+    {
+      "name": "PARED WPC EXT",
+      "items": [
+        {
+          "name": "PANEL WPC EXT",
+          "price": 70000
+        },
+        {
+          "name": "ANGULO WPC EXT",
+          "price": 21834
+        },
+        {
+          "name": "TORNILLO DE ACERO INOXIDABLE WPC EXTERIOR",
+          "price": 500
+        }
+      ]
+    },
+    {
+      "name": "LISTON WPC",
+      "items": [
+        {
+          "name": "LISTON WPC ESTRUCTURAL CEDRO 05 6*4cm (TUBE)",
+          "price": 74000
+        }
+      ]
+    },
+    {
+      "name": "PARED PS",
+      "items": [
+        {
+          "name": "PANEL PS",
+          "price": 28500
+        },
+        {
+          "name": "PANEL PS MURALLA",
+          "price": 37000
+        },
+        {
+          "name": "PANEL PS BISELADO MALAGA HH24114",
+          "price": 28500
+        },
+        {
+          "name": "PANEL PS BISELADO",
+          "price": 54700
+        },
+        {
+          "name": "PANEL DE PARED RIGIDA",
+          "price": 28500
+        }
+      ]
+    },
+    {
+      "name": "PARED ARQNITEC",
+      "items": [
+        {
+          "name": "PARED ARQNITEC",
+          "price": 65000
+        },
+        {
+          "name": "PARED ARQUNITEC PIEDRA NATURAL",
+          "price": 317500
+        },
+        {
+          "name": "PARED ARQUNITEC RECUADROS",
+          "price": 65000
+        },
+        {
+          "name": "PARED ARQUNITEC TABLON ENVEJECIDO (SW-508)",
+          "price": 97815
+        },
+        {
+          "name": "FACHADA ARENISCA BEIGE (B4)",
+          "price": 125345
+        },
+        {
+          "name": "FACHADA CANTERA MIX (B2)",
+          "price": 125345
+        },
+        {
+          "name": "FACHADA OPALO BLANCO (B3)",
+          "price": 125345
+        },
+        {
+          "name": "FACHADA PIZARRA MIX (B1)",
+          "price": 125345
+        }
+      ]
+    },
+    {
+      "name": "PARED MUROFLEX",
+      "items": [
+        {
+          "name": "PARED MUROFLEX",
+          "price": 10000
+        }
+      ]
+    },
+    {
+      "name": "PARED UNIFLEX",
+      "items": [
+        {
+          "name": "PARED UNIFLEX",
+          "price": 65000
+        },
+        {
+          "name": "JARDIN ARTIFICIAL 40X60CM",
+          "price": 23000
+        },
+        {
+          "name": "JARDIN ARTIFICIAL 50X50CM",
+          "price": 30000
+        },
+        {
+          "name": "FOAM  BOARD",
+          "price": 60000
+        },
+        {
+          "name": "FOAM BOARD COBRE",
+          "price": 105000
+        },
+        {
+          "name": "FOAM BOARD OCRE OSCURO (MF-12)",
+          "price": 95000
+        },
+        {
+          "name": "FOAM BOARD ESPEJO",
+          "price": 150000
+        },
+        {
+          "name": "FOAM BOARD GOTAS DE AGUA",
+          "price": 150000
+        },
+        {
+          "name": "FOAM BOARD METALUM",
+          "price": 150000
+        },
+        {
+          "name": "FOAM BOARD ARENISCA NEGRO (M JS4166-116)",
+          "price": 90000
+        },
+        {
+          "name": "FOAM BOARD ARENISCA PLATA (JS4176-189)",
+          "price": 180500
+        },
+        {
+          "name": "FOAM BOARD COBRE TERRA (JS4156-169)",
+          "price": 180500
+        },
+        {
+          "name": "FOAM BOARD TABACO RUSTICO (JS4154-116)",
+          "price": 90000
+        }
+      ]
+    },
+    {
+      "name": "PVC BOARD",
+      "items": [
+        {
+          "name": "PVC BOARD 12MM D/0.5 2.44CM X 122CM",
+          "price": 106800
+        },
+        {
+          "name": "PVC BOARD 15MM D/0.5 2.44CM X 122CM",
+          "price": 135000
+        },
+        {
+          "name": "PVC BOARD 18MM D/0.5 2.44CM X 122CM",
+          "price": 210135
+        },
+        {
+          "name": "PVC BOARD 3MM D/0.55 2.44CM X 122CM",
+          "price": 35000
+        },
+        {
+          "name": "PVC BOARD 5MM D/0.55 2.44CM X 122CM",
+          "price": 53500
+        },
+        {
+          "name": "PVC BOARD 9MM D/0.5 2.44CM X 122CM",
+          "price": 82500
+        }
+      ]
+    },
+    {
+      "name": "CINTAS",
+      "items": [
+        {
+          "name": "CINTA ADHESIVA",
+          "price": 16000
+        }
+      ]
+    },
+    {
+      "name": "PEGA",
+      "items": [
+        {
+          "name": "ADHESIVO MIXTO MULTIPROPOSITO PEGATEC",
+          "price": 17000
+        }
+      ]
+    },
+    {
+      "name": "PARED ROLLO",
+      "items": [
+        {
+          "name": "ROLLO ADHESIVO PARED MARMOL",
+          "price": 37098
+        }
+      ]
+    },
+    {
+      "name": "PARED ACOLCHADA",
+      "items": [
+        {
+          "name": "PARED ACOLCHADA PALMA",
+          "price": 221500
+        },
+        {
+          "name": "PARED ACOLCHADA TRIGO",
+          "price": 221500
+        },
+        {
+          "name": "PARED ACOLCHADA AURORA",
+          "price": 357000
+        },
+        {
+          "name": "PANEL ACOLCHADO DUOBIG",
+          "price": 155900
+        },
+        {
+          "name": "PANEL ACOLCHADO DUOSMALL",
+          "price": 70350
+        }
+      ]
+    },
+    {
+      "name": "PANEL ACUSTICO",
+      "items": [
+        {
+          "name": "PANEL ACUSTICO TIPO 1",
+          "price": 163790
+        },
+        {
+          "name": "PANEL ACUSTICO TIPO 2",
+          "price": 56790
+        },
+        {
+          "name": "PANEL ACUSTICO TIPO 3",
+          "price": 99590
+        },
+        {
+          "name": "PANEL ACUSTICO TIPO 4",
+          "price": 239999
+        },
+        {
+          "name": "PANEL ACUSTICO TIPO 5",
+          "price": 132999
+        },
+        {
+          "name": "PANEL ACUSTICO TIPO 6",
+          "price": 224999
+        }
+      ]
+    },
+    {
+      "name": "PVC BOARD COLOR",
+      "items": [
+        {
+          "name": "PVC BOARD 15MM ROSA (M912-88F)",
+          "price": 270455
+        },
+        {
+          "name": "PVC BOARD 15MM MADERA MEDIANA (MS84306-131)",
+          "price": 270455
+        },
+        {
+          "name": "PVC BOARD 15MM BLANCO BRILLANTE",
+          "price": 270455
+        },
+        {
+          "name": "PVC BOARD 15MM NEGRO BRILLANTE",
+          "price": 270455
+        },
+        {
+          "name": "PVC BOARD 15MM PURPURA (FAN-698)",
+          "price": 270455
+        },
+        {
+          "name": "PVC BOARD 15MM MADERA OSCURO (MS86101-152)",
+          "price": 270455
+        }
+      ]
+    },
+    {
+      "name": "MUROFLEX",
+      "items": [
+        {
+          "name": "PARED MUROFLEX",
+          "price": 19600
+        }
+      ]
+    }
+  ]
+}
