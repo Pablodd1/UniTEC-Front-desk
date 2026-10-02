@@ -9,7 +9,6 @@ import { saveChatSession } from '../services/firestoreService';
 import { sendMessageToGemini, setCurrentChatSessionId } from '../services/geminiService';
 import { createConversation, addMessage, requestIntervention, extractCustomerData, updateSessionStatus, subscribeToConversation, subscribeToMessages } from '../services/conversationService';
 import { notifyStaffIntervention, triggerEscalation } from '../services/notificationService';
-import { sendTwilioWhatsApp } from '../services/twilioWhatsappService';
 import { Send, User, Box, DollarSign, Hammer, BookOpen, CheckCircle2, Truck, FileText, RefreshCcw, Percent, Headphones, CreditCard, Lock, MessageSquare, MapPin } from 'lucide-react';
 import { GenerateContentResponse } from '@google/genai';
 import { UI_TRANSLATIONS } from '../constants';
@@ -447,23 +446,30 @@ const ChatTab: React.FC<ChatTabProps> = ({ quickActions, initialMessage, emergen
     scrollToBottom(behavior);
   }, [messages, isLoading]);
 
+  const staffAlertSentRef = useRef(false);
+  // Alerta al equipo del cliente — SOLO escalamiento real (Novedades Chatbot 8):
+  // una pregunta de precio NO es escalamiento (el bot la responde); se alerta cuando el
+  // cliente pide explícitamente una cotización formal o hablar con una persona, UNA vez
+  // por conversación (antes: cada mensaje con "precio/whatsapp/…" disparaba Telegram +
+  // Email + WhatsApp + SMS, dos veces — esa era la duplicación que veía el equipo).
   const checkAndTriggerWhatsAppAlert = async (textText: string) => {
+    if (staffAlertSentRef.current) return;
     const lowercaseText = textText.toLowerCase();
-    // ponytail: expanded keyword list — quote, budget, price, staff, contact
-    const quoteKeywords = ['price', 'precio', 'costo', 'valor', 'valores', 'cotiz', 'presupuesto', 'budget', 'quote', 'cuanto', 'how much'];
-    const staffKeywords = ['urgent', 'urgencia', 'emergencia', 'staff', 'asesor', 'humano', 'contacto', 'atencion', 'atención', 'agent', 'llamar', 'call me', 'speak to someone', 'talk to someone', 'whatsapp', 'telefono'];
-    const allKeywords = [...quoteKeywords, ...staffKeywords];
+    // mantiene la MISMA política que api/turn-text.js detectEscalation() — sincronizarlas
+    const formalQuoteKeywords = ['cotiz', 'presupuesto', 'budget', 'quote'];
+    const staffKeywords = ['asesor', 'humano', 'human', 'agent', 'staff', 'llamar', 'call me', 'speak to someone', 'talk to someone', 'hablar con alguien', 'persona real', 'whatsapp', 'telefono', 'teléfono', 'contacto', 'atencion', 'atención', 'urgente', 'urgencia', 'emergencia'];
 
-    const hasKeyword = allKeywords.some(keyword => lowercaseText.includes(keyword));
-    if (!hasKeyword) return;
-
-    const isQuote = quoteKeywords.some(kw => lowercaseText.includes(kw));
+    const isQuote = formalQuoteKeywords.some(kw => lowercaseText.includes(kw));
     const isStaff = staffKeywords.some(kw => lowercaseText.includes(kw));
+    if (!isQuote && !isStaff) return;
+    staffAlertSentRef.current = true;
+
     const escalationType = isQuote ? 'quote' : 'staff';
 
-    console.log(`[Escalation] ${escalationType} intent detected. Firing Telegram + Email + WhatsApp + SMS...`);
+    console.log(`[Escalation] ${escalationType} intent detected. Firing Telegram + Email + WhatsApp + SMS (once per conversation).`);
 
-    // Fire unified escalation (all 4 channels server-side)
+    // Fire unified escalation (all 4 channels server-side). El Twilio heredado se quitó:
+    // duplicaba el aviso de WhatsApp con el mismo contenido.
     triggerEscalation({
       type: escalationType as 'quote' | 'staff',
       priority: 'high',
@@ -474,19 +480,6 @@ const ChatTab: React.FC<ChatTabProps> = ({ quickActions, initialMessage, emergen
       brand: brandId || 'unitec',
       sessionId: conversationId || '',
     }).catch(console.error);
-
-    // Also fire legacy Twilio WhatsApp for backward compat
-    const name = extractedPii?.name || 'Cliente';
-    const phone = extractedPii?.phone || 'No proporcionado';
-    const email = extractedPii?.email || 'No proporcionado';
-    const adminMessage = `🔔 *Alerta de Chatbot*\n\n` +
-      `El cliente *${name}* ha enviado un mensaje de interés:\n` +
-      `"${textText}"\n\n` +
-      `*Datos de Contacto:*\n` +
-      `- Teléfono: ${phone}\n` +
-      `- Email: ${email}\n` +
-      `- Conversación ID: ${conversationId || 'N/A'}`;
-    sendTwilioWhatsApp(adminMessage).catch(console.error);
   };
 
   // Show auto-reply to user after escalation — keeps them engaged while staff responds
