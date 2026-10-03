@@ -35,7 +35,7 @@ function trimHistory(history) {
 }
 
 // ── Build-time price map (embedded at deploy, zero runtime fetch) ──
-import priceMap from '../public/price-map.json' assert { type: 'json' };
+const priceMap = require_('../public/price-map.json');
 
 // ── Canonical origin + product cache (server-side fetch; never the request origin — review fix) ──
 const CANONICAL_ORIGIN = 'https://unitec-front-desk.vercel.app';
