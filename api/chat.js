@@ -34,6 +34,9 @@ function trimHistory(history) {
   return history.slice(-60);
 }
 
+// ── Build-time price map (embedded at deploy, zero runtime fetch) ──
+import priceMap from '../public/price-map.json' assert { type: 'json' };
+
 // ── Canonical origin + product cache (server-side fetch; never the request origin — review fix) ──
 const CANONICAL_ORIGIN = 'https://unitec-front-desk.vercel.app';
 let productsCache = { data: null, fetchedAt: 0 };
@@ -46,42 +49,12 @@ async function getProducts() {
   return data;
 }
 
-// ── Authoritative price list (client sheet, published as public/precios-2026.json) ──
-// Novedades Chatbot 8: prices are quoted ONLY when the customer asks, ALWAYS as an
-// approximate per-unit value, and ONLY from this list — never invented, never a range.
-// Regenerate with: node scripts/build-prices.mjs "<LISTA DE PRECIOS MES.xlsx>"
-let priceCache = { data: null, fetchedAt: 0 };
-const PRICE_TTL_MS = 10 * 60 * 1000;
+// ── Price intent regex ──
 const PRICE_INTENT_RE = /(precio|precios|vale|valor|costo|costar|cu[aá]nto|cuanto cuesta|cotiz|presupuesto|price|cost)/i;
 
-async function getPriceTable() {
-  if (priceCache.data && Date.now() - priceCache.fetchedAt < PRICE_TTL_MS) return priceCache.data;
-  const r = await fetch(`${CANONICAL_ORIGIN}/precios-2026.json`);
-  const data = await r.json();
-  priceCache = { data, fetchedAt: Date.now() };
-  return data;
-}
-
-const priceTokens = (s) => String(s || '')
-  .normalize('NFD').replace(/[\u0300-\u036f]/g, '')
-  .toLowerCase().replace(/[^a-z0-9]+/g, ' ').trim().split(/\s+/)
-  .filter((t) => t.length > 2);
-
-// Rows of the client's list that overlap the question — the model may quote ONLY these.
-function priceRowsFor(message, table, limit = 6) {
-  const rows = (table?.sections || []).flatMap((s) => (s.items || []).map((i) => ({ ...i, section: s.name })));
-  const msg = new Set(priceTokens(message));
-  if (!msg.size) return [];
-  return rows
-    .map((row) => {
-      const rt = priceTokens(row.name);
-      const hits = rt.filter((t) => msg.has(t) || [...msg].some((m) => m.length > 4 && (t.startsWith(m) || m.startsWith(t))));
-      return { row, score: hits.length / Math.max(rt.length, 1), hits: hits.length };
-    })
-    .filter((r) => r.hits > 0)
-    .sort((a, b) => b.hits - a.hits || b.score - a.score)
-    .slice(0, limit)
-    .map((r) => r.row);
+// Exact price lookup from build-time map
+function priceForProduct(productId) {
+  return priceMap[productId] || null;
 }
 
 // ── Reads an upstream SSE stream (Gemini alt=sse or OpenAI-style) and forwards text deltas ──
@@ -163,7 +136,7 @@ export default async function handler(req, res) {
 
   res.setHeader('Access-Control-Allow-Credentials', 'true');
   res.setHeader('Access-Control-Allow-Methods', 'POST,OPTIONS');
-  res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization, X-Requested-With');
+  res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization, X-Requested-With, Idempotency-Key');
 
   if (req.method === 'OPTIONS') {
     return res.status(200).end();
@@ -171,6 +144,31 @@ export default async function handler(req, res) {
 
   if (req.method !== 'POST') {
     return res.status(405).json({ error: 'Method Not Allowed' });
+  }
+
+  // ── Idempotency (prevent double-reply on double-click) ──
+  const idemKey = req.headers['idempotency-key'] || req.headers['x-idempotency-key'];
+  const sessionId = req.body?.sessionId || 'anonymous';
+  const idemCacheKey = `idem:${sessionId}:${idemKey || req.body?.message?.slice(0, 50)}`;
+  if (global.idemCache?.has(idemCacheKey)) {
+    return res.status(409).json({ error: 'Duplicate request', duplicate: true });
+  }
+  if (!global.idemCache) global.idemCache = new Map();
+  global.idemCache.set(idemCacheKey, Date.now());
+  // TTL 5 min
+  setTimeout(() => global.idemCache?.delete(idemCacheKey), 5 * 60 * 1000);
+
+  // ── Rate limiting (per session + IP) ──
+  const ip = req.headers['x-forwarded-for']?.split(',')[0]?.trim() || req.socket?.remoteAddress || 'unknown';
+  const rateKey = `rate:${ip}:${sessionId}`;
+  const now = Date.now();
+  const rateData = global.rateCache?.get(rateKey) || { count: 0, windowStart: now };
+  if (now - rateData.windowStart > 60000) { rateData.count = 0; rateData.windowStart = now; }
+  rateData.count++;
+  if (!global.rateCache) global.rateCache = new Map();
+  global.rateCache.set(rateKey, rateData);
+  if (rateData.count > 30) {
+    return res.status(429).json({ error: 'Too many requests per minute', retryAfter: 60 });
   }
 
   try {
@@ -369,11 +367,22 @@ GOOD EXAMPLE: "¡Hola! ¿En qué producto te interesa?"`;
 
       if (PRICE_INTENT_RE.test(String(message))) {
         try {
-          const table = await getPriceTable();
-          const rows = priceRowsFor(message, table);
-          if (rows.length > 0) {
-            const list = rows.map((r) => `- ${r.name} (${r.section}): $ ${Number(r.price).toLocaleString('es-CO')} por unidad`).join('\n');
-            blocks.push(`[LISTA DE PRECIOS ${table.month || ''} - LISTA MARKETING cliente final]:\n${list}\n${table.note || 'Valores aproximados por unidad.'}\nCita SOLO la fila que corresponde al producto preguntado, aclara que es un valor APROXIMADO por unidad que depende de medidas y cantidades, y NO listes la tabla completa. Si el producto no aparece arriba, di "Consultar precio".`);
+          // Use exact price map from build-time (no heuristic matching)
+          const matchedProducts = products.filter((p) => {
+            const pName = String(p.name || '').toLowerCase();
+            const pId = String(p.id || '').toLowerCase();
+            return msgWords.some((w) => pName.includes(w) || pId.includes(w));
+          }).slice(0, 5);
+
+          const priceLines = [];
+          for (const p of matchedProducts) {
+            const priceInfo = priceForProduct(p.id);
+            if (priceInfo) {
+              priceLines.push(`- ${p.name} (${p.subcategory || p.category || '—'}): ${priceInfo.price_cop} por ${priceInfo.unit} (APROXIMADO)`);
+            }
+          }
+          if (priceLines.length > 0) {
+            blocks.push(`[LISTA DE PRECIOS - LISTA MARKETING cliente final]:\n${priceLines.join('\n')}\nValores aproximados por unidad. Cita SOLO la fila del producto preguntado. Si no está en la lista, di "Consultar precio".`);
           }
         } catch (e) {
           console.warn('Failed to inject price list:', e);
