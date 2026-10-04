@@ -151,20 +151,9 @@ export default async function handler(req, res) {
     return res.status(405).json({ error: 'Method Not Allowed' });
   }
 
-  // ── Idempotency (prevent double-reply on double-click) ──
-  const idemKey = req.headers['idempotency-key'] || req.headers['x-idempotency-key'];
-  const sessionId = req.body?.sessionId || 'anonymous';
-  const idemCacheKey = `idem:${sessionId}:${idemKey || req.body?.message?.slice(0, 50)}`;
-  if (global.idemCache?.has(idemCacheKey)) {
-    return res.status(409).json({ error: 'Duplicate request', duplicate: true });
-  }
-  if (!global.idemCache) global.idemCache = new Map();
-  global.idemCache.set(idemCacheKey, Date.now());
-  // TTL 5 min
-  setTimeout(() => global.idemCache?.delete(idemCacheKey), 5 * 60 * 1000);
-
   // ── Rate limiting (per session + IP) ──
   const ip = req.headers['x-forwarded-for']?.split(',')[0]?.trim() || req.socket?.remoteAddress || 'unknown';
+  const sessionId = req.body?.sessionId || 'anonymous';
   const rateKey = `rate:${ip}:${sessionId}`;
   const now = Date.now();
   const rateData = global.rateCache?.get(rateKey) || { count: 0, windowStart: now };
@@ -175,6 +164,31 @@ export default async function handler(req, res) {
   if (rateData.count > 30) {
     return res.status(429).json({ error: 'Too many requests per minute', retryAfter: 60 });
   }
+
+  // ── Idempotency — block ONLY a request that duplicates one still IN FLIGHT (double-click).
+  // A repeat AFTER the previous one finished (user re-asks; client retries an empty stream)
+  // MUST be processed again: blocking finished duplicates caused "no responde" reports —
+  // re-asking the same question or the catalogue number returned 409 Duplicate for 5 minutes.
+  const idemKey = req.headers['idempotency-key'] || req.headers['x-idempotency-key'];
+  const idemCacheKey = `idem:${sessionId}:${idemKey || req.body?.message?.slice(0, 80)}`;
+  if (!global.idemCache) global.idemCache = new Map();
+  const idemPrev = global.idemCache.get(idemCacheKey);
+  if (idemPrev && idemPrev.state === 'in_flight') {
+    return res.status(409).json({ error: 'Duplicate request', duplicate: true });
+  }
+  const idemEntry = { state: 'in_flight', ts: Date.now() };
+  global.idemCache.set(idemCacheKey, idemEntry);
+  let idemCleanupScheduled = false;
+  const idemMarkDone = () => {
+    if (idemEntry.state !== 'done') idemEntry.state = 'done';
+    if (idemCleanupScheduled) return;
+    idemCleanupScheduled = true;
+    setTimeout(() => {
+      if (global.idemCache?.get(idemCacheKey) === idemEntry) global.idemCache.delete(idemCacheKey);
+    }, 60 * 1000);
+  };
+  res.on('finish', idemMarkDone);
+  res.on('close', idemMarkDone);
 
   try {
     const { message, history: rawHistory, instructions: clientInstructions, sessionId: clientSessionId, brandId = 'unitec', parentHost, stream: wantStream } = req.body;
@@ -426,6 +440,20 @@ GOOD EXAMPLE: "¡Hola! ¿En qué producto te interesa?"`;
       let streamedText = '';
       const hasUrl = () => /https?:\/\//.test(streamedText);
       const capsHit = () => streamedText.length >= (hasUrl() ? 700 : 360);
+      // Clean the final visible text so a capped reply never ends mid-word/mid-sentence.
+      const cleanCut = (t) => {
+        const cap = /https?:\/\//.test(t) ? 700 : 360;
+        if (t.length <= cap) return t;
+        const w = t.slice(0, cap);
+        let cut = -1;
+        for (let i = 0; i < w.length; i++) {
+          const ch = w[i];
+          if ((ch === '.' || ch === '!' || ch === '?' || ch === '…' || ch === '\n') && (i + 1 >= w.length || /\s/.test(w[i + 1]))) cut = i;
+        }
+        if (cut >= 120) return w.slice(0, cut + 1).trim();
+        const sp = w.lastIndexOf(' ');
+        return ((sp > 60 ? w.slice(0, sp) : w).trim()) + '…';
+      };
       const forward = (d) => {
         if (capsHit()) return; // silently stop the tail — keeps the displayed text close to today's tightened length
         streamedText += d;
@@ -461,6 +489,7 @@ GOOD EXAMPLE: "¡Hola! ¿En qué producto te interesa?"`;
               if (anyText || capsHit()) break;
               let modelDone = false;
               for (let v = 0; v < GEMINI_GENCONFIGS.length && !modelDone; v++) {
+                if (anyText || capsHit()) break; // mid-stream failure: keep the partial, never restart (would concat a second copy)
                 const payload = await buildGeminiPayload(v);
                 try {
                   const r = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${modelName}:streamGenerateContent?alt=sse&key=${apiKey}`, {
@@ -488,7 +517,7 @@ GOOD EXAMPLE: "¡Hola! ¿En qué producto te interesa?"`;
         await alertAnomaly('BOT_SIN_RESPUESTA', sawError || 'Todas las llaves de IA fallaron (stream).', clientSessionId);
       }
 
-      const finalText = streamedText;
+      const finalText = cleanCut(streamedText);
       if (clientSessionId && finalText && !finalText.includes('actualización de credenciales')) {
         const recorded = await recordChatTurn({ sessionId: clientSessionId, userText: message, replyText: finalText, brand: brandId, parentHost, latencyMs });
         if (recorded && recorded.recorded === false) {

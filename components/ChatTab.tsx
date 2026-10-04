@@ -102,7 +102,7 @@ const ChatTab: React.FC<ChatTabProps> = ({ quickActions, initialMessage, emergen
         if (saved) {
           const parsed = JSON.parse(saved);
           if (parsed && parsed.length > 0) {
-            return parsed.map((m: any) => ({ ...m, timestamp: new Date(m.timestamp) }));
+            return parsed.map((m: any) => ({ ...m, ...(m?.id === 'welcome' ? { skipFirestore: true } : {}), timestamp: new Date(m.timestamp) }));
           }
         }
       } catch (e) {
@@ -120,7 +120,8 @@ const ChatTab: React.FC<ChatTabProps> = ({ quickActions, initialMessage, emergen
         id: 'welcome',
         role: 'model',
         text: welcomeText,
-        timestamp: new Date()
+        timestamp: new Date(),
+        skipFirestore: true // UI greeting only — never written to the session transcript
       }
     ];
   });
@@ -240,6 +241,7 @@ const ChatTab: React.FC<ChatTabProps> = ({ quickActions, initialMessage, emergen
   // escribir, y la mayoría se iba sin preguntar nada).
   const pendingPhoneRequest = useRef(false);
   const phoneAlreadyAsked = useRef(false);
+  const sendingRef = useRef(false); // sync re-entrancy guard (isLoading state lags one render)
 
   useEffect(() => {
     if (!conversationId || messages.length === 0) return;
@@ -318,7 +320,8 @@ const ChatTab: React.FC<ChatTabProps> = ({ quickActions, initialMessage, emergen
             id: 'welcome',
             role: 'model',
             text: welcomeText,
-            timestamp: new Date()
+            timestamp: new Date(),
+            skipFirestore: true // UI greeting only — never written to the session transcript
         }]);
     }
   }, [language, brandId]);
@@ -548,7 +551,7 @@ const ChatTab: React.FC<ChatTabProps> = ({ quickActions, initialMessage, emergen
     ensureSession().catch(() => { sessionPrewarmRef.current = false; });
   };
 
-  const handleSendMessage = async (text: string) => {
+  const sendMessageInner = async (text: string) => {
     if (!text.trim() || isLoading) return;
     const activeSessionId = await ensureSession().catch(() => conversationIdRef.current);
     
@@ -581,7 +584,7 @@ const ChatTab: React.FC<ChatTabProps> = ({ quickActions, initialMessage, emergen
         const ack = language === 'en'
           ? 'Got it! An advisor will contact you on WhatsApp with your quote. Anything else I can check for you?'
           : '¡Listo! Un asesor te contacta por WhatsApp con tu cotización. ¿Algo más que quieras consultar?';
-        setMessages(prev => [...prev, { id: Date.now().toString(), role: 'model', text: ack, timestamp: new Date() }]);
+        setMessages(prev => [...prev, { id: Date.now().toString(), role: 'model', text: ack, timestamp: new Date(), skipFirestore: true }]);
         recordOnboardingTurn(conversationId, text, ack, 'phone', brandId).catch(() => {});
         return;
       }
@@ -607,7 +610,7 @@ const ChatTab: React.FC<ChatTabProps> = ({ quickActions, initialMessage, emergen
         const ack = language === 'en'
           ? `Nice to meet you, ${pretty}! Tell me, what product are you looking for or what do you need a quote for?`
           : `¡Un gusto conocerte, ${pretty}! Cuéntame, ¿qué producto buscas o qué necesitas cotizar?`;
-        setMessages(prev => [...prev, { id: Date.now().toString(), role: 'model', text: ack, timestamp: new Date() }]);
+        setMessages(prev => [...prev, { id: Date.now().toString(), role: 'model', text: ack, timestamp: new Date(), skipFirestore: true }]);
         recordOnboardingTurn(conversationId, text, ack, 'name', brandId).catch(() => {});
         return;
       }
@@ -705,12 +708,27 @@ const ChatTab: React.FC<ChatTabProps> = ({ quickActions, initialMessage, emergen
       let fullText = '';
       
       for await (const chunk of responseGenerator) {
+        // Server-sent clean replacement of the final text (capped replies are trimmed
+        // to a clean sentence ending before the turn is recorded).
+        if (chunk && typeof chunk === 'object' && (chunk as any).replace) {
+          fullText = String((chunk as any).replace);
+          setMessages(prev => prev.map(msg => 
+            msg.id === botMsgId ? { ...msg, text: fullText } : msg
+          ));
+          continue;
+        }
         const chunkText = typeof chunk === 'string' ? chunk : ((chunk as any)?.text || (chunk as any)?.candidates?.[0]?.content?.parts?.[0]?.text || '');
         fullText += chunkText;
         
         setMessages(prev => prev.map(msg => 
           msg.id === botMsgId ? { ...msg, text: fullText } : msg
         ));
+      }
+      // Nothing rendered (duplicate suppressed / empty stream): drop the empty bubble
+      // instead of leaving a blank message in the conversation.
+      if (!fullText.trim()) {
+        setMessages(prev => prev.filter(m => m.id !== botMsgId));
+        return;
       }
       // Simulate tool execution since the API doesn't support function calls
       if (fullText.includes('email_conversation_to_admin') || fullText.includes('transferencia electrónica')) {
@@ -752,6 +770,13 @@ const ChatTab: React.FC<ChatTabProps> = ({ quickActions, initialMessage, emergen
       clearTimeout(loadingWatchdog);
       setIsLoading(false);
     }
+  };
+
+  // Re-entrancy guard: blocks a same-tick double submit (React state `isLoading` lags one render).
+  const handleSendMessage = async (text: string) => {
+    if (sendingRef.current) return;
+    sendingRef.current = true;
+    try { await sendMessageInner(text); } finally { sendingRef.current = false; }
   };
 
   const getIcon = (name: string) => {

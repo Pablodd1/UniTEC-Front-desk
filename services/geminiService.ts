@@ -152,6 +152,12 @@ export async function* sendMessageToGemini(
         throw new Error('RATE_LIMITED');
       }
 
+      if (proxyRes.status === 409) {
+        // Duplicate of a request that is still being processed (double-click).
+        // The first request's reply is already on its way to this chat — end silently.
+        return;
+      }
+
       if (proxyRes.ok) {
         const contentType = proxyRes.headers.get('content-type') || '';
         if (contentType.includes('text/event-stream') && proxyRes.body) {
@@ -160,6 +166,7 @@ export async function* sendMessageToGemini(
           const decoder = new TextDecoder();
           let buffer = '';
           let gotAny = false;
+          let acc = '';
           try {
             for (;;) {
               const { done, value } = await reader.read();
@@ -172,8 +179,13 @@ export async function* sendMessageToGemini(
                 if (!dataLine) continue;
                 let evt: any;
                 try { evt = JSON.parse(dataLine.slice(5).trim()); } catch { continue; }
-                if (evt.delta) { gotAny = true; yield evt.delta; }
-                if (evt.done) return;
+                if (evt.delta) { gotAny = true; acc += evt.delta; yield evt.delta; }
+                if (evt.done) {
+                  // The server may send a cleaned final text (capped replies are trimmed
+                  // to a clean sentence ending). Replace what is on screen if it differs.
+                  if (evt.text && evt.text !== acc) yield { replace: String(evt.text) };
+                  return;
+                }
               }
             }
           } catch (streamErr) {
