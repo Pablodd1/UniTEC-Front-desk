@@ -230,7 +230,7 @@ You are the professional AI Front Desk Assistant and Senior Sales Representative
 5. UN SOLO CAMINO: nunca entregues un contacto y al mismo tiempo sigas haciendo preguntas. Primero recopilas; al final entregas el contacto UNA sola vez.
 6. PRIMERO RESUELVE: resuelve con la información disponible. Escala SOLO si (a) se requiere una cotización formal, (b) falta información que no tienes, o (c) el cliente pide hablar con una persona. No le preguntes al cliente con qué asesor desea hablar.
 7. PRECIOS: solo si el cliente los pide. Informa siempre que es un VALOR APROXIMADO POR UNIDAD que depende de medidas, cantidades y referencia. Usa EXCLUSIVAMENTE los precios del bloque [LISTA DE PRECIOS] cuando venga en el contexto; si el producto no está allí di "Consultar precio" y ofrece pasar los datos al equipo comercial. PROHIBIDO inventar precios o rangos de precio.
-8. CATÁLOGO: si piden el catálogo de un producto, envía la ficha técnica y el catálogo DE ESE PRODUCTO (usa los enlaces del [SYSTEM CONTEXT]). NO envíes el enlace del Drive completo. Solo si piden el catálogo COMPLETO: 📂 CATÁLOGO DE PRODUCTOS 2026 https://canva.link/l7fu4xk4lp5jed2
+8. CATÁLOGO Y ESPECIFICACIONES: responde las especificaciones DIRECTAMENTE del [SYSTEM CONTEXT] (medidas, espesor, peso, colores) — nunca inventes datos que no estén allí. Solo si el cliente pide explícitamente la ficha o el archivo del producto, envía su enlace; NUNCA el del Drive completo. Catálogo COMPLETO (solo si lo piden): 📂 CATÁLOGO DE PRODUCTOS 2026 https://canva.link/l7fu4xk4lp5jed2
 9. BREVEDAD: máximo 2-3 frases, sin listas ni viñetas, tono natural de WhatsApp.
 
 # REGLAS ESPECÍFICAS DEL NEGOCIO (RESPONDE EXACTAMENTE según estas reglas):
@@ -238,7 +238,7 @@ You are the professional AI Front Desk Assistant and Senior Sales Representative
 - UBICACIÓN / PUNTO FÍSICO: Si preguntan por la ubicación, dirección o dónde está la bodega, responde que el punto físico se encuentra en el Centro Comercial Ideo (Local 274), pero la bodega principal está en Guarne, de donde se realizan todos los despachos.
 - MEDIO DE PAGO: Cuando pregunten por el medio de pago, informa que el pago se realiza por transferencia electrónica y el pedido se toma directamente con uno de nuestros vendedores.
 - CONSULTA DE STOCK (Medellín): Si preguntan por disponibilidad en Medellín, primero da la descripción del producto con medidas y colores, y luego indica que para validar referencias y colores un asesor comercial debe contactarlo, compartiendo el WhatsApp oficial https://wa.me/573142332147.
-- CATÁLOGO: Cuando pidan catálogo, NO pidas correo. Envía la ficha técnica y el catálogo DEL PRODUCTO preguntado y haz UNA pregunta de interés para continuar la venta. Solo si piden el catálogo COMPLETO: 📂 CATÁLOGO DE PRODUCTOS 2026 https://canva.link/l7fu4xk4lp5jed2
+- CATÁLOGO: Cuando pidan catálogo, NO pidas correo. Responde con las especificaciones del producto y haz UNA pregunta de interés; envía el enlace del producto solo si lo piden explícitamente. Solo si piden el catálogo COMPLETO: 📂 CATÁLOGO DE PRODUCTOS 2026 https://canva.link/l7fu4xk4lp5jed2
 - COTIZACIÓN/PRECIOS: Informa valores APROXIMADOS solo si el cliente pide el precio, siempre POR UNIDAD y aclarando que depende de medidas y cantidades. Nunca inventes precios: si no está en [LISTA DE PRECIOS], responde "Consultar precio".
 - ASESORÍA/HUMANO: Cuando pidan atención humana o asesoría, comunícate formalmente y entrega el WhatsApp oficial https://wa.me/573142332147 (una sola vez, al final).
 
@@ -338,19 +338,32 @@ GOOD EXAMPLE: "¡Hola! ¿En qué producto te interesa?"`;
         'como', 'cómo', 'mas', 'más', 'me', 'mi', 'es', 'el', 'la', 'de', 'y', 'o', 'en', 'un', 'al',
         'se', 'lo', 'su', 'sus', 'valor', 'precio', 'precios', 'cuanto', 'cuánto', 'cuesta', 'vale',
         'quisiera', 'necesito', 'quiero', 'tienen', 'tiene', 'hay', 'the', 'and', 'for', 'how', 'much']);
-      const msgWords = String(message).toLowerCase().split(/[^a-z0-9áéíóúñ]+/)
+      const deaccent = (s) => String(s).normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+      const msgWords = deaccent(String(message).toLowerCase()).split(/[^a-z0-9áéíóúñ]+/)
         .filter((w) => w.length > 2 && !STOPWORDS.has(w));
 
+      let products = [];
+      let matched = [];
       if (msgWords.length) {
         try {
-          const products = await getProducts();
-          const matched = products.filter((p) => {
-            const pName = String(p.name || '').toLowerCase();
-            const pId = String(p.id || '').toLowerCase();
-            return msgWords.some((w) => pName.includes(w) || pId.includes(w));
-          }).slice(0, 5);
+          products = await getProducts();
+          // Score-based match: words weighted by length (rarer = more specific), so
+          // "listón PVC cielo raso" ranks LISTON products above generic PVC láminas.
+          const scored = [];
+          for (const p of products) {
+            const hay = deaccent(`${p.name || ''} ${p.id || ''} ${p.category || ''} ${p.catalog_use || ''}`).toLowerCase();
+            let score = 0;
+            for (const w of msgWords) if (hay.includes(w)) score += w.length;
+            if (score > 0) scored.push([score, p]);
+          }
+          scored.sort((a, b) => b[0] - a[0]);
+          matched = scored.slice(0, 6).map(([, p]) => p);
+        } catch (e) {
+          console.warn('Failed to load products:', e);
+        }
+      }
 
-          if (matched.length > 0) {
+      if (matched.length > 0) {
             const productContext = matched.map((p) => {
               const price = brandId === 'unitec' ? (p.price_cop || p.price) : (p.price_usd || p.price);
               const bits = [
@@ -367,21 +380,13 @@ GOOD EXAMPLE: "¡Hola! ¿En qué producto te interesa?"`;
               if (p.image_url) bits.push(`Imagen: ${p.image_url}`);
               return '- ' + bits.join(' | ');
             }).join('\n');
-            blocks.push(`[SYSTEM CONTEXT - Productos que coinciden con la consulta]:\n${productContext}\nREGLA CRÍTICA: Responde las especificaciones técnicas DIRECTAMENTE de los datos anteriores (medidas, espesor, peso, colores). NO redirijas a fichas técnicas de Drive. Solo si el cliente pide explícitamente "la ficha técnica completa" o "el catálogo completo", entonces envía el enlace. Si el producto consultado no está en la lista, di "Consultar precio".`);
-          }
-        } catch (e) {
-          console.warn('Failed to inject product context:', e);
-        }
+            blocks.push(`[SYSTEM CONTEXT - Productos que coinciden con la consulta]:\n${productContext}\nREGLA CRÍTICA: Responde las especificaciones técnicas DIRECTAMENTE de los datos anteriores (medidas, espesor, peso, colores). NO redirijas a fichas técnicas de Drive. Si una especificación (por ejemplo el espesor) NO aparece en los datos anteriores, NO la inventes ni la supongas: di que ese dato no está publicado y ofrece confirmarlo con el equipo. Nunca mezcles especificaciones de productos distintos. Solo si el cliente pide explícitamente "la ficha técnica completa" o "el catálogo completo", entonces envía el enlace. Si el producto consultado no está en la lista, di "Consultar precio".`);
       }
 
-      if (PRICE_INTENT_RE.test(String(message))) {
+      if (PRICE_INTENT_RE.test(String(message)) && matched.length) {
         try {
-          // Use exact price map from build-time (no heuristic matching)
-          const matchedProducts = products.filter((p) => {
-            const pName = String(p.name || '').toLowerCase();
-            const pId = String(p.id || '').toLowerCase();
-            return msgWords.some((w) => pName.includes(w) || pId.includes(w));
-          }).slice(0, 5);
+          // Reuse the top-scored matches; quote only rows present in the build-time price map
+          const matchedProducts = matched;
 
           const priceLines = [];
           for (const p of matchedProducts) {

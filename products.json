@@ -747,27 +747,6 @@
     "price_source": "LISTA MARKETING OCTUBRE"
   },
   {
-    "id": "PERFILERIA",
-    "name": "nan",
-    "category": "NUEVOS",
-    "subcategory": "NUEVOS",
-    "collection": "NUEVOS",
-    "price": "Consultar precio",
-    "unit": "Piece",
-    "items_per_box": "1",
-    "style_tags": [
-      "NUEVOS"
-    ],
-    "dimensions": {},
-    "image_url": "",
-    "pdf_tech_sheet": "",
-    "stock_status": "In Stock",
-    "description": "nan",
-    "price_cop": "Consultar precio",
-    "price_usd": "Consultar precio",
-    "price_source": "none"
-  },
-  {
     "id": "14101101",
     "name": "OMEGA",
     "category": "NUEVOS",
@@ -810,27 +789,6 @@
     "price_usd": "Consultar precio",
     "price_approx": true,
     "price_source": "LISTA MARKETING OCTUBRE"
-  },
-  {
-    "id": "CUBIERTAS UPVC",
-    "name": "nan",
-    "category": "NUEVOS",
-    "subcategory": "NUEVOS",
-    "collection": "NUEVOS",
-    "price": "Consultar precio",
-    "unit": "Piece",
-    "items_per_box": "1",
-    "style_tags": [
-      "NUEVOS"
-    ],
-    "dimensions": {},
-    "image_url": "",
-    "pdf_tech_sheet": "",
-    "stock_status": "In Stock",
-    "description": "nan",
-    "price_cop": "Consultar precio",
-    "price_usd": "Consultar precio",
-    "price_source": "none"
   },
   {
     "id": "14081201",
@@ -1451,27 +1409,6 @@
     "catalog_use": "Fijación cubierta acanalada"
   },
   {
-    "id": "POLICARBONATO",
-    "name": "nan",
-    "category": "NUEVOS",
-    "subcategory": "NUEVOS",
-    "collection": "NUEVOS",
-    "price": "Consultar precio",
-    "unit": "Piece",
-    "items_per_box": "1",
-    "style_tags": [
-      "NUEVOS"
-    ],
-    "dimensions": {},
-    "image_url": "",
-    "pdf_tech_sheet": "",
-    "stock_status": "In Stock",
-    "description": "nan",
-    "price_cop": "Consultar precio",
-    "price_usd": "Consultar precio",
-    "price_source": "none"
-  },
-  {
     "id": "14141001",
     "name": "LAMINA ALVEOLAR POLICARBONATO 6MM BLANCA",
     "category": "NUEVOS",
@@ -1551,27 +1488,6 @@
       "TRANSPARENTE"
     ],
     "catalog_use": "Techos, cubiertas translúcidas"
-  },
-  {
-    "id": "ILUMINACIÓN",
-    "name": "nan",
-    "category": "NUEVOS",
-    "subcategory": "NUEVOS",
-    "collection": "NUEVOS",
-    "price": "Consultar precio",
-    "unit": "Piece",
-    "items_per_box": "1",
-    "style_tags": [
-      "NUEVOS"
-    ],
-    "dimensions": {},
-    "image_url": "",
-    "pdf_tech_sheet": "",
-    "stock_status": "In Stock",
-    "description": "nan",
-    "price_cop": "Consultar precio",
-    "price_usd": "Consultar precio",
-    "price_source": "none"
   },
   {
     "id": "14051112",
@@ -1694,27 +1610,6 @@
     "catalog_specs": "Voltaje: DC12V-24V | Potencia: 144/288W | Control remoto: >20m | Batería: 3 AAA (no incluidas)",
     "catalog_colors": [],
     "catalog_use": "Control iluminación LED"
-  },
-  {
-    "id": "JARDINES ARTIFICIALES",
-    "name": "nan",
-    "category": "NUEVOS",
-    "subcategory": "NUEVOS",
-    "collection": "NUEVOS",
-    "price": "Consultar precio",
-    "unit": "Piece",
-    "items_per_box": "1",
-    "style_tags": [
-      "NUEVOS"
-    ],
-    "dimensions": {},
-    "image_url": "",
-    "pdf_tech_sheet": "",
-    "stock_status": "In Stock",
-    "description": "nan",
-    "price_cop": "Consultar precio",
-    "price_usd": "Consultar precio",
-    "price_source": "none"
   },
   {
     "id": "14124201",
@@ -1956,48 +1851,6 @@
       "VERDE OSCURO"
     ],
     "catalog_use": "Jardín vertical musgo"
-  },
-  {
-    "id": "LAMINAS",
-    "name": "nan",
-    "category": "NUEVOS",
-    "subcategory": "NUEVOS",
-    "collection": "NUEVOS",
-    "price": "Consultar precio",
-    "unit": "Piece",
-    "items_per_box": "1",
-    "style_tags": [
-      "NUEVOS"
-    ],
-    "dimensions": {},
-    "image_url": "",
-    "pdf_tech_sheet": "",
-    "stock_status": "In Stock",
-    "description": "nan",
-    "price_cop": "Consultar precio",
-    "price_usd": "Consultar precio",
-    "price_source": "none"
-  },
-  {
-    "id": "FOAM BOARD",
-    "name": "nan",
-    "category": "NUEVOS",
-    "subcategory": "NUEVOS",
-    "collection": "NUEVOS",
-    "price": "Consultar precio",
-    "unit": "Piece",
-    "items_per_box": "1",
-    "style_tags": [
-      "NUEVOS"
-    ],
-    "dimensions": {},
-    "image_url": "",
-    "pdf_tech_sheet": "",
-    "stock_status": "In Stock",
-    "description": "nan",
-    "price_cop": "Consultar precio",
-    "price_usd": "Consultar precio",
-    "price_source": "none"
   },
   {
     "id": "14181402",
@@ -2837,27 +2690,6 @@
     "catalog_use": "Foam board pastel decorativo"
   },
   {
-    "id": "LAMINAS MARMOL PVC",
-    "name": "nan",
-    "category": "NUEVOS",
-    "subcategory": "NUEVOS",
-    "collection": "NUEVOS",
-    "price": "Consultar precio",
-    "unit": "Piece",
-    "items_per_box": "1",
-    "style_tags": [
-      "NUEVOS"
-    ],
-    "dimensions": {},
-    "image_url": "",
-    "pdf_tech_sheet": "",
-    "stock_status": "In Stock",
-    "description": "nan",
-    "price_cop": "Consultar precio",
-    "price_usd": "Consultar precio",
-    "price_source": "none"
-  },
-  {
     "id": "14121201",
     "name": "LAMINA MARMOL BLANCO M-01-2.44",
     "category": "NUEVOS",
@@ -2873,12 +2705,12 @@
     "image_url": "https://drive.google.com/uc?export=view&id=1WoGXyw-SscDtN0tE_zixE3c8KIuEpb7Y",
     "pdf_tech_sheet": "",
     "stock_status": "In Stock",
-    "description": "MÁRMOL BLANCO (M01). Ancho: 122cm | Largo: 2.44m | Área: 2.9m² | Peso: 19kg | Espesor: 0.5mm. Uso: Paredes interior, decoración.",
+    "description": "MÁRMOL BLANCO (M01). Ancho: 122cm | Largo: 2.44m | Área: 2.9m² | Peso: 19kg. Uso: Paredes interior, decoración.",
     "price_cop": "$ 105.000",
     "price_usd": "Consultar precio",
     "price_approx": true,
     "price_source": "LISTA MARKETING OCTUBRE",
-    "catalog_specs": "Ancho: 122cm | Largo: 2.44m | Área: 2.9m² | Peso: 19kg | Espesor: 0.5mm",
+    "catalog_specs": "Ancho: 122cm | Largo: 2.44m | Área: 2.9m² | Peso: 19kg",
     "catalog_colors": [
       "BLANCO"
     ],
@@ -2900,12 +2732,12 @@
     "image_url": "https://drive.google.com/uc?export=view&id=1SvF38tdR5jPMXSTHIwpxua3vU9-S9Qop",
     "pdf_tech_sheet": "",
     "stock_status": "In Stock",
-    "description": "MÁRMOL GRIS (M02). Ancho: 122cm | Largo: 2.44m | Área: 2.9m² | Peso: 19kg | Espesor: 0.5mm. Uso: Paredes interior, decoración.",
+    "description": "MÁRMOL GRIS (M02). Ancho: 122cm | Largo: 2.44m | Área: 2.9m² | Peso: 19kg. Uso: Paredes interior, decoración.",
     "price_cop": "$ 105.000",
     "price_usd": "Consultar precio",
     "price_approx": true,
     "price_source": "LISTA MARKETING OCTUBRE",
-    "catalog_specs": "Ancho: 122cm | Largo: 2.44m | Área: 2.9m² | Peso: 19kg | Espesor: 0.5mm",
+    "catalog_specs": "Ancho: 122cm | Largo: 2.44m | Área: 2.9m² | Peso: 19kg",
     "catalog_colors": [
       "GRIS"
     ],
@@ -2927,12 +2759,12 @@
     "image_url": "https://drive.google.com/uc?export=view&id=15rvCLJoRbDLON53pTyMfcOmZ-vBe4EBQ",
     "pdf_tech_sheet": "",
     "stock_status": "In Stock",
-    "description": "MÁRMOL NEGRO (M03). Ancho: 122cm | Largo: 2.44m | Área: 2.9m² | Peso: 19kg | Espesor: 0.5mm. Uso: Paredes interior, decoración.",
+    "description": "MÁRMOL NEGRO (M03). Ancho: 122cm | Largo: 2.44m | Área: 2.9m² | Peso: 19kg. Uso: Paredes interior, decoración.",
     "price_cop": "$ 105.000",
     "price_usd": "Consultar precio",
     "price_approx": true,
     "price_source": "LISTA MARKETING OCTUBRE",
-    "catalog_specs": "Ancho: 122cm | Largo: 2.44m | Área: 2.9m² | Peso: 19kg | Espesor: 0.5mm",
+    "catalog_specs": "Ancho: 122cm | Largo: 2.44m | Área: 2.9m² | Peso: 19kg",
     "catalog_colors": [
       "NEGRO"
     ],
@@ -2954,12 +2786,12 @@
     "image_url": "https://drive.google.com/uc?export=view&id=1XqY7zWmZdPf6kS6aJUq6E7jfaGRbUSWi",
     "pdf_tech_sheet": "",
     "stock_status": "In Stock",
-    "description": "MÁRMOL VETEADO (M04). Ancho: 122cm | Largo: 2.44m | Área: 2.9m² | Peso: 19kg | Espesor: 0.5mm. Uso: Paredes interior, decoración.",
+    "description": "MÁRMOL VETEADO (M04). Ancho: 122cm | Largo: 2.44m | Área: 2.9m² | Peso: 19kg. Uso: Paredes interior, decoración.",
     "price_cop": "$ 105.000",
     "price_usd": "Consultar precio",
     "price_approx": true,
     "price_source": "LISTA MARKETING OCTUBRE",
-    "catalog_specs": "Ancho: 122cm | Largo: 2.44m | Área: 2.9m² | Peso: 19kg | Espesor: 0.5mm",
+    "catalog_specs": "Ancho: 122cm | Largo: 2.44m | Área: 2.9m² | Peso: 19kg",
     "catalog_colors": [
       "VETEADO"
     ],
@@ -2981,12 +2813,12 @@
     "image_url": "https://drive.google.com/uc?export=view&id=1vNjGryuMaWfbOGZoaUxHi7w47MFN0Vml",
     "pdf_tech_sheet": "",
     "stock_status": "In Stock",
-    "description": "MÁRMOL GRANITO (M05). Ancho: 122cm | Largo: 2.44m | Área: 2.9m² | Peso: 19kg | Espesor: 0.5mm. Uso: Paredes interior, decoración.",
+    "description": "MÁRMOL GRANITO (M05). Ancho: 122cm | Largo: 2.44m | Área: 2.9m² | Peso: 19kg. Uso: Paredes interior, decoración.",
     "price_cop": "$ 105.000",
     "price_usd": "Consultar precio",
     "price_approx": true,
     "price_source": "LISTA MARKETING OCTUBRE",
-    "catalog_specs": "Ancho: 122cm | Largo: 2.44m | Área: 2.9m² | Peso: 19kg | Espesor: 0.5mm",
+    "catalog_specs": "Ancho: 122cm | Largo: 2.44m | Área: 2.9m² | Peso: 19kg",
     "catalog_colors": [
       "GRANITO"
     ],
@@ -3008,12 +2840,12 @@
     "image_url": "https://drive.google.com/uc?export=view&id=18xcku696WOpfZVlwppUqfLiX4Z8UdxVM",
     "pdf_tech_sheet": "",
     "stock_status": "In Stock",
-    "description": "MÁRMOL LUNA (M06). Ancho: 122cm | Largo: 2.44m | Área: 2.9m² | Peso: 19kg | Espesor: 0.5mm. Uso: Paredes interior, decoración.",
+    "description": "MÁRMOL LUNA (M06). Ancho: 122cm | Largo: 2.44m | Área: 2.9m² | Peso: 19kg. Uso: Paredes interior, decoración.",
     "price_cop": "$ 105.000",
     "price_usd": "Consultar precio",
     "price_approx": true,
     "price_source": "LISTA MARKETING OCTUBRE",
-    "catalog_specs": "Ancho: 122cm | Largo: 2.44m | Área: 2.9m² | Peso: 19kg | Espesor: 0.5mm",
+    "catalog_specs": "Ancho: 122cm | Largo: 2.44m | Área: 2.9m² | Peso: 19kg",
     "catalog_colors": [
       "LUNA"
     ],
@@ -3035,12 +2867,12 @@
     "image_url": "https://drive.google.com/uc?export=view&id=1fdqNl2-xb4hMY8IE9MO4t8c6igCx2O_w",
     "pdf_tech_sheet": "",
     "stock_status": "In Stock",
-    "description": "MÁRMOL FUSIÓN (M07). Ancho: 122cm | Largo: 2.44m | Área: 2.9m² | Peso: 19kg | Espesor: 0.5mm. Uso: Paredes interior, decoración.",
+    "description": "MÁRMOL FUSIÓN (M07). Ancho: 122cm | Largo: 2.44m | Área: 2.9m² | Peso: 19kg. Uso: Paredes interior, decoración.",
     "price_cop": "$ 105.000",
     "price_usd": "Consultar precio",
     "price_approx": true,
     "price_source": "LISTA MARKETING OCTUBRE",
-    "catalog_specs": "Ancho: 122cm | Largo: 2.44m | Área: 2.9m² | Peso: 19kg | Espesor: 0.5mm",
+    "catalog_specs": "Ancho: 122cm | Largo: 2.44m | Área: 2.9m² | Peso: 19kg",
     "catalog_colors": [
       "FUSIÓN"
     ],
@@ -3062,12 +2894,12 @@
     "image_url": "https://drive.google.com/uc?export=view&id=1qFoqcsJ_FLFop0drPaCJTzYNRgcwJmAL",
     "pdf_tech_sheet": "",
     "stock_status": "In Stock",
-    "description": "MÁRMOL LONDRES (M08). Ancho: 122cm | Largo: 2.44m | Área: 2.9m² | Peso: 19kg | Espesor: 0.5mm. Uso: Paredes interior, decoración.",
+    "description": "MÁRMOL LONDRES (M08). Ancho: 122cm | Largo: 2.44m | Área: 2.9m² | Peso: 19kg. Uso: Paredes interior, decoración.",
     "price_cop": "$ 105.000",
     "price_usd": "Consultar precio",
     "price_approx": true,
     "price_source": "LISTA MARKETING OCTUBRE",
-    "catalog_specs": "Ancho: 122cm | Largo: 2.44m | Área: 2.9m² | Peso: 19kg | Espesor: 0.5mm",
+    "catalog_specs": "Ancho: 122cm | Largo: 2.44m | Área: 2.9m² | Peso: 19kg",
     "catalog_colors": [
       "LONDRES"
     ],
@@ -3089,12 +2921,12 @@
     "image_url": "https://drive.google.com/uc?export=view&id=1xjPwavQ2R5Z8M4rwkPcm_tdO7hf1FHX4",
     "pdf_tech_sheet": "",
     "stock_status": "In Stock",
-    "description": "MÁRMOL IBIZA (M09). Ancho: 122cm | Largo: 2.44m | Área: 2.9m² | Peso: 19kg | Espesor: 0.5mm. Uso: Paredes interior, decoración.",
+    "description": "MÁRMOL IBIZA (M09). Ancho: 122cm | Largo: 2.44m | Área: 2.9m² | Peso: 19kg. Uso: Paredes interior, decoración.",
     "price_cop": "$ 105.000",
     "price_usd": "Consultar precio",
     "price_approx": true,
     "price_source": "LISTA MARKETING OCTUBRE",
-    "catalog_specs": "Ancho: 122cm | Largo: 2.44m | Área: 2.9m² | Peso: 19kg | Espesor: 0.5mm",
+    "catalog_specs": "Ancho: 122cm | Largo: 2.44m | Área: 2.9m² | Peso: 19kg",
     "catalog_colors": [
       "IBIZA"
     ],
@@ -3116,12 +2948,12 @@
     "image_url": "https://drive.google.com/uc?export=view&id=1eLtqiPBCPPExV8ENWX9vVvoujWkePoA-",
     "pdf_tech_sheet": "",
     "stock_status": "In Stock",
-    "description": "MÁRMOL SAHARA (M10). Ancho: 122cm | Largo: 2.44m | Área: 2.9m² | Peso: 19kg | Espesor: 0.5mm. Uso: Paredes interior, decoración.",
+    "description": "MÁRMOL SAHARA (M10). Ancho: 122cm | Largo: 2.44m | Área: 2.9m² | Peso: 19kg. Uso: Paredes interior, decoración.",
     "price_cop": "$ 105.000",
     "price_usd": "Consultar precio",
     "price_approx": true,
     "price_source": "LISTA MARKETING OCTUBRE",
-    "catalog_specs": "Ancho: 122cm | Largo: 2.44m | Área: 2.9m² | Peso: 19kg | Espesor: 0.5mm",
+    "catalog_specs": "Ancho: 122cm | Largo: 2.44m | Área: 2.9m² | Peso: 19kg",
     "catalog_colors": [
       "SAHARA"
     ],
@@ -3143,12 +2975,12 @@
     "image_url": "https://drive.google.com/uc?export=view&id=14Sj64Fc6uIc_FcSOjFKMkc1dm4lgq9s8",
     "pdf_tech_sheet": "",
     "stock_status": "In Stock",
-    "description": "MÁRMOL ECLIPSE (M11). Ancho: 122cm | Largo: 2.44m | Área: 2.9m² | Peso: 19kg | Espesor: 0.5mm. Uso: Paredes interior, decoración.",
+    "description": "MÁRMOL ECLIPSE (M11). Ancho: 122cm | Largo: 2.44m | Área: 2.9m² | Peso: 19kg. Uso: Paredes interior, decoración.",
     "price_cop": "$ 105.000",
     "price_usd": "Consultar precio",
     "price_approx": true,
     "price_source": "LISTA MARKETING OCTUBRE",
-    "catalog_specs": "Ancho: 122cm | Largo: 2.44m | Área: 2.9m² | Peso: 19kg | Espesor: 0.5mm",
+    "catalog_specs": "Ancho: 122cm | Largo: 2.44m | Área: 2.9m² | Peso: 19kg",
     "catalog_colors": [
       "ECLIPSE"
     ],
@@ -3170,38 +3002,16 @@
     "image_url": "https://drive.google.com/uc?export=view&id=1YBZPrOMvVDatuHqRj2KYTuehsoPtnPuQ",
     "pdf_tech_sheet": "",
     "stock_status": "In Stock",
-    "description": "MÁRMOL PIGMENTO (M14). Ancho: 122cm | Largo: 2.44m | Área: 2.9m² | Peso: 19kg | Espesor: 0.5mm. Uso: Paredes interior, decoración.",
+    "description": "MÁRMOL PIGMENTO (M14). Ancho: 122cm | Largo: 2.44m | Área: 2.9m² | Peso: 19kg. Uso: Paredes interior, decoración.",
     "price_cop": "$ 105.000",
     "price_usd": "Consultar precio",
     "price_approx": true,
     "price_source": "LISTA MARKETING OCTUBRE",
-    "catalog_specs": "Ancho: 122cm | Largo: 2.44m | Área: 2.9m² | Peso: 19kg | Espesor: 0.5mm",
+    "catalog_specs": "Ancho: 122cm | Largo: 2.44m | Área: 2.9m² | Peso: 19kg",
     "catalog_colors": [
       "PIGMENTO"
     ],
     "catalog_use": "Paredes interior, decoración"
-  },
-  {
-    "id": "14121014",
-    "name": "LAMINA MARMOL MATE PIGMENTO M-14-2.90",
-    "category": "NUEVOS",
-    "subcategory": "NUEVOS",
-    "collection": "NUEVOS",
-    "price": "$ 108.000",
-    "unit": "Unidad",
-    "items_per_box": "1",
-    "style_tags": [
-      "NUEVOS"
-    ],
-    "dimensions": {},
-    "image_url": "https://drive.google.com/uc?export=view&id=1YBZPrOMvVDatuHqRj2KYTuehsoPtnPuQ",
-    "pdf_tech_sheet": "",
-    "stock_status": "In Stock",
-    "description": "LAMINA MARMOL MATE PIGMENTO M-14-2.90",
-    "price_cop": "$ 108.000",
-    "price_usd": "Consultar precio",
-    "price_approx": true,
-    "price_source": "LISTA MARKETING OCTUBRE"
   },
   {
     "id": "14121215",
@@ -3219,12 +3029,12 @@
     "image_url": "https://drive.google.com/uc?export=view&id=1l93Z80DyOXMHD2hNgh_lN_IXqaSMcOAg",
     "pdf_tech_sheet": "",
     "stock_status": "In Stock",
-    "description": "MÁRMOL GRECIA (M15). Ancho: 122cm | Largo: 2.44m | Área: 2.9m² | Peso: 19kg | Espesor: 0.5mm. Uso: Paredes interior, decoración.",
+    "description": "MÁRMOL GRECIA (M15). Ancho: 122cm | Largo: 2.44m | Área: 2.9m² | Peso: 19kg. Uso: Paredes interior, decoración.",
     "price_cop": "$ 105.000",
     "price_usd": "Consultar precio",
     "price_approx": true,
     "price_source": "LISTA MARKETING OCTUBRE",
-    "catalog_specs": "Ancho: 122cm | Largo: 2.44m | Área: 2.9m² | Peso: 19kg | Espesor: 0.5mm",
+    "catalog_specs": "Ancho: 122cm | Largo: 2.44m | Área: 2.9m² | Peso: 19kg",
     "catalog_colors": [
       "GRECIA"
     ],
@@ -3246,38 +3056,16 @@
     "image_url": "https://drive.google.com/uc?export=view&id=1c1LChD3_bN7Fx2dYL4VyRPviRGJOqqSK",
     "pdf_tech_sheet": "",
     "stock_status": "In Stock",
-    "description": "MATE PIEDRA ANGULAR (M16). Ancho: 122cm | Largo: 2.44m | Área: 2.9m² | Peso: 19kg | Espesor: 0.5mm. Uso: Paredes interior, decoración.",
+    "description": "MATE PIEDRA ANGULAR (M16). Ancho: 122cm | Largo: 2.44m | Área: 2.9m² | Peso: 19kg. Uso: Paredes interior, decoración.",
     "price_cop": "$ 105.000",
     "price_usd": "Consultar precio",
     "price_approx": true,
     "price_source": "LISTA MARKETING OCTUBRE",
-    "catalog_specs": "Ancho: 122cm | Largo: 2.44m | Área: 2.9m² | Peso: 19kg | Espesor: 0.5mm",
+    "catalog_specs": "Ancho: 122cm | Largo: 2.44m | Área: 2.9m² | Peso: 19kg",
     "catalog_colors": [
       "PIEDRA ANGULAR"
     ],
     "catalog_use": "Paredes interior, decoración"
-  },
-  {
-    "id": "14121016",
-    "name": "LAMINA MARMOL MATE PIEDRA ANGULAR M-16-2.90",
-    "category": "NUEVOS",
-    "subcategory": "NUEVOS",
-    "collection": "NUEVOS",
-    "price": "$ 108.000",
-    "unit": "Unidad",
-    "items_per_box": "1",
-    "style_tags": [
-      "NUEVOS"
-    ],
-    "dimensions": {},
-    "image_url": "https://drive.google.com/uc?export=view&id=1c1LChD3_bN7Fx2dYL4VyRPviRGJOqqSK",
-    "pdf_tech_sheet": "",
-    "stock_status": "In Stock",
-    "description": "LAMINA MARMOL MATE PIEDRA ANGULAR M-16-2.90",
-    "price_cop": "$ 108.000",
-    "price_usd": "Consultar precio",
-    "price_approx": true,
-    "price_source": "LISTA MARKETING OCTUBRE"
   },
   {
     "id": "14121217",
@@ -3295,12 +3083,12 @@
     "image_url": "https://drive.google.com/uc?export=view&id=1IhFFM9Bs2LatpkYdaPA7bfzpw6K7iqgc",
     "pdf_tech_sheet": "",
     "stock_status": "In Stock",
-    "description": "BEIGE ACUARELA (M17). Ancho: 122cm | Largo: 2.44m | Área: 2.9m² | Peso: 19kg | Espesor: 0.5mm. Uso: Paredes interior, decoración.",
+    "description": "BEIGE ACUARELA (M17). Ancho: 122cm | Largo: 2.44m | Área: 2.9m² | Peso: 19kg. Uso: Paredes interior, decoración.",
     "price_cop": "$ 105.000",
     "price_usd": "Consultar precio",
     "price_approx": true,
     "price_source": "LISTA MARKETING OCTUBRE",
-    "catalog_specs": "Ancho: 122cm | Largo: 2.44m | Área: 2.9m² | Peso: 19kg | Espesor: 0.5mm",
+    "catalog_specs": "Ancho: 122cm | Largo: 2.44m | Área: 2.9m² | Peso: 19kg",
     "catalog_colors": [
       "BEIGE ACUARELA"
     ],
@@ -3322,12 +3110,12 @@
     "image_url": "https://drive.google.com/uc?export=view&id=1aq7WEln79JqsSH_QOomhdwpXAZCDoA3L",
     "pdf_tech_sheet": "",
     "stock_status": "In Stock",
-    "description": "DESTELLOS DE ORO (M18). Ancho: 122cm | Largo: 2.44m | Área: 2.9m² | Peso: 19kg | Espesor: 0.5mm. Uso: Paredes interior, decoración.",
+    "description": "DESTELLOS DE ORO (M18). Ancho: 122cm | Largo: 2.44m | Área: 2.9m² | Peso: 19kg. Uso: Paredes interior, decoración.",
     "price_cop": "$ 105.000",
     "price_usd": "Consultar precio",
     "price_approx": true,
     "price_source": "LISTA MARKETING OCTUBRE",
-    "catalog_specs": "Ancho: 122cm | Largo: 2.44m | Área: 2.9m² | Peso: 19kg | Espesor: 0.5mm",
+    "catalog_specs": "Ancho: 122cm | Largo: 2.44m | Área: 2.9m² | Peso: 19kg",
     "catalog_colors": [
       "DESTELLOS DE ORO"
     ],
@@ -3349,12 +3137,12 @@
     "image_url": "https://drive.google.com/uc?export=view&id=1_IZkAWvwk1IcWNSGUfqSxgjHDF8D3fEp",
     "pdf_tech_sheet": "",
     "stock_status": "In Stock",
-    "description": "MÁRMOL VIZCAYA (M19). Ancho: 122cm | Largo: 2.44m | Área: 2.9m² | Peso: 19kg | Espesor: 0.5mm. Uso: Paredes interior, decoración.",
+    "description": "MÁRMOL VIZCAYA (M19). Ancho: 122cm | Largo: 2.44m | Área: 2.9m² | Peso: 19kg. Uso: Paredes interior, decoración.",
     "price_cop": "$ 105.000",
     "price_usd": "Consultar precio",
     "price_approx": true,
     "price_source": "LISTA MARKETING OCTUBRE",
-    "catalog_specs": "Ancho: 122cm | Largo: 2.44m | Área: 2.9m² | Peso: 19kg | Espesor: 0.5mm",
+    "catalog_specs": "Ancho: 122cm | Largo: 2.44m | Área: 2.9m² | Peso: 19kg",
     "catalog_colors": [
       "VIZCAYA"
     ],
@@ -3376,12 +3164,12 @@
     "image_url": "https://drive.google.com/uc?export=view&id=1VUaAsZwDbTNm66kp--VX_H23tvKicPkX",
     "pdf_tech_sheet": "",
     "stock_status": "In Stock",
-    "description": "MÁRMOL GUATAPURI (M20). Ancho: 122cm | Largo: 2.44m | Área: 2.9m² | Peso: 19kg | Espesor: 0.5mm. Uso: Paredes interior, decoración.",
+    "description": "MÁRMOL GUATAPURI (M20). Ancho: 122cm | Largo: 2.44m | Área: 2.9m² | Peso: 19kg. Uso: Paredes interior, decoración.",
     "price_cop": "$ 105.000",
     "price_usd": "Consultar precio",
     "price_approx": true,
     "price_source": "LISTA MARKETING OCTUBRE",
-    "catalog_specs": "Ancho: 122cm | Largo: 2.44m | Área: 2.9m² | Peso: 19kg | Espesor: 0.5mm",
+    "catalog_specs": "Ancho: 122cm | Largo: 2.44m | Área: 2.9m² | Peso: 19kg",
     "catalog_colors": [
       "GUATAPURI"
     ],
@@ -3403,12 +3191,12 @@
     "image_url": "https://drive.google.com/uc?export=view&id=1V7L756I_1UGyBZQSffB0H6IuxtCUo-2I",
     "pdf_tech_sheet": "",
     "stock_status": "In Stock",
-    "description": "MÁRMOL VENECIA (M21). Ancho: 122cm | Largo: 2.44m | Área: 2.9m² | Peso: 19kg | Espesor: 0.5mm. Uso: Paredes interior, decoración.",
+    "description": "MÁRMOL VENECIA (M21). Ancho: 122cm | Largo: 2.44m | Área: 2.9m² | Peso: 19kg. Uso: Paredes interior, decoración.",
     "price_cop": "$ 105.000",
     "price_usd": "Consultar precio",
     "price_approx": true,
     "price_source": "LISTA MARKETING OCTUBRE",
-    "catalog_specs": "Ancho: 122cm | Largo: 2.44m | Área: 2.9m² | Peso: 19kg | Espesor: 0.5mm",
+    "catalog_specs": "Ancho: 122cm | Largo: 2.44m | Área: 2.9m² | Peso: 19kg",
     "catalog_colors": [
       "VENECIA"
     ],
@@ -3430,12 +3218,12 @@
     "image_url": "https://drive.google.com/uc?export=view&id=1ZXA5-SygssNsE9gP_u1Xyby7-mbwoESl",
     "pdf_tech_sheet": "",
     "stock_status": "In Stock",
-    "description": "MEDITERRANEO (M22). Ancho: 122cm | Largo: 2.44m | Área: 2.9m² | Peso: 19kg | Espesor: 0.5mm. Uso: Paredes interior, decoración.",
+    "description": "MEDITERRANEO (M22). Ancho: 122cm | Largo: 2.44m | Área: 2.9m² | Peso: 19kg. Uso: Paredes interior, decoración.",
     "price_cop": "$ 105.000",
     "price_usd": "Consultar precio",
     "price_approx": true,
     "price_source": "LISTA MARKETING OCTUBRE",
-    "catalog_specs": "Ancho: 122cm | Largo: 2.44m | Área: 2.9m² | Peso: 19kg | Espesor: 0.5mm",
+    "catalog_specs": "Ancho: 122cm | Largo: 2.44m | Área: 2.9m² | Peso: 19kg",
     "catalog_colors": [
       "MEDITERRANEO"
     ],
@@ -3457,12 +3245,12 @@
     "image_url": "https://drive.google.com/uc?export=view&id=1gl_F4gKlNyNqmr7jEXchfA96uMEgsK5o",
     "pdf_tech_sheet": "",
     "stock_status": "In Stock",
-    "description": "MÁRMOL OASIS (M23). Ancho: 122cm | Largo: 2.44m | Área: 2.9m² | Peso: 19kg | Espesor: 0.5mm. Uso: Paredes interior, decoración.",
+    "description": "MÁRMOL OASIS (M23). Ancho: 122cm | Largo: 2.44m | Área: 2.9m² | Peso: 19kg. Uso: Paredes interior, decoración.",
     "price_cop": "$ 105.000",
     "price_usd": "Consultar precio",
     "price_approx": true,
     "price_source": "LISTA MARKETING OCTUBRE",
-    "catalog_specs": "Ancho: 122cm | Largo: 2.44m | Área: 2.9m² | Peso: 19kg | Espesor: 0.5mm",
+    "catalog_specs": "Ancho: 122cm | Largo: 2.44m | Área: 2.9m² | Peso: 19kg",
     "catalog_colors": [
       "OASIS"
     ],
@@ -3484,12 +3272,12 @@
     "image_url": "https://drive.google.com/uc?export=view&id=1q6u_B5zL0Uc-nIxXiprdfYIKKmIqukt2",
     "pdf_tech_sheet": "",
     "stock_status": "In Stock",
-    "description": "MÁRMOL VERONA (M29). Ancho: 122cm | Largo: 2.44m | Área: 2.9m² | Peso: 19kg | Espesor: 0.5mm. Uso: Paredes interior, decoración.",
+    "description": "MÁRMOL VERONA (M29). Ancho: 122cm | Largo: 2.44m | Área: 2.9m² | Peso: 19kg. Uso: Paredes interior, decoración.",
     "price_cop": "$ 105.000",
     "price_usd": "Consultar precio",
     "price_approx": true,
     "price_source": "LISTA MARKETING OCTUBRE",
-    "catalog_specs": "Ancho: 122cm | Largo: 2.44m | Área: 2.9m² | Peso: 19kg | Espesor: 0.5mm",
+    "catalog_specs": "Ancho: 122cm | Largo: 2.44m | Área: 2.9m² | Peso: 19kg",
     "catalog_colors": [
       "VERONA"
     ],
@@ -3511,12 +3299,12 @@
     "image_url": "https://drive.google.com/uc?export=view&id=1M5j5hbGAAeN_iA73ZkvlZ7MYR5EjMiOL",
     "pdf_tech_sheet": "",
     "stock_status": "In Stock",
-    "description": "ISLANDIA (M30). Ancho: 122cm | Largo: 2.44m | Área: 2.9m² | Peso: 19kg | Espesor: 0.5mm. Uso: Paredes interior, decoración.",
+    "description": "ISLANDIA (M30). Ancho: 122cm | Largo: 2.44m | Área: 2.9m² | Peso: 19kg. Uso: Paredes interior, decoración.",
     "price_cop": "$ 105.000",
     "price_usd": "Consultar precio",
     "price_approx": true,
     "price_source": "LISTA MARKETING OCTUBRE",
-    "catalog_specs": "Ancho: 122cm | Largo: 2.44m | Área: 2.9m² | Peso: 19kg | Espesor: 0.5mm",
+    "catalog_specs": "Ancho: 122cm | Largo: 2.44m | Área: 2.9m² | Peso: 19kg",
     "catalog_colors": [
       "ISLANDIA"
     ],
@@ -3538,12 +3326,12 @@
     "image_url": "https://drive.google.com/uc?export=view&id=1dAg8ke33GuN85vR34br4nZcrJRuwGUTr",
     "pdf_tech_sheet": "",
     "stock_status": "In Stock",
-    "description": "NEW YORK (M31). Ancho: 122cm | Largo: 2.44m | Área: 2.9m² | Peso: 19kg | Espesor: 0.5mm. Uso: Paredes interior, decoración.",
+    "description": "NEW YORK (M31). Ancho: 122cm | Largo: 2.44m | Área: 2.9m² | Peso: 19kg. Uso: Paredes interior, decoración.",
     "price_cop": "$ 105.000",
     "price_usd": "Consultar precio",
     "price_approx": true,
     "price_source": "LISTA MARKETING OCTUBRE",
-    "catalog_specs": "Ancho: 122cm | Largo: 2.44m | Área: 2.9m² | Peso: 19kg | Espesor: 0.5mm",
+    "catalog_specs": "Ancho: 122cm | Largo: 2.44m | Área: 2.9m² | Peso: 19kg",
     "catalog_colors": [
       "NEW YORK"
     ],
@@ -3565,12 +3353,12 @@
     "image_url": "https://drive.google.com/uc?export=view&id=16Zv4ZqocviLcLN8gh2JILbfcD6JPLf7U",
     "pdf_tech_sheet": "",
     "stock_status": "In Stock",
-    "description": "SANTORINI MIX (M32). Ancho: 122cm | Largo: 2.44m | Área: 2.9m² | Peso: 19kg | Espesor: 0.5mm. Uso: Paredes interior, decoración.",
+    "description": "SANTORINI MIX (M32). Ancho: 122cm | Largo: 2.44m | Área: 2.9m² | Peso: 19kg. Uso: Paredes interior, decoración.",
     "price_cop": "$ 105.000",
     "price_usd": "Consultar precio",
     "price_approx": true,
     "price_source": "LISTA MARKETING OCTUBRE",
-    "catalog_specs": "Ancho: 122cm | Largo: 2.44m | Área: 2.9m² | Peso: 19kg | Espesor: 0.5mm",
+    "catalog_specs": "Ancho: 122cm | Largo: 2.44m | Área: 2.9m² | Peso: 19kg",
     "catalog_colors": [
       "SANTORINI MIX"
     ],
@@ -3592,12 +3380,12 @@
     "image_url": "https://drive.google.com/uc?export=view&id=1xeYJJvGk172qpH0lS8AjpC7LCtM52NkY",
     "pdf_tech_sheet": "",
     "stock_status": "In Stock",
-    "description": "SINGAPUR GRIS (M33). Ancho: 122cm | Largo: 2.44m | Área: 2.9m² | Peso: 19kg | Espesor: 0.5mm. Uso: Paredes interior, decoración.",
+    "description": "SINGAPUR GRIS (M33). Ancho: 122cm | Largo: 2.44m | Área: 2.9m² | Peso: 19kg. Uso: Paredes interior, decoración.",
     "price_cop": "$ 105.000",
     "price_usd": "Consultar precio",
     "price_approx": true,
     "price_source": "LISTA MARKETING OCTUBRE",
-    "catalog_specs": "Ancho: 122cm | Largo: 2.44m | Área: 2.9m² | Peso: 19kg | Espesor: 0.5mm",
+    "catalog_specs": "Ancho: 122cm | Largo: 2.44m | Área: 2.9m² | Peso: 19kg",
     "catalog_colors": [
       "SINGAPUR GRIS"
     ],
@@ -3619,12 +3407,12 @@
     "image_url": "https://drive.google.com/uc?export=view&id=1YDztjI_oYA95djC2ii-Br_BBRxUw_FKK",
     "pdf_tech_sheet": "",
     "stock_status": "In Stock",
-    "description": "MÁRMOL MONACO (M34). Ancho: 122cm | Largo: 2.44m | Área: 2.9m² | Peso: 19kg | Espesor: 0.5mm. Uso: Paredes interior, decoración.",
+    "description": "MÁRMOL MONACO (M34). Ancho: 122cm | Largo: 2.44m | Área: 2.9m² | Peso: 19kg. Uso: Paredes interior, decoración.",
     "price_cop": "$ 105.000",
     "price_usd": "Consultar precio",
     "price_approx": true,
     "price_source": "LISTA MARKETING OCTUBRE",
-    "catalog_specs": "Ancho: 122cm | Largo: 2.44m | Área: 2.9m² | Peso: 19kg | Espesor: 0.5mm",
+    "catalog_specs": "Ancho: 122cm | Largo: 2.44m | Área: 2.9m² | Peso: 19kg",
     "catalog_colors": [
       "MONACO"
     ],
@@ -3646,37 +3434,16 @@
     "image_url": "https://drive.google.com/uc?export=view&id=1mF9xAIwlt955BrOIeuhjBTizQWl-pthx",
     "pdf_tech_sheet": "",
     "stock_status": "In Stock",
-    "description": "MÁRMOL DUBAI NEGRO (M35). Ancho: 122cm | Largo: 2.44m | Área: 2.9m² | Peso: 19kg | Espesor: 0.5mm. Uso: Paredes interior, decoración.",
+    "description": "MÁRMOL DUBAI NEGRO (M35). Ancho: 122cm | Largo: 2.44m | Área: 2.9m² | Peso: 19kg. Uso: Paredes interior, decoración.",
     "price_cop": "$ 105.000",
     "price_usd": "Consultar precio",
     "price_approx": true,
     "price_source": "LISTA MARKETING OCTUBRE",
-    "catalog_specs": "Ancho: 122cm | Largo: 2.44m | Área: 2.9m² | Peso: 19kg | Espesor: 0.5mm",
+    "catalog_specs": "Ancho: 122cm | Largo: 2.44m | Área: 2.9m² | Peso: 19kg",
     "catalog_colors": [
       "DUBAI NEGRO"
     ],
     "catalog_use": "Paredes interior, decoración"
-  },
-  {
-    "id": "CINTAS",
-    "name": "nan",
-    "category": "NUEVOS",
-    "subcategory": "NUEVOS",
-    "collection": "NUEVOS",
-    "price": "Consultar precio",
-    "unit": "Piece",
-    "items_per_box": "1",
-    "style_tags": [
-      "NUEVOS"
-    ],
-    "dimensions": {},
-    "image_url": "",
-    "pdf_tech_sheet": "",
-    "stock_status": "In Stock",
-    "description": "nan",
-    "price_cop": "Consultar precio",
-    "price_usd": "Consultar precio",
-    "price_source": "none"
   },
   {
     "id": "14201201",
@@ -3812,27 +3579,6 @@
       "PLATEADA"
     ],
     "catalog_use": "Cinta adhesiva papel"
-  },
-  {
-    "id": "ACCESORIOS",
-    "name": "nan",
-    "category": "NUEVOS",
-    "subcategory": "NUEVOS",
-    "collection": "NUEVOS",
-    "price": "Consultar precio",
-    "unit": "Piece",
-    "items_per_box": "1",
-    "style_tags": [
-      "NUEVOS"
-    ],
-    "dimensions": {},
-    "image_url": "",
-    "pdf_tech_sheet": "",
-    "stock_status": "In Stock",
-    "description": "nan",
-    "price_cop": "Consultar precio",
-    "price_usd": "Consultar precio",
-    "price_source": "none"
   },
   {
     "id": "14113201",
@@ -4007,27 +3753,6 @@
     "price_usd": "Consultar precio",
     "price_approx": true,
     "price_source": "LISTA MARKETING OCTUBRE"
-  },
-  {
-    "id": "PVC BOARD",
-    "name": "nan",
-    "category": "NUEVOS",
-    "subcategory": "NUEVOS",
-    "collection": "NUEVOS",
-    "price": "Consultar precio",
-    "unit": "Piece",
-    "items_per_box": "1",
-    "style_tags": [
-      "NUEVOS"
-    ],
-    "dimensions": {},
-    "image_url": "",
-    "pdf_tech_sheet": "",
-    "stock_status": "In Stock",
-    "description": "nan",
-    "price_cop": "Consultar precio",
-    "price_usd": "Consultar precio",
-    "price_source": "none"
   },
   {
     "id": "14181012",
@@ -4374,27 +4099,6 @@
     "catalog_use": "PVC board colores decorativo"
   },
   {
-    "id": "LAMINAS SINTETICAS",
-    "name": "nan",
-    "category": "NUEVOS",
-    "subcategory": "NUEVOS",
-    "collection": "NUEVOS",
-    "price": "Consultar precio",
-    "unit": "Piece",
-    "items_per_box": "1",
-    "style_tags": [
-      "NUEVOS"
-    ],
-    "dimensions": {},
-    "image_url": "",
-    "pdf_tech_sheet": "",
-    "stock_status": "In Stock",
-    "description": "nan",
-    "price_cop": "Consultar precio",
-    "price_usd": "Consultar precio",
-    "price_source": "none"
-  },
-  {
     "id": "14121501",
     "name": "LAMINA SINTETICA PIEDRA DEL SOL",
     "category": "NUEVOS",
@@ -4410,12 +4114,12 @@
     "image_url": "https://drive.google.com/uc?export=view&id=1hJkpUl2byLgxtOB4_lCJslEnHk-iE55A",
     "pdf_tech_sheet": "",
     "stock_status": "In Stock",
-    "description": "PIEDRA DEL SOL. Ancho: 122cm | Largo: 2.44m | Espesor: 0.5mm. Uso: Lámina sintética decorativa interior.",
+    "description": "PIEDRA DEL SOL. Ancho: 122cm | Largo: 2.44m. Uso: Lámina sintética decorativa interior.",
     "price_cop": "$ 230.000",
     "price_usd": "Consultar precio",
     "price_approx": true,
     "price_source": "LISTA MARKETING OCTUBRE",
-    "catalog_specs": "Ancho: 122cm | Largo: 2.44m | Espesor: 0.5mm",
+    "catalog_specs": "Ancho: 122cm | Largo: 2.44m",
     "catalog_colors": [
       "AMARILLO DORADO"
     ],
@@ -4437,37 +4141,16 @@
     "image_url": "https://drive.google.com/uc?export=view&id=1Oy2YoSzfgWZtwTPksh53Mz7XCNeCxqWv",
     "pdf_tech_sheet": "",
     "stock_status": "In Stock",
-    "description": "CREMA SELECTA. Ancho: 122cm | Largo: 2.44m | Espesor: 0.5mm. Uso: Lámina sintética decorativa interior.",
+    "description": "CREMA SELECTA. Ancho: 122cm | Largo: 2.44m. Uso: Lámina sintética decorativa interior.",
     "price_cop": "$ 454.000",
     "price_usd": "Consultar precio",
     "price_approx": true,
     "price_source": "LISTA MARKETING OCTUBRE",
-    "catalog_specs": "Ancho: 122cm | Largo: 2.44m | Espesor: 0.5mm",
+    "catalog_specs": "Ancho: 122cm | Largo: 2.44m",
     "catalog_colors": [
       "CREMA"
     ],
     "catalog_use": "Lámina sintética decorativa interior"
-  },
-  {
-    "id": "LISTONES PVC Y WPC",
-    "name": "nan",
-    "category": "NUEVOS",
-    "subcategory": "NUEVOS",
-    "collection": "NUEVOS",
-    "price": "Consultar precio",
-    "unit": "Piece",
-    "items_per_box": "1",
-    "style_tags": [
-      "NUEVOS"
-    ],
-    "dimensions": {},
-    "image_url": "",
-    "pdf_tech_sheet": "",
-    "stock_status": "In Stock",
-    "description": "nan",
-    "price_cop": "Consultar precio",
-    "price_usd": "Consultar precio",
-    "price_source": "none"
   },
   {
     "id": "14122705",
@@ -4629,28 +4312,6 @@
     "catalog_use": "Listón estructural interior"
   },
   {
-    "id": "14122895",
-    "name": "KIT TAPONES LISTON PVC ESTRUCTURAL 10CM",
-    "category": "NUEVOS",
-    "subcategory": "NUEVOS",
-    "collection": "NUEVOS",
-    "price": "$ 7.000",
-    "unit": "Unidad",
-    "items_per_box": "1",
-    "style_tags": [
-      "NUEVOS"
-    ],
-    "dimensions": {},
-    "image_url": "",
-    "pdf_tech_sheet": "",
-    "stock_status": "In Stock",
-    "description": "KIT TAPONES LISTON PVC ESTRUCTURAL 10CM",
-    "price_cop": "$ 7.000",
-    "price_usd": "Consultar precio",
-    "price_approx": true,
-    "price_source": "LISTA MARKETING OCTUBRE"
-  },
-  {
     "id": "14123001",
     "name": "LISTON WPC EXTERIOR ROBLE 01 6*4cm (TUBE)",
     "category": "NUEVOS",
@@ -4753,48 +4414,6 @@
       "CEDRO"
     ],
     "catalog_use": "Listón WPC exterior, pérgolas, fachadas"
-  },
-  {
-    "id": "PANELES WPC",
-    "name": "nan",
-    "category": "NUEVOS",
-    "subcategory": "NUEVOS",
-    "collection": "NUEVOS",
-    "price": "Consultar precio",
-    "unit": "Piece",
-    "items_per_box": "1",
-    "style_tags": [
-      "NUEVOS"
-    ],
-    "dimensions": {},
-    "image_url": "",
-    "pdf_tech_sheet": "",
-    "stock_status": "In Stock",
-    "description": "nan",
-    "price_cop": "Consultar precio",
-    "price_usd": "Consultar precio",
-    "price_source": "none"
-  },
-  {
-    "id": "PANELES WPC EXTERIORES",
-    "name": "nan",
-    "category": "NUEVOS",
-    "subcategory": "NUEVOS",
-    "collection": "NUEVOS",
-    "price": "Consultar precio",
-    "unit": "Piece",
-    "items_per_box": "1",
-    "style_tags": [
-      "NUEVOS"
-    ],
-    "dimensions": {},
-    "image_url": "",
-    "pdf_tech_sheet": "",
-    "stock_status": "In Stock",
-    "description": "nan",
-    "price_cop": "Consultar precio",
-    "price_usd": "Consultar precio",
-    "price_source": "none"
   },
   {
     "id": "14122202",
@@ -5299,27 +4918,6 @@
       "PLATA"
     ],
     "catalog_use": "Fijación panel WPC exterior"
-  },
-  {
-    "id": "PANELES WPC INTERIORES",
-    "name": "nan",
-    "category": "NUEVOS",
-    "subcategory": "NUEVOS",
-    "collection": "NUEVOS",
-    "price": "Consultar precio",
-    "unit": "Piece",
-    "items_per_box": "1",
-    "style_tags": [
-      "NUEVOS"
-    ],
-    "dimensions": {},
-    "image_url": "",
-    "pdf_tech_sheet": "",
-    "stock_status": "In Stock",
-    "description": "nan",
-    "price_cop": "Consultar precio",
-    "price_usd": "Consultar precio",
-    "price_source": "none"
   },
   {
     "id": "14122002",
@@ -6310,27 +5908,6 @@
     "catalog_use": "Fijación panel WPC interior"
   },
   {
-    "id": "ANGULOS WPC INTERIORES",
-    "name": "nan",
-    "category": "NUEVOS",
-    "subcategory": "NUEVOS",
-    "collection": "NUEVOS",
-    "price": "Consultar precio",
-    "unit": "Piece",
-    "items_per_box": "1",
-    "style_tags": [
-      "NUEVOS"
-    ],
-    "dimensions": {},
-    "image_url": "",
-    "pdf_tech_sheet": "",
-    "stock_status": "In Stock",
-    "description": "nan",
-    "price_cop": "Consultar precio",
-    "price_usd": "Consultar precio",
-    "price_source": "none"
-  },
-  {
     "id": "14122101",
     "name": "ANGULO WPC STONE GRIS (01)",
     "category": "NUEVOS",
@@ -6870,27 +6447,6 @@
     "price_source": "LISTA MARKETING OCTUBRE"
   },
   {
-    "id": "PANELES WPC REDONDOS",
-    "name": "nan",
-    "category": "NUEVOS",
-    "subcategory": "NUEVOS",
-    "collection": "NUEVOS",
-    "price": "Consultar precio",
-    "unit": "Piece",
-    "items_per_box": "1",
-    "style_tags": [
-      "NUEVOS"
-    ],
-    "dimensions": {},
-    "image_url": "",
-    "pdf_tech_sheet": "",
-    "stock_status": "In Stock",
-    "description": "nan",
-    "price_cop": "Consultar precio",
-    "price_usd": "Consultar precio",
-    "price_source": "none"
-  },
-  {
     "id": "14124903",
     "name": "PANEL WPC REDONDO POLAR BLANCO (03)",
     "category": "NUEVOS",
@@ -7309,48 +6865,6 @@
     "catalog_use": "Panel WPC redondo interior"
   },
   {
-    "id": "PAREDES",
-    "name": "nan",
-    "category": "NUEVOS",
-    "subcategory": "NUEVOS",
-    "collection": "NUEVOS",
-    "price": "Consultar precio",
-    "unit": "Piece",
-    "items_per_box": "1",
-    "style_tags": [
-      "NUEVOS"
-    ],
-    "dimensions": {},
-    "image_url": "",
-    "pdf_tech_sheet": "",
-    "stock_status": "In Stock",
-    "description": "nan",
-    "price_cop": "Consultar precio",
-    "price_usd": "Consultar precio",
-    "price_source": "none"
-  },
-  {
-    "id": "FACHADA DECK EXTERIOR",
-    "name": "nan",
-    "category": "NUEVOS",
-    "subcategory": "NUEVOS",
-    "collection": "NUEVOS",
-    "price": "Consultar precio",
-    "unit": "Piece",
-    "items_per_box": "1",
-    "style_tags": [
-      "NUEVOS"
-    ],
-    "dimensions": {},
-    "image_url": "",
-    "pdf_tech_sheet": "",
-    "stock_status": "In Stock",
-    "description": "nan",
-    "price_cop": "Consultar precio",
-    "price_usd": "Consultar precio",
-    "price_source": "none"
-  },
-  {
     "id": "14091105",
     "name": "FACHADA DECK CEDRO",
     "category": "NUEVOS",
@@ -7459,27 +6973,6 @@
     "price_usd": "Consultar precio",
     "price_approx": true,
     "price_source": "LISTA MARKETING OCTUBRE"
-  },
-  {
-    "id": "FACHADA PVC EXTERIOR",
-    "name": "nan",
-    "category": "NUEVOS",
-    "subcategory": "NUEVOS",
-    "collection": "NUEVOS",
-    "price": "Consultar precio",
-    "unit": "Piece",
-    "items_per_box": "1",
-    "style_tags": [
-      "NUEVOS"
-    ],
-    "dimensions": {},
-    "image_url": "",
-    "pdf_tech_sheet": "",
-    "stock_status": "In Stock",
-    "description": "nan",
-    "price_cop": "Consultar precio",
-    "price_usd": "Consultar precio",
-    "price_source": "none"
   },
   {
     "id": "14123604",
@@ -7607,27 +7100,6 @@
     "pdf_tech_sheet": "",
     "stock_status": "In Stock",
     "description": "FACHADA EN PVC AMBAR RUSTICO (SW508)",
-    "price_cop": "Consultar precio",
-    "price_usd": "Consultar precio",
-    "price_source": "none"
-  },
-  {
-    "id": "PANELES ACRILICOS DE MARMOL",
-    "name": "nan",
-    "category": "NUEVOS",
-    "subcategory": "NUEVOS",
-    "collection": "NUEVOS",
-    "price": "Consultar precio",
-    "unit": "Piece",
-    "items_per_box": "1",
-    "style_tags": [
-      "NUEVOS"
-    ],
-    "dimensions": {},
-    "image_url": "",
-    "pdf_tech_sheet": "",
-    "stock_status": "In Stock",
-    "description": "nan",
     "price_cop": "Consultar precio",
     "price_usd": "Consultar precio",
     "price_source": "none"
@@ -7796,27 +7268,6 @@
     "pdf_tech_sheet": "",
     "stock_status": "In Stock",
     "description": "PANEL ACRILICO MARMOL ARGENTEA",
-    "price_cop": "Consultar precio",
-    "price_usd": "Consultar precio",
-    "price_source": "none"
-  },
-  {
-    "id": "PAREDES Y PANELES ACOLCHADOS",
-    "name": "nan",
-    "category": "NUEVOS",
-    "subcategory": "NUEVOS",
-    "collection": "NUEVOS",
-    "price": "Consultar precio",
-    "unit": "Piece",
-    "items_per_box": "1",
-    "style_tags": [
-      "NUEVOS"
-    ],
-    "dimensions": {},
-    "image_url": "",
-    "pdf_tech_sheet": "",
-    "stock_status": "In Stock",
-    "description": "nan",
     "price_cop": "Consultar precio",
     "price_usd": "Consultar precio",
     "price_source": "none"
@@ -8260,27 +7711,6 @@
     "price_usd": "Consultar precio",
     "price_approx": true,
     "price_source": "LISTA MARKETING OCTUBRE"
-  },
-  {
-    "id": "PANELES ACUSTICOS",
-    "name": "nan",
-    "category": "NUEVOS",
-    "subcategory": "NUEVOS",
-    "collection": "NUEVOS",
-    "price": "Consultar precio",
-    "unit": "Piece",
-    "items_per_box": "1",
-    "style_tags": [
-      "NUEVOS"
-    ],
-    "dimensions": {},
-    "image_url": "",
-    "pdf_tech_sheet": "",
-    "stock_status": "In Stock",
-    "description": "nan",
-    "price_cop": "Consultar precio",
-    "price_usd": "Consultar precio",
-    "price_source": "none"
   },
   {
     "id": "14124301",
@@ -8811,27 +8241,6 @@
     "price_source": "LISTA MARKETING OCTUBRE"
   },
   {
-    "id": "PARED PS",
-    "name": "nan",
-    "category": "NUEVOS",
-    "subcategory": "NUEVOS",
-    "collection": "NUEVOS",
-    "price": "Consultar precio",
-    "unit": "Piece",
-    "items_per_box": "1",
-    "style_tags": [
-      "NUEVOS"
-    ],
-    "dimensions": {},
-    "image_url": "",
-    "pdf_tech_sheet": "",
-    "stock_status": "In Stock",
-    "description": "nan",
-    "price_cop": "Consultar precio",
-    "price_usd": "Consultar precio",
-    "price_source": "none"
-  },
-  {
     "id": "14122502",
     "name": "BELICE GRIS HH24101",
     "category": "NUEVOS",
@@ -9204,27 +8613,6 @@
     "price_source": "LISTA MARKETING OCTUBRE"
   },
   {
-    "id": "PARED MUROFLEX",
-    "name": "nan",
-    "category": "NUEVOS",
-    "subcategory": "NUEVOS",
-    "collection": "NUEVOS",
-    "price": "Consultar precio",
-    "unit": "Piece",
-    "items_per_box": "1",
-    "style_tags": [
-      "NUEVOS"
-    ],
-    "dimensions": {},
-    "image_url": "",
-    "pdf_tech_sheet": "",
-    "stock_status": "In Stock",
-    "description": "nan",
-    "price_cop": "Consultar precio",
-    "price_usd": "Consultar precio",
-    "price_source": "none"
-  },
-  {
     "id": "14126026",
     "name": "PARED MUROFLEX CARRARA BLANCO (WPC-02)",
     "category": "NUEVOS",
@@ -9367,27 +8755,6 @@
     "pdf_tech_sheet": "",
     "stock_status": "In Stock",
     "description": "PARED MUROFLEX STONE GRIS (WPC-01)",
-    "price_cop": "Consultar precio",
-    "price_usd": "Consultar precio",
-    "price_source": "none"
-  },
-  {
-    "id": "PARED PU ARQUNITEC",
-    "name": "nan",
-    "category": "NUEVOS",
-    "subcategory": "NUEVOS",
-    "collection": "NUEVOS",
-    "price": "Consultar precio",
-    "unit": "Piece",
-    "items_per_box": "1",
-    "style_tags": [
-      "NUEVOS"
-    ],
-    "dimensions": {},
-    "image_url": "",
-    "pdf_tech_sheet": "",
-    "stock_status": "In Stock",
-    "description": "nan",
     "price_cop": "Consultar precio",
     "price_usd": "Consultar precio",
     "price_source": "none"
@@ -9587,27 +8954,6 @@
     "price_source": "LISTA MARKETING OCTUBRE"
   },
   {
-    "id": "PARED UNIFLEX",
-    "name": "nan",
-    "category": "NUEVOS",
-    "subcategory": "NUEVOS",
-    "collection": "NUEVOS",
-    "price": "Consultar precio",
-    "unit": "Piece",
-    "items_per_box": "1",
-    "style_tags": [
-      "NUEVOS"
-    ],
-    "dimensions": {},
-    "image_url": "",
-    "pdf_tech_sheet": "",
-    "stock_status": "In Stock",
-    "description": "nan",
-    "price_cop": "Consultar precio",
-    "price_usd": "Consultar precio",
-    "price_source": "none"
-  },
-  {
     "id": "14123201",
     "name": "PARED UNIFLEX CITRINO 120x60x0,2CM",
     "category": "NUEVOS",
@@ -9782,27 +9128,6 @@
     "price_usd": "Consultar precio",
     "price_approx": true,
     "price_source": "LISTA MARKETING OCTUBRE"
-  },
-  {
-    "id": "POLIFACHADA EXTERIOR",
-    "name": "nan",
-    "category": "NUEVOS",
-    "subcategory": "NUEVOS",
-    "collection": "NUEVOS",
-    "price": "Consultar precio",
-    "unit": "Piece",
-    "items_per_box": "1",
-    "style_tags": [
-      "NUEVOS"
-    ],
-    "dimensions": {},
-    "image_url": "",
-    "pdf_tech_sheet": "",
-    "stock_status": "In Stock",
-    "description": "nan",
-    "price_cop": "Consultar precio",
-    "price_usd": "Consultar precio",
-    "price_source": "none"
   },
   {
     "id": "14091001",
@@ -10025,27 +9350,6 @@
     "price_source": "LISTA MARKETING OCTUBRE"
   },
   {
-    "id": "ROLLOS ADHESIVOS PARED MARMOL",
-    "name": "nan",
-    "category": "NUEVOS",
-    "subcategory": "NUEVOS",
-    "collection": "NUEVOS",
-    "price": "Consultar precio",
-    "unit": "Piece",
-    "items_per_box": "1",
-    "style_tags": [
-      "NUEVOS"
-    ],
-    "dimensions": {},
-    "image_url": "",
-    "pdf_tech_sheet": "",
-    "stock_status": "In Stock",
-    "description": "nan",
-    "price_cop": "Consultar precio",
-    "price_usd": "Consultar precio",
-    "price_source": "none"
-  },
-  {
     "id": "14121301",
     "name": "ADHESIVO DE PARED EN ROLLO GRIS (6210-1)",
     "category": "NUEVOS",
@@ -10130,27 +9434,6 @@
     "price_source": "none"
   },
   {
-    "id": "PEGANTES",
-    "name": "nan",
-    "category": "NUEVOS",
-    "subcategory": "NUEVOS",
-    "collection": "NUEVOS",
-    "price": "Consultar precio",
-    "unit": "Piece",
-    "items_per_box": "1",
-    "style_tags": [
-      "NUEVOS"
-    ],
-    "dimensions": {},
-    "image_url": "",
-    "pdf_tech_sheet": "",
-    "stock_status": "In Stock",
-    "description": "nan",
-    "price_cop": "Consultar precio",
-    "price_usd": "Consultar precio",
-    "price_source": "none"
-  },
-  {
     "id": "14212102",
     "name": "ADHESIVO MIXTO MULTIPROPOSITO PEGATEC BLANCO",
     "category": "NUEVOS",
@@ -10193,27 +9476,6 @@
     "price_usd": "Consultar precio",
     "price_approx": true,
     "price_source": "LISTA MARKETING OCTUBRE"
-  },
-  {
-    "id": "PELICULA INTELIGENTE",
-    "name": "nan",
-    "category": "NUEVOS",
-    "subcategory": "NUEVOS",
-    "collection": "NUEVOS",
-    "price": "Consultar precio",
-    "unit": "Piece",
-    "items_per_box": "1",
-    "style_tags": [
-      "NUEVOS"
-    ],
-    "dimensions": {},
-    "image_url": "",
-    "pdf_tech_sheet": "",
-    "stock_status": "In Stock",
-    "description": "nan",
-    "price_cop": "Consultar precio",
-    "price_usd": "Consultar precio",
-    "price_source": "none"
   },
   {
     "id": "14051302",
@@ -10594,27 +9856,6 @@
     "price_source": "none"
   },
   {
-    "id": "PISOS",
-    "name": "nan",
-    "category": "NUEVOS",
-    "subcategory": "NUEVOS",
-    "collection": "NUEVOS",
-    "price": "Consultar precio",
-    "unit": "Piece",
-    "items_per_box": "1",
-    "style_tags": [
-      "NUEVOS"
-    ],
-    "dimensions": {},
-    "image_url": "",
-    "pdf_tech_sheet": "",
-    "stock_status": "In Stock",
-    "description": "nan",
-    "price_cop": "Consultar precio",
-    "price_usd": "Consultar precio",
-    "price_source": "none"
-  },
-  {
     "id": "14113002",
     "name": "PISO DECK EXTERIOR GRAFITO",
     "category": "NUEVOS",
@@ -10941,27 +10182,6 @@
     "price_source": "none"
   },
   {
-    "id": "PISOS SPC",
-    "name": "nan",
-    "category": "NUEVOS",
-    "subcategory": "NUEVOS",
-    "collection": "NUEVOS",
-    "price": "Consultar precio",
-    "unit": "Piece",
-    "items_per_box": "1",
-    "style_tags": [
-      "NUEVOS"
-    ],
-    "dimensions": {},
-    "image_url": "",
-    "pdf_tech_sheet": "",
-    "stock_status": "In Stock",
-    "description": "nan",
-    "price_cop": "Consultar precio",
-    "price_usd": "Consultar precio",
-    "price_source": "none"
-  },
-  {
     "id": "14112011",
     "name": "PISO SPC GRIS CENIZO IXPE (4mm-122*18.3cm)",
     "category": "NUEVOS",
@@ -11114,27 +10334,6 @@
     "price_source": "none"
   },
   {
-    "id": "ZOCALOS",
-    "name": "nan",
-    "category": "NUEVOS",
-    "subcategory": "NUEVOS",
-    "collection": "NUEVOS",
-    "price": "Consultar precio",
-    "unit": "Piece",
-    "items_per_box": "1",
-    "style_tags": [
-      "NUEVOS"
-    ],
-    "dimensions": {},
-    "image_url": "",
-    "pdf_tech_sheet": "",
-    "stock_status": "In Stock",
-    "description": "nan",
-    "price_cop": "Consultar precio",
-    "price_usd": "Consultar precio",
-    "price_source": "none"
-  },
-  {
     "id": "14112411",
     "name": "ZOCALO SPC GRIS CENIZO IXPE S011",
     "category": "NUEVOS",
@@ -11278,27 +10477,6 @@
     "pdf_tech_sheet": "",
     "stock_status": "In Stock",
     "description": "ZOCALO SPC AVELLANA IXPE S013 NEW",
-    "price_cop": "Consultar precio",
-    "price_usd": "Consultar precio",
-    "price_source": "none"
-  },
-  {
-    "id": "PANEL WPC PLANO",
-    "name": "nan",
-    "category": "NUEVOS",
-    "subcategory": "NUEVOS",
-    "collection": "NUEVOS",
-    "price": "Consultar precio",
-    "unit": "Piece",
-    "items_per_box": "1",
-    "style_tags": [
-      "NUEVOS"
-    ],
-    "dimensions": {},
-    "image_url": "",
-    "pdf_tech_sheet": "",
-    "stock_status": "In Stock",
-    "description": "nan",
     "price_cop": "Consultar precio",
     "price_usd": "Consultar precio",
     "price_source": "none"
@@ -11619,8 +10797,8 @@
     "price_source": "CATALOGO 2026",
     "unit": "Unidad",
     "stock_status": "In Stock",
-    "description": "LAMINA MARMOL ALASKA. Ancho: 122cm | Largo: 2.44m | Área: 2.9m² | Peso: 19kg | Espesor: 0.5mm | PRODUCTO NUEVO. Uso: Paredes interior, decoración.",
-    "catalog_specs": "Ancho: 122cm | Largo: 2.44m | Área: 2.9m² | Peso: 19kg | Espesor: 0.5mm | PRODUCTO NUEVO",
+    "description": "LAMINA MARMOL ALASKA. Ancho: 122cm | Largo: 2.44m | Área: 2.9m² | Peso: 19kg | PRODUCTO NUEVO. Uso: Paredes interior, decoración.",
+    "catalog_specs": "Ancho: 122cm | Largo: 2.44m | Área: 2.9m² | Peso: 19kg | PRODUCTO NUEVO",
     "catalog_colors": [
       "ALASKA"
     ],
@@ -11642,8 +10820,8 @@
     "price_source": "CATALOGO 2026",
     "unit": "Unidad",
     "stock_status": "In Stock",
-    "description": "LAMINA MARMOL NERO GOLD. Ancho: 122cm | Largo: 2.44m | Área: 2.9m² | Peso: 19kg | Espesor: 0.5mm. Uso: Paredes interior, decoración.",
-    "catalog_specs": "Ancho: 122cm | Largo: 2.44m | Área: 2.9m² | Peso: 19kg | Espesor: 0.5mm",
+    "description": "LAMINA MARMOL NERO GOLD. Ancho: 122cm | Largo: 2.44m | Área: 2.9m² | Peso: 19kg. Uso: Paredes interior, decoración.",
+    "catalog_specs": "Ancho: 122cm | Largo: 2.44m | Área: 2.9m² | Peso: 19kg",
     "catalog_colors": [
       "NERO GOLD"
     ],
@@ -11665,8 +10843,8 @@
     "price_source": "CATALOGO 2026",
     "unit": "Unidad",
     "stock_status": "In Stock",
-    "description": "LAMINA MARMOL POLAR. Ancho: 122cm | Largo: 2.44m | Área: 2.9m² | Peso: 19kg | Espesor: 0.5mm. Uso: Paredes interior, decoración.",
-    "catalog_specs": "Ancho: 122cm | Largo: 2.44m | Área: 2.9m² | Peso: 19kg | Espesor: 0.5mm",
+    "description": "LAMINA MARMOL POLAR. Ancho: 122cm | Largo: 2.44m | Área: 2.9m² | Peso: 19kg. Uso: Paredes interior, decoración.",
+    "catalog_specs": "Ancho: 122cm | Largo: 2.44m | Área: 2.9m² | Peso: 19kg",
     "catalog_colors": [
       "POLAR"
     ],
@@ -11688,8 +10866,8 @@
     "price_source": "CATALOGO 2026",
     "unit": "Unidad",
     "stock_status": "In Stock",
-    "description": "LAMINA MARMOL CATALATTA ROYAL. Ancho: 122cm | Largo: 2.44m | Área: 2.9m² | Peso: 19kg | Espesor: 0.5mm. Uso: Paredes interior, decoración.",
-    "catalog_specs": "Ancho: 122cm | Largo: 2.44m | Área: 2.9m² | Peso: 19kg | Espesor: 0.5mm",
+    "description": "LAMINA MARMOL CATALATTA ROYAL. Ancho: 122cm | Largo: 2.44m | Área: 2.9m² | Peso: 19kg. Uso: Paredes interior, decoración.",
+    "catalog_specs": "Ancho: 122cm | Largo: 2.44m | Área: 2.9m² | Peso: 19kg",
     "catalog_colors": [
       "CATALATTA ROYAL"
     ],
@@ -11711,8 +10889,8 @@
     "price_source": "CATALOGO 2026",
     "unit": "Unidad",
     "stock_status": "In Stock",
-    "description": "MÁRMOL ESENCIA MARINA. Ancho: 122cm | Largo: 2.44m | Área: 2.9m² | Peso: 19kg | Espesor: 0.5mm | PRODUCTO NUEVO. Uso: Paredes interior, decoración.",
-    "catalog_specs": "Ancho: 122cm | Largo: 2.44m | Área: 2.9m² | Peso: 19kg | Espesor: 0.5mm | PRODUCTO NUEVO",
+    "description": "MÁRMOL ESENCIA MARINA. Ancho: 122cm | Largo: 2.44m | Área: 2.9m² | Peso: 19kg | PRODUCTO NUEVO. Uso: Paredes interior, decoración.",
+    "catalog_specs": "Ancho: 122cm | Largo: 2.44m | Área: 2.9m² | Peso: 19kg | PRODUCTO NUEVO",
     "catalog_colors": [
       "ESENCIA MARINA"
     ],
@@ -11734,8 +10912,8 @@
     "price_source": "CATALOGO 2026",
     "unit": "Unidad",
     "stock_status": "In Stock",
-    "description": "LAMINA MARMOL TITAN. Ancho: 122cm | Largo: 2.44m | Área: 2.9m² | Peso: 19kg | Espesor: 0.5mm. Uso: Paredes interior, decoración.",
-    "catalog_specs": "Ancho: 122cm | Largo: 2.44m | Área: 2.9m² | Peso: 19kg | Espesor: 0.5mm",
+    "description": "LAMINA MARMOL TITAN. Ancho: 122cm | Largo: 2.44m | Área: 2.9m² | Peso: 19kg. Uso: Paredes interior, decoración.",
+    "catalog_specs": "Ancho: 122cm | Largo: 2.44m | Área: 2.9m² | Peso: 19kg",
     "catalog_colors": [
       "TITAN"
     ],
@@ -11757,8 +10935,8 @@
     "price_source": "CATALOGO 2026",
     "unit": "Unidad",
     "stock_status": "In Stock",
-    "description": "LAMINA MARMOL ARTIC. Ancho: 122cm | Largo: 2.44m | Área: 2.9m² | Peso: 19kg | Espesor: 0.5mm. Uso: Paredes interior, decoración.",
-    "catalog_specs": "Ancho: 122cm | Largo: 2.44m | Área: 2.9m² | Peso: 19kg | Espesor: 0.5mm",
+    "description": "LAMINA MARMOL ARTIC. Ancho: 122cm | Largo: 2.44m | Área: 2.9m² | Peso: 19kg. Uso: Paredes interior, decoración.",
+    "catalog_specs": "Ancho: 122cm | Largo: 2.44m | Área: 2.9m² | Peso: 19kg",
     "catalog_colors": [
       "ARTIC"
     ],
@@ -11780,8 +10958,8 @@
     "price_source": "CATALOGO 2026",
     "unit": "Unidad",
     "stock_status": "In Stock",
-    "description": "LAMINA MARMOL URBAN STONE. Ancho: 122cm | Largo: 2.44m | Área: 2.9m² | Peso: 19kg | Espesor: 0.5mm. Uso: Paredes interior, decoración.",
-    "catalog_specs": "Ancho: 122cm | Largo: 2.44m | Área: 2.9m² | Peso: 19kg | Espesor: 0.5mm",
+    "description": "LAMINA MARMOL URBAN STONE. Ancho: 122cm | Largo: 2.44m | Área: 2.9m² | Peso: 19kg. Uso: Paredes interior, decoración.",
+    "catalog_specs": "Ancho: 122cm | Largo: 2.44m | Área: 2.9m² | Peso: 19kg",
     "catalog_colors": [
       "URBAN STONE"
     ],
@@ -11803,8 +10981,8 @@
     "price_source": "CATALOGO 2026",
     "unit": "Unidad",
     "stock_status": "In Stock",
-    "description": "LAMINA MARMOL OCEANIC. Ancho: 122cm | Largo: 2.44m | Área: 2.9m² | Peso: 19kg | Espesor: 0.5mm | PRODUCTO NUEVO. Uso: Paredes interior, decoración.",
-    "catalog_specs": "Ancho: 122cm | Largo: 2.44m | Área: 2.9m² | Peso: 19kg | Espesor: 0.5mm | PRODUCTO NUEVO",
+    "description": "LAMINA MARMOL OCEANIC. Ancho: 122cm | Largo: 2.44m | Área: 2.9m² | Peso: 19kg | PRODUCTO NUEVO. Uso: Paredes interior, decoración.",
+    "catalog_specs": "Ancho: 122cm | Largo: 2.44m | Área: 2.9m² | Peso: 19kg | PRODUCTO NUEVO",
     "catalog_colors": [
       "OCEANIC"
     ],
@@ -11826,8 +11004,8 @@
     "price_source": "CATALOGO 2026",
     "unit": "Unidad",
     "stock_status": "In Stock",
-    "description": "LAMINA MARMOL NATURAL. Ancho: 122cm | Largo: 2.44m | Área: 2.9m² | Peso: 19kg | Espesor: 0.5mm. Uso: Paredes interior, decoración.",
-    "catalog_specs": "Ancho: 122cm | Largo: 2.44m | Área: 2.9m² | Peso: 19kg | Espesor: 0.5mm",
+    "description": "LAMINA MARMOL NATURAL. Ancho: 122cm | Largo: 2.44m | Área: 2.9m² | Peso: 19kg. Uso: Paredes interior, decoración.",
+    "catalog_specs": "Ancho: 122cm | Largo: 2.44m | Área: 2.9m² | Peso: 19kg",
     "catalog_colors": [
       "NATURAL"
     ],
@@ -11849,8 +11027,8 @@
     "price_source": "CATALOGO 2026",
     "unit": "Unidad",
     "stock_status": "In Stock",
-    "description": "LAMINA MARMOL TERRA. Ancho: 122cm | Largo: 2.44m | Área: 2.9m² | Peso: 19kg | Espesor: 0.5mm. Uso: Paredes interior, decoración.",
-    "catalog_specs": "Ancho: 122cm | Largo: 2.44m | Área: 2.9m² | Peso: 19kg | Espesor: 0.5mm",
+    "description": "LAMINA MARMOL TERRA. Ancho: 122cm | Largo: 2.44m | Área: 2.9m² | Peso: 19kg. Uso: Paredes interior, decoración.",
+    "catalog_specs": "Ancho: 122cm | Largo: 2.44m | Área: 2.9m² | Peso: 19kg",
     "catalog_colors": [
       "TERRA"
     ],
@@ -11872,8 +11050,8 @@
     "price_source": "CATALOGO 2026",
     "unit": "Unidad",
     "stock_status": "In Stock",
-    "description": "LAMINA MARMOL SILVER. Ancho: 122cm | Largo: 2.44m | Área: 2.9m² | Peso: 19kg | Espesor: 0.5mm. Uso: Paredes interior, decoración.",
-    "catalog_specs": "Ancho: 122cm | Largo: 2.44m | Área: 2.9m² | Peso: 19kg | Espesor: 0.5mm",
+    "description": "LAMINA MARMOL SILVER. Ancho: 122cm | Largo: 2.44m | Área: 2.9m² | Peso: 19kg. Uso: Paredes interior, decoración.",
+    "catalog_specs": "Ancho: 122cm | Largo: 2.44m | Área: 2.9m² | Peso: 19kg",
     "catalog_colors": [
       "SILVER"
     ],
@@ -11941,8 +11119,8 @@
     "price_source": "CATALOGO 2026",
     "unit": "Unidad",
     "stock_status": "In Stock",
-    "description": "MÁRMOL NOBLEZA. Ancho: 122cm | Largo: 2.44m | Área: 2.9m² | Espesor: 0.5mm. Uso: Paredes interior, decoración premium.",
-    "catalog_specs": "Ancho: 122cm | Largo: 2.44m | Área: 2.9m² | Espesor: 0.5mm",
+    "description": "MÁRMOL NOBLEZA. Ancho: 122cm | Largo: 2.44m | Área: 2.9m². Uso: Paredes interior, decoración premium.",
+    "catalog_specs": "Ancho: 122cm | Largo: 2.44m | Área: 2.9m²",
     "catalog_colors": [
       "NOBLEZA"
     ],
@@ -11964,8 +11142,8 @@
     "price_source": "CATALOGO 2026",
     "unit": "Unidad",
     "stock_status": "In Stock",
-    "description": "MÁRMOL ORO LIQUIDO. Ancho: 122cm | Largo: 2.44m | Área: 2.9m² | Espesor: 0.5mm. Uso: Paredes interior, decoración premium.",
-    "catalog_specs": "Ancho: 122cm | Largo: 2.44m | Área: 2.9m² | Espesor: 0.5mm",
+    "description": "MÁRMOL ORO LIQUIDO. Ancho: 122cm | Largo: 2.44m | Área: 2.9m². Uso: Paredes interior, decoración premium.",
+    "catalog_specs": "Ancho: 122cm | Largo: 2.44m | Área: 2.9m²",
     "catalog_colors": [
       "ORO LIQUIDO"
     ],
@@ -11987,8 +11165,8 @@
     "price_source": "CATALOGO 2026",
     "unit": "Unidad",
     "stock_status": "In Stock",
-    "description": "MÁRMOL ESTELAR. Ancho: 122cm | Largo: 2.44m | Área: 2.9m² | Espesor: 0.5mm. Uso: Paredes interior, decoración premium.",
-    "catalog_specs": "Ancho: 122cm | Largo: 2.44m | Área: 2.9m² | Espesor: 0.5mm",
+    "description": "MÁRMOL ESTELAR. Ancho: 122cm | Largo: 2.44m | Área: 2.9m². Uso: Paredes interior, decoración premium.",
+    "catalog_specs": "Ancho: 122cm | Largo: 2.44m | Área: 2.9m²",
     "catalog_colors": [
       "ESTELAR"
     ],
@@ -12010,8 +11188,8 @@
     "price_source": "CATALOGO 2026",
     "unit": "Unidad",
     "stock_status": "In Stock",
-    "description": "MÁRMOL NEVADO DE ORO. Ancho: 122cm | Largo: 2.44m | Área: 2.9m² | Espesor: 0.5mm. Uso: Paredes interior, decoración premium.",
-    "catalog_specs": "Ancho: 122cm | Largo: 2.44m | Área: 2.9m² | Espesor: 0.5mm",
+    "description": "MÁRMOL NEVADO DE ORO. Ancho: 122cm | Largo: 2.44m | Área: 2.9m². Uso: Paredes interior, decoración premium.",
+    "catalog_specs": "Ancho: 122cm | Largo: 2.44m | Área: 2.9m²",
     "catalog_colors": [
       "NEVADO DE ORO"
     ],
@@ -12033,8 +11211,8 @@
     "price_source": "CATALOGO 2026",
     "unit": "Unidad",
     "stock_status": "In Stock",
-    "description": "MÁRMOL ZEUS. Ancho: 122cm | Largo: 2.44m | Área: 2.9m² | Espesor: 0.5mm. Uso: Paredes interior, decoración premium.",
-    "catalog_specs": "Ancho: 122cm | Largo: 2.44m | Área: 2.9m² | Espesor: 0.5mm",
+    "description": "MÁRMOL ZEUS. Ancho: 122cm | Largo: 2.44m | Área: 2.9m². Uso: Paredes interior, decoración premium.",
+    "catalog_specs": "Ancho: 122cm | Largo: 2.44m | Área: 2.9m²",
     "catalog_colors": [
       "ZEUS"
     ],
@@ -12056,8 +11234,8 @@
     "price_source": "CATALOGO 2026",
     "unit": "Unidad",
     "stock_status": "In Stock",
-    "description": "MÁRMOL GOLD PAONAZZO. Ancho: 122cm | Largo: 2.44m | Área: 2.9m² | Espesor: 0.5mm. Uso: Paredes interior, decoración premium.",
-    "catalog_specs": "Ancho: 122cm | Largo: 2.44m | Área: 2.9m² | Espesor: 0.5mm",
+    "description": "MÁRMOL GOLD PAONAZZO. Ancho: 122cm | Largo: 2.44m | Área: 2.9m². Uso: Paredes interior, decoración premium.",
+    "catalog_specs": "Ancho: 122cm | Largo: 2.44m | Área: 2.9m²",
     "catalog_colors": [
       "GOLD PAONAZZO"
     ],
@@ -12079,8 +11257,8 @@
     "price_source": "CATALOGO 2026",
     "unit": "Unidad",
     "stock_status": "In Stock",
-    "description": "MÁRMOL CALACATTA. Ancho: 122cm | Largo: 2.44m | Área: 2.9m² | Espesor: 0.5mm. Uso: Paredes interior, decoración premium.",
-    "catalog_specs": "Ancho: 122cm | Largo: 2.44m | Área: 2.9m² | Espesor: 0.5mm",
+    "description": "MÁRMOL CALACATTA. Ancho: 122cm | Largo: 2.44m | Área: 2.9m². Uso: Paredes interior, decoración premium.",
+    "catalog_specs": "Ancho: 122cm | Largo: 2.44m | Área: 2.9m²",
     "catalog_colors": [
       "CALACATTA"
     ],
@@ -12102,8 +11280,8 @@
     "price_source": "CATALOGO 2026",
     "unit": "Unidad",
     "stock_status": "In Stock",
-    "description": "MÁRMOL ELEGANCE GOLD. Ancho: 122cm | Largo: 2.44m | Área: 2.9m² | Espesor: 0.5mm. Uso: Paredes interior, decoración premium.",
-    "catalog_specs": "Ancho: 122cm | Largo: 2.44m | Área: 2.9m² | Espesor: 0.5mm",
+    "description": "MÁRMOL ELEGANCE GOLD. Ancho: 122cm | Largo: 2.44m | Área: 2.9m². Uso: Paredes interior, decoración premium.",
+    "catalog_specs": "Ancho: 122cm | Largo: 2.44m | Área: 2.9m²",
     "catalog_colors": [
       "ELEGANCE GOLD"
     ],
@@ -12125,8 +11303,8 @@
     "price_source": "CATALOGO 2026",
     "unit": "Unidad",
     "stock_status": "In Stock",
-    "description": "MÁRMOL LUNA. Ancho: 122cm | Largo: 2.44m | Área: 2.9m² | Espesor: 0.5mm. Uso: Paredes interior, decoración premium.",
-    "catalog_specs": "Ancho: 122cm | Largo: 2.44m | Área: 2.9m² | Espesor: 0.5mm",
+    "description": "MÁRMOL LUNA. Ancho: 122cm | Largo: 2.44m | Área: 2.9m². Uso: Paredes interior, decoración premium.",
+    "catalog_specs": "Ancho: 122cm | Largo: 2.44m | Área: 2.9m²",
     "catalog_colors": [
       "LUNA"
     ],
@@ -12148,8 +11326,8 @@
     "price_source": "CATALOGO 2026",
     "unit": "Unidad",
     "stock_status": "In Stock",
-    "description": "MÁRMOL STATUARIO. Ancho: 122cm | Largo: 2.44m | Área: 2.9m² | Espesor: 0.5mm. Uso: Paredes interior, decoración premium.",
-    "catalog_specs": "Ancho: 122cm | Largo: 2.44m | Área: 2.9m² | Espesor: 0.5mm",
+    "description": "MÁRMOL STATUARIO. Ancho: 122cm | Largo: 2.44m | Área: 2.9m². Uso: Paredes interior, decoración premium.",
+    "catalog_specs": "Ancho: 122cm | Largo: 2.44m | Área: 2.9m²",
     "catalog_colors": [
       "STATUARIO"
     ],
@@ -12179,7 +11357,19 @@
     "catalog_use": "Panel WPC interior, paredes",
     "style_tags": [
       "PANELES WPC INTERIOR"
-    ]
+    ],
+    "dimensions": {
+      "latam": {
+        "width_cm": 16,
+        "length_cm": 295,
+        "thickness_mm": 25
+      },
+      "usa": {
+        "width_in": 6.3,
+        "length_ft": 9.68,
+        "thickness_in": 0.98
+      }
+    }
   },
   {
     "id": "14122638",
@@ -12202,7 +11392,19 @@
     "catalog_use": "Panel WPC interior, paredes",
     "style_tags": [
       "PANELES WPC INTERIOR"
-    ]
+    ],
+    "dimensions": {
+      "latam": {
+        "width_cm": 16,
+        "length_cm": 295,
+        "thickness_mm": 25
+      },
+      "usa": {
+        "width_in": 6.3,
+        "length_ft": 9.68,
+        "thickness_in": 0.98
+      }
+    }
   },
   {
     "id": "14122645",
@@ -12225,7 +11427,19 @@
     "catalog_use": "Panel WPC interior, paredes",
     "style_tags": [
       "PANELES WPC INTERIOR"
-    ]
+    ],
+    "dimensions": {
+      "latam": {
+        "width_cm": 16,
+        "length_cm": 295,
+        "thickness_mm": 25
+      },
+      "usa": {
+        "width_in": 6.3,
+        "length_ft": 9.68,
+        "thickness_in": 0.98
+      }
+    }
   },
   {
     "id": "14122652",
@@ -12248,7 +11462,19 @@
     "catalog_use": "Panel WPC interior, paredes",
     "style_tags": [
       "PANELES WPC INTERIOR"
-    ]
+    ],
+    "dimensions": {
+      "latam": {
+        "width_cm": 16,
+        "length_cm": 295,
+        "thickness_mm": 25
+      },
+      "usa": {
+        "width_in": 6.3,
+        "length_ft": 9.68,
+        "thickness_in": 0.98
+      }
+    }
   },
   {
     "id": "14122904",
@@ -12256,8 +11482,8 @@
     "category": "LISTONES PVC",
     "subcategory": "LISTONES PVC",
     "collection": "INTERIOR",
-    "price": "Consultar precio",
-    "price_cop": "Consultar precio",
+    "price": "$ 7.000",
+    "price_cop": "$ 7.000",
     "price_usd": "Consultar precio",
     "price_approx": true,
     "price_source": "CATALOGO 2026",
@@ -12317,7 +11543,19 @@
     "catalog_use": "Panel WPC interior, paredes",
     "style_tags": [
       "PANELES WPC INTERIOR"
-    ]
+    ],
+    "dimensions": {
+      "latam": {
+        "width_cm": 16,
+        "length_cm": 295,
+        "thickness_mm": 25
+      },
+      "usa": {
+        "width_in": 6.3,
+        "length_ft": 9.68,
+        "thickness_in": 0.98
+      }
+    }
   },
   {
     "id": "14124901",
@@ -12340,7 +11578,19 @@
     "catalog_use": "Panel WPC redondo interior",
     "style_tags": [
       "PANELES WPC INTERIOR"
-    ]
+    ],
+    "dimensions": {
+      "latam": {
+        "width_cm": 16,
+        "length_cm": 295,
+        "thickness_mm": 25
+      },
+      "usa": {
+        "width_in": 6.3,
+        "length_ft": 9.68,
+        "thickness_in": 0.98
+      }
+    }
   },
   {
     "id": "14124932",
@@ -12363,6 +11613,18 @@
     "catalog_use": "Panel WPC redondo interior",
     "style_tags": [
       "PANELES WPC INTERIOR"
-    ]
+    ],
+    "dimensions": {
+      "latam": {
+        "width_cm": 16,
+        "length_cm": 295,
+        "thickness_mm": 25
+      },
+      "usa": {
+        "width_in": 6.3,
+        "length_ft": 9.68,
+        "thickness_in": 0.98
+      }
+    }
   }
 ]

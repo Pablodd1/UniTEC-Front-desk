@@ -303,9 +303,66 @@ const CATALOG_SPECS = {
   '14201002': { name: 'CINTA ADHESIVA PLATEADA 1CM 50M', specs: 'Ancho: 1cm | Largo: 50m | Tipo: Papel', colors: ['PLATEADA'], use: 'Cinta adhesiva papel' },
 };
 
+// ─── SPEC CORRECTION PASS (verified against 2026 catalog pages) ─────────────
+// The catalog prints thickness (0.5mm) ONLY for the FOAM BOARD families
+// (Zen/Espejo/Gotas/Pastel/Aurora/Arenisca — verified p.28: "122CM X 244CM X 0.5MM").
+// Mármol PVC sheets and Láminas Sintéticas pages print NO thickness — strip the
+// wrongly-inherited "0.5mm" so the bot never quotes an invented spec.
+const FOAM_BOARD_RE = /^14181[1-4]/;
+for (const [ref, spec] of Object.entries(CATALOG_SPECS)) {
+  if (!FOAM_BOARD_RE.test(ref) && spec.specs.includes('0.5mm')) {
+    spec.specs = spec.specs.replace(/\s*\|\s*Espesor: 0\.5mm/g, '')
+      .replace(/Espesor: 0\.5mm\s*\|\s*/g, '')
+      .trim();
+  }
+}
+
+// ─── DATA HYGIENE (deploy-time, always applied) ─────────────────────────────
+// 1) Remove junk "nan" rows that leaked in from the price-list import
+//    (category headers imported as products).
+// 2) Merge legacy duplicate refs into the 2026 catalog refs (same product,
+//    same image — the legacy rows double the product in answers).
+// 3) Never keep two rows for the same normalized product name.
+function runDataHygiene(products) {
+  const before = products.length;
+  let removed = 0;
+
+  // 1) nan rows
+  for (let i = products.length - 1; i >= 0; i--) {
+    if (String(products[i].name || '').trim().toLowerCase() === 'nan') {
+      products.splice(i, 1); removed++;
+    }
+  }
+
+  // 2) legacy ref merges: [legacyRef, catalogRef]
+  const LEGACY_MERGES = [
+    ['14122895', '14122904'], // KIT TAPONES 10CM — catalog ref is 14122904 (p.63)
+    ['14121014', '14121214'], // LAMINA MARMOL MATE PIGMENTO — catalog M-series ref
+    ['14121016', '14121216'], // LAMINA MARMOL MATE PIEDRA ANGULAR — catalog M-series ref
+  ];
+  for (const [legacyRef, keepRef] of LEGACY_MERGES) {
+    const legacy = products.find((p) => String(p.id) === legacyRef);
+    if (!legacy) continue;
+    const keep = products.find((p) => String(p.id) === keepRef);
+    if (keep) {
+      // carry over price only when the kept row has none
+      const keepPrice = keep.price_cop || keep.price;
+      const legacyPrice = legacy.price_cop || legacy.price;
+      if ((!keepPrice || String(keepPrice).includes('Consultar')) && legacyPrice && !String(legacyPrice).includes('Consultar')) {
+        keep.price = legacyPrice; keep.price_cop = legacyPrice;
+      }
+    }
+    products.splice(products.indexOf(legacy), 1); removed++;
+  }
+
+  console.log(`Data hygiene: removed ${removed} rows (${before} → ${products.length})`);
+  return products;
+}
+
 // ─── MERGE INTO products.json ────────────────────────────────────────────────
 const productsPath = path.join(ROOT, 'products.json');
-const products = JSON.parse(fs.readFileSync(productsPath, 'utf8'));
+let products = JSON.parse(fs.readFileSync(productsPath, 'utf8'));
+products = runDataHygiene(products);
 
 let updated = 0;
 let added = 0;
@@ -323,7 +380,12 @@ for (const [ref, spec] of Object.entries(CATALOG_SPECS)) {
     if (spec.specs.includes('30cm') && spec.specs.includes('595')) {
       existing.dimensions = { latam: { width_cm: 30, length_cm: 595, thickness_mm: 8.5 }, usa: { width_in: 11.81, length_ft: 19.52, thickness_in: 0.335 } };
     } else if (spec.specs.includes('122cm') && spec.specs.includes('244')) {
-      existing.dimensions = { latam: { width_cm: 122, length_cm: 244, thickness_mm: 0.5 }, usa: { width_in: 48.03, length_ft: 8.01, thickness_in: 0.02 } };
+      const th = spec.specs.match(/Espesor:\s*([\d.]+)\s*mm/);
+      const thMm = th ? parseFloat(th[1]) : null;
+      existing.dimensions = {
+        latam: { width_cm: 122, length_cm: 244, ...(thMm ? { thickness_mm: thMm } : {}) },
+        usa: { width_in: 48.03, length_ft: 8.01, ...(thMm ? { thickness_in: +(thMm / 25.4).toFixed(3) } : {}) },
+      };
     } else if (spec.specs.includes('21.9cm') && spec.specs.includes('2.90m')) {
       existing.dimensions = { latam: { width_cm: 21.9, length_cm: 290, thickness_mm: 25 }, usa: { width_in: 8.62, length_ft: 9.51, thickness_in: 0.98 } };
     } else if (spec.specs.includes('16cm') && spec.specs.includes('2.95m')) {
@@ -368,6 +430,12 @@ for (const p of products) {
 fs.writeFileSync(productsPath, JSON.stringify(products, null, 2) + '\n');
 console.log(`Updated: ${updated} products, Added: ${added} new products`);
 console.log(`Total products in products.json: ${products.length}`);
+
+// ─── SYNC to public/products.json (the file the LIVE site serves) ────────────
+// The bot fetches {origin}/products.json at runtime — keeping only the root file
+// in sync caused the "still stale data" incident. Always copy both.
+fs.copyFileSync(productsPath, path.join(ROOT, 'public/products.json'));
+console.log('public/products.json: synced');
 
 // ─── WRITE catalog-specs.json for prompt injection ───────────────────────────
 const specsOut = path.join(ROOT, 'public/catalog-specs.json');
