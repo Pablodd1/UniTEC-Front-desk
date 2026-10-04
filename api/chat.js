@@ -37,6 +37,11 @@ function trimHistory(history) {
 // ── Build-time price map (embedded at deploy, zero runtime fetch) ──
 const priceMap = require_('../public/price-map.json');
 
+// ── Build-time catalog specs (embedded at deploy, zero runtime fetch) ──
+// 245 products with exact specs from the 2026 catalog — the bot answers specs
+// INLINE from this map instead of deflecting to Drive PDF links.
+const catalogSpecs = require_('../public/catalog-specs.json');
+
 // ── Canonical origin + product cache (server-side fetch; never the request origin — review fix) ──
 const CANONICAL_ORIGIN = 'https://unitec-front-desk.vercel.app';
 let productsCache = { data: null, fetchedAt: 0 };
@@ -324,8 +329,8 @@ GOOD EXAMPLE: "¡Hola! ¿En qué producto te interesa?"`;
       };
 
       // ── Context injection ──────────────────────────────────────────────────
-      // 1) products matching the question (+ their own ficha técnica / image, so the bot can
-      //    send the PER-PRODUCT catalog instead of the whole Drive folder), and
+      // 1) products matching the question (+ catalog specs INLINE so the bot
+      //    answers specs directly instead of deflecting to Drive PDFs), and
       // 2) when the customer asks for a price, the rows of the client's authoritative list —
       //    the only prices the model is allowed to quote (always as an approximation).
       const blocks = [];
@@ -354,11 +359,15 @@ GOOD EXAMPLE: "¡Hola! ¿En qué producto te interesa?"`;
                 `Precio: ${price} por ${p.unit || 'Unidad'}${p.price_approx ? ' (APROXIMADO)' : ''}`,
                 `Stock: ${p.stock_status || 'Consultar'}`,
               ];
-              if (p.pdf_tech_sheet) bits.push(`Ficha técnica / catálogo del producto: ${p.pdf_tech_sheet}`);
+              // Inject catalog specs INLINE (replaces Drive PDF links)
+              if (p.catalog_specs) bits.push(`ESPECIFICACIONES: ${p.catalog_specs}`);
+              if (p.catalog_colors?.length) bits.push(`Colores: ${p.catalog_colors.join(', ')}`);
+              if (p.catalog_use) bits.push(`Uso: ${p.catalog_use}`);
+              if (p.pdf_tech_sheet) bits.push(`Ficha técnica: ${p.pdf_tech_sheet}`);
               if (p.image_url) bits.push(`Imagen: ${p.image_url}`);
               return '- ' + bits.join(' | ');
             }).join('\n');
-            blocks.push(`[SYSTEM CONTEXT - Productos que coinciden con la consulta]:\n${productContext}\nUsa estos datos para responder. Si el producto consultado no está en la lista, di "Consultar precio". Si el cliente pide el catálogo o la ficha técnica de ESTE producto, envía su enlace de ficha técnica (NUNCA el enlace del Drive completo; el catálogo completo solo si lo piden explícitamente).`);
+            blocks.push(`[SYSTEM CONTEXT - Productos que coinciden con la consulta]:\n${productContext}\nREGLA CRÍTICA: Responde las especificaciones técnicas DIRECTAMENTE de los datos anteriores (medidas, espesor, peso, colores). NO redirijas a fichas técnicas de Drive. Solo si el cliente pide explícitamente "la ficha técnica completa" o "el catálogo completo", entonces envía el enlace. Si el producto consultado no está en la lista, di "Consultar precio".`);
           }
         } catch (e) {
           console.warn('Failed to inject product context:', e);

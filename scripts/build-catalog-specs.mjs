@@ -1,0 +1,394 @@
+// scripts/build-catalog-specs.mjs
+// Builds public/catalog-specs.json from the 2026 catalog (183 pages analyzed)
+// This is the SINGLE SOURCE OF TRUTH for product specs — replaces Drive PDF links.
+//
+// Run: node scripts/build-catalog-specs.mjs
+import fs from 'node:fs';
+import path from 'node:path';
+
+const ROOT = path.resolve(path.dirname(new URL(import.meta.url).pathname), '..');
+
+// ─── CATALOG SPECS FROM 2026 CATALOG (pages 1-93 analyzed) ─────────────────
+// Each entry: ref → specs the bot should answer INLINE instead of Drive links.
+const CATALOG_SPECS = {
+  // LÁMINAS PVC CIELO RASO (p.5-8) — 30cm × 595cm × 8.5mm
+  '14031001': { name: 'LAMINA PVC BLANCO BRILLANTE', specs: 'Ancho: 30cm | Largo: 5.95m | Espesor: 8.5mm | Peso: 5.3kg/m²', colors: ['BLANCO BRILLANTE'], use: 'Cielo raso y paredes interior' },
+  '14031002': { name: 'LAMINA PVC BLANCO MADERA BRILLANTE', specs: 'Ancho: 30cm | Largo: 5.95m | Espesor: 8.5mm | Peso: 5.3kg/m²', colors: ['BLANCO MADERA BRILLANTE'], use: 'Cielo raso y paredes interior' },
+  '14031004': { name: 'LAMINA PVC BEIGE BRILLANTE', specs: 'Ancho: 30cm | Largo: 5.95m | Espesor: 8.5mm | Peso: 5.3kg/m²', colors: ['BEIGE BRILLANTE'], use: 'Cielo raso y paredes interior' },
+  '14031005': { name: 'LAMINA PVC BLANCO MATE', specs: 'Ancho: 30cm | Largo: 5.95m | Espesor: 8.5mm | Peso: 5.3kg/m²', colors: ['BLANCO MATE'], use: 'Cielo raso y paredes interior' },
+  '14031012': { name: 'LAMINA PVC JASPEADO BRILLANTE', specs: 'Ancho: 30cm | Largo: 5.95m | Espesor: 8.5mm | Peso: 5.3kg/m²', colors: ['JASPEADO BRILLANTE'], use: 'Cielo raso y paredes interior' },
+  '14031014': { name: 'LAMINA PVC BLANCO EJECUTIVO', specs: 'Ancho: 30cm | Largo: 5.95m | Espesor: 8.5mm | Peso: 5.3kg/m²', colors: ['BLANCO EJECUTIVO'], use: 'Cielo raso y paredes interior' },
+  '14031015': { name: 'LAMINA PVC MARMOLIZADA', specs: 'Ancho: 30cm | Largo: 5.95m | Espesor: 8.5mm | Peso: 5.3kg/m²', colors: ['MARMOLIZADA'], use: 'Cielo raso y paredes interior' },
+  '14031016': { name: 'LAMINA PVC BLANCO MADERA PINO', specs: 'Ancho: 30cm | Largo: 5.95m | Espesor: 8.5mm | Peso: 5.3kg/m²', colors: ['BLANCO MADERA PINO'], use: 'Cielo raso y paredes interior' },
+  '14032301': { name: 'LAMINA PVC BLANCO MADERA ACANALADA', specs: 'Ancho: 30cm | Largo: 5.95m | Espesor: 8.5mm | Peso: 5.3kg/m²', colors: ['BLANCO MADERA ACANALADA'], use: 'Cielo raso y paredes interior' },
+
+  // ACCESORIOS PVC (p.5)
+  '14032001': { name: 'CORNISA', specs: 'Perfil decorativo para lámina PVC', colors: [], use: 'Terminación bordes lámina PVC' },
+  '14032101': { name: 'PERIMETRAL U', specs: 'Perfil U perimetral para lámina PVC', colors: [], use: 'Terminación perímetro lámina PVC' },
+  '14032201': { name: 'PERIMETRAL F', specs: 'Perfil F perimetral para lámina PVC', colors: [], use: 'Terminación perímetro lámina PVC' },
+  '14032401': { name: 'UNIÓN H', specs: 'Perfil H unión para lámina PVC', colors: [], use: 'Unión láminas PVC' },
+  '14032501': { name: 'ESQUINERO', specs: 'Perfil esquinero para lámina PVC', colors: [], use: 'Esquinas lámina PVC' },
+
+  // LÁMINAS MÁRMOL PVC (p.35-48) — 122cm × 244cm × 2.9m², 19kg
+  '14121201': { name: 'MÁRMOL BLANCO (M01)', specs: 'Ancho: 122cm | Largo: 2.44m | Área: 2.9m² | Peso: 19kg | Espesor: 0.5mm', colors: ['BLANCO'], use: 'Paredes interior, decoración' },
+  '14121202': { name: 'MÁRMOL GRIS (M02)', specs: 'Ancho: 122cm | Largo: 2.44m | Área: 2.9m² | Peso: 19kg | Espesor: 0.5mm', colors: ['GRIS'], use: 'Paredes interior, decoración' },
+  '14121203': { name: 'MÁRMOL NEGRO (M03)', specs: 'Ancho: 122cm | Largo: 2.44m | Área: 2.9m² | Peso: 19kg | Espesor: 0.5mm', colors: ['NEGRO'], use: 'Paredes interior, decoración' },
+  '14121204': { name: 'MÁRMOL VETEADO (M04)', specs: 'Ancho: 122cm | Largo: 2.44m | Área: 2.9m² | Peso: 19kg | Espesor: 0.5mm', colors: ['VETEADO'], use: 'Paredes interior, decoración' },
+  '14121205': { name: 'MÁRMOL GRANITO (M05)', specs: 'Ancho: 122cm | Largo: 2.44m | Área: 2.9m² | Peso: 19kg | Espesor: 0.5mm', colors: ['GRANITO'], use: 'Paredes interior, decoración' },
+  '14121206': { name: 'MÁRMOL LUNA (M06)', specs: 'Ancho: 122cm | Largo: 2.44m | Área: 2.9m² | Peso: 19kg | Espesor: 0.5mm', colors: ['LUNA'], use: 'Paredes interior, decoración' },
+  '14121207': { name: 'MÁRMOL FUSIÓN (M07)', specs: 'Ancho: 122cm | Largo: 2.44m | Área: 2.9m² | Peso: 19kg | Espesor: 0.5mm', colors: ['FUSIÓN'], use: 'Paredes interior, decoración' },
+  '14121208': { name: 'MÁRMOL LONDRES (M08)', specs: 'Ancho: 122cm | Largo: 2.44m | Área: 2.9m² | Peso: 19kg | Espesor: 0.5mm', colors: ['LONDRES'], use: 'Paredes interior, decoración' },
+  '14121209': { name: 'MÁRMOL IBIZA (M09)', specs: 'Ancho: 122cm | Largo: 2.44m | Área: 2.9m² | Peso: 19kg | Espesor: 0.5mm', colors: ['IBIZA'], use: 'Paredes interior, decoración' },
+  '14121210': { name: 'MÁRMOL SAHARA (M10)', specs: 'Ancho: 122cm | Largo: 2.44m | Área: 2.9m² | Peso: 19kg | Espesor: 0.5mm', colors: ['SAHARA'], use: 'Paredes interior, decoración' },
+  '14121211': { name: 'MÁRMOL ECLIPSE (M11)', specs: 'Ancho: 122cm | Largo: 2.44m | Área: 2.9m² | Peso: 19kg | Espesor: 0.5mm', colors: ['ECLIPSE'], use: 'Paredes interior, decoración' },
+  '14121214': { name: 'MÁRMOL PIGMENTO (M14)', specs: 'Ancho: 122cm | Largo: 2.44m | Área: 2.9m² | Peso: 19kg | Espesor: 0.5mm', colors: ['PIGMENTO'], use: 'Paredes interior, decoración' },
+  '14121215': { name: 'MÁRMOL GRECIA (M15)', specs: 'Ancho: 122cm | Largo: 2.44m | Área: 2.9m² | Peso: 19kg | Espesor: 0.5mm', colors: ['GRECIA'], use: 'Paredes interior, decoración' },
+  '14121216': { name: 'MATE PIEDRA ANGULAR (M16)', specs: 'Ancho: 122cm | Largo: 2.44m | Área: 2.9m² | Peso: 19kg | Espesor: 0.5mm', colors: ['PIEDRA ANGULAR'], use: 'Paredes interior, decoración' },
+  '14121217': { name: 'BEIGE ACUARELA (M17)', specs: 'Ancho: 122cm | Largo: 2.44m | Área: 2.9m² | Peso: 19kg | Espesor: 0.5mm', colors: ['BEIGE ACUARELA'], use: 'Paredes interior, decoración' },
+  '14121218': { name: 'DESTELLOS DE ORO (M18)', specs: 'Ancho: 122cm | Largo: 2.44m | Área: 2.9m² | Peso: 19kg | Espesor: 0.5mm', colors: ['DESTELLOS DE ORO'], use: 'Paredes interior, decoración' },
+  '14121219': { name: 'MÁRMOL VIZCAYA (M19)', specs: 'Ancho: 122cm | Largo: 2.44m | Área: 2.9m² | Peso: 19kg | Espesor: 0.5mm', colors: ['VIZCAYA'], use: 'Paredes interior, decoración' },
+  '14121220': { name: 'MÁRMOL GUATAPURI (M20)', specs: 'Ancho: 122cm | Largo: 2.44m | Área: 2.9m² | Peso: 19kg | Espesor: 0.5mm', colors: ['GUATAPURI'], use: 'Paredes interior, decoración' },
+  '14121221': { name: 'MÁRMOL VENECIA (M21)', specs: 'Ancho: 122cm | Largo: 2.44m | Área: 2.9m² | Peso: 19kg | Espesor: 0.5mm', colors: ['VENECIA'], use: 'Paredes interior, decoración' },
+  '14121222': { name: 'MEDITERRANEO (M22)', specs: 'Ancho: 122cm | Largo: 2.44m | Área: 2.9m² | Peso: 19kg | Espesor: 0.5mm', colors: ['MEDITERRANEO'], use: 'Paredes interior, decoración' },
+  '14121223': { name: 'MÁRMOL OASIS (M23)', specs: 'Ancho: 122cm | Largo: 2.44m | Área: 2.9m² | Peso: 19kg | Espesor: 0.5mm', colors: ['OASIS'], use: 'Paredes interior, decoración' },
+  '14121229': { name: 'MÁRMOL VERONA (M29)', specs: 'Ancho: 122cm | Largo: 2.44m | Área: 2.9m² | Peso: 19kg | Espesor: 0.5mm', colors: ['VERONA'], use: 'Paredes interior, decoración' },
+  '14121230': { name: 'ISLANDIA (M30)', specs: 'Ancho: 122cm | Largo: 2.44m | Área: 2.9m² | Peso: 19kg | Espesor: 0.5mm', colors: ['ISLANDIA'], use: 'Paredes interior, decoración' },
+  '14121231': { name: 'NEW YORK (M31)', specs: 'Ancho: 122cm | Largo: 2.44m | Área: 2.9m² | Peso: 19kg | Espesor: 0.5mm', colors: ['NEW YORK'], use: 'Paredes interior, decoración' },
+  '14121232': { name: 'SANTORINI MIX (M32)', specs: 'Ancho: 122cm | Largo: 2.44m | Área: 2.9m² | Peso: 19kg | Espesor: 0.5mm', colors: ['SANTORINI MIX'], use: 'Paredes interior, decoración' },
+  '14121233': { name: 'SINGAPUR GRIS (M33)', specs: 'Ancho: 122cm | Largo: 2.44m | Área: 2.9m² | Peso: 19kg | Espesor: 0.5mm', colors: ['SINGAPUR GRIS'], use: 'Paredes interior, decoración' },
+  '14121234': { name: 'MÁRMOL MONACO (M34)', specs: 'Ancho: 122cm | Largo: 2.44m | Área: 2.9m² | Peso: 19kg | Espesor: 0.5mm', colors: ['MONACO'], use: 'Paredes interior, decoración' },
+  '14121235': { name: 'MÁRMOL DUBAI NEGRO (M35)', specs: 'Ancho: 122cm | Largo: 2.44m | Área: 2.9m² | Peso: 19kg | Espesor: 0.5mm', colors: ['DUBAI NEGRO'], use: 'Paredes interior, decoración' },
+  '14121236': { name: 'LAMINA MARMOL ALASKA', specs: 'Ancho: 122cm | Largo: 2.44m | Área: 2.9m² | Peso: 19kg | Espesor: 0.5mm | PRODUCTO NUEVO', colors: ['ALASKA'], use: 'Paredes interior, decoración' },
+  '14121237': { name: 'LAMINA MARMOL NERO GOLD', specs: 'Ancho: 122cm | Largo: 2.44m | Área: 2.9m² | Peso: 19kg | Espesor: 0.5mm', colors: ['NERO GOLD'], use: 'Paredes interior, decoración' },
+  '14121238': { name: 'LAMINA MARMOL POLAR', specs: 'Ancho: 122cm | Largo: 2.44m | Área: 2.9m² | Peso: 19kg | Espesor: 0.5mm', colors: ['POLAR'], use: 'Paredes interior, decoración' },
+  '14121239': { name: 'LAMINA MARMOL CATALATTA ROYAL', specs: 'Ancho: 122cm | Largo: 2.44m | Área: 2.9m² | Peso: 19kg | Espesor: 0.5mm', colors: ['CATALATTA ROYAL'], use: 'Paredes interior, decoración' },
+  '14121240': { name: 'MÁRMOL ESENCIA MARINA', specs: 'Ancho: 122cm | Largo: 2.44m | Área: 2.9m² | Peso: 19kg | Espesor: 0.5mm | PRODUCTO NUEVO', colors: ['ESENCIA MARINA'], use: 'Paredes interior, decoración' },
+  '14121241': { name: 'LAMINA MARMOL TITAN', specs: 'Ancho: 122cm | Largo: 2.44m | Área: 2.9m² | Peso: 19kg | Espesor: 0.5mm', colors: ['TITAN'], use: 'Paredes interior, decoración' },
+  '14121242': { name: 'LAMINA MARMOL ARTIC', specs: 'Ancho: 122cm | Largo: 2.44m | Área: 2.9m² | Peso: 19kg | Espesor: 0.5mm', colors: ['ARTIC'], use: 'Paredes interior, decoración' },
+  '14121243': { name: 'LAMINA MARMOL URBAN STONE', specs: 'Ancho: 122cm | Largo: 2.44m | Área: 2.9m² | Peso: 19kg | Espesor: 0.5mm', colors: ['URBAN STONE'], use: 'Paredes interior, decoración' },
+  '14121244': { name: 'LAMINA MARMOL OCEANIC', specs: 'Ancho: 122cm | Largo: 2.44m | Área: 2.9m² | Peso: 19kg | Espesor: 0.5mm | PRODUCTO NUEVO', colors: ['OCEANIC'], use: 'Paredes interior, decoración' },
+  '14121245': { name: 'LAMINA MARMOL NATURAL', specs: 'Ancho: 122cm | Largo: 2.44m | Área: 2.9m² | Peso: 19kg | Espesor: 0.5mm', colors: ['NATURAL'], use: 'Paredes interior, decoración' },
+  '14121246': { name: 'LAMINA MARMOL TERRA', specs: 'Ancho: 122cm | Largo: 2.44m | Área: 2.9m² | Peso: 19kg | Espesor: 0.5mm', colors: ['TERRA'], use: 'Paredes interior, decoración' },
+  '14121247': { name: 'LAMINA MARMOL SILVER', specs: 'Ancho: 122cm | Largo: 2.44m | Área: 2.9m² | Peso: 19kg | Espesor: 0.5mm', colors: ['SILVER'], use: 'Paredes interior, decoración' },
+  '14121701': { name: 'MÁRMOL ZEUS', specs: 'Ancho: 122cm | Largo: 2.44m | Área: 2.9m² | Espesor: 0.5mm', colors: ['ZEUS'], use: 'Paredes interior, decoración premium' },
+  '14121702': { name: 'MÁRMOL GOLD PAONAZZO', specs: 'Ancho: 122cm | Largo: 2.44m | Área: 2.9m² | Espesor: 0.5mm', colors: ['GOLD PAONAZZO'], use: 'Paredes interior, decoración premium' },
+  '14121703': { name: 'MÁRMOL CALACATTA', specs: 'Ancho: 122cm | Largo: 2.44m | Área: 2.9m² | Espesor: 0.5mm', colors: ['CALACATTA'], use: 'Paredes interior, decoración premium' },
+  '14121704': { name: 'MÁRMOL ELEGANCE GOLD', specs: 'Ancho: 122cm | Largo: 2.44m | Área: 2.9m² | Espesor: 0.5mm', colors: ['ELEGANCE GOLD'], use: 'Paredes interior, decoración premium' },
+  '14121705': { name: 'MÁRMOL LUNA', specs: 'Ancho: 122cm | Largo: 2.44m | Área: 2.9m² | Espesor: 0.5mm', colors: ['LUNA'], use: 'Paredes interior, decoración premium' },
+  '14121706': { name: 'MÁRMOL STATUARIO', specs: 'Ancho: 122cm | Largo: 2.44m | Área: 2.9m² | Espesor: 0.5mm', colors: ['STATUARIO'], use: 'Paredes interior, decoración premium' },
+  '14121630': { name: 'MÁRMOL NEVADO DE ORO', specs: 'Ancho: 122cm | Largo: 2.44m | Área: 2.9m² | Espesor: 0.5mm', colors: ['NEVADO DE ORO'], use: 'Paredes interior, decoración premium' },
+  '14121627': { name: 'MÁRMOL NOBLEZA', specs: 'Ancho: 122cm | Largo: 2.44m | Área: 2.9m² | Espesor: 0.5mm', colors: ['NOBLEZA'], use: 'Paredes interior, decoración premium' },
+  '14121628': { name: 'MÁRMOL ORO LIQUIDO', specs: 'Ancho: 122cm | Largo: 2.44m | Área: 2.9m² | Espesor: 0.5mm', colors: ['ORO LIQUIDO'], use: 'Paredes interior, decoración premium' },
+  '14121629': { name: 'MÁRMOL ESTELAR', specs: 'Ancho: 122cm | Largo: 2.44m | Área: 2.9m² | Espesor: 0.5mm', colors: ['ESTELAR'], use: 'Paredes interior, decoración premium' },
+
+  // PERFILES MÁRMOL (p.48)
+  '14113201': { name: 'ANGULO EN L 10MM ×2.5M DORADO', specs: 'Espesor: 10mm | Largo: 2.5m | Color: Dorado', colors: ['DORADO'], use: 'Terminación lámina mármol' },
+  '14113202': { name: 'ANGULO EN L 10MM ×2.5MM PLATA', specs: 'Espesor: 10mm × 2.5mm | Color: Plata', colors: ['PLATA'], use: 'Terminación lámina mármol' },
+  '14121401': { name: 'ACCESORIO MARMOL T 0.8MM ×3M DORADO', specs: 'Espesor: 0.8mm | Largo: 3m | Color: Dorado', colors: ['DORADO'], use: 'Accesorio lámina mármol' },
+  '14121402': { name: 'ACCESORIO MARMOL T 0.8MM ×3M PLATA', specs: 'Espesor: 0.8mm | Largo: 3m | Color: Plata', colors: ['PLATA'], use: 'Accesorio lámina mármol' },
+
+  // CUBIERTAS Y TEJAS (p.9-16)
+  '14081201': { name: 'CUBIERTA ONDULADA ROMA 2.5MM', specs: 'Longitud: 11.80m | Ancho: 1.05m | Ancho útil: 98cm | Crestas: 6 | Distancia: 1.40m | Radio: <16m | Garantía: 25 años', colors: ['ROJO', 'AZUL', 'VERDE'], use: 'Techos, cubiertas' },
+  '14081001': { name: 'CUBIERTA TERMOACUSTICA UPVC 2.5MM ONDA ALTA', specs: 'Longitud: 11.80m | Ancho: 1.07m | Ancho útil: 1m | Crestas: 5 | Distancia: 1.40m | Radio: <16m', colors: ['BLANCO'], use: 'Techos, cubiertas termoacústicas' },
+  '14081003': { name: 'CUBIERTA TERMOACUSTICA UPVC 2.0MM ONDA BAJA', specs: 'Longitud: 11.80m | Ancho: 1.13m | Ancho útil: 1.05m | Crestas: 6 | Distancia: 0.90m | Radio: <6m', colors: ['BLANCO'], use: 'Techos, cubiertas termoacústicas' },
+  '14081101': { name: 'CUBIERTA TERMOACUSTICA UPVC COLONIAL 2.5MM', specs: 'Longitud: 11.80m | Ancho: 1.05m | Ancho útil: 98cm | Crestas: 7 | Distancia: 1.40m | Radio: <16m', colors: ['ROJO', 'AZUL', 'VERDE', 'BLANCO'], use: 'Techos, cubiertas termoacústicas colonial' },
+  '14081501': { name: 'TEJA UPVC TIPO ZINC 0.8MM AZUL', specs: 'Longitud: 3.05m | Ancho: 93cm | Espesor: 0.8mm | Peso: 1.76kg/m²', colors: ['AZUL'], use: 'Techos, cubiertas zinc' },
+  '14081502': { name: 'TEJA UPVC TIPO ZINC 0.8MM VERDE', specs: 'Longitud: 3.05m | Ancho: 93cm | Espesor: 0.8mm | Peso: 1.76kg/m²', colors: ['VERDE'], use: 'Techos, cubiertas zinc' },
+  '14081503': { name: 'TEJA UPVC TIPO ZINC 0.8MM GRIS', specs: 'Longitud: 3.05m | Ancho: 93cm | Espesor: 0.8mm | Peso: 1.76kg/m²', colors: ['GRIS'], use: 'Techos, cubiertas zinc' },
+  '14081601': { name: 'CUBIERTA ACANALADA UPVC BLANCA 10MM', specs: 'Ancho total: 885mm | Ancho efectivo: 830mm | Altura onda: 40mm | Longitud máx: 11.80m | Aislamiento acústico: 35dB | Temperatura: -20°C a 60°C', colors: ['BLANCO'], use: 'Techos, cubiertas acanaladas' },
+  '14081301': { name: 'CUBIERTA TRASLUCIDA ONDA ALTA OPAL', specs: 'Longitud: 11.80m | Ancho: 1.07m | Ancho útil: 1m | Crestas: 5 | Distancia: 1m | Radio: <16m', colors: ['OPAL'], use: 'Techos, cubiertas translúcidas' },
+
+  // COMPLEMENTOS TECHO (p.10-13)
+  '14082201': { name: 'CABALLETE FIJO ROMA 2.5MM UPVC', specs: 'Compatible con cubierta ROMA 2.5mm', colors: ['ROJO'], use: 'Caballete techo ROMA' },
+  '14082207': { name: 'CABALLETE LIMATESA UPVC 50/50', specs: 'Compatible con cubierta ROMA', colors: ['ROJO'], use: 'Caballete limatesa' },
+  '14082001': { name: 'CABALLETE BLANCO 2.5MM O.A UPVC', specs: 'Compatible con cubierta termoacústica 2.5mm onda alta', colors: ['BLANCO'], use: 'Caballete techo' },
+  '14082004': { name: 'CABALLETE BLANCO 2.0MM O.B UPVC', specs: 'Compatible con cubierta termoacústica 2.0mm onda baja', colors: ['BLANCO'], use: 'Caballete techo' },
+  '14082301': { name: 'TORNILLO KIT UPVC 2.5MM BLANCO', specs: 'Incluye tornillo + capuchón + arandela sello', colors: ['BLANCO'], use: 'Fijación cubierta UPVC 2.5mm' },
+  '14082302': { name: 'TORNILLO KIT UPVC 2.0MM BLANCO', specs: 'Incluye tornillo + capuchón + arandela sello', colors: ['BLANCO'], use: 'Fijación cubierta UPVC 2.0mm' },
+  '14082311': { name: 'TORNILLO KIT UPVC COLONIAL', specs: 'Compatible con cubierta colonial', colors: [], use: 'Fijación cubierta colonial' },
+  '14082102': { name: 'CABALLETE BLANCO 2.5MM O.A UPVC COLONIAL', specs: 'Compatible con cubierta colonial 2.5mm', colors: ['BLANCO'], use: 'Caballete colonial' },
+  '14082103': { name: 'CABALLETE Y TRES AGUAS UPVC COLONIAL 2.5MM', specs: 'Caballete en Y para 3 aguas', colors: ['ROJO'], use: 'Caballete Y colonial' },
+  '14082104': { name: 'CABALLETE T TRES AGUAS UPVC COLONIAL 2.5MM', specs: 'Caballete en T para 3 aguas', colors: ['ROJO'], use: 'Caballete T colonial' },
+  '14082105': { name: 'CABALLETE CODO 90° UPVC COLONIAL 2.5MM', specs: 'Codo 90° para cubierta colonial', colors: ['ROJO'], use: 'Codo 90° colonial' },
+  '14082315': { name: 'ACCESORIO CUBIERTA ACANALADA UPVC', specs: 'Incluye tornillos y arandelas selladoras', colors: ['BLANCO'], use: 'Fijación cubierta acanalada' },
+
+  // POLICARBONATO (p.18)
+  '14141001': { name: 'LAMINA ALVEOLAR POLICARBONATO 6MM BLANCA', specs: 'Espesor: 6mm | Alveolar (celular)', colors: ['BLANCA'], use: 'Techos, cubiertas translúcidas' },
+  '14141002': { name: 'LAMINA ALVEOLAR POLICARBONATO 6MM BRONCE', specs: 'Espesor: 6mm | Alveolar (celular)', colors: ['BRONCE'], use: 'Techos, cubiertas translúcidas' },
+  '14141003': { name: 'LAMINA ALVEOLAR POLICARBONATO 6MM TRANSPARENTE', specs: 'Espesor: 6mm | Alveolar (celular)', colors: ['TRANSPARENTE'], use: 'Techos, cubiertas translúcidas' },
+
+  // ILUMINACIÓN (p.19-20)
+  '14051112': { name: 'PERFIL LED 1.20M', specs: 'Largo: 1.20m | Barra rígida doble fila | Blanco cálido', colors: [], use: 'Iluminación panel WPC interior' },
+  '14051107': { name: 'PERFIL LED 70CM', specs: 'Largo: 70cm | Barra rígida doble fila | Blanco cálido', colors: [], use: 'Iluminación panel WPC interior' },
+  '14051105': { name: 'PERFIL LED 50CM', specs: 'Largo: 50cm | Barra rígida doble fila | Blanco cálido', colors: [], use: 'Iluminación panel WPC interior' },
+  '14051201': { name: 'TRANSFORMADOR PERFIL LED 60W', specs: 'Potencia: 60W | Entrada: 85-265V | Salida: 12V', colors: [], use: 'Transformador iluminación LED' },
+  '14051202': { name: 'CONTROL LED', specs: 'Voltaje: DC12V-24V | Potencia: 144/288W | Control remoto: >20m | Batería: 3 AAA (no incluidas)', colors: [], use: 'Control iluminación LED' },
+
+  // JARDINES ARTIFICIALES (p.21-24)
+  '14124201': { name: 'JARDÍN ARTIFICIAL PRADERA', specs: 'Módulo: 50cm × 50cm | Uso: EXTERIOR', colors: ['VERDE OSCURO'], use: 'Jardín vertical exterior' },
+  '14124202': { name: 'JARDÍN ARTIFICIAL EDEN', specs: 'Módulo: 50cm × 50cm | Uso: EXTERIOR', colors: ['VERDE CLARO'], use: 'Jardín vertical exterior' },
+  '14124203': { name: 'JARDÍN ARTIFICIAL PARAISO', specs: 'Módulo: 50cm × 50cm | Uso: EXTERIOR', colors: ['MIX VERDE'], use: 'Jardín vertical exterior' },
+  '14124204': { name: 'JARDÍN ARTIFICIAL PRIMAVERA', specs: 'Módulo: 50cm × 50cm | Uso: EXTERIOR', colors: ['VERDE + AMARILLO'], use: 'Jardín vertical exterior' },
+  '14124205': { name: 'JARDÍN ARTIFICIAL NATURAL', specs: 'Módulo: 40cm × 60cm | Uso: INTERIOR', colors: ['MIX'], use: 'Jardín vertical interior' },
+  '14124206': { name: 'JARDÍN ARTIFICIAL VENECIA', specs: 'Módulo: 40cm × 60cm | Uso: INTERIOR', colors: ['VERDE + AMARILLO'], use: 'Jardín vertical interior' },
+  '14124207': { name: 'JARDÍN ARTIFICIAL PARIS', specs: 'Módulo: 40cm × 60cm | Uso: INTERIOR', colors: ['VERDE TROPICAL'], use: 'Jardín vertical interior' },
+  '14124208': { name: 'JARDÍN ARTIFICIAL MINI-MOSSY', specs: 'Módulo: 50cm × 50cm | Uso: INTERIOR/EXTERIOR', colors: ['VERDE CLARO'], use: 'Jardín vertical musgo' },
+  '14124209': { name: 'JARDÍN ARTIFICIAL MOSSY PINO CIPRÉS', specs: 'Módulo: 50cm × 50cm | Uso: INTERIOR/EXTERIOR', colors: ['VERDE OSCURO'], use: 'Jardín vertical musgo' },
+
+  // LÁMINAS SINTÉTICAS (p.59)
+  '14121501': { name: 'PIEDRA DEL SOL', specs: 'Ancho: 122cm | Largo: 2.44m | Espesor: 0.5mm', colors: ['AMARILLO DORADO'], use: 'Lámina sintética decorativa interior' },
+  '14121502': { name: 'CREMA SELECTA', specs: 'Ancho: 122cm | Largo: 2.44m | Espesor: 0.5mm', colors: ['CREMA'], use: 'Lámina sintética decorativa interior' },
+
+  // LISTONES PVC CIELO RASO (p.61)
+  '14122705': { name: 'CIELO RASO CEDRO CLARO (9CM)', specs: 'Ancho: 9cm | Largo: 2.80m | Espesor: 2.5mm', colors: ['CEDRO CLARO'], use: 'Listón PVC cielo raso' },
+  '14122710': { name: 'CIELO RASO MADERA TEKA (9CM)', specs: 'Ancho: 9cm | Largo: 2.80m | Espesor: 2.5mm', colors: ['MADERA TEKA'], use: 'Listón PVC cielo raso' },
+  '14122713': { name: 'CIELO RASO EBANO MADERA (9CM)', specs: 'Ancho: 9cm | Largo: 2.80m | Espesor: 2.5mm', colors: ['EBANO MADERA'], use: 'Listón PVC cielo raso' },
+  '14122906': { name: 'PERFIL BASE METÁLICO NEGRO LISTON CIELO RASO', specs: 'Material: Metal galvanizado | Acabado: Negro | Perforaciones: 10cm | Largo: 2.90m', colors: ['NEGRO'], use: 'Base metálica listón cielo raso' },
+
+  // LISTONES PVC ESTRUCTURAL (p.63)
+  '14122805': { name: 'PVC ESTRUCTURAL CEDRO CLARO 10CM', specs: 'Ancho: 10cm | Largo: 2.60m | Espesor: 3mm', colors: ['CEDRO CLARO'], use: 'Listón estructural interior' },
+  '14122810': { name: 'PVC ESTRUCTURAL MADERA TEKA 10CM', specs: 'Ancho: 10cm | Largo: 2.60m | Espesor: 3mm', colors: ['MADERA TEKA'], use: 'Listón estructural interior' },
+  '14122813': { name: 'PVC ESTRUCTURAL EBANO 10CM', specs: 'Ancho: 10cm | Largo: 2.60m | Espesor: 3mm', colors: ['EBANO'], use: 'Listón estructural interior' },
+  '14122904': { name: 'KIT TAPONES LISTON PVC ESTRUCTURAL 10CM', specs: 'Tapones para listón estructural 10cm', colors: ['NEGRO'], use: 'Tapones listón estructural' },
+
+  // LISTONES WPC EXTERIOR (p.64-65)
+  '14123001': { name: 'LISTON WPC EXTERIOR ROBLE (TUBE)', specs: 'Largo: 5.60m | Ancho: 6cm | Alto: 4cm | Espesor: 6mm | Peso: 8.8kg', colors: ['ROBLE'], use: 'Listón WPC exterior, pérgolas, fachadas' },
+  '14123002': { name: 'LISTON WPC EXTERIOR NOGAL (TUBE)', specs: 'Largo: 5.60m | Ancho: 6cm | Alto: 4cm | Espesor: 6mm | Peso: 8.8kg', colors: ['NOGAL'], use: 'Listón WPC exterior, pérgolas, fachadas' },
+  '14123004': { name: 'LISTON WPC EXTERIOR ÉBANO NEGRO (TUBE)', specs: 'Largo: 5.60m | Ancho: 6cm | Alto: 4cm | Espesor: 6mm | Peso: 8.8kg', colors: ['ÉBANO NEGRO'], use: 'Listón WPC exterior, pérgolas, fachadas' },
+  '14123005': { name: 'LISTON WPC EXTERIOR CEDRO (TUBE)', specs: 'Largo: 5.60m | Ancho: 6cm | Alto: 4cm | Espesor: 6mm | Peso: 8.8kg', colors: ['CEDRO'], use: 'Listón WPC exterior, pérgolas, fachadas' },
+
+  // PANELES WPC EXTERIOR (p.69-73)
+  '14122201': { name: 'PANEL WPC EXTERIOR ROBLE 01', specs: 'Ancho: 21.9cm | Largo: 2.90m | Espesor: 2.5cm', colors: ['ROBLE'], use: 'Panel WPC exterior, fachadas' },
+  '14122202': { name: 'PANEL WPC EXTERIOR NOGAL 02', specs: 'Ancho: 21.9cm | Largo: 2.90m | Espesor: 2.5cm', colors: ['NOGAL'], use: 'Panel WPC exterior, fachadas' },
+  '14122203': { name: 'PANEL WPC EXTERIOR MARRON 03', specs: 'Ancho: 21.9cm | Largo: 2.90m | Espesor: 2.5cm', colors: ['MARRON'], use: 'Panel WPC exterior, fachadas' },
+  '14122204': { name: 'PANEL WPC EXTERIOR EBANO 04', specs: 'Ancho: 21.9cm | Largo: 2.90m | Espesor: 2.5cm', colors: ['EBANO'], use: 'Panel WPC exterior, fachadas' },
+  '14122205': { name: 'PANEL WPC EXTERIOR CEDRO 05', specs: 'Ancho: 21.9cm | Largo: 2.90m | Espesor: 2.5cm', colors: ['CEDRO'], use: 'Panel WPC exterior, fachadas' },
+  '14122206': { name: 'PANEL WPC EXTERIOR WENGUE 06', specs: 'Ancho: 21.9cm | Largo: 2.90m | Espesor: 2.5cm', colors: ['WENGUE'], use: 'Panel WPC exterior, fachadas' },
+  '14122207': { name: 'PANEL WPC EXTERIOR GRAFITO 07', specs: 'Ancho: 21.9cm | Largo: 2.90m | Espesor: 2.5cm', colors: ['GRAFITO'], use: 'Panel WPC exterior, fachadas' },
+  '14122208': { name: 'PANEL WPC EXTERIOR AVELLANA MIX 08', specs: 'Ancho: 21.9cm | Largo: 2.90m | Espesor: 2.5cm', colors: ['AVELLANA MIX'], use: 'Panel WPC exterior, fachadas' },
+  '14122901': { name: 'TORNILLO DE ACERO INOXIDABLE WPC EXTERIOR', specs: 'Acero inoxidable para fijación panel WPC exterior', colors: ['PLATA'], use: 'Fijación panel WPC exterior' },
+
+  // ANGULOS WPC EXTERIOR (p.74-75)
+  '14122302': { name: 'ANGULO WPC EXT NOGAL 02', specs: 'Ancho: 6cm × 6cm | Largo: 5.60m | Espesor: 66mm', colors: ['NOGAL'], use: 'Ángulo panel WPC exterior' },
+  '14122303': { name: 'ANGULO WPC EXT MARRÓN 03', specs: 'Ancho: 6cm × 6cm | Largo: 5.60m | Espesor: 66mm', colors: ['MARRÓN'], use: 'Ángulo panel WPC exterior' },
+  '14122304': { name: 'ANGULO WPC EXT EBANO 04', specs: 'Ancho: 6cm × 6cm | Largo: 5.60m | Espesor: 66mm', colors: ['EBANO'], use: 'Ángulo panel WPC exterior' },
+  '14122305': { name: 'ANGULO WPC EXT CEDRO 05', specs: 'Ancho: 6cm × 6cm | Largo: 5.60m | Espesor: 66mm', colors: ['CEDRO'], use: 'Ángulo panel WPC exterior' },
+  '14122306': { name: 'ANGULO WPC EXT WENGUE 06', specs: 'Ancho: 5cm × 5cm | Largo: 2.90m | Espesor: 66mm', colors: ['WENGUE'], use: 'Ángulo panel WPC exterior' },
+  '14122307': { name: 'ANGULO WPC EXT GRAFITO 07', specs: 'Ancho: 6cm × 6cm | Largo: 5.60m | Espesor: 66mm', colors: ['GRAFITO'], use: 'Ángulo panel WPC exterior' },
+  '14122308': { name: 'ANGULO WPC EXT AVELLANA MIX 08', specs: 'Ancho: 6cm × 6cm | Largo: 5.60m | Espesor: 66mm', colors: ['AVELLANA MIX'], use: 'Ángulo panel WPC exterior' },
+
+  // PANELES WPC INTERIOR (p.76-85)
+  '14122001': { name: 'PANEL WPC INTERIOR STONE GRIS (01)', specs: 'Ancho: 16cm | Largo: 2.95m | Espesor: 25mm', colors: ['STONE GRIS'], use: 'Panel WPC interior, paredes' },
+  '14122002': { name: 'PANEL WPC INTERIOR CARRARA BLANCO (02)', specs: 'Ancho: 16cm | Largo: 2.95m | Espesor: 25mm', colors: ['CARRARA BLANCO'], use: 'Panel WPC interior, paredes' },
+  '14122003': { name: 'PANEL WPC INTERIOR POLAR BLANCO (03)', specs: 'Ancho: 16cm | Largo: 2.95m | Espesor: 25mm', colors: ['POLAR BLANCO'], use: 'Panel WPC interior, paredes' },
+  '14122004': { name: 'PANEL WPC INTERIOR WENGUE (04)', specs: 'Ancho: 16cm | Largo: 2.95m | Espesor: 25mm', colors: ['WENGUE'], use: 'Panel WPC interior, paredes' },
+  '14122006': { name: 'PANEL WPC INTERIOR TRAVERTINO (06)', specs: 'Ancho: 16cm | Largo: 2.95m | Espesor: 25mm', colors: ['TRAVERTINO'], use: 'Panel WPC interior, paredes' },
+  '14122007': { name: 'PANEL WPC INTERIOR CHERRY (07)', specs: 'Ancho: 16cm | Largo: 2.95m | Espesor: 25mm', colors: ['CHERRY'], use: 'Panel WPC interior, paredes' },
+  '14122010': { name: 'PANEL WPC INTERIOR MADERA TEKA (10)', specs: 'Ancho: 16cm | Largo: 2.95m | Espesor: 25mm', colors: ['MADERA TEKA'], use: 'Panel WPC interior, paredes' },
+  '14122013': { name: 'PANEL WPC INTERIOR EBANO NEGRO (13)', specs: 'Ancho: 16cm | Largo: 2.95m | Espesor: 25mm', colors: ['EBANO NEGRO'], use: 'Panel WPC interior, paredes' },
+  '14122014': { name: 'PANEL WPC INTERIOR GRAFITO MIX', specs: 'Ancho: 16cm | Largo: 2.95m | Espesor: 25mm', colors: ['GRAFITO MIX'], use: 'Panel WPC interior, paredes' },
+  '14122016': { name: 'PANEL WPC INTERIOR MARFIL (16)', specs: 'Ancho: 16cm | Largo: 2.95m | Espesor: 25mm', colors: ['MARFIL'], use: 'Panel WPC interior, paredes' },
+  '14122019': { name: 'PANEL WPC INTERIOR CHOCO MIX (19)', specs: 'Ancho: 16cm | Largo: 2.95m | Espesor: 25mm', colors: ['CHOCO MIX'], use: 'Panel WPC interior, paredes' },
+  '14122020': { name: 'PANEL WPC INTERIOR OLIVO MIX (20)', specs: 'Ancho: 16cm | Largo: 2.95m | Espesor: 25mm', colors: ['OLIVO MIX'], use: 'Panel WPC interior, paredes' },
+  '14122021': { name: 'PANEL WPC INTERIOR MAPLE MIX (21)', specs: 'Ancho: 16cm | Largo: 2.95m | Espesor: 25mm', colors: ['MAPLE MIX'], use: 'Panel WPC interior, paredes' },
+  '14122022': { name: 'PANEL WPC INTERIOR GRECIA MIX (22)', specs: 'Ancho: 16cm | Largo: 2.95m | Espesor: 25mm', colors: ['GRECIA MIX'], use: 'Panel WPC interior, paredes' },
+  '14122023': { name: 'PANEL WPC INTERIOR NEGRO MATE (23)', specs: 'Ancho: 16cm | Largo: 2.95m | Espesor: 25mm', colors: ['NEGRO MATE'], use: 'Panel WPC interior, paredes' },
+  '14122024': { name: 'PANEL WPC INTERIOR CREMA SELECTA NEW (24)', specs: 'Ancho: 16cm | Largo: 2.95m | Espesor: 25mm', colors: ['CREMA SELECTA'], use: 'Panel WPC interior, paredes' },
+  '14122025': { name: 'PANEL WPC INTERIOR AZUL CELESTE NEW (25)', specs: 'Ancho: 16cm | Largo: 2.95m | Espesor: 25mm', colors: ['AZUL CELESTE'], use: 'Panel WPC interior, paredes' },
+  '14122026': { name: 'PANEL WPC INTERIOR VERDE MENTA NEW (26)', specs: 'Ancho: 16cm | Largo: 2.95m | Espesor: 25mm', colors: ['VERDE MENTA'], use: 'Panel WPC interior, paredes' },
+  '14122027': { name: 'PANEL WPC INTERIOR BLANCO IMPERIAL (27)', specs: 'Ancho: 16cm | Largo: 2.95m | Espesor: 25mm', colors: ['BLANCO IMPERIAL'], use: 'Panel WPC interior, paredes' },
+  '14122028': { name: 'PANEL WPC INTERIOR MANDARINA NEW (28)', specs: 'Ancho: 16cm | Largo: 2.95m | Espesor: 25mm', colors: ['MANDARINA'], use: 'Panel WPC interior, paredes' },
+  '14122029': { name: 'PANEL WPC INTERIOR NEGRO IMPERIAL (29)', specs: 'Ancho: 16cm | Largo: 2.95m | Espesor: 2.5mm', colors: ['NEGRO IMPERIAL'], use: 'Panel WPC interior, paredes' },
+  '14122611': { name: 'PANEL WPC INTERIOR MADERA (JUDY)', specs: 'Ancho: 16cm | Largo: 2.95m | Espesor: 25mm', colors: ['MADERA'], use: 'Panel WPC interior, paredes' },
+  '14122609': { name: 'PANEL WPC INTERIOR FRESNO (JUDY 05)', specs: 'Ancho: 16cm | Largo: 2.95m | Espesor: 25mm', colors: ['FRESNO'], use: 'Panel WPC interior, paredes' },
+  '14123115': { name: 'PANEL WPC INTERIOR CASTAÑO OXIDO (PH15)', specs: 'Ancho: 16cm | Largo: 2.95m | Espesor: 25mm', colors: ['CASTAÑO OXIDO'], use: 'Panel WPC interior, paredes' },
+  '14122638': { name: 'PANEL WPC INTERIOR CAOBA PREMIUM', specs: 'Ancho: 16cm | Largo: 2.95m | Espesor: 20mm | PRODUCTO NUEVO', colors: ['CAOBA'], use: 'Panel WPC interior, paredes' },
+  '14122645': { name: 'PANEL WPC INTERIOR NOGAL SELECTO', specs: 'Ancho: 16cm | Largo: 2.95m | Espesor: 20mm | PRODUCTO NUEVO', colors: ['NOGAL SELECTO'], use: 'Panel WPC interior, paredes' },
+  '14122652': { name: 'PANEL WPC INTERIOR TECA IMPERIAL', specs: 'Ancho: 16cm | Largo: 2.95m | Espesor: 20mm | PRODUCTO NUEVO', colors: ['TECA IMPERIAL'], use: 'Panel WPC interior, paredes' },
+  '14122637': { name: 'PANEL WPC INTERIOR ROBLE ARENA', specs: 'Ancho: 16cm | Largo: 2.95m | Espesor: 20mm | PRODUCTO NUEVO', colors: ['ROBLE ARENA'], use: 'Panel WPC interior, paredes' },
+
+  // ANGULOS WPC INTERIOR (p.86-87)
+  '14122102': { name: 'ANGULO WPC CARRARA BLANCO (02)', specs: 'Ancho: 3cm × 3cm | Largo: 2.90m', colors: ['CARRARA BLANCO'], use: 'Ángulo panel WPC interior' },
+  '14122103': { name: 'ANGULO WPC POLAR BLANCO (03)', specs: 'Ancho: 3cm × 3cm | Largo: 2.90m', colors: ['POLAR BLANCO'], use: 'Ángulo panel WPC interior' },
+  '14122107': { name: 'ANGULO WPC CHERRY (07)', specs: 'Ancho: 3cm × 3cm | Largo: 2.90m', colors: ['CHERRY'], use: 'Ángulo panel WPC interior' },
+  '14122110': { name: 'ANGULO WPC MADERA TEKA (10)', specs: 'Ancho: 3cm × 3cm | Largo: 2.90m', colors: ['MADERA TEKA'], use: 'Ángulo panel WPC interior' },
+  '14122111': { name: 'ANGULO WPC VIENA GRIS (11)', specs: 'Ancho: 3cm × 3cm | Largo: 2.90m', colors: ['VIENA GRIS'], use: 'Ángulo panel WPC interior' },
+  '14122112': { name: 'ANGULO WPC CEDRO (12)', specs: 'Ancho: 3cm × 3cm | Largo: 2.90m', colors: ['CEDRO'], use: 'Ángulo panel WPC interior' },
+  '14122113': { name: 'ANGULO WPC EBANO MADERA (13)', specs: 'Ancho: 3cm × 3cm | Largo: 2.90m', colors: ['EBANO MADERA'], use: 'Ángulo panel WPC interior' },
+  '14122114': { name: 'ANGULO WPC CARRARA NEGRO (14)', specs: 'Ancho: 3cm × 3cm | Largo: 2.90m', colors: ['CARRARA NEGRO'], use: 'Ángulo panel WPC interior' },
+  '14122119': { name: 'ANGULO WPC CHOCO MIX (19)', specs: 'Ancho: 3cm × 3cm | Largo: 2.90m', colors: ['CHOCO MIX'], use: 'Ángulo panel WPC interior' },
+  '14122120': { name: 'ANGULO WPC OLIVO MIX (20)', specs: 'Ancho: 3cm × 3cm | Largo: 2.90m', colors: ['OLIVO MIX'], use: 'Ángulo panel WPC interior' },
+  '14122122': { name: 'ANGULO WPC GRECIA MIX (22)', specs: 'Ancho: 3cm × 3cm | Largo: 2.90m', colors: ['GRECIA MIX'], use: 'Ángulo panel WPC interior' },
+
+  // PLATINAS METÁLICAS (p.85)
+  '14122902': { name: 'PLATINA METÁLICA PARA PANEL WPC INTERIOR', specs: 'Material: Acero inoxidable | Medidas: 50mm × 36mm | Peso: Ligero', colors: ['METÁLICO'], use: 'Fijación panel WPC interior' },
+
+  // PANELES WPC REDONDOS (p.91-93)
+  '14124901': { name: 'PANEL WPC REDONDO STONE GRIS (01)', specs: 'Ancho: 16cm | Largo: 2.95m | Espesor: 2.5mm | PRODUCTO NUEVO', colors: ['STONE GRIS'], use: 'Panel WPC redondo interior' },
+  '14124902': { name: 'PANEL WPC REDONDO CARRARA BLANCO (02)', specs: 'Ancho: 16cm | Largo: 2.95m | Espesor: 2.5mm | PRODUCTO NUEVO', colors: ['CARRARA BLANCO'], use: 'Panel WPC redondo interior' },
+  '14124903': { name: 'PANEL WPC REDONDO POLAR BLANCO (03)', specs: 'Ancho: 16cm | Largo: 2.95m | Espesor: 2.5mm | PRODUCTO NUEVO', colors: ['POLAR BLANCO'], use: 'Panel WPC redondo interior' },
+  '14124905': { name: 'PANEL WPC REDONDO ROBLE CLARO (05)', specs: 'Ancho: 16cm | Largo: 2.95m | Espesor: 2.5mm | PRODUCTO NUEVO', colors: ['ROBLE CLARO'], use: 'Panel WPC redondo interior' },
+  '14124906': { name: 'PANEL WPC REDONDO TRAVERTINO (06)', specs: 'Ancho: 16cm | Largo: 2.95m | Espesor: 2.5mm | PRODUCTO NUEVO', colors: ['TRAVERTINO'], use: 'Panel WPC redondo interior' },
+  '14124910': { name: 'PANEL WPC REDONDO MADERA (10)', specs: 'Ancho: 16cm | Largo: 2.95m | Espesor: 2.5mm | PRODUCTO NUEVO', colors: ['MADERA'], use: 'Panel WPC redondo interior' },
+  '14124913': { name: 'PANEL WPC REDONDO EBANO NEGRO (13)', specs: 'Ancho: 16cm | Largo: 2.95m | Espesor: 2.5mm | PRODUCTO NUEVO', colors: ['EBANO NEGRO'], use: 'Panel WPC redondo interior' },
+  '14124916': { name: 'PANEL WPC REDONDO MARFIL (16)', specs: 'Ancho: 16cm | Largo: 2.95m | Espesor: 2.5mm | PRODUCTO NUEVO', colors: ['MARFIL'], use: 'Panel WPC redondo interior' },
+  '14124923': { name: 'PANEL WPC REDONDO NEGRO MATE (23)', specs: 'Ancho: 16cm | Largo: 2.95m | Espesor: 2.5mm | PRODUCTO NUEVO', colors: ['NEGRO MATE'], use: 'Panel WPC redondo interior' },
+  '14124924': { name: 'PANEL WPC REDONDO CREMA SELECTA NEW (24)', specs: 'Ancho: 16cm | Largo: 2.95m | Espesor: 2.5mm | PRODUCTO NUEVO', colors: ['CREMA SELECTA'], use: 'Panel WPC redondo interior' },
+  '14124925': { name: 'PANEL WPC REDONDO AZUL CELESTE NEW (25)', specs: 'Ancho: 16cm | Largo: 2.95m | Espesor: 2.5mm | PRODUCTO NUEVO', colors: ['AZUL CELESTE'], use: 'Panel WPC redondo interior' },
+  '14124926': { name: 'PANEL WPC REDONDO VERDE MENTA NEW (26)', specs: 'Ancho: 16cm | Largo: 2.95m | Espesor: 2.5mm | PRODUCTO NUEVO', colors: ['VERDE MENTA'], use: 'Panel WPC redondo interior' },
+  '14124930': { name: 'PANEL WPC REDONDO ROSADO (30)', specs: 'Ancho: 16cm | Largo: 2.95m | Espesor: 2.5mm | PRODUCTO NUEVO', colors: ['ROSADO'], use: 'Panel WPC redondo interior' },
+  '14124932': { name: 'PANEL WPC REDONDO PLATEADO', specs: 'Ancho: 16cm | Largo: 2.95m | Espesor: 2.5mm | PRODUCTO NUEVO', colors: ['PLATEADO'], use: 'Panel WPC redondo interior' },
+
+  // PANELES WPC PLANOS RANURADOS (p.95-97)
+  '14121503': { name: 'PANEL WPC PLANO RANURADO MADERA NATURAL', specs: 'Ancho: 30cm | Largo: 2.95m | Espesor: 8mm', colors: ['MADERA NATURAL'], use: 'Panel WPC plano ranurado' },
+  '14121504': { name: 'PANEL WPC PLANO RANURADO NOGAL OSCURO', specs: 'Ancho: 30cm | Largo: 2.95m | Espesor: 8mm', colors: ['NOGAL OSCURO'], use: 'Panel WPC plano ranurado' },
+  '14121505': { name: 'PANEL WPC PLANO RANURADO ROBLE GRIS', specs: 'Ancho: 30cm | Largo: 2.95m | Espesor: 8mm', colors: ['ROBLE GRIS'], use: 'Panel WPC plano ranurado' },
+  '14121509': { name: 'PANEL WPC PLANO RANURADO MADERA TEKA', specs: 'Ancho: 30cm | Largo: 2.95m | Espesor: 8mm | PRODUCTO NUEVO', colors: ['MADERA TEKA'], use: 'Panel WPC plano ranurado' },
+  '14121532': { name: 'PANEL WPC PLANO RANURADO CEDRO', specs: 'Ancho: 30cm | Largo: 2.95m | Espesor: 8mm | PRODUCTO NUEVO', colors: ['CEDRO'], use: 'Panel WPC plano ranurado' },
+
+  // FOAM BOARD LÍNEAS (p.27-34)
+  '14181101': { name: 'PINO (ZEN)', specs: 'Ancho: 122cm | Largo: 2.44m | Espesor: 0.5mm | Peso: 13.3kg | Acabado: Mate', colors: ['PINO'], use: 'Foam board decorativo interior' },
+  '14181103': { name: 'MAPLE (ZEN)', specs: 'Ancho: 122cm | Largo: 2.44m | Espesor: 0.5mm | Peso: 13.3kg | Acabado: Mate', colors: ['MAPLE'], use: 'Foam board decorativo interior' },
+  '14181104': { name: 'BURDEO (ZEN)', specs: 'Ancho: 122cm | Largo: 2.44m | Espesor: 0.5mm | Peso: 13.3kg | Acabado: Mate', colors: ['BURDEO'], use: 'Foam board decorativo interior' },
+  '14181105': { name: 'CORTEZA (ZEN)', specs: 'Ancho: 122cm | Largo: 2.44m | Espesor: 0.5mm | Peso: 13.3kg | Acabado: Mate', colors: ['CORTEZA'], use: 'Foam board decorativo interior' },
+  '14181106': { name: 'GRIS NATURAL (ZEN)', specs: 'Ancho: 122cm | Largo: 2.44m | Espesor: 0.5mm | Peso: 13.3kg | Acabado: Mate', colors: ['GRIS NATURAL'], use: 'Foam board decorativo interior' },
+  '14181109': { name: 'BLANCO MARFIL (ZEN)', specs: 'Ancho: 122cm | Largo: 2.44m | Espesor: 0.5mm | Peso: 13.3kg | Acabado: Mate', colors: ['BLANCO MARFIL'], use: 'Foam board decorativo interior' },
+  '14181110': { name: 'GRIS TRAVERTINO (ZEN)', specs: 'Ancho: 122cm | Largo: 2.44m | Espesor: 0.5mm | Peso: 13.3kg | Acabado: Mate', colors: ['GRIS TRAVERTINO'], use: 'Foam board decorativo interior' },
+  '14181201': { name: 'PLATEADO (ESPEJO)', specs: 'Ancho: 122cm | Largo: 2.44m | Espesor: 0.5mm | Peso: 13.3kg | Acabado: Metálico', colors: ['PLATEADO'], use: 'Foam board espejo decorativo' },
+  '14181202': { name: 'BLANCO (ESPEJO)', specs: 'Ancho: 122cm | Largo: 2.44m | Espesor: 0.5mm | Peso: 13.3kg | Acabado: Metálico', colors: ['BLANCO'], use: 'Foam board espejo decorativo' },
+  '14181203': { name: 'NEGRO (ESPEJO)', specs: 'Ancho: 122cm | Largo: 2.44m | Espesor: 0.5mm | Peso: 13.3kg | Acabado: Metálico', colors: ['NEGRO'], use: 'Foam board espejo decorativo' },
+  '14181204': { name: 'DORADO (ESPEJO)', specs: 'Ancho: 122cm | Largo: 2.44m | Espesor: 0.5mm | Peso: 13.3kg | Acabado: Metálico', colors: ['DORADO'], use: 'Foam board espejo decorativo' },
+  '14181205': { name: 'PALO DE ROSA (ESPEJO)', specs: 'Ancho: 122cm | Largo: 2.44m | Espesor: 0.5mm | Peso: 13.3kg | Acabado: Metálico', colors: ['PALO DE ROSA'], use: 'Foam board espejo decorativo' },
+  '14181107': { name: 'NEGRO (GOTAS DE AGUA)', specs: 'Ancho: 122cm | Largo: 2.44m | Espesor: 0.5mm | Peso: 13.3kg | Acabado: Metálico', colors: ['NEGRO'], use: 'Foam board gotas de agua' },
+  '14181108': { name: 'PLATEADO (GOTAS DE AGUA)', specs: 'Ancho: 122cm | Largo: 2.44m | Espesor: 0.5mm | Peso: 13.3kg | Acabado: Metálico', colors: ['PLATEADO'], use: 'Foam board gotas de agua' },
+  '14181114': { name: 'METALUM (GOTAS DE AGUA)', specs: 'Ancho: 122cm | Largo: 2.44m | Espesor: 0.5mm | Peso: 13.3kg | Acabado: Metálico', colors: ['METALUM'], use: 'Foam board gotas de agua' },
+  '14181401': { name: 'IVORY LATTE (PASTEL)', specs: 'Ancho: 122cm | Largo: 2.44m | Espesor: 0.5mm | Peso: 13.9kg | Acabado: Mate', colors: ['IVORY LATTE'], use: 'Foam board pastel decorativo' },
+  '14181403': { name: 'GRIS ACERO (PASTEL)', specs: 'Ancho: 122cm | Largo: 2.44m | Espesor: 0.5mm | Peso: 13.9kg | Acabado: Mate', colors: ['GRIS ACERO'], use: 'Foam board pastel decorativo' },
+  '14181404': { name: 'EVEREST CREMA (PASTEL)', specs: 'Ancho: 122cm | Largo: 2.44m | Espesor: 0.5mm | Peso: 13.9kg | Acabado: Mate', colors: ['EVEREST CREMA'], use: 'Foam board pastel decorativo' },
+  '14181405': { name: 'MANDARINA PASTEL (PASTEL)', specs: 'Ancho: 122cm | Largo: 2.44m | Espesor: 0.5mm | Peso: 13.9kg | Acabado: Mate', colors: ['MANDARINA PASTEL'], use: 'Foam board pastel decorativo' },
+  '14181406': { name: 'AZUL TIFFANY PASTEL (PASTEL)', specs: 'Ancho: 122cm | Largo: 2.44m | Espesor: 0.5mm | Peso: 13.9kg | Acabado: Mate', colors: ['AZUL TIFFANY PASTEL'], use: 'Foam board pastel decorativo' },
+  '14181402': { name: 'BLANCO ESTUARIO (AURORA BOREAL)', specs: 'Ancho: 122cm | Largo: 2.44m | Espesor: 0.5mm | Peso: 13.3kg | Acabado: Metálico', colors: ['BLANCO ESTUARIO'], use: 'Foam board aurora boreal' },
+  '14181407': { name: 'GRIS TITANIO (AURORA BOREAL)', specs: 'Ancho: 122cm | Largo: 2.44m | Espesor: 0.5mm | Peso: 13.3kg | Acabado: Metálico', colors: ['GRIS TITANIO'], use: 'Foam board aurora boreal' },
+  '14181408': { name: 'GRIS BASALTO (AURORA BOREAL)', specs: 'Ancho: 122cm | Largo: 2.44m | Espesor: 0.5mm | Peso: 13.3kg | Acabado: Metálico', colors: ['GRIS BASALTO'], use: 'Foam board aurora boreal' },
+  '14181409': { name: 'VERDE PETRÓLEO (AURORA BOREAL)', specs: 'Ancho: 122cm | Largo: 2.44m | Espesor: 0.5mm | Peso: 13.3kg | Acabado: Metálico', colors: ['VERDE PETRÓLEO'], use: 'Foam board aurora boreal' },
+  '14181410': { name: 'BRONCE NATURAL (AURORA BOREAL)', specs: 'Ancho: 122cm | Largo: 2.44m | Espesor: 0.5mm | Peso: 13.3kg | Acabado: Metálico', colors: ['BRONCE NATURAL'], use: 'Foam board aurora boreal' },
+  '14181411': { name: 'COBRE (AURORA BOREAL)', specs: 'Ancho: 122cm | Largo: 2.44m | Espesor: 0.5mm | Peso: 13.3kg | Acabado: Metálico', colors: ['COBRE'], use: 'Foam board aurora boreal' },
+  '14181412': { name: 'OCRE OSCURO (AURORA BOREAL)', specs: 'Ancho: 122cm | Largo: 2.44m | Espesor: 0.5mm | Peso: 13.3kg | Acabado: Metálico', colors: ['OCRE OSCURO'], use: 'Foam board aurora boreal' },
+  '14181301': { name: 'ARENISCA PLATA', specs: 'Ancho: 122cm | Largo: 2.44m | Espesor: 0.5mm | Peso: 13.3kg | Acabado: Metálico', colors: ['ARENISCA PLATA'], use: 'Foam board decorativo' },
+  '14181302': { name: 'ARENISCA NEGRO', specs: 'Ancho: 122cm | Largo: 2.44m | Espesor: 0.5mm | Peso: 13.3kg | Acabado: Metálico', colors: ['ARENISCA NEGRO'], use: 'Foam board decorativo' },
+  '14181303': { name: 'COBRE TERRA', specs: 'Ancho: 122cm | Largo: 2.44m | Espesor: 0.5mm | Peso: 13.3kg | Acabado: Metálico', colors: ['COBRE TERRA'], use: 'Foam board decorativo' },
+  '14181304': { name: 'TABACO RUSTICO', specs: 'Ancho: 122cm | Largo: 2.44m | Espesor: 0.5mm | Peso: 13.3kg | Acabado: Metálico', colors: ['TABACO RUSTICO'], use: 'Foam board decorativo' },
+
+  // PVC BOARD (p.54-58)
+  '14181003': { name: 'PVC BOARD BLANCO CRUDO 3MM', specs: 'Ancho: 122cm | Largo: 2.44m | Espesor: 3mm | Densidad: 0.55', colors: ['BLANCO'], use: 'PVC board construcción liviana' },
+  '14181005': { name: 'PVC BOARD BLANCO CRUDO 5MM', specs: 'Ancho: 122cm | Largo: 2.44m | Espesor: 5mm | Densidad: 0.55', colors: ['BLANCO'], use: 'PVC board construcción liviana' },
+  '14181009': { name: 'PVC BOARD BLANCO CRUDO 9MM', specs: 'Ancho: 122cm | Largo: 2.44m | Espesor: 9mm | Densidad: 0.55', colors: ['BLANCO'], use: 'PVC board construcción liviana' },
+  '14181012': { name: 'PVC BOARD BLANCO CRUDO 12MM', specs: 'Ancho: 122cm | Largo: 2.44m | Espesor: 12mm | Densidad: 0.55', colors: ['BLANCO'], use: 'PVC board construcción liviana' },
+  '14181015': { name: 'PVC BOARD BLANCO CRUDO 15MM', specs: 'Ancho: 122cm | Largo: 2.44m | Espesor: 15mm | Densidad: 0.55', colors: ['BLANCO'], use: 'PVC board construcción liviana' },
+  '14181018': { name: 'PVC BOARD BLANCO CRUDO 18MM', specs: 'Ancho: 122cm | Largo: 2.44m | Espesor: 18mm | Densidad: 0.55', colors: ['BLANCO'], use: 'PVC board construcción liviana' },
+  '14181601': { name: 'PVC BOARD ROSA (M912-88F)', specs: 'Ancho: 122cm | Largo: 2.44m | Espesor: 15mm | Área: 2.9m² | Peso: 5kg', colors: ['ROSA'], use: 'PVC board colores decorativo' },
+  '14181602': { name: 'PVC BOARD MADERA MEDIANA (MS84306-131)', specs: 'Ancho: 122cm | Largo: 2.44m | Espesor: 15mm | Área: 2.9m² | Peso: 5kg', colors: ['MADERA MEDIANA'], use: 'PVC board colores decorativo' },
+  '14181603': { name: 'PVC BOARD BLANCO BRILLANTE', specs: 'Ancho: 122cm | Largo: 2.44m | Espesor: 15mm | Área: 2.9m² | Peso: 5kg', colors: ['BLANCO BRILLANTE'], use: 'PVC board colores decorativo' },
+  '14181604': { name: 'PVC BOARD NEGRO BRILLANTE', specs: 'Ancho: 122cm | Largo: 2.44m | Espesor: 15mm | Área: 2.9m² | Peso: 5kg', colors: ['NEGRO BRILLANTE'], use: 'PVC board colores decorativo' },
+  '14181605': { name: 'PVC BOARD PURPURA (FAN-698)', specs: 'Ancho: 122cm | Largo: 2.44m | Espesor: 15mm | Área: 2.9m² | Peso: 5kg', colors: ['PURPURA'], use: 'PVC board colores decorativo' },
+  '14181606': { name: 'PVC BOARD MADERA CLARO (HD2431S-4)', specs: 'Ancho: 122cm | Largo: 2.44m | Espesor: 15mm | Área: 2.9m² | Peso: 5kg', colors: ['MADERA CLARO'], use: 'PVC board colores decorativo' },
+  '14181607': { name: 'PVC BOARD MADERA OSCURO (MS86101-152)', specs: 'Ancho: 122cm | Largo: 2.44m | Espesor: 15mm | Área: 2.9m² | Peso: 5kg', colors: ['MADERA OSCURO'], use: 'PVC board colores decorativo' },
+
+  // CINTAS ADHESIVAS (p.50-51)
+  '14201201': { name: 'CINTA ADHESIVA DORADA 3CM 5M', specs: 'Ancho: 3cm | Largo: 5m | Tipo: Metálica', colors: ['DORADA'], use: 'Cinta adhesiva decorativa mármol' },
+  '14201202': { name: 'CINTA ADHESIVA PLATEADA 3CM 5M', specs: 'Ancho: 3cm | Largo: 5m | Tipo: Metálica', colors: ['PLATEADA'], use: 'Cinta adhesiva decorativa mármol' },
+  '14201203': { name: 'CINTA ADHESIVA NEGRA 3CM 5M', specs: 'Ancho: 3cm | Largo: 5m | Tipo: Metálica', colors: ['NEGRA'], use: 'Cinta adhesiva decorativa mármol' },
+  '14201204': { name: 'CINTA ADHESIVA PALO DE ROSA 3CM 5M', specs: 'Ancho: 3cm | Largo: 5m | Tipo: Metálica', colors: ['PALO DE ROSA'], use: 'Cinta adhesiva decorativa mármol' },
+  '14201001': { name: 'CINTA ADHESIVA DORADA 1CM 50M', specs: 'Ancho: 1cm | Largo: 50m | Tipo: Papel', colors: ['DORADA'], use: 'Cinta adhesiva papel' },
+  '14201002': { name: 'CINTA ADHESIVA PLATEADA 1CM 50M', specs: 'Ancho: 1cm | Largo: 50m | Tipo: Papel', colors: ['PLATEADA'], use: 'Cinta adhesiva papel' },
+};
+
+// ─── MERGE INTO products.json ────────────────────────────────────────────────
+const productsPath = path.join(ROOT, 'products.json');
+const products = JSON.parse(fs.readFileSync(productsPath, 'utf8'));
+
+let updated = 0;
+let added = 0;
+const updatedIds = new Set();
+
+for (const [ref, spec] of Object.entries(CATALOG_SPECS)) {
+  const existing = products.find(p => String(p.id) === ref);
+  if (existing) {
+    // Update existing product with catalog specs
+    existing.description = `${spec.name}. ${spec.specs}. Uso: ${spec.use}.`;
+    existing.catalog_specs = spec.specs;
+    existing.catalog_colors = spec.colors;
+    existing.catalog_use = spec.use;
+    // Fix dimensions if catalog has them
+    if (spec.specs.includes('30cm') && spec.specs.includes('595')) {
+      existing.dimensions = { latam: { width_cm: 30, length_cm: 595, thickness_mm: 8.5 }, usa: { width_in: 11.81, length_ft: 19.52, thickness_in: 0.335 } };
+    } else if (spec.specs.includes('122cm') && spec.specs.includes('244')) {
+      existing.dimensions = { latam: { width_cm: 122, length_cm: 244, thickness_mm: 0.5 }, usa: { width_in: 48.03, length_ft: 8.01, thickness_in: 0.02 } };
+    } else if (spec.specs.includes('21.9cm') && spec.specs.includes('2.90m')) {
+      existing.dimensions = { latam: { width_cm: 21.9, length_cm: 290, thickness_mm: 25 }, usa: { width_in: 8.62, length_ft: 9.51, thickness_in: 0.98 } };
+    } else if (spec.specs.includes('16cm') && spec.specs.includes('2.95m')) {
+      existing.dimensions = { latam: { width_cm: 16, length_cm: 295, thickness_mm: 25 }, usa: { width_in: 6.30, length_ft: 9.68, thickness_in: 0.98 } };
+    }
+    updated++;
+    updatedIds.add(ref);
+  } else {
+    // Add new product from catalog
+    const newProduct = {
+      id: ref,
+      name: spec.name,
+      category: guessCategory(spec.name, spec.use),
+      subcategory: guessCategory(spec.name, spec.use),
+      collection: spec.use.includes('exterior') ? 'EXTERIOR' : 'INTERIOR',
+      price: 'Consultar precio',
+      price_cop: 'Consultar precio',
+      price_usd: 'Consultar precio',
+      price_approx: true,
+      price_source: 'CATALOGO 2026',
+      unit: 'Unidad',
+      stock_status: 'In Stock',
+      description: `${spec.name}. ${spec.specs}. Uso: ${spec.use}.`,
+      catalog_specs: spec.specs,
+      catalog_colors: spec.colors,
+      catalog_use: spec.use,
+      style_tags: [guessCategory(spec.name, spec.use)],
+    };
+    products.push(newProduct);
+    added++;
+    updatedIds.add(ref);
+  }
+}
+
+// Remove stale pdf_tech_sheet Drive links from products that now have catalog specs
+for (const p of products) {
+  if (updatedIds.has(p.id) && p.pdf_tech_sheet && p.pdf_tech_sheet.includes('drive.google.com')) {
+    delete p.pdf_tech_sheet;
+  }
+}
+
+fs.writeFileSync(productsPath, JSON.stringify(products, null, 2) + '\n');
+console.log(`Updated: ${updated} products, Added: ${added} new products`);
+console.log(`Total products in products.json: ${products.length}`);
+
+// ─── WRITE catalog-specs.json for prompt injection ───────────────────────────
+const specsOut = path.join(ROOT, 'public/catalog-specs.json');
+fs.writeFileSync(specsOut, JSON.stringify(CATALOG_SPECS, null, 2) + '\n');
+console.log(`catalog-specs.json: ${Object.keys(CATALOG_SPECS).length} entries`);
+
+function guessCategory(name, use) {
+  const n = name.toUpperCase();
+  if (n.includes('CIELO RASO') || n.includes('CORNISA') || n.includes('PERIMETRAL') || n.includes('UNIÓN') || n.includes('ESQUINERO')) return 'CIELO RASO PVC';
+  if (n.includes('MÁRMOL') || n.includes('MARMOL')) return 'LÁMINAS MÁRMOL PVC';
+  if (n.includes('CUBIERTA') || n.includes('TEJA') || n.includes('CABALLETE') || n.includes('TORNILLO KIT')) return 'CUBIERTAS Y TEJAS';
+  if (n.includes('POLICARBONATO')) return 'POLICARBONATO';
+  if (n.includes('LED') || n.includes('TRANSFORMADOR') || n.includes('CONTROL')) return 'ILUMINACIÓN';
+  if (n.includes('JARDÍN') || n.includes('JARDIN')) return 'JARDINES ARTIFICIALES';
+  if (n.includes('LISTON') || n.includes('LISTÓN')) return 'LISTONES PVC';
+  if (n.includes('PANEL WPC') && use.includes('exterior')) return 'PANELES WPC EXTERIOR';
+  if (n.includes('PANEL WPC') && use.includes('interior')) return 'PANELES WPC INTERIOR';
+  if (n.includes('ANGULO WPC')) return 'ANGULOS WPC';
+  if (n.includes('FOAM BOARD') || n.includes('PVC BOARD')) return 'FOAM BOARD / PVC BOARD';
+  if (n.includes('CINTA ADHESIVA')) return 'CINTAS ADHESIVAS';
+  if (n.includes('PLATINA')) return 'ACCESORIOS';
+  if (n.includes('PIEDRA DEL SOL') || n.includes('CREMA SELECTA')) return 'LÁMINAS SINTÉTICAS';
+  return 'PRODUCTOS';
+}
