@@ -5,6 +5,9 @@ import { createRequire } from 'module';
 const require = createRequire(import.meta.url);
 const firebaseConfig = require('../firebase-applet-config.json');
 
+// Persistencia de escalaciones: una alerta que nadie puede ver es una alerta que no existió.
+import { addDoc, bumpCounter } from './_firestore-rest.js';
+
 // --- CORS ---
 function setCORS(res, req) {
   const ALLOWED = (process.env.ALLOWED_ORIGINS || '').split(',').map(s => s.trim()).filter(Boolean);
@@ -221,8 +224,8 @@ async function sendWhatsAppAndSMS(phones, text) {
 
 // --- Templates ---
 function buildTelegramMessage(d) {
-  const icon = d.type === 'quote' ? '💰' : d.type === 'staff' ? '🧑‍💼' : '🚨';
-  const typeLabel = d.type === 'quote' ? 'COTIZACIÓN' : d.type === 'staff' ? 'ASESOR HUMANO' : 'ESCALAMIENTO';
+  const icon = d.type === 'quote' ? '💰' : d.type === 'staff' ? '🧑‍💼' : d.type === 'sla' ? '⏰' : '🚨';
+  const typeLabel = d.type === 'quote' ? 'COTIZACIÓN' : d.type === 'staff' ? 'ASESOR HUMANO' : d.type === 'sla' ? 'SIN RESPUESTA — SLA' : 'ESCALAMIENTO';
   const lines = [
     `<b>${icon} ALERTA DE ESCALAMIENTO</b>`,
     ``,
@@ -238,13 +241,25 @@ function buildTelegramMessage(d) {
   lines.push(`<b>Marca:</b> ${d.brand || 'Desconocida'}`);
   lines.push(`<b>Sesión:</b> ${d.sessionId || 'N/A'}`);
   lines.push(`<b>Hora:</b> ${new Date(d.timestamp).toLocaleString('es-CO', { timeZone: 'America/Bogota' })}`);
+  if (Array.isArray(d.transcript) && d.transcript.length) {
+    lines.push('');
+    lines.push('<b>Conversación (últimos turnos):</b>');
+    d.transcript.slice(-6).forEach((t) => {
+      const txt = String(t?.text || '').replace(/\s+/g, ' ').slice(0, 180);
+      if (txt) lines.push(`${t?.role === 'user' ? '👤 Cliente' : '🤖 Bot'}: ${txt}`);
+    });
+  }
+  if (d.product) lines.push('', `<b>Producto/intención:</b> ${d.product}`);
+  if (d.waitingSince) lines.push(`<b>Esperando asesor desde:</b> ${new Date(d.waitingSince).toLocaleString('es-CO', { timeZone: 'America/Bogota' })}`);
+  if (d.slaStage) lines.push(`<b>Re-alerta SLA:</b> etapa ${d.slaStage}`);
+  if (d.pageUrl) lines.push(`<b>Página:</b> ${d.pageUrl}`);
   if (d.dashboardUrl) lines.push(`<a href="${d.dashboardUrl}">📋 Tomar el chat en el panel</a>`);
   return lines.join('\n');
 }
 
 function buildEmailHtml(d) {
   const color = d.priority === 'urgent' ? '#dc2626' : d.priority === 'high' ? '#ea580c' : '#ca8a04';
-  const title = d.type === 'quote' ? '💰 Solicitud de cotización' : d.type === 'staff' ? '🧑‍💼 Cliente pidió un asesor' : '🚨 Escalamiento';
+  const title = d.type === 'quote' ? '💰 Solicitud de cotización' : d.type === 'staff' ? '🧑‍💼 Cliente pidió un asesor' : d.type === 'sla' ? '⏰ Cliente esperando — sin respuesta' : '🚨 Escalamiento';
   return `<!DOCTYPE html><html><head><style>
   body{font-family:Arial,sans-serif;line-height:1.6;color:#333}
   .container{max-width:600px;margin:0 auto;padding:20px}
@@ -261,6 +276,10 @@ function buildEmailHtml(d) {
   <p><strong>Marca:</strong> ${d.brand || 'Desconocida'}</p>
   <p><strong>Mensaje:</strong></p>
   <blockquote>${d.message || 'N/A'}</blockquote>
+  ${Array.isArray(d.transcript) && d.transcript.length ? `<p><strong>Conversación:</strong></p><blockquote>${d.transcript.slice(-6).map((t) => `${t?.role === 'user' ? '👤 Cliente' : '🤖 Bot'}: ${String(t?.text || '').replace(/</g, '&lt;').slice(0, 200)}`).join('<br>')}</blockquote>` : ''}
+  ${d.product ? `<p><strong>Producto/intención:</strong> ${d.product}</p>` : ''}
+  ${d.waitingSince ? `<p><strong>Esperando asesor desde:</strong> ${new Date(d.waitingSince).toLocaleString('es-CO', { timeZone: 'America/Bogota' })}</p>` : ''}
+  ${d.slaStage ? `<p><strong>Re-alerta SLA:</strong> etapa ${d.slaStage}</p>` : ''}
   <div class="meta">
   <p>Sesión: ${d.sessionId || 'N/A'}</p>
   <p>Hora: ${new Date(d.timestamp).toLocaleString('es-CO', { timeZone: 'America/Bogota' })}</p>
@@ -271,8 +290,67 @@ function buildEmailHtml(d) {
 }
 
 function buildWhatsAppText(d) {
-  const prefix = d.type === 'quote' ? '💰 Cotizacion' : d.type === 'staff' ? '🧑‍💼 Asesor' : '🔔 Alerta';
-  return `${prefix} - Cliente: ${d.customerName || 'N/A'} - Msg: ${d.message ? d.message.substring(0, 200) : 'N/A'} - Tel: ${d.customerPhone || 'N/A'} - Sesion: ${d.sessionId || 'N/A'}`;
+  const prefix = d.type === 'quote' ? '💰 COTIZACION' : d.type === 'staff' ? '🧑‍💼 PIDIO ASESOR' : d.type === 'sla' ? '⏰ SIN RESPUESTA' : '🔔 ALERTA';
+  const lastUser = Array.isArray(d.transcript)
+    ? [...d.transcript].reverse().find((t) => t?.role === 'user')?.text
+    : '';
+  const lines = [
+    `${prefix} — ${d.customerName || 'Cliente'}`,
+    `Msj: ${String(lastUser || d.message || 'N/A').replace(/\s+/g, ' ').slice(0, 200)}`,
+    `Tel: ${d.customerPhone || 'no indicado'}`,
+    `Sesion: ${d.sessionId || 'N/A'}`,
+  ];
+  if (d.waitingSince) lines.push(`Esperando desde: ${new Date(d.waitingSince).toLocaleTimeString('es-CO', { timeZone: 'America/Bogota' })}`);
+  if (d.slaStage) lines.push(`Re-alerta SLA etapa ${d.slaStage}`);
+  return lines.join('\n');
+}
+
+// --- Persistence: audit doc + the counters the panels/reports read ---
+async function recordEscalation(d, results, anySuccess) {
+  const channels = Object.entries(results).map(([name, r]) => ({
+    channel: name,
+    ok: !!r?.success,
+    error: r?.error ? String(r.error).slice(0, 160) : '',
+  }));
+  const delivered = channels.filter((c) => c.ok).map((c) => c.channel);
+  const failed = channels.filter((c) => !c.ok).map((c) => c.channel);
+  const stamp = new Date().toISOString();
+
+  let auditId = null;
+  try {
+    auditId = await addDoc('escalations', {
+      sessionId: d.sessionId || '',
+      type: d.type || 'custom',
+      priority: d.priority || 'high',
+      customerName: d.customerName || '',
+      customerPhone: d.customerPhone || '',
+      customerEmail: d.customerEmail || '',
+      brand: d.brand || '',
+      message: String(d.message || '').replace(/\s+/g, ' ').slice(0, 300),
+      pageUrl: d.pageUrl || '',
+      waitingSince: d.waitingSince || stamp,
+      channels, delivered, failed, anyDelivered: anySuccess,
+      createdAt: stamp,
+    });
+  } catch (err) {
+    console.error('[escalation] audit write failed:', err?.message || err);
+  }
+
+  let counter = null;
+  if (d.sessionId) {
+    // NOTE: counters live inside the nested `analytics` map — the mask must use the dotted path and
+    // the body the nested mapValue, or the write is silently dropped.
+    // SLA re-alerts are counted separately from first-time escalations, otherwise the ladder
+    // inflates `escalationCount` and the "how many customers asked for a human" metric lies.
+    const counterField = d.type === 'sla' ? 'analytics.slaRealerts' : 'analytics.escalationCount';
+    counter = await bumpCounter(`conversations/${d.sessionId}`, counterField, {
+      staffAlertPending: !anySuccess,
+      lastEscalationAt: stamp,
+      escalationType: d.type || 'custom',
+      lastEscalationDelivered: delivered,
+    });
+  }
+  return { auditId, counter, delivered, failed };
 }
 
 // --- Main handler ---
@@ -293,6 +371,11 @@ export default async function handler(req, res) {
     adminPhone,    // override single target phone
     phones,        // array of target phones
     dashboardUrl,
+    pageUrl,       // where the customer was chatting
+    waitingSince,  // when the customer started waiting for a human
+    transcript,    // [{role, text}] — last turns, so staff gets context not just the last line
+    product,       // product/intent hint when the client can detect one
+    slaStage,      // set by the staff-SLA sweep on re-alerts
   } = req.body || {};
 
   if (!type || !message) {
@@ -303,6 +386,8 @@ export default async function handler(req, res) {
     type, priority: priority || 'high',
     customerName, customerPhone, customerEmail,
     message, brand, sessionId,
+    pageUrl, waitingSince, product, slaStage,
+    transcript: Array.isArray(transcript) ? transcript.slice(-8) : null,
     dashboardUrl: dashboardUrl || (req.headers.origin ? `${req.headers.origin}/?admin=true${sessionId ? `&session=${encodeURIComponent(sessionId)}` : ''}` : ''),
     timestamp: new Date().toISOString(),
   };
@@ -326,7 +411,7 @@ export default async function handler(req, res) {
   const [telegram, email, twilioSms, twilioWa, whatsapp] = await Promise.allSettled([
     sendTelegram(buildTelegramMessage(d)),
     sendEmail(
-      `[${d.priority.toUpperCase()}] ${d.type === 'quote' ? 'Solicitud de cotización' : d.type === 'staff' ? 'Cliente pidió un asesor' : 'Escalamiento'} — ${customerName || 'Cliente'}`,
+      `[${d.priority.toUpperCase()}] ${d.type === 'quote' ? 'Solicitud de cotización' : d.type === 'staff' ? 'Cliente pidió un asesor' : d.type === 'sla' ? 'CLIENTE SIN RESPUESTA (SLA)' : 'Escalamiento'} — ${customerName || 'Cliente'}`,
       buildEmailHtml(d)
     ),
     sendTwilioSMS(targetPhones, buildWhatsAppText(d)),
@@ -346,9 +431,16 @@ export default async function handler(req, res) {
 
   const anySuccess = Object.values(results).some(r => r.success);
 
+  // Persist BEFORE answering, and even when every channel failed: an undelivered alert must still
+  // show up in the audit trail and in the session counters the monitors read.
+  const persistence = await recordEscalation(d, results, anySuccess).catch((err) => {
+    console.error('[escalation] persistence failed:', err?.message || err);
+    return { error: String(err?.message || err) };
+  });
+
   if (!anySuccess) {
-    return res.status(500).json({ error: 'All notification channels failed', results });
+    return res.status(500).json({ error: 'All notification channels failed', results, persistence });
   }
 
-  return res.status(200).json({ success: true, results });
+  return res.status(200).json({ success: true, results, persistence });
 }

@@ -450,6 +450,9 @@ const ChatTab: React.FC<ChatTabProps> = ({ quickActions, initialMessage, emergen
   }, [messages, isLoading]);
 
   const staffAlertSentRef = useRef(false);
+  // Marca de tiempo de la solicitud humana: el barrido SLA (api/staff-sla-sweep.js) la usa
+  // para saber cuánto lleva esperando el cliente.
+  const escalationAtRef = useRef<string | null>(null);
   // Alerta al equipo del cliente — SOLO escalamiento real (Novedades Chatbot 8):
   // una pregunta de precio NO es escalamiento (el bot la responde); se alerta cuando el
   // cliente pide explícitamente una cotización formal o hablar con una persona, UNA vez
@@ -468,8 +471,14 @@ const ChatTab: React.FC<ChatTabProps> = ({ quickActions, initialMessage, emergen
     staffAlertSentRef.current = true;
 
     const escalationType = isQuote ? 'quote' : 'staff';
+    const waitingSince = new Date().toISOString();
+    escalationAtRef.current = waitingSince;
 
     console.log(`[Escalation] ${escalationType} intent detected. Firing Telegram + Email + WhatsApp + SMS (once per conversation).`);
+
+    // Contexto para el equipo: los últimos turnos, no sólo la última línea (queja del cliente:
+    // "no se notifica con suficiente información de la interacción").
+    const transcript = messages.slice(-6).map((m) => ({ role: m.role, text: m.text }));
 
     // Fire unified escalation (all 4 channels server-side). El Twilio heredado se quitó:
     // duplicaba el aviso de WhatsApp con el mismo contenido.
@@ -482,7 +491,34 @@ const ChatTab: React.FC<ChatTabProps> = ({ quickActions, initialMessage, emergen
       message: textText,
       brand: brandId || 'unitec',
       sessionId: conversationId || '',
+      transcript,
+      pageUrl: typeof window !== 'undefined' ? window.location.href : '',
+      waitingSince,
     }).catch(console.error);
+
+    // La sesión DEBE quedar como "asesor solicitado": hasta ahora el escalamiento automático
+    // disparaba los avisos pero nunca marcaba el estado (sólo lo hacía el botón manual), así que
+    // el monitor de "staff solicitado" del panel no las veía nunca.
+    if (conversationId) {
+      requestIntervention(
+        conversationId,
+        escalationType === 'quote' ? 'Solicitud de cotización (automática)' : 'Cliente pidió un asesor (automático)',
+        'high'
+      ).catch((e) => console.warn('requestIntervention from escalation failed:', e));
+    }
+
+    // Acompañamiento durante la espera: el cliente sabe qué pasa después. UNA vez por
+    // conversación (antes esto vivía en showEscalationAutoReply, que no tenía llamadores).
+    const isEn = language === 'en';
+    const waLink = 'https://wa.me/573142332147';
+    setMessages((prev) => [...prev, {
+      id: `escalation-ack-${Date.now()}`,
+      role: 'model',
+      text: isEn
+        ? `✅ I've notified our team — an advisor will reply to you right here shortly. If it's urgent, WhatsApp us: ${waLink}`
+        : `✅ Ya avisé a un asesor del equipo: te responderá por aquí en breve. Si es urgente, escríbenos por WhatsApp: ${waLink}`,
+      timestamp: new Date(),
+    }]);
   };
 
   // Show auto-reply to user after escalation — keeps them engaged while staff responds

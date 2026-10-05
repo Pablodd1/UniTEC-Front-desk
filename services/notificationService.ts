@@ -3,7 +3,7 @@ import { collection, addDoc } from 'firebase/firestore';
 
 // --- Unified escalation: fires Telegram + Email + WhatsApp + SMS in one server call ---
 export interface EscalationData {
-  type: 'quote' | 'staff' | 'custom';
+  type: 'quote' | 'staff' | 'sla' | 'custom';
   priority?: 'low' | 'medium' | 'high' | 'urgent';
   customerName?: string;
   customerPhone?: string;
@@ -11,6 +11,16 @@ export interface EscalationData {
   message: string;
   brand?: string;
   sessionId?: string;
+  /** Últimos turnos de la conversación — el equipo recibe contexto, no sólo la última línea. */
+  transcript?: { role: string; text: string }[];
+  /** Página donde estaba el cliente (widget iframe incluido). */
+  pageUrl?: string;
+  /** ISO: desde cuándo espera un humano (lo consume el barrido SLA y las re-alertas). */
+  waitingSince?: string;
+  /** Producto/intención detectada, si el cliente puede determinarlo. */
+  product?: string;
+  /** Etapa de re-alerta del barrido SLA (1..3). */
+  slaStage?: number;
 }
 
 export const triggerEscalation = async (data: EscalationData): Promise<{ success: boolean; results?: any }> => {
