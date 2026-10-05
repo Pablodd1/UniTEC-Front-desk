@@ -18,6 +18,10 @@
       "schedule": "*/15 * * * *"
     },
     {
+      "path": "/api/staff-sla-sweep",
+      "schedule": "*/5 * * * *"
+    },
+    {
       "path": "/api/ga-visits",
       "schedule": "0 13 * * *"
     }
