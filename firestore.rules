@@ -125,6 +125,11 @@ service cloud.firestore {
     match /interventions/{interventionId} {
       allow read, write: if true;
     }
+
+    // -- Conversation archives: authenticated read & write (retention sweep + Memoria tab) --
+    match /conversation_archives/{archiveId} {
+      allow read, write: if isAuthenticated();
+    }
     
     // -- Calls: authenticated only --
     match /calls/{callId} {
