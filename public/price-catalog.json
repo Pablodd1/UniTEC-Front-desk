@@ -23,6 +23,18 @@
     "category": "CIELO RASO PVC",
     "subcategory": "CIELO RASO PVC"
   },
+  "14031004": {
+    "price_cop": "$ 27.000",
+    "price_usd": "Consultar precio",
+    "unit": "Unidad",
+    "approx": true,
+    "source": "LISTA MARKETING CIELO RASO (PVC)",
+    "row_name": "LAMINA PVC",
+    "row_price": 27000,
+    "name": "LAMINA PVC BEIGE BRILLANTE",
+    "category": "PRODUCTOS",
+    "subcategory": "PRODUCTOS"
+  },
   "14031005": {
     "price_cop": "$ 27.000",
     "price_usd": "Consultar precio",
@@ -46,6 +58,42 @@
     "name": "LAMINA PVC JASPEADO BRILLANTE H-12-I",
     "category": "CIELO RASO PVC",
     "subcategory": "CIELO RASO PVC"
+  },
+  "14031014": {
+    "price_cop": "$ 27.000",
+    "price_usd": "Consultar precio",
+    "unit": "Unidad",
+    "approx": true,
+    "source": "LISTA MARKETING CIELO RASO (PVC)",
+    "row_name": "LAMINA PVC",
+    "row_price": 27000,
+    "name": "LAMINA PVC BLANCO EJECUTIVO",
+    "category": "PRODUCTOS",
+    "subcategory": "PRODUCTOS"
+  },
+  "14031015": {
+    "price_cop": "$ 27.000",
+    "price_usd": "Consultar precio",
+    "unit": "Unidad",
+    "approx": true,
+    "source": "LISTA MARKETING CIELO RASO (PVC)",
+    "row_name": "LAMINA PVC",
+    "row_price": 27000,
+    "name": "LAMINA PVC MARMOLIZADA",
+    "category": "LÁMINAS MÁRMOL PVC",
+    "subcategory": "LÁMINAS MÁRMOL PVC"
+  },
+  "14031016": {
+    "price_cop": "$ 27.000",
+    "price_usd": "Consultar precio",
+    "unit": "Unidad",
+    "approx": true,
+    "source": "LISTA MARKETING CIELO RASO (PVC)",
+    "row_name": "LAMINA PVC",
+    "row_price": 27000,
+    "name": "LAMINA PVC BLANCO MADERA PINO",
+    "category": "PRODUCTOS",
+    "subcategory": "PRODUCTOS"
   },
   "14031028": {
     "price_cop": "$ 27.000",
@@ -106,6 +154,18 @@
     "name": "CORNISA PVC BLANCO EJECUTIVO AM1014",
     "category": "NUEVOS",
     "subcategory": "NUEVOS"
+  },
+  "14032301": {
+    "price_cop": "$ 27.000",
+    "price_usd": "Consultar precio",
+    "unit": "Unidad",
+    "approx": true,
+    "source": "LISTA MARKETING CIELO RASO (PVC)",
+    "row_name": "LAMINA PVC",
+    "row_price": 27000,
+    "name": "LAMINA PVC BLANCO MADERA ACANALADA",
+    "category": "PRODUCTOS",
+    "subcategory": "PRODUCTOS"
   },
   "14051201": {
     "price_cop": "$ 60.500",
@@ -791,30 +851,6 @@
     "category": "NUEVOS",
     "subcategory": "NUEVOS"
   },
-  "14121014": {
-    "price_cop": "$ 108.000",
-    "price_usd": "Consultar precio",
-    "unit": "Unidad",
-    "approx": true,
-    "source": "LISTA MARKETING PARED MARMOL",
-    "row_name": "LAMINA MARMOL MATE PIGMENTO M-14-2.90",
-    "row_price": 108000,
-    "name": "LAMINA MARMOL MATE PIGMENTO M-14-2.90",
-    "category": "NUEVOS",
-    "subcategory": "NUEVOS"
-  },
-  "14121016": {
-    "price_cop": "$ 108.000",
-    "price_usd": "Consultar precio",
-    "unit": "Unidad",
-    "approx": true,
-    "source": "LISTA MARKETING PARED MARMOL",
-    "row_name": "LAMINA MARMOL MATE PIEDRA ANGULAR M-16-2.90",
-    "row_price": 108000,
-    "name": "LAMINA MARMOL MATE PIEDRA ANGULAR M-16-2.90",
-    "category": "NUEVOS",
-    "subcategory": "NUEVOS"
-  },
   "14121201": {
     "price_cop": "$ 105.000",
     "price_usd": "Consultar precio",
@@ -1234,6 +1270,30 @@
     "name": "PANEL WPC PLANO (30-247) \nROBLE GRIS",
     "category": "NUEVOS",
     "subcategory": "NUEVOS"
+  },
+  "14121509": {
+    "price_cop": "$ 25.000",
+    "price_usd": "Consultar precio",
+    "unit": "Unidad",
+    "approx": true,
+    "source": "LISTA MARKETING PANEL WPC",
+    "row_name": "PANEL WPC PLANO",
+    "row_price": 25000,
+    "name": "PANEL WPC PLANO RANURADO MADERA TEKA",
+    "category": "PRODUCTOS",
+    "subcategory": "PRODUCTOS"
+  },
+  "14121532": {
+    "price_cop": "$ 25.000",
+    "price_usd": "Consultar precio",
+    "unit": "Unidad",
+    "approx": true,
+    "source": "LISTA MARKETING PANEL WPC",
+    "row_name": "PANEL WPC PLANO",
+    "row_price": 25000,
+    "name": "PANEL WPC PLANO RANURADO CEDRO",
+    "category": "PRODUCTOS",
+    "subcategory": "PRODUCTOS"
   },
   "14122101": {
     "price_cop": "$ 15.100",
@@ -1919,18 +1979,6 @@
     "category": "NUEVOS",
     "subcategory": "NUEVOS"
   },
-  "14122895": {
-    "price_cop": "$ 7.000",
-    "price_usd": "Consultar precio",
-    "unit": "Unidad",
-    "approx": true,
-    "source": "LISTA MARKETING LISTON PVC",
-    "row_name": "KIT TAPONES LISTON PVC ESTRUCTURAL 10CM",
-    "row_price": 7000,
-    "name": "KIT TAPONES LISTON PVC ESTRUCTURAL 10CM",
-    "category": "NUEVOS",
-    "subcategory": "NUEVOS"
-  },
   "14122901": {
     "price_cop": "$ 500",
     "price_usd": "Consultar precio",
@@ -1954,6 +2002,30 @@
     "name": "PLATINAS METALICAS",
     "category": "NUEVOS",
     "subcategory": "NUEVOS"
+  },
+  "14122904": {
+    "price_cop": "$ 7.000",
+    "price_usd": "Consultar precio",
+    "unit": "Unidad",
+    "approx": true,
+    "source": "LISTA MARKETING LISTON PVC",
+    "row_name": "KIT TAPONES LISTON PVC ESTRUCTURAL 10CM",
+    "row_price": 7000,
+    "name": "KIT TAPONES LISTON PVC ESTRUCTURAL 10CM",
+    "category": "LISTONES PVC",
+    "subcategory": "LISTONES PVC"
+  },
+  "14122906": {
+    "price_cop": "$ 18.000",
+    "price_usd": "Consultar precio",
+    "unit": "Unidad",
+    "approx": true,
+    "source": "LISTA MARKETING LISTON PVC",
+    "row_name": "PERFIL BASE METALICO NEGRO LISTON CIELO RASO",
+    "row_price": 18000,
+    "name": "PERFIL BASE METÁLICO NEGRO LISTON CIELO RASO",
+    "category": "CIELO RASO PVC",
+    "subcategory": "CIELO RASO PVC"
   },
   "14123201": {
     "price_cop": "$ 65.000",
@@ -2531,6 +2603,18 @@
     "category": "NUEVOS",
     "subcategory": "NUEVOS"
   },
+  "14124901": {
+    "price_cop": "$ 35.000",
+    "price_usd": "Consultar precio",
+    "unit": "Unidad",
+    "approx": true,
+    "source": "LISTA MARKETING PANEL WPC",
+    "row_name": "PANEL WPC REDONDO",
+    "row_price": 35000,
+    "name": "PANEL WPC REDONDO STONE GRIS (01)",
+    "category": "PANELES WPC INTERIOR",
+    "subcategory": "PANELES WPC INTERIOR"
+  },
   "14124902": {
     "price_cop": "$ 35.000",
     "price_usd": "Consultar precio",
@@ -2674,6 +2758,18 @@
     "name": "PANEL WPC REDONDO ROSADO (30)",
     "category": "NUEVOS",
     "subcategory": "NUEVOS"
+  },
+  "14124932": {
+    "price_cop": "$ 35.000",
+    "price_usd": "Consultar precio",
+    "unit": "Unidad",
+    "approx": true,
+    "source": "LISTA MARKETING PANEL WPC",
+    "row_name": "PANEL WPC REDONDO",
+    "row_price": 35000,
+    "name": "PANEL WPC REDONDO PLATEADO",
+    "category": "PANELES WPC INTERIOR",
+    "subcategory": "PANELES WPC INTERIOR"
   },
   "14125210": {
     "price_cop": "$ 16.480",
