@@ -115,7 +115,12 @@ export const summarizeAndArchiveOldConversations = async (): Promise<RetentionRe
           intentCategory: session.intentCategory,
         };
 
-        await setDoc(doc(db, 'conversation_archives', archive.id), archive);
+        // Firestore rejects `undefined` field values (invalid-argument); strip them before writing.
+        const cleanArchive: Record<string, unknown> = {};
+        for (const [key, value] of Object.entries(archive)) {
+          if (value !== undefined) cleanArchive[key] = value;
+        }
+        await setDoc(doc(db, 'conversation_archives', archive.id), cleanArchive);
         result.archived++;
         // User requested full memory: DO NOT delete messages or session
         // await deleteSessionMessages(session.id);

@@ -182,7 +182,7 @@ const App: React.FC = () => {
 
   const renderContent = () => {
     if (!isAuthReady) {
-      return <div className="h-full w-full flex itemás-center justify-center bg-slate-50"><div className="animate-spin rounded-full h-8 w-8 border-b-2 border-brand-600"></div></div>;
+      return <div className="h-full w-full flex items-center justify-center bg-slate-50"><div className="animate-spin rounded-full h-8 w-8 border-b-2 border-brand-600"></div></div>;
     }
 
     if ((activeTab === Tab.ADMIN_SETTINGS || activeTab === Tab.CALENDAR) && !isLoggedIn) {
