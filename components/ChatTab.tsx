@@ -632,6 +632,17 @@ const ChatTab: React.FC<ChatTabProps> = ({ quickActions, initialMessage, emergen
       } catch (e) {
         console.warn('Failed to save user message during takeover:', e);
       }
+      // Aviso visible: con un asesor asignado la IA no responde a propósito; sin este
+      // aviso el chat queda en silencio y parece que dejó de funcionar (reportado en pruebas).
+      setMessages(prev => [...prev, {
+        id: 'handoff-' + Date.now(),
+        role: 'model',
+        text: language === 'en'
+          ? '🧑‍💼 An advisor is already handling this conversation — your message was recorded and you will get a reply here. For urgent matters, WhatsApp us: https://wa.me/573142332147'
+          : '🧑‍💼 Un asesor del equipo ya está atendiendo esta conversación: tu mensaje quedó registrado y te responderá por aquí. Para urgencias, escríbenos por WhatsApp: https://wa.me/573142332147',
+        timestamp: new Date(),
+        skipFirestore: true,
+      }]);
       return;
     }
 
