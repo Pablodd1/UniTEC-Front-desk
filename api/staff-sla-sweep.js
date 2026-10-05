@@ -96,6 +96,13 @@ export default async function handler(req, res) {
   const dryRun = String(req.query?.dryRun || '') === 'true';
   const now = Date.now();
 
+  // Horas de silencio (Bogotá): no se despierta al equipo a las 3 AM. Se difiere TODO (ni alerta ni
+  // aviso ni avance de etapa), así la escalera se reanuda a las 07:00 en vez de disparar en ráfaga.
+  // `?force=true` lo salta (pruebas y operación urgente).
+  const force = String(req.query?.force || '') === 'true';
+  const bogotaHour = Number(new Date().toLocaleString('en-GB', { timeZone: 'America/Bogota', hour: '2-digit', hour12: false }));
+  const quietHours = !force && Number.isFinite(bogotaHour) && (bogotaHour < 7 || bogotaHour >= 21);
+
   try {
     const token = await getFirestoreToken();
     const sessions = await listAllSessions(token);
@@ -122,8 +129,16 @@ export default async function handler(req, res) {
       const fields = doc?.fields || {};
       const analytics = fields.analytics || {};
       const stage = Number(fields.slaStage || 0);
-      const waitingSince = fields.lastEscalationAt || fields.firstUserMessageAt || s.lastUpdated;
+      // El reloj de espera empieza cuando el cliente PIDIÓ (o en la última actividad para sesiones
+      // antiguas). Usar firstUserMessageAt hacía que una sesión de todo el día pareciera "16 h
+      // esperando" y disparara la etapa final de inmediato.
+      const waitingSince = fields.lastEscalationAt || fields.humanRequestedAt || s.lastUpdated;
       const waitedMin = minutesSince(waitingSince, now) ?? 0;
+
+      if (quietHours) {
+        plan.push({ session: s.id, status, stage, waitedMin: Math.round(waitedMin), actions: ['deferred:quiet_hours'] });
+        continue;
+      }
 
       const entry = {
         session: s.id,
