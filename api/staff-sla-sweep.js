@@ -149,7 +149,10 @@ export default async function handler(req, res) {
         actions: [],
       };
 
-      if (waitedMin >= STAGE_3_MIN && stage < 3) {
+      // La escalera 2/5/10 es para quien PIDIÓ asesor y nadie tomó la conversación.
+      // En human_assigned el asesor ya llegó: ahí sólo cabe un recordatorio (rama nudge),
+      // nunca 'SIN RESPUESTA' ni 'staff_no_show' ni decirle al cliente que "viene en camino".
+      if (status === 'human_requested' && waitedMin >= STAGE_3_MIN && stage < 3) {
         entry.actions.push('alert:3');
         entry.actions.push('notice:final');
         entry.actions.push('flag:staffNoShow');
@@ -168,7 +171,7 @@ export default async function handler(req, res) {
           await bumpCounter(`conversations/${s.id}`, 'analytics.slaBreaches');
           done.push({ ...entry, alert, notice });
         }
-      } else if (waitedMin >= STAGE_2_MIN && stage < 2) {
+      } else if (status === 'human_requested' && waitedMin >= STAGE_2_MIN && stage < 2) {
         entry.actions.push('alert:2');
         entry.actions.push('notice:waiting');
         if (!dryRun) {
