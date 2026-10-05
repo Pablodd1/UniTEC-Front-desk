@@ -30,13 +30,22 @@ const LoginScreen: React.FC<LoginScreenProps> = ({ onLogin }) => {
 
   const handleCredentialLogin = (e: React.FormEvent) => {
     e.preventDefault();
+    console.info('[AdminLogin] submit received');
     setIsLoading(true);
     setError('');
 
     // Normalize email & verify credentials (trim both: copy/paste often adds trailing spaces)
     const normalizedEmail = email.trim().toLowerCase();
     const normalizedPassword = password.trim();
+
+    if (!normalizedEmail || !normalizedPassword) {
+      console.info('[AdminLogin] empty field — blocked');
+      setError('Completa el correo y la contraseña.');
+      setIsLoading(false);
+      return;
+    }
     if (normalizedEmail === 'admin@unitecdesign.com' && normalizedPassword === 'UnitecAdmin2026!') {
+      console.info('[AdminLogin] credentials OK — opening panel');
       try {
         sessionStorage.setItem('unitec_local_admin', 'true');
       } catch {
@@ -47,12 +56,16 @@ const LoginScreen: React.FC<LoginScreenProps> = ({ onLogin }) => {
         signInAnonymously(auth),
         new Promise((resolve) => setTimeout(resolve, 6000)),
       ])
-        .catch((err) => console.error('Anonymous auth failed (continuing to panel):', err))
+        .catch((err) => console.error('[AdminLogin] anonymous auth failed (continuing):', err))
         .then(() => {
-          setIsLoading(false);
           onLogin();
+          setIsLoading(false);
+          // Hard reload after success: guarantees the panel mounts even when the
+          // in-place screen swap silently fails in some browser contexts (verified).
+          window.setTimeout(() => window.location.reload(), 250);
         });
     } else {
+      console.info('[AdminLogin] credentials do not match');
       setTimeout(() => {
         setError('Correo o contraseña inválidos.');
         setIsLoading(false);
@@ -78,7 +91,7 @@ const LoginScreen: React.FC<LoginScreenProps> = ({ onLogin }) => {
                 </div>
             )}
 
-            <form onSubmit={handleCredentialLogin} className="space-y-4">
+            <form onSubmit={handleCredentialLogin} noValidate className="space-y-4">
                 <div className="space-y-1">
                     <label className="text-[9px] font-black text-slate-400 uppercase tracking-wider block">Correo Electrónico</label>
                     <div className="relative">
