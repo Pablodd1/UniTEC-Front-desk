@@ -152,5 +152,19 @@ service cloud.firestore {
       allow read, update: if isStaff();
       allow create: if true;
     }
+    // Rastro de auditoría de escalaciones (lo escribe el servidor: api/notify-escalation.js →
+    // api/_firestore-rest.js). Create + read; nunca editable ni borrable desde el cliente.
+    match /escalations/{docId} {
+      allow create: if isAuthenticated();
+      allow read: if isAuthenticated();
+      allow update, delete: if false;
+    }
+
+    // Cola de espera del barrido SLA (api/staff-sla-sweep.js): lee/escribe el servidor.
+    match /sla_queue/{docId} {
+      allow create, read, update: if isAuthenticated();
+      allow delete: if false;
+    }
+
   }
 }
