@@ -407,26 +407,39 @@ export default async function handler(req, res) {
   const targetPhones = phones || (adminPhone ? [adminPhone] : ALL_STAFF_PHONES);
   const primaryPhone = Array.isArray(targetPhones) ? targetPhones[0] : targetPhones;
 
-  // Fire all channels in parallel: Telegram + Email + Twilio SMS + Twilio WhatsApp + Sent.dm
-  const [telegram, email, twilioSms, twilioWa, whatsapp] = await Promise.allSettled([
+  // UN raíl de mensajería con respaldo: Sent.dm primario, Twilio SOLO si el primario falla.
+  // Antes los tres envíos salían siempre → cada uno de los 8 teléfonos del equipo recibía la misma
+  // alerta 2-3 veces (la queja de "duplicados"). Así se conserva la entrega y se elimina el ruido.
+  const waText = buildWhatsAppText(d);
+  const extract = (r) => r.status === 'fulfilled' ? r.value : { success: false, error: r.reason?.message };
+
+  const [telegramR, emailR, primaryR] = await Promise.allSettled([
     sendTelegram(buildTelegramMessage(d)),
     sendEmail(
       `[${d.priority.toUpperCase()}] ${d.type === 'quote' ? 'Solicitud de cotización' : d.type === 'staff' ? 'Cliente pidió un asesor' : d.type === 'sla' ? 'CLIENTE SIN RESPUESTA (SLA)' : 'Escalamiento'} — ${customerName || 'Cliente'}`,
       buildEmailHtml(d)
     ),
-    sendTwilioSMS(targetPhones, buildWhatsAppText(d)),
-    sendTwilioWhatsApp(primaryPhone, buildWhatsAppText(d)),
-    sendWhatsAppAndSMS(targetPhones, buildWhatsAppText(d)),
+    sendWhatsAppAndSMS(targetPhones, waText),
   ]);
 
-  const extract = (r) => r.status === 'fulfilled' ? r.value : { success: false, error: r.reason?.message };
+  const primary = extract(primaryR);
+  let twilioSms = { success: false, skipped: 'primary_ok' };
+  let twilioWa = { success: false, skipped: 'primary_ok' };
+  if (!primary?.success) {
+    const [smsR, waR] = await Promise.allSettled([
+      sendTwilioSMS(targetPhones, waText),
+      sendTwilioWhatsApp(primaryPhone, waText),
+    ]);
+    twilioSms = extract(smsR);
+    twilioWa = extract(waR);
+  }
 
   const results = {
-    telegram: extract(telegram),
-    email: extract(email),
-    twilioSms: extract(twilioSms),
-    twilioWhatsApp: extract(twilioWa),
-    sentDmWhatsApp: extract(whatsapp),
+    telegram: extract(telegramR),
+    email: extract(emailR),
+    sentDmWhatsApp: primary,
+    twilioSms,
+    twilioWhatsApp: twilioWa,
   };
 
   const anySuccess = Object.values(results).some(r => r.success);
