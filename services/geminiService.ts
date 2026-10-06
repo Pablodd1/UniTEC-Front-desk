@@ -102,6 +102,11 @@ const performCatalogSearch = async (query: string, brandId: string) => {
 let currentSessionId = '';
 export const setCurrentChatSessionId = (id: string) => { currentSessionId = id; };
 
+// Paridad voz/texto: si un asesor ya tomó la conversación, la IA de voz TAMPOCO responde
+// (antes la voz seguía contestando por encima del humano). ChatTab mantiene esto al día.
+let voiceTakeoverReason = '';
+export const setVoiceTakeover = (reason: string) => { voiceTakeoverReason = reason || ''; };
+
 export async function* sendMessageToGemini(
   message: string,
   history: any[] = [],
@@ -137,6 +142,8 @@ export async function* sendMessageToGemini(
           instructions,
           brandId,
           sessionId: currentSessionId || undefined,
+          // Canal del turno: permite auditar/evaluar voz y texto por separado (antes todo era 'web').
+          channel: isVoiceMode ? 'voice' : 'text',
           parentHost: typeof document !== 'undefined' ? (document.referrer || '') : '',
           stream: true,
         }),
@@ -303,6 +310,14 @@ export const connectLiveSession = async (
       // Stop listening while processing + speaking (prevents echo capture)
       stopRecognition();
       setState('processing');
+
+      if (voiceTakeoverReason) {
+        // Mismo contrato que el chat de texto: se registra el turno, pero contesta el humano.
+        callbacks.onMessage(voiceTakeoverReason, null, true);
+        setState('listening');
+        safeStartRecognition();
+        return;
+      }
 
       callbacks.onMessage(transcript, null, false);
       messageHistory.push({ role: 'user', parts: [{ text: transcript }] });

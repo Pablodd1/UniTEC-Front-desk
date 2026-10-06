@@ -162,6 +162,16 @@ export default async function handler(req, res) {
   if (!global.rateCache) global.rateCache = new Map();
   global.rateCache.set(rateKey, rateData);
   if (rateData.count > 30) {
+    // Un turno rechazado no puede desaparecer sin rastro: se graba como fallido (sin respuesta)
+    // para que aparezca en la transcripción y en la analítica en vez de no existir.
+    recordChatTurn({
+      sessionId: req.body?.sessionId,
+      userText: req.body?.message,
+      replyText: '',
+      brand: req.body?.brandId || 'unitec',
+      channel: req.body?.channel === 'voice' ? 'voice' : 'text',
+      deliveryStatus: 'rate_limited',
+    }).catch(() => {});
     return res.status(429).json({ error: 'Too many requests per minute', retryAfter: 60 });
   }
 
@@ -702,11 +712,30 @@ GOOD EXAMPLE: "¡Hola! ¿En qué producto te interesa?"`;
     // Graceful Fallback: If all API keys fail or are expired (401), return a polite receptionist fallback response
     const fallbackText = "¡Hola! Gracias por contactar a UNITEC USA Design. En este momento nuestra pasarela de Inteligencia Artificial se encuentra en actualización de credenciales. Para ser atendido inmediatamente por un asesor de ventas humano, por favor comunícate a nuestro WhatsApp oficial: https://wa.me/573142332147";
     await alertAnomaly('BOT_SIN_RESPUESTA', lastErrorDetails || 'Todas las llaves de IA fallaron.', clientSessionId);
+    // El cliente SÍ ve el texto de respaldo, así que se graba tal cual se mostró, marcado como
+    // degradado: la conversación queda evaluable en vez de invisible.
+    recordChatTurn({
+      sessionId: clientSessionId,
+      userText: message,
+      replyText: fallbackText,
+      brand: brandId,
+      parentHost,
+      channel: req.body?.channel === 'voice' ? 'voice' : 'text',
+      deliveryStatus: 'ai_failed',
+    }).catch(() => {});
 
     return res.status(200).json({ text: fallbackText, success: true, isFallback: true, lastError: lastErrorDetails });
   } catch (error) {
     console.error("Proxy Chat Error:", error);
     await alertAnomaly('ERROR_CHAT', error?.message || String(error), req.body?.sessionId);
+    recordChatTurn({
+      sessionId: req.body?.sessionId,
+      userText: req.body?.message,
+      replyText: '',
+      brand: req.body?.brandId || 'unitec',
+      channel: req.body?.channel === 'voice' ? 'voice' : 'text',
+      deliveryStatus: 'handler_error',
+    }).catch(() => {});
     return res.status(200).json({
       text: "¡Hola! Gracias por contactar a UNITEC USA Design. Para asistencia inmediata, comunícate a nuestro WhatsApp oficial: https://wa.me/573142332147",
       success: true,

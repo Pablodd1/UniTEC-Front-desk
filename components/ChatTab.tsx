@@ -6,7 +6,7 @@ import { db } from '../firebase';
 import { doc, getDoc } from 'firebase/firestore';
 import { Message, QuickAction, Language } from '../types';
 import { saveChatSession } from '../services/firestoreService';
-import { sendMessageToGemini, setCurrentChatSessionId } from '../services/geminiService';
+import { sendMessageToGemini, setCurrentChatSessionId, setVoiceTakeover } from '../services/geminiService';
 import { createConversation, addMessage, requestIntervention, extractCustomerData, updateSessionStatus, subscribeToConversation, subscribeToMessages } from '../services/conversationService';
 import { notifyStaffIntervention, triggerEscalation } from '../services/notificationService';
 import { Send, User, Box, DollarSign, Hammer, BookOpen, CheckCircle2, Truck, FileText, RefreshCcw, Percent, Headphones, CreditCard, Lock, MessageSquare, MapPin } from 'lucide-react';
@@ -242,6 +242,17 @@ const ChatTab: React.FC<ChatTabProps> = ({ quickActions, initialMessage, emergen
   const pendingPhoneRequest = useRef(false);
   const phoneAlreadyAsked = useRef(false);
   const sendingRef = useRef(false); // sync re-entrancy guard (isLoading state lags one render)
+
+  // La voz respeta el takeover igual que el texto (mismo estado que dispara el aviso visible).
+  useEffect(() => {
+    setVoiceTakeover(
+      sessionStatus === 'human_assigned'
+        ? (language === 'en'
+          ? 'An advisor is already handling this conversation - I am listening but I will not answer over them. Your message was recorded.'
+          : 'Un asesor del equipo ya esta atendiendo esta conversacion: escucho, pero no respondo por el. Tu mensaje quedo registrado.')
+        : ''
+    );
+  }, [sessionStatus, language]);
 
   useEffect(() => {
     if (!conversationId || messages.length === 0) return;

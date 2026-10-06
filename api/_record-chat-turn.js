@@ -27,7 +27,7 @@ const PROTECTED_STATUSES = new Set(['human_requested', 'human_assigned']);
  * @param {number} [latencyMs]  ms desde el inicio del handler hasta tener la respuesta (Fase 3)
  * @returns {Promise<{recorded:boolean, reason?:string}>}
  */
-export async function recordChatTurn({ sessionId, userText, replyText, brand = 'unitec', stage, parentHost, latencyMs }) {
+export async function recordChatTurn({ sessionId, userText, replyText, brand = 'unitec', stage, parentHost, latencyMs, channel = 'text', deliveryStatus = 'ok' }) {
   if (!sessionId) return { recorded: false, reason: 'no_session' };
   try {
     const idToken = await getFirestoreToken();
@@ -134,6 +134,10 @@ export async function recordChatTurn({ sessionId, userText, replyText, brand = '
             role: { stringValue: 'user' },
             text: { stringValue: String(userText).slice(0, 2000) },
             timestamp: { stringValue: now },
+            channel: { stringValue: channel },
+            // Marca los turnos que NO recibieron respuesta real (429, llaves caídas, error): sin esto
+            // una conversación fallida era indistinguible de una que nunca ocurrió.
+            ...(deliveryStatus !== 'ok' ? { deliveryStatus: { stringValue: deliveryStatus } } : {}),
           },
         },
       });
@@ -144,6 +148,7 @@ export async function recordChatTurn({ sessionId, userText, replyText, brand = '
         role: { stringValue: 'model' },
         text: { stringValue: String(replyText).slice(0, 2000) },
         timestamp: { stringValue: now },
+        channel: { stringValue: channel },
       };
       if (Number.isFinite(latencyMs)) botFields.latencyMs = { integerValue: String(Math.round(latencyMs)) };
       writes.push({ update: { name: `${docPath}/messages/srv_b_${ts}`, fields: botFields } });
