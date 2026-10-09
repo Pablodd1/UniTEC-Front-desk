@@ -7,7 +7,7 @@ import {
   ArrowUpRight, Eye, UserCheck, Timer, 
   Check
 } from 'lucide-react';
-import { ConversationSession, subscribeToConversation, subscribeToMessages, ConversationMessage, addMessage, updateSessionStatus, addConversationTag, addConversationNote } from '../services/conversationService';
+import { ConversationSession, subscribeToConversation, subscribeToMessages, ConversationMessage, addMessage, updateSessionStatus, addConversationTag, addConversationNote, bumpSessionCounter } from '../services/conversationService';
 import { playNotificationSound } from '../services/soundService';
 
 interface ConversationMonitorProps {
@@ -250,6 +250,10 @@ const ConversationMonitor: React.FC<ConversationMonitorProps> = ({
         isStaff: true,
         staffName: staffName,
       });
+      // `analytics.staffInteractions` seguía en 0 con 6+ mensajes de asesor (métrica muerta en el
+      // panel). Se cuenta aquí, con un increment sobre el path punteado (nunca con updateAnalytics,
+      // que reemplazaría el mapa entero).
+      bumpSessionCounter(selectedSessionId, 'staffInteractions', 1).catch(() => {});
       
       setStaffResponse('');
       

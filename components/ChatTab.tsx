@@ -7,7 +7,7 @@ import { doc, getDoc } from 'firebase/firestore';
 import { Message, QuickAction, Language } from '../types';
 import { saveChatSession } from '../services/firestoreService';
 import { sendMessageToGemini, setCurrentChatSessionId, setVoiceTakeover } from '../services/geminiService';
-import { createConversation, addMessage, requestIntervention, extractCustomerData, updateSessionStatus, subscribeToConversation, subscribeToMessages } from '../services/conversationService';
+import { createConversation, addMessage, requestIntervention, extractCustomerData, updateSessionStatus, subscribeToConversation, subscribeToMessages, markStaffNotice } from '../services/conversationService';
 import { notifyStaffIntervention, triggerEscalation } from '../services/notificationService';
 import { Send, User, Box, DollarSign, Hammer, BookOpen, CheckCircle2, Truck, FileText, RefreshCcw, Percent, Headphones, CreditCard, Lock, MessageSquare, MapPin } from 'lucide-react';
 import { GenerateContentResponse } from '@google/genai';
@@ -286,6 +286,10 @@ const ChatTab: React.FC<ChatTabProps> = ({ quickActions, initialMessage, emergen
       if (session && session.status) {
         setSessionStatus(session.status);
       }
+      // Bandera PERSISTIDA del aviso de takeover: sobrevive recargas (no se repite cada vez que entra).
+      if (session && (session as any).staffNoticeAt) {
+        staffNoticeAtRef.current = (session as any).staffNoticeAt;
+      }
     });
 
     const unsubMessages = subscribeToMessages(conversationId, (remoteMessages) => {
@@ -300,11 +304,14 @@ const ChatTab: React.FC<ChatTabProps> = ({ quickActions, initialMessage, emergen
             .map((m: any) => ({
               id: m.id || Date.now().toString(),
               role: "model" as const,
-              text: `[Staff] ${m.text}`,
+              // Sin el prefijo "[Staff]": el cliente leía "[Staff] Perfecto señora Maria…" y sonaba a
+              // máquina. La etiqueta del asesor solo se muestra en el panel, nunca al cliente.
+              text: String(m.text || ''),
               timestamp: new Date(m.timestamp)
             }));
           
           if (newMsgs.length > 0) {
+            lastStaffMsgAtRef.current = Date.now();
             return [...prev, ...newMsgs].sort((a, b) => a.timestamp.getTime() - b.timestamp.getTime());
           }
           return prev;
@@ -493,6 +500,13 @@ const ChatTab: React.FC<ChatTabProps> = ({ quickActions, initialMessage, emergen
   }, [messages, isLoading]);
 
   const staffAlertSentRef = useRef(false);
+  // Takeover UX: el aviso de "un asesor ya está atendiendo" se mostraba en CADA mensaje y el cliente
+  // lo vivía como un bucle ("cada que te hablo me sale eso"). Estas banderas lo limitan a una vez.
+  const staffNoticeShownRef = useRef(false);
+  const staffNoticeAtRef = useRef<string | null>(null);
+  const lastAutoAckRef = useRef(0);
+  const lastStaffMsgAtRef = useRef(0);
+  const contactAlertSentRef = useRef(false);
   // Marca de tiempo de la solicitud humana: el barrido SLA (api/staff-sla-sweep.js) la usa
   // para saber cuánto lleva esperando el cliente.
   const escalationAtRef = useRef<string | null>(null);
@@ -738,21 +752,80 @@ const ChatTab: React.FC<ChatTabProps> = ({ quickActions, initialMessage, emergen
             text: userMsg.text,
           });
           checkAndTriggerWhatsAppAlert(text);
+
+          // ── Identidad durante el takeover ─────────────────────────────────────
+          // Esta rama antes devolvía ANTES de extraer nada: la clienta escribió su nombre y su
+          // teléfono mientras la atendían y el doc quedó sin ellos ("mira lo que me dice la cliente
+          // que dejó el teléfono"). Se extrae aquí, en el camino vivo.
+          const takeoverName = explicitName(text);
+          const takeoverPhone = text.match(/(\+?\d[\d\s\-().]{6,})/);
+          if (takeoverName || takeoverPhone) {
+            const merged: any = {
+              ...(extractedPii || {}),
+              ...(takeoverName ? { name: takeoverName.charAt(0).toUpperCase() + takeoverName.slice(1) } : {}),
+              ...(takeoverPhone ? { phone: takeoverPhone[1].trim() } : {}),
+            };
+            setExtractedPii(merged);
+            extractCustomerData(conversationId, merged).catch(console.warn);
+            if (takeoverPhone && !contactAlertSentRef.current) {
+              contactAlertSentRef.current = true;
+              triggerEscalation({
+                type: 'contact',
+                priority: 'medium',
+                customerName: merged.name || '',
+                customerPhone: merged.phone || '',
+                message: `Datos del cliente durante la conversación: ${merged.name || 'sin nombre'} · ${merged.phone || 'sin teléfono'}`,
+                brand: brandId || 'unitec',
+                sessionId: conversationId,
+                transcript: messages.slice(-4).map((m) => ({ role: m.role, text: m.text })),
+              }).catch(console.error);
+            }
+          }
+
+          markStaffNotice(conversationId).catch(() => {});
         }
       } catch (e) {
         console.warn('Failed to save user message during takeover:', e);
       }
-      // Aviso visible: con un asesor asignado la IA no responde a propósito; sin este
-      // aviso el chat queda en silencio y parece que dejó de funcionar (reportado en pruebas).
-      setMessages(prev => [...prev, {
-        id: 'handoff-' + Date.now(),
-        role: 'model',
-        text: language === 'en'
-          ? '🧑‍💼 An advisor is already handling this conversation — your message was recorded and you will get a reply here. For urgent matters, WhatsApp us: https://wa.me/573142332147'
-          : '🧑‍💼 Un asesor del equipo ya está atendiendo esta conversación: tu mensaje quedó registrado y te responderá por aquí. Para urgencias, escríbenos por WhatsApp: https://wa.me/573142332147',
-        timestamp: new Date(),
-        skipFirestore: true,
-      }]);
+
+      // Aviso de takeover: con un asesor asignado la IA no responde a propósito. ANTES se repetía el
+      // MISMO párrafo en cada mensaje y el cliente lo vivía como un bucle. Ahora: UNA vez por
+      // conversación (bandera persistida, sobrevive recargas) y después un acuse breve y DISTINTO,
+      // espaciado 3 min y en silencio si el asesor acaba de escribir.
+      const noticeAlreadyShown = staffNoticeShownRef.current || Boolean(staffNoticeAtRef.current);
+      if (!noticeAlreadyShown) {
+        staffNoticeShownRef.current = true;
+        setMessages(prev => [...prev, {
+          id: `handoff-${Date.now()}`,
+          role: 'model',
+          text: language === 'en'
+            ? '🧑‍💼 An advisor from our team is handling this conversation — your message was recorded and they will reply right here. No need to send it again 🙂'
+            : '🧑‍💼 Un asesor del equipo ya está atendiendo esta conversación: tu mensaje quedó registrado y te responderá por aquí. No necesitas repetirlo 🙂',
+          timestamp: new Date(),
+          skipFirestore: true,
+        }]);
+      } else {
+        const nowMs = Date.now();
+        const staffJustWrote = lastStaffMsgAtRef.current > 0 && nowMs - lastStaffMsgAtRef.current < 3 * 60 * 1000;
+        const tooSoon = nowMs - lastAutoAckRef.current < 3 * 60 * 1000;
+        if (!staffJustWrote && !tooSoon) {
+          lastAutoAckRef.current = nowMs;
+          const lines = language === 'en'
+            ? ['Got it — passed it to the advisor handling your chat 🙌',
+               'Noted, thank you. The advisor will answer you right here.',
+               'Thank you, your message is registered. The advisor is still with you.']
+            : ['¡Listo! Ya quedó con el asesor que te está atendiendo 🙌',
+               'Anotado, gracias. El asesor te responde por aquí mismo.',
+               'Gracias, tu mensaje quedó registrado. El asesor sigue contigo.'];
+          setMessages(prev => [...prev, {
+            id: `waiting-ack-${Date.now()}`,
+            role: 'model',
+            text: lines[Math.floor(Math.random() * lines.length)],
+            timestamp: new Date(),
+            skipFirestore: true,
+          }]);
+        }
+      }
       return;
     }
 

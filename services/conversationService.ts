@@ -737,14 +737,16 @@ export const extractCustomerData = async (
   }
   
   const now = new Date().toISOString();
-  const update: any = {
-    extractedData: data,
-    lastUpdated: now,
-  };
-  
-  if (data?.name) update.customerName = data.name;
-  if (data?.email) update.customerEmail = data.email;
-  if (data?.phone) update.customerPhone = data.phone;
+  // `updateDoc` RECHAZA los valores undefined y el rechazo moría en el catch de abajo: por eso el
+  // teléfono que el bot decía "ya registré" nunca llegaba al doc de la sesión. Se limpian primero.
+  const safeData: any = data
+    ? Object.fromEntries(Object.entries(data).filter(([, v]) => v !== undefined && v !== null && v !== ''))
+    : null;
+  const update: any = { lastUpdated: now };
+  if (safeData && Object.keys(safeData).length) update.extractedData = safeData;
+  if (safeData?.name) update.customerName = safeData.name;
+  if (safeData?.email) update.customerEmail = safeData.email;
+  if (safeData?.phone) update.customerPhone = safeData.phone;
 
   // Update locally
   const local = getLocalSessions();
@@ -762,6 +764,27 @@ export const extractCustomerData = async (
     await updateDoc(doc(db, COLLECTIONS.sessions, sessionId), update);
   } catch (e) {
     console.warn('Failed to update customer data in Firestore:', e);
+  }
+};
+
+// Marca PERSISTIDA de que el aviso de takeover ya se mostró (para no repetirlo en cada recarga).
+export const markStaffNotice = async (sessionId: string): Promise<void> => {
+  if (getPrivacyMode()) return;
+  try {
+    await updateDoc(doc(db, COLLECTIONS.sessions, sessionId), { staffNoticeAt: new Date().toISOString() });
+  } catch (e) {
+    console.warn('Failed to mark staff notice:', e);
+  }
+};
+
+// Sube un contador ANIDADO de analytics con un path punteado + increment.
+// NO usar updateAnalytics para esto: reemplaza el mapa `analytics` completo y borraría los contadores.
+export const bumpSessionCounter = async (sessionId: string, field: string, by = 1): Promise<void> => {
+  if (getPrivacyMode()) return;
+  try {
+    await updateDoc(doc(db, COLLECTIONS.sessions, sessionId), { [`analytics.${field}`]: increment(by) });
+  } catch (e) {
+    console.warn('Failed to bump session counter:', e);
   }
 };
 
