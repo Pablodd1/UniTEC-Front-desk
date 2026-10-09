@@ -304,6 +304,27 @@ const App: React.FC = () => {
       </div>
     );
   }
+  if (staffToken && staffAuth === 'denied') {
+    // El link de la alerta caducó o fue alterado: se dice QUÉ pasó y se da la entrada al panel, en
+    // vez de dejar al staff en una pantalla que no explica nada (la queja original).
+    return (
+      <div className="min-h-[100dvh] w-full bg-slate-100 flex items-center justify-center p-6 font-sans">
+        <div className="bg-white rounded-2xl shadow-sm border border-slate-200 max-w-md w-full p-6 text-center">
+          <p className="text-3xl mb-2">🔒</p>
+          <h1 className="text-lg font-semibold text-slate-800 mb-2">Este enlace de la alerta expiró o no es válido</h1>
+          <p className="text-sm text-slate-500 mb-5">
+            Los enlaces de atención caducan a las 48 horas. Entra al panel con tu correo y contraseña para ver la conversación.
+          </p>
+          <a
+            className="inline-block px-4 py-2.5 rounded-xl bg-brand-600 text-white text-sm font-semibold hover:bg-brand-700"
+            href={`${window.location.origin}/?admin=true${adminDeepLinkSession ? `&session=${encodeURIComponent(adminDeepLinkSession)}` : ''}`}
+          >
+            Ir al panel
+          </a>
+        </div>
+      </div>
+    );
+  }
 
   if (isEmbedMode) {
     const embedTab = (activeTab === Tab.ADMIN_SETTINGS) ? Tab.CHAT : activeTab;
