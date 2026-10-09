@@ -446,6 +446,38 @@ const ChatTab: React.FC<ChatTabProps> = ({ quickActions, initialMessage, emergen
     };
   }, [messages[messages.length - 1]?.id, messages.filter(m => m.role === 'user').length, sessionStatus, conversationId, language]);
 
+  // ===== Cierre real: pestaña / computador / teléfono =====
+  // Antes el único rastro de abandono era el idle de 15 min del barrido: cerrar la pestaña no dejaba
+  // ninguna señal. Un beacon al cerrar marca la salida en segundos y dispara el aviso al equipo.
+  const stageRef = useRef(onboardingStage);
+  useEffect(() => { stageRef.current = onboardingStage; }, [onboardingStage]);
+
+  useEffect(() => {
+    if (typeof navigator === 'undefined' || !navigator.sendBeacon) return;
+    const send = (reason: string) => {
+      const sid = conversationIdRef.current;
+      if (!sid) return;
+      try {
+        const payload = JSON.stringify({
+          sessionId: sid,
+          brand: brandId || 'unitec',
+          reason,
+          stage: stageRef.current,
+        });
+        // text/plain => petición simple, sin preflight (sendBeacon no admite cabeceras propias).
+        navigator.sendBeacon('/api/session-exit', new Blob([payload], { type: 'text/plain;charset=UTF-8' }));
+      } catch { /* nunca romper la salida de la página */ }
+    };
+    const onPageHide = () => send('pagehide');
+    const onVisibility = () => send(document.visibilityState === 'hidden' ? 'hidden' : 'visible');
+    document.addEventListener('visibilitychange', onVisibility);
+    window.addEventListener('pagehide', onPageHide);
+    return () => {
+      document.removeEventListener('visibilitychange', onVisibility);
+      window.removeEventListener('pagehide', onPageHide);
+    };
+  }, [brandId]);
+
   // Robust Auto-Scroll Implementation
   const scrollToBottom = (behavior: ScrollBehavior = 'smooth') => {
     if (messagesEndRef.current) {
@@ -530,6 +562,22 @@ const ChatTab: React.FC<ChatTabProps> = ({ quickActions, initialMessage, emergen
         : `✅ Ya avisé a un asesor del equipo: te responderá por aquí en breve. Si es urgente, escríbenos por WhatsApp: ${waLink}`,
       timestamp: new Date(),
     }]);
+
+    // Contacto a demanda (EN VIVO): antes solo lo pedía showEscalationAutoReply, que no tenía
+    // llamadores — por eso la alerta llegaba sin nombre ni teléfono ("no hay usuario"). Se pide UNA
+    // vez, al momento de la cotización; la respuesta la captura el bloque pendingPhoneRequest.
+    if (isQuote && !extractedPii?.phone && !phoneAlreadyAsked.current) {
+      phoneAlreadyAsked.current = true;
+      pendingPhoneRequest.current = true;
+      setMessages((prev) => [...prev, {
+        id: `phone-ask-${Date.now()}`,
+        role: 'model',
+        text: isEn
+          ? 'To send you the exact quote, may I have your WhatsApp number? (or type "later")'
+          : 'Para enviarte la cotización exacta, ¿me compartes tu número de WhatsApp? (o escribe "después")',
+        timestamp: new Date(),
+      }]);
+    }
   };
 
   // Show auto-reply to user after escalation — keeps them engaged while staff responds
@@ -633,6 +681,21 @@ const ChatTab: React.FC<ChatTabProps> = ({ quickActions, initialMessage, emergen
           : '¡Listo! Un asesor te contacta por WhatsApp con tu cotización. ¿Algo más que quieras consultar?';
         setMessages(prev => [...prev, { id: Date.now().toString(), role: 'model', text: ack, timestamp: new Date(), skipFirestore: true }]);
         recordOnboardingTurn(conversationId, text, ack, 'phone', brandId).catch(() => {});
+        // La alerta original salió sin teléfono: el equipo recibe los datos en cuanto el cliente los da
+        // (es exactamente el "no había usuario" del aviso que abrió este trabajo).
+        if (staffAlertSentRef.current) {
+          triggerEscalation({
+            type: 'contact',
+            priority: 'medium',
+            customerName: extractedPii?.name || '',
+            customerPhone: phone,
+            customerEmail: extractedPii?.email || '',
+            message: `El cliente compartió su WhatsApp: ${phone}`,
+            brand: brandId || 'unitec',
+            sessionId: conversationId || '',
+            transcript: messages.slice(-4).map((m) => ({ role: m.role, text: m.text })),
+          }).catch(console.error);
+        }
         return;
       }
       // dijo "después" o no parece un número: se ignora y el flujo sigue normal

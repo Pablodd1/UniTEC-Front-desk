@@ -7,6 +7,9 @@ const firebaseConfig = require('../firebase-applet-config.json');
 
 // Persistencia de escalaciones: una alerta que nadie puede ver es una alerta que no existió.
 import { addDoc, bumpCounter } from './_firestore-rest.js';
+// Link de un toque para el staff (firmado, atado a la sesión): sin esto la alerta cae en el muro de
+// login del panel y "no hay forma de entrar al chat".
+import { staffUrl } from './_staff-token.js';
 
 // --- CORS ---
 function setCORS(res, req) {
@@ -224,8 +227,8 @@ async function sendWhatsAppAndSMS(phones, text) {
 
 // --- Templates ---
 function buildTelegramMessage(d) {
-  const icon = d.type === 'quote' ? '💰' : d.type === 'staff' ? '🧑‍💼' : d.type === 'sla' ? '⏰' : '🚨';
-  const typeLabel = d.type === 'quote' ? 'COTIZACIÓN' : d.type === 'staff' ? 'ASESOR HUMANO' : d.type === 'sla' ? 'SIN RESPUESTA — SLA' : 'ESCALAMIENTO';
+  const icon = d.type === 'quote' ? '💰' : d.type === 'staff' ? '🧑‍💼' : d.type === 'sla' ? '⏰' : d.type === 'abandon' ? '🚪' : d.type === 'contact' ? '📞' : '🚨';
+  const typeLabel = d.type === 'quote' ? 'COTIZACIÓN' : d.type === 'staff' ? 'ASESOR HUMANO' : d.type === 'sla' ? 'SIN RESPUESTA — SLA' : d.type === 'abandon' ? 'CLIENTE ABANDONÓ' : d.type === 'contact' ? 'DATOS DE CONTACTO' : 'ESCALAMIENTO';
   const lines = [
     `<b>${icon} ALERTA DE ESCALAMIENTO</b>`,
     ``,
@@ -259,7 +262,7 @@ function buildTelegramMessage(d) {
 
 function buildEmailHtml(d) {
   const color = d.priority === 'urgent' ? '#dc2626' : d.priority === 'high' ? '#ea580c' : '#ca8a04';
-  const title = d.type === 'quote' ? '💰 Solicitud de cotización' : d.type === 'staff' ? '🧑‍💼 Cliente pidió un asesor' : d.type === 'sla' ? '⏰ Cliente esperando — sin respuesta' : '🚨 Escalamiento';
+  const title = d.type === 'quote' ? '💰 Solicitud de cotización' : d.type === 'staff' ? '🧑‍💼 Cliente pidió un asesor' : d.type === 'sla' ? '⏰ Cliente esperando — sin respuesta' : d.type === 'abandon' ? '🚪 Cliente abandonó la conversación' : d.type === 'contact' ? '📞 Datos de contacto capturados' : '🚨 Escalamiento';
   return `<!DOCTYPE html><html><head><style>
   body{font-family:Arial,sans-serif;line-height:1.6;color:#333}
   .container{max-width:600px;margin:0 auto;padding:20px}
@@ -290,7 +293,7 @@ function buildEmailHtml(d) {
 }
 
 function buildWhatsAppText(d) {
-  const prefix = d.type === 'quote' ? '💰 COTIZACION' : d.type === 'staff' ? '🧑‍💼 PIDIO ASESOR' : d.type === 'sla' ? '⏰ SIN RESPUESTA' : '🔔 ALERTA';
+  const prefix = d.type === 'quote' ? '💰 COTIZACION' : d.type === 'staff' ? '🧑‍💼 PIDIO ASESOR' : d.type === 'sla' ? '⏰ SIN RESPUESTA' : d.type === 'abandon' ? '🚪 ABANDONO' : d.type === 'contact' ? '📞 CONTACTO' : '🔔 ALERTA';
   const lastUser = Array.isArray(d.transcript)
     ? [...d.transcript].reverse().find((t) => t?.role === 'user')?.text
     : '';
@@ -342,12 +345,16 @@ async function recordEscalation(d, results, anySuccess) {
     // the body the nested mapValue, or the write is silently dropped.
     // SLA re-alerts are counted separately from first-time escalations, otherwise the ladder
     // inflates `escalationCount` and the "how many customers asked for a human" metric lies.
-    const counterField = d.type === 'sla' ? 'analytics.slaRealerts' : 'analytics.escalationCount';
+    const counterField = d.type === 'sla' ? 'analytics.slaRealerts'
+      : d.type === 'abandon' ? 'analytics.abandonAlerts'
+      : 'analytics.escalationCount';
     counter = await bumpCounter(`conversations/${d.sessionId}`, counterField, {
       staffAlertPending: !anySuccess,
       lastEscalationAt: stamp,
       escalationType: d.type || 'custom',
       lastEscalationDelivered: delivered,
+      // Marca de "ya se avisó el abandono": el barrido y el beacon la leen para no repetir el aviso.
+      ...(d.type === 'abandon' ? { abandonAlertedAt: stamp } : {}),
     });
   }
   return { auditId, counter, delivered, failed };
@@ -388,7 +395,10 @@ export default async function handler(req, res) {
     message, brand, sessionId,
     pageUrl, waitingSince, product, slaStage,
     transcript: Array.isArray(transcript) ? transcript.slice(-8) : null,
-    dashboardUrl: dashboardUrl || (req.headers.origin ? `${req.headers.origin}/?admin=true${sessionId ? `&session=${encodeURIComponent(sessionId)}` : ''}` : ''),
+    // LINK DE UN TOQUE: firmado + atado a la sesión, abre SOLO esa conversación sin pedir la
+    // contraseña del panel. Respaldo al panel clásico si ADMIN_SECRET no está configurado.
+    dashboardUrl: dashboardUrl || (sessionId ? staffUrl(sessionId) : '')
+      || (req.headers.origin ? `${req.headers.origin}/?admin=true${sessionId ? `&session=${encodeURIComponent(sessionId)}` : ''}` : ''),
     timestamp: new Date().toISOString(),
   };
 
@@ -416,7 +426,7 @@ export default async function handler(req, res) {
   const [telegramR, emailR, primaryR] = await Promise.allSettled([
     sendTelegram(buildTelegramMessage(d)),
     sendEmail(
-      `[${d.priority.toUpperCase()}] ${d.type === 'quote' ? 'Solicitud de cotización' : d.type === 'staff' ? 'Cliente pidió un asesor' : d.type === 'sla' ? 'CLIENTE SIN RESPUESTA (SLA)' : 'Escalamiento'} — ${customerName || 'Cliente'}`,
+      `[${d.priority.toUpperCase()}] ${d.type === 'quote' ? 'Solicitud de cotización' : d.type === 'staff' ? 'Cliente pidió un asesor' : d.type === 'sla' ? 'CLIENTE SIN RESPUESTA (SLA)' : d.type === 'abandon' ? 'CLIENTE ABANDONÓ LA CONVERSACIÓN' : d.type === 'contact' ? 'DATOS DE CONTACTO CAPTURADOS' : 'Escalamiento'} — ${customerName || 'Cliente'}`,
       buildEmailHtml(d)
     ),
     sendWhatsAppAndSMS(targetPhones, waText),

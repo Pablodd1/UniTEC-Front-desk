@@ -6,6 +6,7 @@ import CallTab from './components/CallTab';
 import AdminDashboard from './components/AdminDashboard';
 import CalendarTab from './components/CalendarTab';
 import LoginScreen from './components/LoginScreen';
+import StaffReply from './components/StaffReply';
 import ServicesTab from './components/ServicesTab';
 import InfoTab from './components/InfoTab';
 import PrivacyTab from './components/PrivacyTab';
@@ -32,6 +33,15 @@ const App: React.FC = () => {
 
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [isAuthReady, setIsAuthReady] = useState(false);
+
+  // Deep-link del STAFF (?staff=<token>): la alerta abre SOLO esa conversación, sin el muro de login
+  // del panel (sessionStorage es por pestaña y no se hereda desde Telegram). El token lo firma
+  // /api/notify-escalation y lo valida /api/staff-enter.
+  const [staffToken] = useState<string>(() =>
+    typeof window === 'undefined' ? '' : new URLSearchParams(window.location.search).get('staff') || ''
+  );
+  const [staffAuth, setStaffAuth] = useState<'checking' | 'ok' | 'denied'>(staffToken ? 'checking' : 'denied');
+  const [staffInfo, setStaffInfo] = useState<{ customerName?: string; customerPhone?: string } | null>(null);
 
   const [activeTab, setActiveTab] = useState<Tab>(() => {
     if (typeof window !== 'undefined') {
@@ -95,6 +105,30 @@ const App: React.FC = () => {
   useEffect(() => {
     resetChatSession();
   }, [emergencyMode, language, currentBrandId]);
+
+  // Valida el link firmado del staff contra /api/staff-enter (token atado a la sesión + caducidad).
+  useEffect(() => {
+    if (!staffToken) return;
+    if (!adminDeepLinkSession) { setStaffAuth('denied'); return; }
+    let cancelled = false;
+    fetch('/api/staff-enter', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ token: staffToken, sessionId: adminDeepLinkSession }),
+    })
+      .then((r) => r.json())
+      .then((j) => {
+        if (cancelled) return;
+        if (j?.ok) {
+          setStaffInfo({ customerName: j.customerName, customerPhone: j.customerPhone });
+          setStaffAuth('ok');
+        } else {
+          setStaffAuth('denied');
+        }
+      })
+      .catch(() => { if (!cancelled) setStaffAuth('denied'); });
+    return () => { cancelled = true; };
+  }, [staffToken, adminDeepLinkSession]);
 
   useEffect(() => {
     const checkAdminMode = () => {
@@ -259,6 +293,17 @@ const App: React.FC = () => {
         />;
     }
   };
+
+  if (staffToken && staffAuth === 'ok' && adminDeepLinkSession) {
+    return <StaffReply sessionId={adminDeepLinkSession} knownName={staffInfo?.customerName} knownPhone={staffInfo?.customerPhone} />;
+  }
+  if (staffToken && staffAuth === 'checking') {
+    return (
+      <div className="min-h-[100dvh] w-full bg-slate-100 flex items-center justify-center">
+        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-brand-600" />
+      </div>
+    );
+  }
 
   if (isEmbedMode) {
     const embedTab = (activeTab === Tab.ADMIN_SETTINGS) ? Tab.CHAT : activeTab;

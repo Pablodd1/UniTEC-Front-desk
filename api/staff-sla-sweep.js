@@ -51,7 +51,8 @@ async function sendSlaAlert(req, session, stage, waitedMin) {
     waitingSince: session.waitingSince,
     slaStage: stage,
     pageUrl: session.parentHost || '',
-    dashboardUrl: `${proto}://${host}/?admin=true&session=${encodeURIComponent(session.id)}`,
+    // dashboardUrl se deja SIN enviar a propósito: /api/notify-escalation firma el link de un toque
+    // (atado a la sesión). Un link /?admin=true caía en el muro de login del panel.
     transcript: [
       { role: 'user', text: `Esperando asesor desde hace ${Math.round(waitedMin)} min (etapa SLA ${stage}).` },
       { role: 'model', text: session.lastMessage || '' },

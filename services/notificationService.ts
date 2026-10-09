@@ -3,7 +3,7 @@ import { collection, addDoc } from 'firebase/firestore';
 
 // --- Unified escalation: fires Telegram + Email + WhatsApp + SMS in one server call ---
 export interface EscalationData {
-  type: 'quote' | 'staff' | 'sla' | 'custom';
+  type: 'quote' | 'staff' | 'sla' | 'abandon' | 'contact' | 'custom';
   priority?: 'low' | 'medium' | 'high' | 'urgent';
   customerName?: string;
   customerPhone?: string;
@@ -39,7 +39,8 @@ export const triggerEscalation = async (data: EscalationData): Promise<{ success
       body: JSON.stringify({
         ...data,
         priority: data.priority || 'high',
-        dashboardUrl: `${window.location.origin}/?admin=true${data.sessionId ? `&session=${encodeURIComponent(data.sessionId)}` : ''}`,
+        // dashboardUrl NO se envía a propósito: el servidor firma un link de un toque (atado a la
+        // sesión, con caducidad) porque /?admin=true cae en el muro de login del panel.
       }),
     });
     const json = await res.json();

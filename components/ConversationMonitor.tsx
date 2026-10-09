@@ -336,14 +336,23 @@ const ConversationMonitor: React.FC<ConversationMonitorProps> = ({
 
   // Filter sessions
   const filteredSessions = sessions.filter(session => {
-    if (filterStatus !== 'all' && session.status !== filterStatus) return false;
+    if (filterStatus === 'abandoned') {
+      if (!String(session.status || '').startsWith('abandoned')) return false;
+    } else if (filterStatus !== 'all' && session.status !== filterStatus) {
+      return false;
+    }
     if (filterBrand !== 'all' && session.brandId !== filterBrand) return false;
     if (filterTag !== 'all' && !session.tags?.includes(filterTag)) return false;
     if (searchQuery) {
       const query = searchQuery.toLowerCase();
+      const clean = query.replace(/[^\d+]/g, '');
       const name = (session.customerName || session.extractedData?.name || '').toLowerCase();
       const text = (session.lastMessage || '').toLowerCase();
-      return name.includes(query) || text.includes(query);
+      const email = (session.customerEmail || session.extractedData?.email || '').toLowerCase();
+      // Búsqueda por TELÉFONO (con o sin formato): era la queja "busco el número registrado y no hay usuario".
+      const phone = String(session.customerPhone || session.extractedData?.phone || '');
+      const phoneHit = phone && clean.replace(/[^\d]/g, '') !== '' && phone.replace(/[^\d]/g, '').includes(clean.replace(/[^\d]/g, ''));
+      return name.includes(query) || text.includes(query) || email.includes(query) || Boolean(phoneHit);
     }
     return true;
   });
@@ -454,6 +463,7 @@ const ConversationMonitor: React.FC<ConversationMonitorProps> = ({
               <option value="active">Active</option>
               <option value="human_requested">Needs Human</option>
               <option value="human_assigned">Staff Active</option>
+              <option value="abandoned">Abandoned</option>
               <option value="completed">Completed</option>
             </select>
             <select
