@@ -110,7 +110,9 @@ async function sendEmail(subject, html) {
       }),
       signal: AbortSignal.timeout(8000),
     });
-    return { success: r.ok, data: r.ok ? await r.json() : await r.text() };
+    if (r.ok) return { success: true, data: await r.json() };
+    const detail = await r.text().catch(() => '');
+    return { success: false, error: String(detail || `HTTP ${r.status}`).slice(0, 200), data: detail };
   } catch (e) {
     return { success: false, error: e.message };
   }
@@ -190,7 +192,8 @@ async function sendTwilioWhatsApp(phone, text) {
       signal: AbortSignal.timeout(8000),
     });
     const data = await r.json();
-    return { success: r.ok, sid: data.sid, data };
+    // Sin esto, un rechazo del proveedor se guardaba como error '' y parecía "no ejecutado".
+    return { success: r.ok, sid: data.sid, error: r.ok ? '' : String(data?.message || `HTTP ${r.status}`), data };
   } catch (e) {
     return { success: false, error: e.message };
   }
@@ -219,7 +222,9 @@ async function sendWhatsAppAndSMS(phones, text) {
       signal: AbortSignal.timeout(8000),
     });
     const data = await r.json();
-    return { success: r.ok || r.status === 202, data };
+    const ok = r.ok || r.status === 202;
+    // El proveedor primario fallaba en silencio (error '') y parecía que nunca se había ejecutado.
+    return { success: ok, error: ok ? '' : String(data?.message || data?.error || `HTTP ${r.status}`), data };
   } catch (e) {
     return { success: false, error: e.message };
   }

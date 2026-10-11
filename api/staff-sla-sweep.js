@@ -18,6 +18,10 @@
 
 import { getFirestoreToken, listAllSessions } from './_analytics-core.js';
 import { getDoc, setDoc, addDoc, bumpCounter } from './_firestore-rest.js';
+// Aviso EN PROCESO (sin hop HTTP a nuestro propio endpoint). El self-fetch era la causa de que la
+// escalera 2/5/10 y el nudge no dejaran rastro: los flags se escribían pero la llamada al handler
+// fallaba y nadie lo veía (10 nudges entre el 7 y el 9 de octubre, 0 docs de auditoría).
+import { callNotifyEscalation } from './_alert.js';
 
 const WA_LINK = 'https://wa.me/573142332147';
 const WA_PHONE = '+57 314 233 2147';
@@ -35,10 +39,7 @@ const minutesSince = (iso, now) => {
   return Number.isNaN(t) ? null : (now - t) / 60000;
 };
 
-async function sendSlaAlert(req, session, stage, waitedMin) {
-  const host = req.headers['x-forwarded-host'] || req.headers.host;
-  const proto = (req.headers['x-forwarded-proto'] || 'https').split(',')[0];
-  const url = `${proto}://${host}/api/notify-escalation`;
+async function sendSlaAlert(_req, session, stage, waitedMin) {
   const body = {
     type: 'sla',
     priority: stage >= 3 ? 'urgent' : 'high',
@@ -59,17 +60,22 @@ async function sendSlaAlert(req, session, stage, waitedMin) {
     ],
   };
   try {
-    const res = await fetch(url, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(body),
-      signal: AbortSignal.timeout(15000),
-    });
-    return { ok: res.ok, status: res.status };
+    const r = await callNotifyEscalation(body);
+    return { ok: r.statusCode === 200, status: r.statusCode, via: 'in_process', results: r.body?.results || null };
   } catch (err) {
-    return { ok: false, status: 0, error: String(err?.message || err) };
+    return { ok: false, status: 0, via: 'in_process', error: String(err?.message || err) };
   }
 }
+
+/** Lo que se guarda en la sesión para que un fallo de entrega deje de ser invisible. */
+const deliveryRecord = (alert, stage) => ({
+  ok: !!alert?.ok,
+  status: alert?.status ?? 0,
+  via: alert?.via || 'in_process',
+  stage,
+  error: alert?.error ? String(alert.error).slice(0, 200) : '',
+  at: new Date().toISOString(),
+});
 
 /** Write a customer-visible line into the transcript (the widget renders message docs live). */
 async function writeCustomerNotice(sessionId, text, flag) {
@@ -168,7 +174,8 @@ export default async function handler(req, res) {
             slaStage: 3,
             lastSlaAt: new Date().toISOString(),
             staffNoShow: true,
-          }, ['slaStage', 'lastSlaAt', 'staffNoShow']);
+            lastSlaDelivery: deliveryRecord(alert, 3),
+          }, ['slaStage', 'lastSlaAt', 'staffNoShow', 'lastSlaDelivery']);
           await bumpCounter(`conversations/${s.id}`, 'analytics.slaBreaches');
           done.push({ ...entry, alert, notice });
         }
@@ -182,14 +189,14 @@ export default async function handler(req, res) {
             'Sigo aquí con tu conversación y tu solicitud sigue con prioridad: un asesor del equipo está en camino y te escribe por aquí. Si prefieres no esperar, WhatsApp: ' + WA_LINK,
             { slaNotice: 2 }
           );
-          await setDoc(`conversations/${s.id}`, { slaStage: 2, lastSlaAt: new Date().toISOString() }, ['slaStage', 'lastSlaAt']);
+          await setDoc(`conversations/${s.id}`, { slaStage: 2, lastSlaAt: new Date().toISOString(), lastSlaDelivery: deliveryRecord(alert, 2) }, ['slaStage', 'lastSlaAt', 'lastSlaDelivery']);
           done.push({ ...entry, alert, notice });
         }
       } else if (waitedMin >= STAGE_1_MIN && stage < 1 && status === 'human_requested') {
         entry.actions.push('alert:1');
         if (!dryRun) {
           const alert = await sendSlaAlert(req, { ...s, ...fields, id: s.id, waitingSince }, 1, waitedMin);
-          await setDoc(`conversations/${s.id}`, { slaStage: 1, lastSlaAt: new Date().toISOString() }, ['slaStage', 'lastSlaAt']);
+          await setDoc(`conversations/${s.id}`, { slaStage: 1, lastSlaAt: new Date().toISOString(), lastSlaDelivery: deliveryRecord(alert, 1) }, ['slaStage', 'lastSlaAt', 'lastSlaDelivery']);
           done.push({ ...entry, alert });
         }
       } else if (
@@ -202,7 +209,7 @@ export default async function handler(req, res) {
         entry.actions.push('nudge:staff');
         if (!dryRun) {
           const alert = await sendSlaAlert(req, { ...s, ...fields, id: s.id, waitingSince }, 2, waitedMin);
-          await setDoc(`conversations/${s.id}`, { staffNudgedAt: new Date().toISOString() }, ['staffNudgedAt']);
+          await setDoc(`conversations/${s.id}`, { staffNudgedAt: new Date().toISOString(), lastSlaDelivery: deliveryRecord(alert, 'nudge') }, ['staffNudgedAt', 'lastSlaDelivery']);
           await bumpCounter(`conversations/${s.id}`, 'analytics.staffNudges');
           done.push({ ...entry, alert });
         }

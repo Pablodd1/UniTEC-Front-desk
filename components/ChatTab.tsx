@@ -307,7 +307,11 @@ const ChatTab: React.FC<ChatTabProps> = ({ quickActions, initialMessage, emergen
               // Sin el prefijo "[Staff]": el cliente leía "[Staff] Perfecto señora Maria…" y sonaba a
               // máquina. La etiqueta del asesor solo se muestra en el panel, nunca al cliente.
               text: String(m.text || ''),
-              timestamp: new Date(m.timestamp)
+              timestamp: new Date(m.timestamp),
+              // ONE WRITER PER TURN. Este mensaje YA está en Firestore (el panel lo escribió con
+              // role:'staff'); sin este flag el efecto de guardado de abajo lo re-escribía con
+              // role:'model' y el prefijo dentro del texto — corrompiendo el doc del asesor.
+              skipFirestore: true,
             }));
           
           if (newMsgs.length > 0) {
