@@ -199,69 +199,51 @@ async function sendTwilioWhatsApp(phone, text) {
   }
 }
 
-// --- Channel: WhatsApp + SMS via Sent.dm ---
-async function sendWhatsAppAndSMS(phones, text) {
-  const apiKey = (process.env.SENT_DM_API_KEY || '').trim();
-  if (!apiKey) return { success: false, error: 'SENT_DM_API_KEY not set' };
-
-  const phoneList = (Array.isArray(phones) ? phones : [phones])
-    .map(p => {
-      let clean = (p || '').trim();
-      if (!clean.startsWith('+')) clean = '+' + clean.replace(/\D/g, '');
-      return clean;
-    })
-    .filter(Boolean);
-
-  if (phoneList.length === 0) return { success: false, error: 'No valid phone numbers' };
-
-  try {
-    const r = await fetch('https://api.sent.dm/v3/messages', {
-      method: 'POST',
-      headers: { 'x-api-key': apiKey, 'Content-Type': 'application/json' },
-      body: JSON.stringify({ to: phoneList, text, channel: ['whatsapp', 'sms'] }),
-      signal: AbortSignal.timeout(8000),
-    });
-    const data = await r.json();
-    const ok = r.ok || r.status === 202;
-    // El proveedor primario fallaba en silencio (error '') y parecía que nunca se había ejecutado.
-    return { success: ok, error: ok ? '' : String(data?.message || data?.error || `HTTP ${r.status}`), data };
-  } catch (e) {
-    return { success: false, error: e.message };
-  }
-}
+// --- Channel: WhatsApp + SMS (Twilio, único proveedor de teléfono) ---
+// Sent.dm se eliminó: estaba muerto (0/6 entregas) y obligaba a mantener dos integraciones para el
+// mismo trabajo, además de ser lo que empujó a un "primario + respaldo" que enmascaraba el fallo.
+// Twilio entrega SMS de forma comprobada (3/3 en las escalaciones de cotización/asesor).
 
 // --- Templates ---
 function buildTelegramMessage(d) {
   const icon = d.type === 'quote' ? '💰' : d.type === 'staff' ? '🧑‍💼' : d.type === 'sla' ? '⏰' : d.type === 'abandon' ? '🚪' : d.type === 'contact' ? '📞' : '🚨';
   const typeLabel = d.type === 'quote' ? 'COTIZACIÓN' : d.type === 'staff' ? 'ASESOR HUMANO' : d.type === 'sla' ? 'SIN RESPUESTA — SLA' : d.type === 'abandon' ? 'CLIENTE ABANDONÓ' : d.type === 'contact' ? 'DATOS DE CONTACTO' : 'ESCALAMIENTO';
+  const nn = (v) => (v && String(v).trim() ? String(v).trim() : 'no indicado');
+
+  // DETALLE COMPLETO SIEMPRE: el cliente pidió que la alerta llegue con todos los datos, no con
+  // líneas que desaparecen cuando el campo viene vacío. Cada dato tiene su "no indicado".
   const lines = [
     `<b>${icon} ALERTA DE ESCALAMIENTO</b>`,
     ``,
     `<b>Tipo:</b> ${typeLabel}`,
-    `<b>Cliente:</b> ${d.customerName || 'Desconocido'}`,
-    `<b>Teléfono:</b> ${d.customerPhone || 'No indicado'}`,
+    `<b>Prioridad:</b> ${nn(d.priority)}`,
+    `<b>Cliente:</b> ${nn(d.customerName)}`,
+    `<b>Teléfono:</b> ${nn(d.customerPhone)}`,
+    `<b>Correo:</b> ${nn(d.customerEmail)}`,
+    `<b>Producto/intención:</b> ${nn(d.product)}`,
+    `<b>Marca:</b> ${nn(d.brand)}`,
+    `<b>Esperando asesor desde:</b> ${d.waitingSince ? new Date(d.waitingSince).toLocaleString('es-CO', { timeZone: 'America/Bogota' }) : 'no indicado'}`,
+    ``,
+    `<b>Mensaje del cliente:</b>`,
+    d.message ? String(d.message).substring(0, 700) : 'no indicado',
+    ``,
+    `<b>Conversación (últimos turnos):</b>`,
   ];
-  if (d.customerEmail) lines.push(`<b>Correo:</b> ${d.customerEmail}`);
-  lines.push(``);
-  lines.push(`<b>Mensaje:</b>`);
-  lines.push(d.message ? d.message.substring(0, 500) : 'N/A');
-  lines.push(``);
-  lines.push(`<b>Marca:</b> ${d.brand || 'Desconocida'}`);
-  lines.push(`<b>Sesión:</b> ${d.sessionId || 'N/A'}`);
-  lines.push(`<b>Hora:</b> ${new Date(d.timestamp).toLocaleString('es-CO', { timeZone: 'America/Bogota' })}`);
-  if (Array.isArray(d.transcript) && d.transcript.length) {
-    lines.push('');
-    lines.push('<b>Conversación (últimos turnos):</b>');
-    d.transcript.slice(-6).forEach((t) => {
-      const txt = String(t?.text || '').replace(/\s+/g, ' ').slice(0, 180);
-      if (txt) lines.push(`${t?.role === 'user' ? '👤 Cliente' : '🤖 Bot'}: ${txt}`);
+  const turns = Array.isArray(d.transcript) ? d.transcript.slice(-8) : [];
+  if (turns.length) {
+    turns.forEach((t) => {
+      const txt = String(t?.text || '').replace(/\s+/g, ' ').slice(0, 220);
+      if (txt) lines.push(`${t?.role === 'user' ? '👤 Cliente' : t?.role === 'staff' ? '🧑‍💼 Asesor' : '🤖 Bot'}: ${txt}`);
     });
+  } else {
+    lines.push('sin turnos registrados');
   }
-  if (d.product) lines.push('', `<b>Producto/intención:</b> ${d.product}`);
-  if (d.waitingSince) lines.push(`<b>Esperando asesor desde:</b> ${new Date(d.waitingSince).toLocaleString('es-CO', { timeZone: 'America/Bogota' })}`);
+  lines.push(``);
+  lines.push(`<b>Sesión:</b> ${nn(d.sessionId)}`);
+  lines.push(`<b>Hora:</b> ${new Date(d.timestamp).toLocaleString('es-CO', { timeZone: 'America/Bogota' })}`);
+  lines.push(`<b>Página:</b> ${nn(d.pageUrl)}`);
   if (d.slaStage) lines.push(`<b>Re-alerta SLA:</b> etapa ${d.slaStage}`);
-  if (d.pageUrl) lines.push(`<b>Página:</b> ${d.pageUrl}`);
-  if (d.dashboardUrl) lines.push(`<a href="${d.dashboardUrl}">📋 Tomar el chat en el panel</a>`);
+  if (d.dashboardUrl) lines.push(``, `<a href="${d.dashboardUrl}">📋 Tomar el chat en el panel</a>`);
   return lines.join('\n');
 }
 
@@ -428,31 +410,30 @@ export default async function handler(req, res) {
   const waText = buildWhatsAppText(d);
   const extract = (r) => r.status === 'fulfilled' ? r.value : { success: false, error: r.reason?.message };
 
-  const [telegramR, emailR, primaryR] = await Promise.allSettled([
+  const [telegramR, emailR, smsR] = await Promise.allSettled([
     sendTelegram(buildTelegramMessage(d)),
     sendEmail(
       `[${d.priority.toUpperCase()}] ${d.type === 'quote' ? 'Solicitud de cotización' : d.type === 'staff' ? 'Cliente pidió un asesor' : d.type === 'sla' ? 'CLIENTE SIN RESPUESTA (SLA)' : d.type === 'abandon' ? 'CLIENTE ABANDONÓ LA CONVERSACIÓN' : d.type === 'contact' ? 'DATOS DE CONTACTO CAPTURADOS' : 'Escalamiento'} — ${customerName || 'Cliente'}`,
       buildEmailHtml(d)
     ),
-    sendWhatsAppAndSMS(targetPhones, waText),
+    // UN SOLO RAÍL DE TELÉFONO: Twilio SMS. Sin Sent.dm no hay primario muerto que esconda el fallo.
+    sendTwilioSMS(targetPhones, waText),
   ]);
 
-  const primary = extract(primaryR);
-  let twilioSms = { success: false, skipped: 'primary_ok' };
-  let twilioWa = { success: false, skipped: 'primary_ok' };
-  if (!primary?.success) {
-    const [smsR, waR] = await Promise.allSettled([
-      sendTwilioSMS(targetPhones, waText),
-      sendTwilioWhatsApp(primaryPhone, waText),
-    ]);
-    twilioSms = extract(smsR);
-    twilioWa = extract(waR);
+  const twilioSms = extract(smsR);
+  let twilioWa = { success: false, skipped: 'sms_ok' };
+  if (!twilioSms?.success) {
+    // Respaldo único y sólo si el SMS falló del todo: evita el doble aviso por teléfono.
+    try {
+      twilioWa = await sendTwilioWhatsApp(primaryPhone, waText);
+    } catch (e) {
+      twilioWa = { success: false, error: e?.message };
+    }
   }
 
   const results = {
     telegram: extract(telegramR),
     email: extract(emailR),
-    sentDmWhatsApp: primary,
     twilioSms,
     twilioWhatsApp: twilioWa,
   };
