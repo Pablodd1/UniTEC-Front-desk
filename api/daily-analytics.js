@@ -598,13 +598,9 @@ export default async function handler(req, res) {
       if (lastAnalyticsReportDate === todayStr) {
         return res.status(200).json({ success: true, message: `Skipped: already sent today (${todayStr})` });
       }
-      try {
-        await fetch(`https://firestore.googleapis.com/v1/${configPath}?updateMask.fieldPaths=lastAnalyticsReportDate`, {
-          method: 'PATCH',
-          headers: { 'Authorization': `Bearer ${idToken}`, 'Content-Type': 'application/json' },
-          body: JSON.stringify({ fields: { lastAnalyticsReportDate: { stringValue: todayStr } } })
-        });
-      } catch (dbErr) { console.warn("Failed to set lastAnalyticsReportDate:", dbErr); }
+      // El sello `lastAnalyticsReportDate` se escribe AL FINAL, sólo si el reporte salió de verdad.
+      // Antes se marcaba aquí (antes de enviar): un envío fallido quedaba como "ya enviado" y el
+      // reporte se perdía en silencio, sin reintento.
     }
 
     // 4. Fetch conversations from Firestore
@@ -756,8 +752,48 @@ export default async function handler(req, res) {
       }
     }
 
+    // 9. Sella el día SÓLO si algo se entregó de verdad, y deja el resultado guardado.
+    //    Antes el sello se escribía antes de enviar: un fallo de entrega quedaba como "ya enviado hoy"
+    //    y el reporte se perdía en silencio, sin reintento y sin rastro.
+    const deliveredAny = telegramResults.some((r) => r.ok)
+      || telegramDocResults.some((r) => r.ok)
+      || (emailResult?.ok === true);
+    if (!isForce) {
+      const stampDate = nowBogota.toISOString().split('T')[0];
+      const record = {
+        at: new Date().toISOString(),
+        period: isWeekly ? 'weekly' : 'daily',
+        delivered: deliveredAny,
+        sessionsReported: filteredSessions.length,
+        telegram: telegramResults.map((r) => ({ ok: !!r.ok, messageId: r.messageId ?? null, error: r.error || null })),
+        documents: telegramDocResults.map((r) => ({ ok: !!r.ok })),
+        email: { configured: !!emailResult?.configured, ok: !!emailResult?.ok, error: emailResult?.error || null },
+      };
+      // Se guarda como STRING JSON a propósito: un mapa anidado necesita máscara anidada y es fácil
+      // que el write se descarte en silencio.
+      const stampFields = { lastAnalyticsReport: { stringValue: JSON.stringify(record) } };
+      const masks = ['lastAnalyticsReport'];
+      if (deliveredAny) {
+        stampFields.lastAnalyticsReportDate = { stringValue: stampDate };
+        masks.push('lastAnalyticsReportDate');
+      }
+      try {
+        await fetch(
+          `https://firestore.googleapis.com/v1/${configPath}?${masks.map((m) => `updateMask.fieldPaths=${m}`).join('&')}`,
+          {
+            method: 'PATCH',
+            headers: { 'Authorization': `Bearer ${idToken}`, 'Content-Type': 'application/json' },
+            body: JSON.stringify({ fields: stampFields }),
+          }
+        );
+      } catch (dbErr) {
+        console.warn('Failed to store report delivery result:', dbErr);
+      }
+    }
+
     return res.status(200).json({
       success: true,
+      delivered: deliveredAny,
       sessionsReported: filteredSessions.length,
       metrics: metrics || {},
       period: isWeekly ? 'weekly' : 'daily',
