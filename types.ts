@@ -176,7 +176,12 @@ export interface ConversationSession {
   customerName?: string;
   customerEmail?: string;
   customerPhone?: string;
-  status: 'active' | 'human_requested' | 'human_assigned' | 'completed' | 'abandoned' | 'abandoned_at_greeting';
+  // 'resolved' = el asesor cerró la conversación (estado terminal). Sale de la cola de alertas; si el
+  // cliente vuelve a escribir, el servicio la reactiva a 'active' igual que hace con 'completed'.
+  status: 'active' | 'human_requested' | 'human_assigned' | 'resolved' | 'completed' | 'abandoned' | 'abandoned_at_greeting';
+  resolvedAt?: string;
+  resolvedBy?: string;
+  resolution?: string;
   brandId: 'unitec' | 'building';
   language: 'en' | 'es';
   messages?: ConversationMessage[];

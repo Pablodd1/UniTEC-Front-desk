@@ -366,6 +366,7 @@ const ConversationMonitor: React.FC<ConversationMonitorProps> = ({
       case 'active': return 'bg-emerald-50 text-emerald-600 border-emerald-100';
       case 'human_requested': return 'bg-amber-50 text-amber-600 border-amber-100';
       case 'human_assigned': return 'bg-blue-50 text-blue-600 border-blue-100';
+      case 'resolved': return 'bg-teal-50 text-teal-700 border-teal-100';
       case 'completed': return 'bg-slate-50 text-slate-500 border-slate-200';
       default: return 'bg-slate-50 text-slate-500';
     }
@@ -376,6 +377,7 @@ const ConversationMonitor: React.FC<ConversationMonitorProps> = ({
       case 'active': return 'AI Active';
       case 'human_requested': return 'Needs Human';
       case 'human_assigned': return 'Staff Active';
+      case 'resolved': return 'Resuelta';
       case 'completed': return 'Closed';
       default: return status;
     }

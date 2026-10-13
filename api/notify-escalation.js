@@ -84,7 +84,11 @@ async function sendTelegram(message) {
         body: JSON.stringify({ chat_id: chatIds[i], text: message, parse_mode: 'HTML' }),
         signal: AbortSignal.timeout(8000),
       });
-      results.push({ chatId: chatIds[i], ok: r.ok });
+      // El message_id es lo que permite CERRAR la alerta más tarde (/api/session-resolve):
+      // un mensaje de Telegram no se puede borrar, sólo editar. Sin este id la alerta se queda
+      // abierta en el teléfono aunque la conversación ya esté atendida.
+      const sent = await r.json().catch(() => ({}));
+      results.push({ chatId: chatIds[i], ok: r.ok, messageId: sent?.result?.message_id ?? null });
     } catch (e) {
       results.push({ chatId: chatIds[i], ok: false, error: e.message });
     }
@@ -335,6 +339,9 @@ async function recordEscalation(d, results, anySuccess) {
     const counterField = d.type === 'sla' ? 'analytics.slaRealerts'
       : d.type === 'abandon' ? 'analytics.abandonAlerts'
       : 'analytics.escalationCount';
+    // Dónde quedó la alerta de Telegram, para poder cerrarla cuando el asesor atienda.
+    const tg = results?.telegram;
+    const tgFirst = Array.isArray(tg?.details) ? tg.details.find((x) => x.ok && x.messageId) : null;
     counter = await bumpCounter(`conversations/${d.sessionId}`, counterField, {
       staffAlertPending: !anySuccess,
       lastEscalationAt: stamp,
@@ -342,6 +349,14 @@ async function recordEscalation(d, results, anySuccess) {
       lastEscalationDelivered: delivered,
       // Marca de "ya se avisó el abandono": el barrido y el beacon la leen para no repetir el aviso.
       ...(d.type === 'abandon' ? { abandonAlertedAt: stamp } : {}),
+      ...(tgFirst
+        ? {
+            tgAlertChatId: String(tgFirst.chatId),
+            tgAlertMessageId: String(tgFirst.messageId),
+            tgAlertAt: stamp,
+            tgAlertType: d.type || 'custom',
+          }
+        : {}),
     });
   }
   return { auditId, counter, delivered, failed };

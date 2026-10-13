@@ -69,7 +69,9 @@ export interface ConversationSession {
   customerPhone?: string;
   // 'abandoned_at_greeting' = left after seeing only the greeting (0 user messages)
   // 'abandoned' = left mid-flow (had at least 1 user message but did not complete)
-  status: 'active' | 'human_requested' | 'human_assigned' | 'completed' | 'abandoned' | 'abandoned_at_greeting';
+  // 'resolved' = closed by staff (terminal). It leaves the alert queue; a new customer message
+  // reactivates the session to 'active', exactly as 'completed' already does.
+  status: 'active' | 'human_requested' | 'human_assigned' | 'resolved' | 'completed' | 'abandoned' | 'abandoned_at_greeting';
   brandId: 'unitec' | 'building';
   language: 'en' | 'es';
   messages?: ConversationMessage[];
@@ -1032,20 +1034,79 @@ export const getInterventions = async (
   }
 };
 
-// Clear an intervention request
+// Clear an intervention request AND close the session it belongs to.
+//
+// The second half is the fix for "after the conversation was taken the alert is still there": the old
+// version flipped only the intervention doc and left the SESSION in `human_assigned` forever, so it
+// never left the alert queue. `resolvedAt`/`resolvedBy`/`resolution` are stamped on both so the
+// history tab and the session agree on who closed it and when.
 export const clearIntervention = async (
   interventionId: string,
-  resolution: string = 'Resolved by staff'
+  resolution: string = 'Resolved by staff',
+  staffName: string = 'Asesor'
 ): Promise<void> => {
   if (getPrivacyMode()) {
     logPrivacy('clearIntervention');
     return;
   }
+  const stamp = new Date().toISOString();
   await updateDoc(doc(db, COLLECTIONS.interventions, interventionId), {
     status: 'resolved',
     resolution,
-    resolvedAt: new Date().toISOString(),
+    resolvedAt: stamp,
+    resolvedBy: staffName,
   });
+  try {
+    const snap = await getDoc(doc(db, COLLECTIONS.interventions, interventionId));
+    const sessionId = snap.exists() ? String((snap.data() as InterventionRequest).sessionId || '') : '';
+    if (sessionId) await resolveConversation(sessionId, staffName, resolution);
+  } catch (e) {
+    console.warn('clearIntervention could not close the session:', e);
+  }
+};
+
+// Resolve a conversation: terminal status + stamp, and every still-open intervention for it closed too.
+// This is what actually clears the alert and the "Needs Human" badge, because the panel queue is driven
+// by the SESSION status. Terminal is safe: a new customer message reactivates the session to 'active',
+// exactly as it already does for 'completed' and 'abandoned'.
+export const resolveConversation = async (
+  sessionId: string,
+  staffName: string = 'Asesor',
+  resolution: string = 'Resuelta por el asesor'
+): Promise<void> => {
+  if (getPrivacyMode()) {
+    logPrivacy('resolveConversation');
+    return;
+  }
+  const stamp = new Date().toISOString();
+
+  // 1. close every intervention still open for this session
+  try {
+    const snap = await getDocs(query(collection(db, COLLECTIONS.interventions), where('sessionId', '==', sessionId)));
+    await Promise.all(
+      snap.docs
+        .filter((d) => {
+          const s = d.data().status;
+          return s === 'pending' || s === 'accepted';
+        })
+        .map((d) => updateDoc(d.ref, { status: 'resolved', resolution, resolvedAt: stamp, resolvedBy: staffName }))
+    );
+  } catch (e) {
+    console.warn('resolveConversation: interventions not closed:', e);
+  }
+
+  // 2. the session itself
+  await updateSessionStatus(sessionId, 'resolved', staffName);
+  try {
+    await updateDoc(doc(db, COLLECTIONS.sessions, sessionId), {
+      resolvedAt: stamp,
+      resolvedBy: staffName,
+      resolution,
+      resolvedFrom: 'staff_view',
+    });
+  } catch (e) {
+    console.warn('resolveConversation: session stamp failed:', e);
+  }
 };
 
 // Analytics summary data

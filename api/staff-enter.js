@@ -9,7 +9,8 @@
 // The client then renders the reply view for that session only.
 
 import { verifyStaffToken } from './_staff-token.js';
-import { getDoc } from './_firestore-rest.js';
+import { getDoc, setDoc } from './_firestore-rest.js';
+import { editTelegramMessage } from './_telegram.js';
 
 const SID_RE = /^[\w-]{1,120}$/;
 
@@ -32,11 +33,51 @@ export default async function handler(req, res) {
   try {
     const doc = await getDoc(`conversations/${sessionId}`);
     if (!doc) return res.status(404).json({ ok: false, error: 'session_not_found' });
+
+    const f = doc.fields || {};
+    const current = String(f.status || '');
+
+    // ABRIR LA ALERTA ES TOMAR LA CONVERSACIÓN.
+    // Antes este endpoint era de sólo lectura: el asesor entraba desde el link del teléfono, veía la
+    // conversación y la alerta seguía marcada "necesita humano" porque el paso de aceptar vivía en el
+    // panel. Reclamarla aquí apaga la alerta en el mismo toque, sin un segundo paso.
+    let claimed = false;
+    if (current === 'human_requested') {
+      const by = String(body.by || req.query?.by || '').trim().slice(0, 60) || 'Asesor';
+      try {
+        await setDoc(
+          `conversations/${sessionId}`,
+          {
+            status: 'human_assigned',
+            assignedToName: by,
+            claimedAt: new Date().toISOString(),
+            claimedFrom: 'alert_link',
+          },
+          ['status', 'assignedToName', 'claimedAt', 'claimedFrom']
+        );
+        claimed = true;
+      } catch (e) {
+        // Reclamar es best-effort: si falla, el asesor debe poder entrar igual y responder.
+        console.error('[staff-enter] claim failed:', e?.message || e);
+      }
+    }
+
+    // Y que el teléfono deje de mostrar un ticket abierto (best effort, sólo si hay alerta registrada).
+    if (claimed && f.tgAlertChatId && f.tgAlertMessageId) {
+      const stamp = new Date().toLocaleString('es-CO', { timeZone: 'America/Bogota' });
+      editTelegramMessage(
+        String(f.tgAlertChatId),
+        String(f.tgAlertMessageId),
+        `👀 <b>EN ATENCIÓN</b> — abierto por el equipo\n${stamp}\nSesión: ${sessionId}`
+      ).catch(() => { /* nunca bloquea la entrada del asesor */ });
+    }
+
     return res.status(200).json({
       ok: true,
       sessionId,
-      status: String(doc.fields?.status || ''),
-      customerName: doc.fields?.customerName || '',
+      status: claimed ? 'human_assigned' : current,
+      claimed,
+      customerName: f.customerName || '',
       tokenExpiresAt: verdict.tokenExpiresAt,
     });
   } catch (err) {

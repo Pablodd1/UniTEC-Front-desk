@@ -9,8 +9,8 @@ import notifyEscalation from './notify-escalation.js';
 /** Test/diagnostic session ids (same family the analytics core excludes from reports). */
 export const TEST_SESSION_RE = /^(diag|lat-test|verify|warm-check|secret-verify|post-fix|analytics-verify|sweep|abandon-test|staff-test|rules-probe)/;
 
-/** Statuses an abandon alert must never touch: a human is already involved or the chat is closed. */
-export const PROTECTED_STATUS = /^(human_requested|human_assigned|completed)$/;
+/** Statuses an abandon alert must never touch: a human is involved or the chat is closed. */
+export const PROTECTED_STATUS = /^(human_requested|human_assigned|completed|resolved)$/;
 
 /**
  * Call the escalation handler in-process (mock req/res) so an abandon alert reuses every rail,
