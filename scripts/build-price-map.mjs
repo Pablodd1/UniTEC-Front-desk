@@ -68,13 +68,45 @@ for (const prod of products) {
   priceMap[prod.id] = {
     price_cop: fmtCop(row.price),
     price_usd: prod.price_usd || 'Consultar precio',
-    unit: 'Unidad',
+    // was hardcoded 'Unidad': products.json is the curated catalog and carries the real
+    // selling unit (Paquete / Package, Caja / Box, m2). Hardcoding it made every one of the
+    // 303 mapped answers say "por Unidad" regardless of how the product actually sells.
+    unit: prod.unit || 'Unidad',
     approx: true,
     source: `LISTA MARKETING ${row.section}`,
     row_name: row.name,
     row_price: row.price
   };
   matchedRows.add(row.name);
+}
+
+// ── 2b. curated pins — an explicit ref always beats a fuzzy sheet match ───────
+// A generic sheet row like "CORNISA PVC" is an in-order token subset of every
+// "CORNISA PVC <colour> AM10xx" product name, so the matcher above binds them all to
+// one price. Anything pinned in scripts/price-overrides.json wins, and a pin also
+// CREATES the entry when the sheet has no matching row at all.
+const overridesPath = path.join(ROOT, 'scripts/price-overrides.json');
+if (fs.existsSync(overridesPath)) {
+  const ov = JSON.parse(fs.readFileSync(overridesPath, 'utf8'));
+  let pinned = 0;
+  for (const [ref, o] of Object.entries(ov.overrides || {})) {
+    const price = Number(o.price_cop);
+    if (!Number.isFinite(price)) { console.warn(`  override ${ref} skipped: price_cop not a number`); continue; }
+    const prod = products.find((p) => String(p.id) === ref);
+    if (!prod) { console.warn(`  override ${ref} skipped: ref not in products.json`); continue; }
+    priceMap[ref] = {
+      price_cop: fmtCop(price),
+      price_usd: prod.price_usd || 'Consultar precio',
+      unit: o.unit || prod.unit || 'Unidad',
+      approx: true,
+      source: o.source || 'OVERRIDE',
+      row_name: o.note || prod.name,
+      row_price: price,
+      overridden: true,
+    };
+    pinned++;
+  }
+  console.log(`price-overrides.json: ${pinned} refs pinned`);
 }
 
 // ── 3. write outputs ─────────────────────────────────────────────────────────

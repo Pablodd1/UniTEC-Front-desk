@@ -191,8 +191,8 @@
     "category": "CIELO RASO PVC",
     "subcategory": "CIELO RASO PVC",
     "collection": "INTERIOR",
-    "price": "$ 9.500",
-    "unit": "Unidad",
+    "price": "$ 14.999",
+    "unit": "Paquete / Package",
     "items_per_box": "32",
     "style_tags": [
       "CIELO RASO PVC",
@@ -212,14 +212,16 @@
     },
     "image_url": "",
     "stock_status": "In Stock",
-    "description": "CORNISA. Perfil decorativo para lámina PVC. Uso: Terminación bordes lámina PVC.",
-    "price_cop": "$ 9.500",
+    "description": "Cornisa Pvc Blanca Brillante Am1001. Producto de la categoría cielo raso pvc, subcategoría techos, desarrollado para aplicaciones arquitectónicas y de diseño interior. Fabricado con materiales de alto desempeño que garantizan estabilidad, resistencia y durabilidad. Permite una instalación eficiente y un acabado uniforme, ideal para proyectos residenciales, comerciales y corporativos. Especificaciones técnicas: dimensiones de 30 x 595 cm, espesor de 8.5 mm.",
+    "price_cop": "$ 14.999",
     "price_usd": "Consultar precio",
     "price_approx": true,
-    "price_source": "LISTA MARKETING OCTUBRE",
-    "catalog_specs": "Perfil decorativo para lámina PVC",
-    "catalog_colors": [],
-    "catalog_use": "Terminación bordes lámina PVC"
+    "price_source": "CORNISA PVC (cliente - nuevos)",
+    "catalog_specs": "Ancho: 30cm | Largo: 5.95m | Espesor: 8.5mm | Empaque: 32 unidades",
+    "catalog_colors": [
+      "BLANCO BRILLANTE"
+    ],
+    "catalog_use": "Cielo raso y paredes interior"
   },
   {
     "id": "14201001",
@@ -683,68 +685,119 @@
   {
     "id": "14032014",
     "name": "CORNISA PVC BLANCO EJECUTIVO AM1014",
-    "category": "NUEVOS",
-    "subcategory": "NUEVOS",
-    "collection": "NUEVOS",
-    "price": "$ 9.500",
-    "unit": "Unidad",
-    "items_per_box": "1",
+    "category": "CIELO RASO PVC",
+    "subcategory": "CIELO RASO PVC",
+    "collection": "INTERIOR",
+    "price": "$ 14.999",
+    "unit": "Paquete / Package",
+    "items_per_box": "32",
     "style_tags": [
-      "NUEVOS"
+      "CIELO RASO PVC",
+      "INTERIOR"
     ],
-    "dimensions": {},
+    "dimensions": {
+      "latam": {
+        "width_cm": 30,
+        "length_cm": 595,
+        "thickness_mm": 8.5
+      },
+      "usa": {
+        "width_in": 11.811,
+        "length_ft": 19.521,
+        "thickness_in": 0.335
+      }
+    },
     "image_url": "",
     "pdf_tech_sheet": "",
     "stock_status": "In Stock",
-    "description": "CORNISA PVC BLANCO EJECUTIVO AM1014",
-    "price_cop": "$ 9.500",
+    "description": "Cornisa Pvc Blanco Ejecutivo Am1014. Producto de la categoría cielo raso pvc, subcategoría techos, desarrollado para aplicaciones arquitectónicas y de diseño interior. Fabricado con materiales de alto desempeño que garantizan estabilidad, resistencia y durabilidad. Permite una instalación eficiente y un acabado uniforme, ideal para proyectos residenciales, comerciales y corporativos. Especificaciones técnicas: dimensiones de 30 x 595 cm, espesor de 8.5 mm.",
+    "price_cop": "$ 14.999",
     "price_usd": "Consultar precio",
     "price_approx": true,
-    "price_source": "LISTA MARKETING OCTUBRE"
+    "price_source": "CORNISA PVC (cliente - nuevos)",
+    "catalog_specs": "Ancho: 30cm | Largo: 5.95m | Espesor: 8.5mm | Empaque: 32 unidades",
+    "catalog_colors": [
+      "BLANCO EJECUTIVO"
+    ],
+    "catalog_use": "Cielo raso y paredes interior"
   },
   {
     "id": "14032002",
     "name": "CORNISA PVC BLANCO MADERA BRILLANTE AM1002",
-    "category": "NUEVOS",
-    "subcategory": "NUEVOS",
-    "collection": "NUEVOS",
-    "price": "$ 9.500",
-    "unit": "Unidad",
-    "items_per_box": "1",
+    "category": "CIELO RASO PVC",
+    "subcategory": "CIELO RASO PVC",
+    "collection": "INTERIOR",
+    "price": "$ 14.999",
+    "unit": "Paquete / Package",
+    "items_per_box": "32",
     "style_tags": [
-      "NUEVOS"
+      "CIELO RASO PVC",
+      "INTERIOR"
     ],
-    "dimensions": {},
+    "dimensions": {
+      "latam": {
+        "width_cm": 30,
+        "length_cm": 595,
+        "thickness_mm": 8.5
+      },
+      "usa": {
+        "width_in": 11.811,
+        "length_ft": 19.521,
+        "thickness_in": 0.335
+      }
+    },
     "image_url": "",
     "pdf_tech_sheet": "",
     "stock_status": "In Stock",
-    "description": "CORNISA PVC BLANCO MADERA BRILLANTE AM1002",
-    "price_cop": "$ 9.500",
+    "description": "Cornisa Pvc Blanco Madera Brillante Am1002. Producto de la categoría cielo raso pvc, subcategoría techos, desarrollado para aplicaciones arquitectónicas y de diseño interior. Fabricado con materiales de alto desempeño que garantizan estabilidad, resistencia y durabilidad. Permite una instalación eficiente y un acabado uniforme, ideal para proyectos residenciales, comerciales y corporativos. Especificaciones técnicas: dimensiones de 30 x 595 cm, espesor de 8.5 mm.",
+    "price_cop": "$ 14.999",
     "price_usd": "Consultar precio",
     "price_approx": true,
-    "price_source": "LISTA MARKETING OCTUBRE"
+    "price_source": "CORNISA PVC (cliente - nuevos)",
+    "catalog_specs": "Ancho: 30cm | Largo: 5.95m | Espesor: 8.5mm | Empaque: 32 unidades",
+    "catalog_colors": [
+      "BLANCO MADERA BRILLANTE"
+    ],
+    "catalog_use": "Cielo raso y paredes interior"
   },
   {
     "id": "14032004",
     "name": "CORNISA PVC BEIGE BRILLANTE AM1004",
-    "category": "NUEVOS",
-    "subcategory": "NUEVOS",
-    "collection": "NUEVOS",
-    "price": "$ 9.500",
-    "unit": "Unidad",
-    "items_per_box": "1",
+    "category": "CIELO RASO PVC",
+    "subcategory": "CIELO RASO PVC",
+    "collection": "INTERIOR",
+    "price": "$ 14.999",
+    "unit": "Paquete / Package",
+    "items_per_box": "32",
     "style_tags": [
-      "NUEVOS"
+      "CIELO RASO PVC",
+      "INTERIOR"
     ],
-    "dimensions": {},
+    "dimensions": {
+      "latam": {
+        "width_cm": 30,
+        "length_cm": 595,
+        "thickness_mm": 8.5
+      },
+      "usa": {
+        "width_in": 11.811,
+        "length_ft": 19.521,
+        "thickness_in": 0.335
+      }
+    },
     "image_url": "",
     "pdf_tech_sheet": "",
     "stock_status": "In Stock",
-    "description": "CORNISA PVC BEIGE BRILLANTE AM1004",
-    "price_cop": "$ 9.500",
+    "description": "Cornisa Pvc Beige Brillante Am1004. Producto de la categoría cielo raso pvc, subcategoría techos, desarrollado para aplicaciones arquitectónicas y de diseño interior. Fabricado con materiales de alto desempeño que garantizan estabilidad, resistencia y durabilidad. Permite una instalación eficiente y un acabado uniforme, ideal para proyectos residenciales, comerciales y corporativos. Especificaciones técnicas: dimensiones de 30 x 595 cm, espesor de 8.5 mm.",
+    "price_cop": "$ 14.999",
     "price_usd": "Consultar precio",
     "price_approx": true,
-    "price_source": "LISTA MARKETING OCTUBRE"
+    "price_source": "CORNISA PVC (cliente - nuevos)",
+    "catalog_specs": "Ancho: 30cm | Largo: 5.95m | Espesor: 8.5mm | Empaque: 32 unidades",
+    "catalog_colors": [
+      "BEIGE BRILLANTE"
+    ],
+    "catalog_use": "Cielo raso y paredes interior"
   },
   {
     "id": "14101101",

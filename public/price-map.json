@@ -81,40 +81,44 @@
     "row_price": 27000
   },
   "14032001": {
-    "price_cop": "$ 9.500",
+    "price_cop": "$ 14.999",
     "price_usd": "Consultar precio",
-    "unit": "Unidad",
+    "unit": "Paquete / Package",
     "approx": true,
-    "source": "LISTA MARKETING CIELO RASO (PVC)",
-    "row_name": "CORNISA PVC",
-    "row_price": 9500
+    "source": "CORNISA PVC (cliente - nuevos)",
+    "row_name": "CORNISA PVC BLANCA BRILLANTE AM1001",
+    "row_price": 14999,
+    "overridden": true
   },
   "14032002": {
-    "price_cop": "$ 9.500",
+    "price_cop": "$ 14.999",
     "price_usd": "Consultar precio",
-    "unit": "Unidad",
+    "unit": "Paquete / Package",
     "approx": true,
-    "source": "LISTA MARKETING CIELO RASO (PVC)",
-    "row_name": "CORNISA PVC",
-    "row_price": 9500
+    "source": "CORNISA PVC (cliente - nuevos)",
+    "row_name": "CORNISA PVC BLANCO MADERA BRILLANTE AM1002",
+    "row_price": 14999,
+    "overridden": true
   },
   "14032004": {
-    "price_cop": "$ 9.500",
+    "price_cop": "$ 14.999",
     "price_usd": "Consultar precio",
-    "unit": "Unidad",
+    "unit": "Paquete / Package",
     "approx": true,
-    "source": "LISTA MARKETING CIELO RASO (PVC)",
-    "row_name": "CORNISA PVC",
-    "row_price": 9500
+    "source": "CORNISA PVC (cliente - nuevos)",
+    "row_name": "CORNISA PVC BEIGE BRILLANTE AM1004",
+    "row_price": 14999,
+    "overridden": true
   },
   "14032014": {
-    "price_cop": "$ 9.500",
+    "price_cop": "$ 14.999",
     "price_usd": "Consultar precio",
-    "unit": "Unidad",
+    "unit": "Paquete / Package",
     "approx": true,
-    "source": "LISTA MARKETING CIELO RASO (PVC)",
-    "row_name": "CORNISA PVC",
-    "row_price": 9500
+    "source": "CORNISA PVC (cliente - nuevos)",
+    "row_name": "CORNISA PVC BLANCO EJECUTIVO AM1014",
+    "row_price": 14999,
+    "overridden": true
   },
   "14032301": {
     "price_cop": "$ 27.000",
