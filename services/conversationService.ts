@@ -255,7 +255,7 @@ export const addMessage = async (
         local[idx].flowStage = 'engaging';
       }
     }
-    if (local[idx].status === 'completed' || local[idx].status === 'abandoned' || local[idx].status === 'abandoned_at_greeting') {
+    if (!(message as any)?.keepClosed && (local[idx].status === 'completed' || local[idx].status === 'abandoned' || local[idx].status === 'abandoned_at_greeting')) {
       local[idx].status = 'active';
     }
     saveLocalSessions(local);
@@ -284,14 +284,16 @@ export const addMessage = async (
           updatePayload.firstUserMessageAt = now;
           updatePayload.flowStage = 'engaging';
         }
-        if (sessionData.status === 'completed' || sessionData.status === 'abandoned' || sessionData.status === 'abandoned_at_greeting') {
+        if (!(message as any)?.keepClosed && (sessionData.status === 'completed' || sessionData.status === 'abandoned' || sessionData.status === 'abandoned_at_greeting')) {
           updatePayload.status = 'active';
         }
       }
     } else {
       if (sessionSnap.exists()) {
         const sessionData = sessionSnap.data() as ConversationSession;
-        if (sessionData.status === 'completed' || sessionData.status === 'abandoned' || sessionData.status === 'abandoned_at_greeting') {
+        // `keepClosed`: los mensajes que forman parte del CIERRE (despedida del bot) no reabren
+        // la sesión; un mensaje nuevo del cliente (sin la marca) sí la reabre.
+        if (!(message as any)?.keepClosed && (sessionData.status === 'completed' || sessionData.status === 'abandoned' || sessionData.status === 'abandoned_at_greeting')) {
           updatePayload.status = 'active';
         }
       }

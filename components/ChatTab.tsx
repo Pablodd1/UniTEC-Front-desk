@@ -878,14 +878,23 @@ const ChatTab: React.FC<ChatTabProps> = ({ quickActions, initialMessage, emergen
         const goodbye = language === 'en'
           ? `My pleasure! I'm here whenever you need 🙌\nYou can see our full portfolio and reach the team here: ${COMPANY_WEBSITE} or on WhatsApp: ${COMPANY_WA}\nHave a great day! 👋`
           : `¡Con mucho gusto! Quedo atento cuando necesites 🙌\nPuedes ver todo nuestro portafolio y contactar al equipo aquí: ${COMPANY_WEBSITE} o por WhatsApp: ${COMPANY_WA}\n¡Que tengas un excelente día! 👋`;
+        const exitId = `polite-exit-${Date.now()}`;
+        // `keepClosed` en LOS DOS mensajes del cierre: el guardado de mensajes reabría la sesión
+        // que acabamos de cerrar (verificado en vivo: quedaba 'completed' → 'active').
         setMessages(prev => [...prev, {
-          id: `polite-exit-${Date.now()}`,
+          id: exitId,
           role: 'model',
           text: goodbye,
           timestamp: new Date(),
-        }]);
+          keepClosed: true,
+        } as any]);
         setIsLoading(false);
         if (conversationId) {
+          // El mensaje del cliente en esta rama NO lo graba /api/chat (no se llama a la IA): se
+          // escribe aquí para que el turno de cierre quede en la transcripción.
+          try {
+            await addMessage(conversationId, { id: userMsg.id, role: 'user', text, keepClosed: true } as any);
+          } catch (e) { console.warn('polite exit: user turn not recorded', e); }
           updateSessionStatus(conversationId, 'completed', undefined, {
             closedBy: 'bot_polite_exit',
             closedPhrase: closing.phrase,
