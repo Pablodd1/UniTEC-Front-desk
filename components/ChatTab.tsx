@@ -291,7 +291,10 @@ const ChatTab: React.FC<ChatTabProps> = ({ quickActions, initialMessage, emergen
         role: msg.role as 'user' | 'model',
         text: msg.text,
         timestamp: msg.timestamp instanceof Date ? msg.timestamp.toISOString() : new Date(msg.timestamp).toISOString(),
-      }).catch((e: any) => {
+        // La marca del cierre se PROPAGA al doc: si se pierde, el guardado reabre la sesión que
+        // acabamos de cerrar (verificado en vivo con la despedida del bot).
+        ...((msg as any).keepClosed ? { keepClosed: true } : {}),
+      } as any).catch((e: any) => {
         // Remove from set so it retries next render
         savedMessageIds.current.delete(msg.id);
         console.warn('Failed to save message to Firestore, will retry:', e);
