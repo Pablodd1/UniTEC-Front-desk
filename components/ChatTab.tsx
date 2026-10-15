@@ -858,6 +858,15 @@ const ChatTab: React.FC<ChatTabProps> = ({ quickActions, initialMessage, emergen
       return;
     }
 
+    // ── Reapertura (política 2026-10-15) ───────────────────────────────────────
+    // Si el bot se despidió y el cliente VUELVE a escribir, la conversación se reabre: un
+    // mensaje real no puede quedar dentro de una sesión ya cerrada (el panel deja de mirarla).
+    if (sessionStatus === 'completed' && conversationId) {
+      updateSessionStatus(conversationId, 'active', undefined, { reopenedAt: new Date().toISOString() })
+        .catch((e) => console.warn('session reopen failed:', e));
+      bumpSessionCounter(conversationId, 'reopened').catch(() => {});
+    }
+
     // ── Despedida educada (política 2026-10-15, decisión del owner) ─────────────
     // Si el cliente deja claro que no quiere nada más y el BOT es quien atiende (activo, sin
     // asesor en camino ni en el chat), se despide con el sitio web de la compañía y la
