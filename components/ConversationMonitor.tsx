@@ -7,7 +7,7 @@ import {
   ArrowUpRight, Eye, UserCheck, Timer, 
   Check
 } from 'lucide-react';
-import { ConversationSession, subscribeToConversation, subscribeToMessages, ConversationMessage, addMessage, updateSessionStatus, addConversationTag, addConversationNote, bumpSessionCounter } from '../services/conversationService';
+import { ConversationSession, subscribeToConversation, subscribeToMessages, ConversationMessage, addMessage, updateSessionStatus, addConversationTag, addConversationNote, bumpSessionCounter, markFirstStaffReply } from '../services/conversationService';
 import { playNotificationSound } from '../services/soundService';
 
 interface ConversationMonitorProps {
@@ -254,6 +254,11 @@ const ConversationMonitor: React.FC<ConversationMonitorProps> = ({
       // panel). Se cuenta aquí, con un increment sobre el path punteado (nunca con updateAnalytics,
       // que reemplazaría el mapa entero).
       bumpSessionCounter(selectedSessionId, 'staffInteractions', 1).catch(() => {});
+      // Espera real del cliente hasta esta primera respuesta (política 2026-10-15).
+      {
+        const s: any = sessions.find((x) => x.id === selectedSessionId);
+        markFirstStaffReply(selectedSessionId, s?.claimedAt || s?.lastEscalationAt).catch(() => {});
+      }
       
       setStaffResponse('');
       

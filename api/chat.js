@@ -221,6 +221,7 @@ export default async function handler(req, res) {
     // Merge the dashboard-managed training (config/main.trainingData) into the
     // system instructions so the bot follows the pautas on every origin.
     let instructions = clientInstructions || '';
+    let sharedTrainingText = ''; // used by the pinned-literal exemption (see below)
 
     // ── SERVER-SIDE BASE FRONT-DESK GUARD (fix: "Nancy's info not generated") ──
     // The real client (ChatTab via sendMessageToGemini) always sends the full
@@ -256,6 +257,7 @@ You are the professional AI Front Desk Assistant and Senior Sales Representative
 7. PRECIOS: solo si el cliente los pide. Informa siempre que es un VALOR APROXIMADO POR UNIDAD que depende de medidas, cantidades y referencia. Usa EXCLUSIVAMENTE los precios del bloque [LISTA DE PRECIOS] cuando venga en el contexto; si el producto no está allí di "Consultar precio" y ofrece pasar los datos al equipo comercial. PROHIBIDO inventar precios o rangos de precio.
 8. CATÁLOGO Y ESPECIFICACIONES: responde las especificaciones DIRECTAMENTE del [SYSTEM CONTEXT] (medidas, espesor, peso, colores) — nunca inventes datos que no estén allí. Solo si el cliente pide explícitamente la ficha o el archivo del producto, envía su enlace; NUNCA el del Drive completo. Catálogo COMPLETO (solo si lo piden): 📂 CATÁLOGO DE PRODUCTOS 2026 https://canva.link/l7fu4xk4lp5jed2
 9. BREVEDAD: máximo 2-3 frases, sin listas ni viñetas, tono natural de WhatsApp.
+10. ESPERA Y DESPEDIDA (política del cliente 2026-10-15): si ya avisaste que un asesor del equipo viene en camino, SIGUES atendiendo cualquier otra consulta del cliente mientras esperan (nunca los dejes sin respuesta). Si el cliente dice que no necesita nada más ("no gracias", "eso es todo", "ya está", "listo gracias"), despídete con calidez y compártele el sitio web https://www.unitecusadesign.com/ para más información. Si un asesor YA está atendiendo la conversación, tú NO respondes: el asesor es quien escribe.
 
 # REGLAS ESPECÍFICAS DEL NEGOCIO (RESPONDE EXACTAMENTE según estas reglas):
 - INSTALACIÓN: Cuando pregunten por instalación de producto, responde EXACTAMENTE: "Señor o Señora te cuento que actualmente nuestra compañía solo realiza distribución mas no instalación para este proceso te podemos informar el contacto de una persona externa, posterior"
@@ -297,12 +299,45 @@ GOOD EXAMPLE: "¡Hola! ¿En qué producto te interesa?"`;
 
     try {
       const sharedTraining = await getSharedTraining();
+      sharedTrainingText = sharedTraining || '';
       if (sharedTraining && sharedTraining.trim().length > 0 && !instructions.includes('[CUSTOM MODEL TRAINING]')) {
         instructions += `\n\n[CUSTOM MODEL TRAINING - FOLLOW THESE PAUTAS/RESPONSE GUIDELINES EXACTLY]:\n${sharedTraining}`;
       }
     } catch (e) {
       console.warn('Training injection skipped:', e?.message);
     }
+
+    // ── Textos LITERALES del cliente (config/main.trainingData) ──────────────────
+    // El cliente pega macros que deben salir "sin cambiar la redacción" (p.ej. el showroom de
+    // Miami). El cap de brevedad (360/700 chars) los cortaba a mitad de frase y el cliente
+    // perdía justo el dato final ("informándonos nombre completo y numero de contacto").
+    // Estos literales quedan EXENTOS del cap. Verificado: session_1784206195362_66m6riv6i.
+    const PINNED_TEXTS = (() => {
+      const t = String(sharedTrainingText || '');
+      const out = [];
+      // Cada marcador del cliente ("…lo siguiente:", "manda el siguiente mensaje:") abre un literal
+      // que corre hasta la línea en blanco / separador / final del blob.
+      const re = /(?:lo siguiente|la siguiente redacci[oó]n|siguiente mensaje|siguiente texto)\s*:?\s*/gi;
+      let m;
+      while ((m = re.exec(t))) {
+        const rest = t.slice(m.index + m[0].length);
+        const lit = rest.split(/\n\s*\n|\n---|\r?\n\s*\r?\n/)[0].replace(/^["“'«]+|["”'»]+$/g, '').trim();
+        if (lit.length >= 40) out.push(lit);
+      }
+      return [...new Set(out)];
+    })();
+    const normPin = (s) => String(s || '').toLowerCase().replace(/\s+/g, ' ').trim();
+    const pinnedHead = (t) => normPin(t).slice(0, 40);
+    const isPinnedLiteral = (text) => {
+      const n = normPin(text);
+      if (n.length < 25) return false;
+      return PINNED_TEXTS.some((p) => { const h = pinnedHead(p); return h.length >= 25 && n.includes(h); });
+    };
+    const pinnedLimit = (text) => {
+      const n = normPin(text);
+      const p = PINNED_TEXTS.find((x) => { const h = pinnedHead(x); return h.length >= 25 && n.includes(h); });
+      return p ? normPin(p).length + 220 : 0;
+    };
 
     if (/color/.test(String(message).toLowerCase())) {
       instructions += '\n\n[ESTA PREGUNTA ES DE COLORES] Responde en UNA frase. Nombra como máximo 4 colores, o di que cambian según la referencia. No listes productos, precios ni la empresa. Cierra con una pregunta corta.';
@@ -449,9 +484,15 @@ GOOD EXAMPLE: "¡Hola! ¿En qué producto te interesa?"`;
 
       let streamedText = '';
       const hasUrl = () => /https?:\/\//.test(streamedText);
-      const capsHit = () => streamedText.length >= (hasUrl() ? 700 : 360);
+      const capsHit = () => {
+        // Literal del cliente en curso → sólo se corta pasado el literal + margen para el saludo.
+        const limit = pinnedLimit(streamedText);
+        if (limit) return normPin(streamedText).length > limit;
+        return streamedText.length >= (hasUrl() ? 700 : 360);
+      };
       // Clean the final visible text so a capped reply never ends mid-word/mid-sentence.
       const cleanCut = (t) => {
+        if (isPinnedLiteral(t)) return String(t).trim().slice(0, 1200); // macro literal: nunca recortar
         const cap = /https?:\/\//.test(t) ? 700 : 360;
         if (t.length <= cap) return t;
         const w = t.slice(0, cap);
@@ -675,7 +716,8 @@ GOOD EXAMPLE: "¡Hola! ¿En qué producto te interesa?"`;
         const latencyMs = Date.now() - latencyStart;
 
         if (responseText) {
-          responseText = tightenReply(responseText);
+          // Macros literales del cliente (trainingData) pasan completos; el resto se acorta.
+          responseText = isPinnedLiteral(responseText) ? String(responseText).trim().slice(0, 1200) : tightenReply(responseText);
 
           // Record this real chat turn server-side (messages + counters + funnel).
           // AWAITED (not fire-and-forget): Vercel kills pending promises when the

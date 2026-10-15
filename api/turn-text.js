@@ -51,9 +51,18 @@ export function catalogReply(message) {
 // Per Novedades Chatbot 8 the bot must NOT treat a price question as an escalation: it
 // qualifies first (producto → m² → uso → perfil → ubicación → datos) and escalates ONCE,
 // at the end, to the company's generic WhatsApp. Prices/quotes alone no longer page a human.
-const STAFF_WORDS = ['asesor', 'humano', 'staff', 'human', 'agent', 'llamar', 'call me',
-  'telefono', 'teléfono', 'contacto', 'atencion', 'atención', 'whatsapp', 'speak to someone',
-  'talk to someone', 'hablar con alguien', 'persona real'];
+//
+// 2026-10-15 (owner decision, caso session_1784206195362_66m6riv6i): the list was
+// ['…','telefono','contacto','atencion','atención','whatsapp','urgente',…] and a plain
+// LOCATION FAQ — "tienen atencion en miami" — paged a human. FAQ nouns (atención, contacto,
+// teléfono, whatsapp) are NOT a request for a person: the bot answers them (the client's own
+// location macro). Only an explicit request for a human / a formal quote escalates now.
+// KEEP IN SYNC: components/ChatTab.tsx `staffKeywords` (same list, same order).
+const STAFF_WORDS = ['asesor', 'humano', 'human', 'agente', 'agent', 'staff', 'llamar',
+  'call me', 'speak to someone', 'talk to someone', 'hablar con alguien', 'hablar con una persona',
+  'persona real', 'ejecutivo', 'vendedor', 'representante', 'comunicame', 'comunícame',
+  'me contacte', 'me contacten', 'que me llame', 'que me llames',
+  'urgente', 'urgencia', 'emergencia'];
 const QUOTE_WORDS = ['cotiz', 'presupuesto', 'quote', 'budget'];
 
 export function detectEscalation(message) {
@@ -61,6 +70,26 @@ export function detectEscalation(message) {
   const isStaff = STAFF_WORDS.some((kw) => text.includes(kw));
   const isQuote = QUOTE_WORDS.some((kw) => text.includes(kw));
   return { isEscalation: isStaff || isQuote, isQuote, isStaff };
+}
+
+// ── Polite exit ("no quiere nada más") — 2026-10-15 owner decision ─────────────
+// While the bot is the one attending, a customer who says they are done gets a warm goodbye
+// with the company website instead of an endless "¿algo más?". Guarded so it can NEVER fire
+// on a real question: max 90 chars, no '?' and none of the product/price/data vocabulary.
+// KEEP IN SYNC: components/ChatTab.tsx `detectClosing` mirror.
+const CLOSING_PHRASES = ['no gracias', 'nada mas', 'nada más', 'eso es todo', 'es todo',
+  'ya esta', 'ya está', 'listo gracias', 'ok gracias', 'muchas gracias', 'solo eso',
+  'por ahora nada', 'así está bien', 'asi esta bien', 'bye', 'chao', 'chau', 'adios', 'adiós',
+  'hasta luego', 'nos vemos'];
+const QUERY_HINT_RE = /(\?|¿|precio|valor|cu[aá]nto|costo|medida|color|referencia|\bref\b|d[oó]nde|donde|ubicaci[oó]n|cotiza|cat[aá]logo|ficha|stock|disponib|env[ií]o|despacho|pago|instala|comercial|residencial|mayorista)/i;
+
+export function detectClosing(message) {
+  const raw = String(message || '').trim();
+  const text = raw.toLowerCase();
+  if (!text || raw.length > 90) return { isClosing: false, phrase: '' };
+  if (QUERY_HINT_RE.test(text)) return { isClosing: false, phrase: '' };
+  const phrase = CLOSING_PHRASES.find((p) => text.includes(p)) || '';
+  return { isClosing: Boolean(phrase), phrase };
 }
 
 export function tightenReply(text) {

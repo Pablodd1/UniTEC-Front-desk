@@ -7,7 +7,7 @@ import { doc, getDoc } from 'firebase/firestore';
 import { Message, QuickAction, Language } from '../types';
 import { saveChatSession } from '../services/firestoreService';
 import { sendMessageToGemini, setCurrentChatSessionId, setVoiceTakeover } from '../services/geminiService';
-import { createConversation, addMessage, requestIntervention, extractCustomerData, updateSessionStatus, subscribeToConversation, subscribeToMessages, markStaffNotice } from '../services/conversationService';
+import { createConversation, addMessage, requestIntervention, extractCustomerData, updateSessionStatus, subscribeToConversation, subscribeToMessages, markStaffNotice, bumpSessionCounter } from '../services/conversationService';
 import { notifyStaffIntervention, triggerEscalation } from '../services/notificationService';
 import { Send, User, Box, DollarSign, Hammer, BookOpen, CheckCircle2, Truck, FileText, RefreshCcw, Percent, Headphones, CreditCard, Lock, MessageSquare, MapPin } from 'lucide-react';
 import { GenerateContentResponse } from '@google/genai';
@@ -67,6 +67,26 @@ const explicitName = (t: string): string => {
   if (!/me\s+llamo|mi\s+nombre\s+es/i.test(s) && looksLikeIntent(s) && s.split(/\s+/).length > 3) return '';
   return candidate;
 };
+
+// ── Despedida educada (2026-10-15, decisión del owner) ──────────────────────────
+// Espejo CLIENTE de api/turn-text.js detectClosing() — mantener los dos en sync.
+// El cliente que dice que no quiere nada más recibe una despedida cálida con el sitio web
+// en vez de un "¿algo más?" eterno. Guardas para que NUNCA dispare en una consulta real.
+const CLOSING_PHRASES = ['no gracias', 'nada mas', 'nada más', 'eso es todo', 'es todo',
+  'ya esta', 'ya está', 'listo gracias', 'ok gracias', 'muchas gracias', 'solo eso',
+  'por ahora nada', 'así está bien', 'asi esta bien', 'bye', 'chao', 'chau', 'adios', 'adiós',
+  'hasta luego', 'nos vemos'];
+const QUERY_HINT_RE = /(\?|¿|precio|valor|cu[aá]nto|costo|medida|color|referencia|\bref\b|d[oó]nde|donde|ubicaci[oó]n|cotiza|cat[aá]logo|ficha|stock|disponib|env[ií]o|despacho|pago|instala|comercial|residencial|mayorista)/i;
+const detectClosing = (t: string): { isClosing: boolean; phrase: string } => {
+  const raw = String(t || '').trim();
+  const text = raw.toLowerCase();
+  if (!text || raw.length > 90) return { isClosing: false, phrase: '' };
+  if (QUERY_HINT_RE.test(text)) return { isClosing: false, phrase: '' };
+  const phrase = CLOSING_PHRASES.find((p) => text.includes(p)) || '';
+  return { isClosing: Boolean(phrase), phrase };
+};
+const COMPANY_WEBSITE = 'https://www.unitecusadesign.com/';
+const COMPANY_WA = 'https://wa.me/573142332147';
 
 interface ChatTabProps {
   quickActions: QuickAction[];
@@ -523,8 +543,11 @@ const ChatTab: React.FC<ChatTabProps> = ({ quickActions, initialMessage, emergen
     if (staffAlertSentRef.current) return;
     const lowercaseText = textText.toLowerCase();
     // mantiene la MISMA política que api/turn-text.js detectEscalation() — sincronizarlas
+    // 2026-10-15: fuera los sustantivos de FAQ (atencion/atención/contacto/telefono/whatsapp):
+    // una pregunta de UBICACIÓN se responde (macro del training), no se escala a un humano.
+    // El botón "Contactar Ventas" sigue escalando por 'representante'/'comunicame'.
     const formalQuoteKeywords = ['cotiz', 'presupuesto', 'budget', 'quote'];
-    const staffKeywords = ['asesor', 'humano', 'human', 'agent', 'staff', 'llamar', 'call me', 'speak to someone', 'talk to someone', 'hablar con alguien', 'persona real', 'whatsapp', 'telefono', 'teléfono', 'contacto', 'atencion', 'atención', 'urgente', 'urgencia', 'emergencia'];
+    const staffKeywords = ['asesor', 'humano', 'human', 'agente', 'agent', 'staff', 'llamar', 'call me', 'speak to someone', 'talk to someone', 'hablar con alguien', 'hablar con una persona', 'persona real', 'ejecutivo', 'vendedor', 'representante', 'comunicame', 'comunícame', 'me contacte', 'me contacten', 'que me llame', 'que me llames', 'urgente', 'urgencia', 'emergencia'];
 
     const isQuote = formalQuoteKeywords.some(kw => lowercaseText.includes(kw));
     const isStaff = staffKeywords.some(kw => lowercaseText.includes(kw));
@@ -568,16 +591,17 @@ const ChatTab: React.FC<ChatTabProps> = ({ quickActions, initialMessage, emergen
       ).catch((e) => console.warn('requestIntervention from escalation failed:', e));
     }
 
-    // Acompañamiento durante la espera: el cliente sabe qué pasa después. UNA vez por
-    // conversación (antes esto vivía en showEscalationAutoReply, que no tenía llamadores).
+    // Acompañamiento durante la espera (política 2026-10-15): el cliente sabe que ya se avisó
+    // al equipo Y que el bot sigue disponible para cualquier otra consulta mientras espera.
+    // UNA vez por conversación (antes esto vivía en showEscalationAutoReply, que no tenía llamadores).
     const isEn = language === 'en';
-    const waLink = 'https://wa.me/573142332147';
+    const waLink = COMPANY_WA;
     setMessages((prev) => [...prev, {
       id: `escalation-ack-${Date.now()}`,
       role: 'model',
       text: isEn
-        ? `✅ I've notified our team — an advisor will reply to you right here shortly. If it's urgent, WhatsApp us: ${waLink}`
-        : `✅ Ya avisé a un asesor del equipo: te responderá por aquí en breve. Si es urgente, escríbenos por WhatsApp: ${waLink}`,
+        ? `✅ I've let our team know — an advisor will write to you right here shortly.\nMeanwhile I'm still here for you 🙂 feel free to ask me about products, prices or measurements and I'll help you right away.\nUrgent? WhatsApp: ${waLink} · More info: ${COMPANY_WEBSITE}`
+        : `✅ Ya avisé a un asesor del equipo: te escribirá por aquí en breve.\nMientras tanto yo sigo contigo 🙂 puedes seguir preguntándome por productos, precios o medidas y te ayudo de una vez.\nSi es urgente, WhatsApp: ${waLink} · Más información: ${COMPANY_WEBSITE}`,
       timestamp: new Date(),
     }]);
 
@@ -800,13 +824,14 @@ const ChatTab: React.FC<ChatTabProps> = ({ quickActions, initialMessage, emergen
       if (!noticeAlreadyShown) {
         staffNoticeShownRef.current = true;
         setMessages(prev => [...prev, {
-          id: `handoff-${Date.now()}`,
+          id: `handoff-notice-${Date.now()}`,
           role: 'model',
           text: language === 'en'
-            ? '🧑‍💼 An advisor from our team is handling this conversation — your message was recorded and they will reply right here. No need to send it again 🙂'
-            : '🧑‍💼 Un asesor del equipo ya está atendiendo esta conversación: tu mensaje quedó registrado y te responderá por aquí. No necesitas repetirlo 🙂',
+            ? `🧑‍💼 An advisor from our team is handling this conversation — your message was recorded and they will reply right here. No need to send it again 🙂 More info: ${COMPANY_WEBSITE}`
+            : `🧑‍💼 Un asesor del equipo ya está atendiendo esta conversación: tu mensaje quedó registrado y te responderá por aquí. No necesitas repetirlo 🙂 Más información: ${COMPANY_WEBSITE}`,
           timestamp: new Date(),
-          skipFirestore: true,
+          // 2026-10-15: SÍ se guarda — el cierre de la conversación y lo que el cliente vio deben
+          // quedar en el registro para la evaluación (antes se pintaba y no quedaba en ninguna parte).
         }]);
       } else {
         const nowMs = Date.now();
@@ -831,6 +856,36 @@ const ChatTab: React.FC<ChatTabProps> = ({ quickActions, initialMessage, emergen
         }
       }
       return;
+    }
+
+    // ── Despedida educada (política 2026-10-15, decisión del owner) ─────────────
+    // Si el cliente deja claro que no quiere nada más y el BOT es quien atiende (activo, sin
+    // asesor en camino ni en el chat), se despide con el sitio web de la compañía y la
+    // conversación se cierra con datos (closedBy + contador + resumen). Los mensajes quedan
+    // grabados por el efecto de guardado de siempre (sin skipFirestore).
+    if (sessionStatus === 'active') {
+      const closing = detectClosing(text);
+      if (closing.isClosing) {
+        const goodbye = language === 'en'
+          ? `My pleasure! I'm here whenever you need 🙌\nYou can see our full portfolio and reach the team here: ${COMPANY_WEBSITE} or on WhatsApp: ${COMPANY_WA}\nHave a great day! 👋`
+          : `¡Con mucho gusto! Quedo atento cuando necesites 🙌\nPuedes ver todo nuestro portafolio y contactar al equipo aquí: ${COMPANY_WEBSITE} o por WhatsApp: ${COMPANY_WA}\n¡Que tengas un excelente día! 👋`;
+        setMessages(prev => [...prev, {
+          id: `polite-exit-${Date.now()}`,
+          role: 'model',
+          text: goodbye,
+          timestamp: new Date(),
+        }]);
+        setIsLoading(false);
+        if (conversationId) {
+          updateSessionStatus(conversationId, 'completed', undefined, {
+            closedBy: 'bot_polite_exit',
+            closedPhrase: closing.phrase,
+          }).catch((e) => console.warn('polite exit close failed:', e));
+          bumpSessionCounter(conversationId, 'botClosed', 1).catch(() => {});
+          summarizeSessionNow(conversationId).catch(console.error);
+        }
+        return;
+      }
     }
 
     setIsLoading(true);

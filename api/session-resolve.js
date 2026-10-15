@@ -66,7 +66,7 @@ export default async function handler(req, res) {
     try {
       await addDoc(`conversations/${sessionId}/messages`, {
         role: 'model',
-        text: `Conversación cerrada por ${staffName}. Si necesitas algo más, escríbenos y seguimos con gusto.`,
+        text: `Conversación cerrada por ${staffName}. Si necesitas algo más, escríbenos y seguimos con gusto. Más información: https://www.unitecusadesign.com/`,
         timestamp: now,
         resolvedByStaff: true,
       });

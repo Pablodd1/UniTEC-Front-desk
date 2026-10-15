@@ -511,6 +511,11 @@ function parseFirestoreDoc(doc) {
         avgResponseTime: parseFloat(af.avgResponseTime?.doubleValue ?? af.avgResponseTime?.integerValue ?? '0'),
         escalationCount: parseInt(af.escalationCount?.integerValue ?? '0', 10),
         staffInteractions: parseInt(af.staffInteractions?.integerValue ?? '0', 10),
+        // Política 2026-10-15: cierres del bot, casos sin asesor y espera real del cliente.
+        botClosed: parseInt(af.botClosed?.integerValue ?? '0', 10),
+        unattendedClosures: parseInt(af.unattendedClosures?.integerValue ?? '0', 10),
+        slaBreaches: parseInt(af.slaBreaches?.integerValue ?? '0', 10),
+        staffWaitMs: parseInt(af.staffWaitMs?.integerValue ?? af.staffWaitMs?.doubleValue ?? '0', 10),
         productMentions: af.productMentions?.arrayValue?.values?.map(v => v.stringValue).filter(Boolean) || []
       };
     })()

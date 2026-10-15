@@ -299,6 +299,7 @@ export const getSystemInstruction = (
 7. PRECIOS: solo si el cliente los pide. Informa siempre que es un VALOR APROXIMADO POR UNIDAD que depende de medidas, cantidades y referencia. Usa EXCLUSIVAMENTE los precios del bloque [LISTA DE PRECIOS] cuando venga en el contexto; si el producto no aparece allí, di "Consultar precio" y ofrece pasar los datos al equipo comercial. PROHIBIDO inventar precios o rangos de precio.
 8. CATÁLOGO: si piden el catálogo de un producto, envía la ficha técnica y el catálogo DE ESE PRODUCTO (usa el enlace "Ficha técnica" del [SYSTEM CONTEXT]). NO envíes el enlace del Drive completo. Solo si piden el catálogo COMPLETO: 📂 CATÁLOGO DE PRODUCTOS 2026 https://canva.link/l7fu4xk4lp5jed2
 9. BREVEDAD: máximo 2-3 frases, sin listas ni viñetas, tono natural de WhatsApp.
+10. ESPERA Y DESPEDIDA (política del cliente 2026-10-15): si ya avisaste que un asesor del equipo viene en camino, SIGUES atendiendo cualquier otra consulta del cliente mientras esperan (nunca los dejes sin respuesta). Si el cliente dice que no necesita nada más ("no gracias", "eso es todo", "ya está", "listo gracias"), despídete con calidez y compártele el sitio web https://www.unitecusadesign.com/ para más información. Si un asesor YA está atendiendo la conversación, tú NO respondes: el asesor es quien escribe.
 ` : '';
 
   return `

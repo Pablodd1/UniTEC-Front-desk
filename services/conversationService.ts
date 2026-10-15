@@ -305,7 +305,10 @@ export const addMessage = async (
 export const updateSessionStatus = async (
   sessionId: string,
   status: ConversationSession['status'],
-  assignedTo?: string
+  assignedTo?: string,
+  // Campos extra del cierre (p.ej. closedBy:'bot_polite_exit'). Se escriben en el mismo update
+  // para que "quién cerró y por qué" quede guardado junto al estado (política 2026-10-15).
+  extra?: Record<string, unknown>
 ): Promise<void> => {
   if (getPrivacyMode()) {
     logPrivacy('updateSessionStatus');
@@ -316,6 +319,7 @@ export const updateSessionStatus = async (
   const update: any = {
     status,
     lastUpdated: now,
+    ...(extra || {}),
   };
   if (assignedTo) {
     update.assignedTo = assignedTo;
@@ -787,6 +791,32 @@ export const bumpSessionCounter = async (sessionId: string, field: string, by = 
     await updateDoc(doc(db, COLLECTIONS.sessions, sessionId), { [`analytics.${field}`]: increment(by) });
   } catch (e) {
     console.warn('Failed to bump session counter:', e);
+  }
+};
+
+/**
+ * Espera real del cliente hasta la PRIMERA respuesta de un asesor (política 2026-10-15):
+ * guarda `firstStaffReplyAt` + `analytics.staffWaitMs` UNA sola vez por sesión. Se llama desde
+ * el panel cuando el asesor envía su primer mensaje — así "cuánto esperó el cliente" deja de
+ * ser una suposición y aparece en el informe.
+ */
+export const markFirstStaffReply = async (sessionId: string, waitingSinceIso?: string): Promise<void> => {
+  if (getPrivacyMode()) return;
+  try {
+    const sessionRef = doc(db, COLLECTIONS.sessions, sessionId);
+    const snap = await getDoc(sessionRef);
+    const data: any = snap.exists() ? snap.data() : {};
+    if (data.firstStaffReplyAt) return; // ya registrado: no se reescribe
+    const since = waitingSinceIso || data.claimedAt || data.lastEscalationAt || data.humanRequestedAt;
+    if (!since) return;
+    const waitMs = Date.now() - new Date(since).getTime();
+    if (!Number.isFinite(waitMs) || waitMs < 0) return;
+    await updateDoc(sessionRef, {
+      firstStaffReplyAt: new Date().toISOString(),
+      'analytics.staffWaitMs': Math.round(waitMs),
+    });
+  } catch (e) {
+    console.warn('markFirstStaffReply failed:', e);
   }
 };
 
