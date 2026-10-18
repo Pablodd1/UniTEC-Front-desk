@@ -98,10 +98,12 @@ export async function connectGrokVoice(
   if (tokenData.training) {
     instructions += `\n\n[CUSTOM MODEL TRAINING - FOLLOW THESE PAUTAS/RESPONSE GUIDELINES EXACTLY]:\n${tokenData.training}`;
   }
-  instructions += '\n\n# VOZ (Grok Voice)\n- Habla con acento colombiano neutro, cálido y profesional.' +
+  instructions += '\n\n# VOZ (Grok Voice)\n- Habla con acento colombiano neutro, cálido y profesional. Tuteo cordial.' +
+    '\n- NUNCA uses apelativos íntimos ni diminutivos: prohibido "mi amor", "corazón", "cariño", "mi rey", "bebé".' +
     '\n- Empieza saludando en UNA frase y luego espera: "¡Hola! Bienvenido a UNITEC USA DESIGN, ¿en qué te ayudo?"' +
-    '\n- Cada turno: 1-2 frases cortas, máximo 20 palabras, sin URLs ni listas.' +
-    '\n- Si el cliente pide un asesor o una cotización formal, dile que ya avisaste al equipo y que le escribirán por aquí.';
+    '\n- Cada turno: 1-2 frases cortas, máximo 20 palabras, sin URLs ni listas. Estás HABLANDO, no escribiendo: nada de párrafos.' +
+    '\n- SHOWROOM/UBICACIÓN: di SOLO "Tenemos showroom en Miami, en 6100 NW 74th Ave, y la atención es con cita previa" y ofrece enviarle la dirección y los detalles por WhatsApp. NUNCA leas el párrafo completo del training en voz alta.' +
+    '\n- ASESOR/COTIZACIÓN: di "Ya avisé a un asesor del equipo, te escribirá por aquí en breve" y pide nombre y número solo si todavía no los tienes.';
 
   // ── 4. Socket ─────────────────────────────────────────────────────────────
   const ws = new WebSocket(WS_URL, [`xai-client-secret.${tokenData.token}`]);
