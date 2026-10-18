@@ -20,7 +20,7 @@ import { triggerEscalation } from './notificationService';
 
 const WS_URL = 'wss://api.x.ai/v1/realtime?model=grok-voice-latest';
 const SAMPLE_RATE = 24000;
-const VOICE = 'eve';
+const VOICE = 'celeste'; // voz de soporte, cálida y profesional; 'eve' es acento británico (no sirve para es-CO)
 // xAI no lista es-CO: se usa es-MX como variante regional y el acento colombiano se pide por prompt.
 const LANG_HINT = 'es-MX';
 
@@ -98,7 +98,9 @@ export async function connectGrokVoice(
   if (tokenData.training) {
     instructions += `\n\n[CUSTOM MODEL TRAINING - FOLLOW THESE PAUTAS/RESPONSE GUIDELINES EXACTLY]:\n${tokenData.training}`;
   }
-  instructions += '\n\n# VOZ (Grok Voice)\n- Habla con acento colombiano neutro, cálido y profesional. Tuteo cordial.' +
+  instructions += '\n\n# VOZ (Grok Voice)' +
+    '\n- REGLA DE PRECEDENCIA: si el [CUSTOM MODEL TRAINING] pide enviar un texto "sin cambiar la redacción", eso aplica al chat ESCRITO. En VOZ se resume: lee solo lo esencial y ofrece el resto por WhatsApp.' +
+    '\n- Habla con acento colombiano neutro, cálido y profesional. Tuteo cordial.' +
     '\n- NUNCA uses apelativos íntimos ni diminutivos: prohibido "mi amor", "corazón", "cariño", "mi rey", "bebé".' +
     '\n- Empieza saludando en UNA frase y luego espera: "¡Hola! Bienvenido a UNITEC USA DESIGN, ¿en qué te ayudo?"' +
     '\n- Cada turno: 1-2 frases cortas, máximo 20 palabras, sin URLs ni listas. Estás HABLANDO, no escribiendo: nada de párrafos.' +

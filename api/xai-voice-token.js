@@ -79,7 +79,7 @@ export default async function handler(req, res) {
       expires_at: data.expires_at || null,
       model,
       effort,
-      voice: 'eve',
+      voice: 'celeste',
       ttl: TOKEN_TTL_SECONDS,
       training,
     });
