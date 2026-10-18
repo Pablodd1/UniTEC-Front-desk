@@ -2,6 +2,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Mic, Phone, Loader2, CheckCircle2, Download, Headphones } from 'lucide-react';
 import { connectLiveSession } from '../services/geminiService';
+import { connectGrokVoice } from '../services/grokVoiceService';
 import { saveChatSession } from '../services/firestoreService';
 import { summarizeSessionNow } from '../services/retentionService';
 import { Language, VoiceName, VoiceProvider, CallRecording } from '../types';
@@ -114,53 +115,65 @@ const CallTab: React.FC<CallTabProps> = ({ emergencyMode, language, voiceName, c
       console.warn('Failed to create conversation for call:', e);
     }
 
+    // Callbacks compartidos: los usan IGUAL el motor Grok Voice y el motor anterior.
+    const voiceCallbacks = {
+        onOpen: () => {
+            setStatus('connected');
+        },
+        onStatusChange: (newStatus: any) => {
+            setStatus(newStatus);
+        },
+        onMessage: (text: string | null, _audio?: any, _isTakeover?: boolean, role?: 'user' | 'model') => {
+            if (text) {
+                setTranscript(prev => {
+                    const last = prev[prev.length - 1];
+                    const r = role || 'model';
+                    // El turno del CLIENTE se muestra como suyo (antes se pintaba como si lo
+                    // hubiera dicho el bot, y parecía que la llamada no reconocía nada).
+                    if (last && last.role === r && last.text === text) return prev;
+                    return [...prev, { role: r, text }];
+                });
+            }
+        },
+        onAudioData: () => {},
+        onToolCall: () => {},
+        onToolSuccess: (name: string, res: any) => {
+            if (name === 'book_appointment') {
+                setConfirmedDate(res.date || null);
+                setShowBookingConfirmation(true);
+            } else if (name === 'send_email') {
+                setEmailSentTo(res.customerEmail || null);
+                setShowEmailConfirmation(true);
+            } else if (name === 'email_conversation_to_admin') {
+                setEmailSentTo('Administrator');
+                setShowEmailConfirmation(true);
+            }
+        },
+        onError: (err: any) => {
+            const isLocalKeyUsed = typeof window !== 'undefined' && !!window.localStorage.getItem('unitec_gemini_api_key');
+            const errMsg = err?.message || String(err);
+            let msg = language === 'en' ? `Connection failed (${errMsg}).` : `Fallo de conexión (${errMsg}).`;
+            if (isLocalKeyUsed) {
+                msg += language === 'en' ? " (Using local Admin key override)" : " (Usando clave local de Administrador)";
+            }
+            setErrorMessage(msg);
+            setStatus('error');
+        },
+        onClose: () => setStatus('idle')
+    };
+
     try {
-        const session = await connectLiveSession({
-            onOpen: () => {
-                setStatus('connected');
-            },
-            onStatusChange: (newStatus: any) => {
-                setStatus(newStatus);
-            },
-            onMessage: (text: string | null, _audio?: any, _isTakeover?: boolean, role?: 'user' | 'model') => {
-                if (text) {
-                    setTranscript(prev => {
-                        const last = prev[prev.length - 1];
-                        const r = role || 'model';
-                        // El turno del CLIENTE se muestra como suyo (antes se pintaba como si lo
-                        // hubiera dicho el bot, y parecía que la llamada no reconocía nada).
-                        if (last && last.role === r && last.text === text) return prev;
-                        return [...prev, { role: r, text }];
-                    });
-                }
-            },
-            onAudioData: () => {},
-            onToolCall: () => {},
-            onToolSuccess: (name: string, res: any) => {
-                if (name === 'book_appointment') {
-                    setConfirmedDate(res.date || null);
-                    setShowBookingConfirmation(true);
-                } else if (name === 'send_email') {
-                    setEmailSentTo(res.customerEmail || null);
-                    setShowEmailConfirmation(true);
-                } else if (name === 'email_conversation_to_admin') {
-                    setEmailSentTo('Administrator');
-                    setShowEmailConfirmation(true);
-                }
-            },
-                        onError: (err: any) => {
-                const isLocalKeyUsed = typeof window !== 'undefined' && !!window.localStorage.getItem('unitec_gemini_api_key');
-                const errMsg = err?.message || String(err);
-                let msg = language === 'en' ? `Connection failed (${errMsg}).` : `Fallo de conexión (${errMsg}).`;
-                if (isLocalKeyUsed) {
-                    msg += language === 'en' ? " (Using local Admin key override)" : " (Usando clave local de Administrador)";
-                }
-                setErrorMessage(msg);
-                setStatus('error');
-            },
-            onClose: () => setStatus('idle')
-        }, emergencyMode, language, voiceName, customGreeting, brandId, callSessionId);
-        
+        // ── Motor 1: Grok Voice 3.0 (speech-to-speech, <1 s de latencia) ────────
+        // Si el token efímero o el WebSocket fallan, se cae al motor anterior sin cortar la llamada.
+        let session: any = null;
+        try {
+            session = await connectGrokVoice(voiceCallbacks, language, brandId, callSessionId, customGreeting);
+            console.log('[voice] motor: Grok Voice 3.0');
+        } catch (grokErr: any) {
+            console.warn('[voice] Grok Voice no disponible → motor Deepgram/Web Speech:', grokErr?.message || grokErr);
+            session = await connectLiveSession(voiceCallbacks, emergencyMode, language, voiceName, customGreeting, brandId, callSessionId);
+        }
+
         if (session) {
             sessionControllerRef.current = session;
         }
