@@ -63,6 +63,16 @@ export const resetChatSession = () => {
 };
 
 import { speakTextWithDeepgram, transcribeAudioWithDeepgram } from './deepgramService';
+import { triggerEscalation } from './notificationService';
+import { updateSessionStatus } from './conversationService';
+
+// Espejo de api/turn-text.js (STAFF_WORDS + QUOTE_WORDS) para la llamada de voz — MANTENER EN SYNC.
+// En texto, pedir un asesor avisa al equipo; antes la voz NO lo hacía (paridad 2026-10-18).
+const VOICE_ESCALATION_WORDS = ['asesor', 'humano', 'human', 'agente', 'agent', 'staff', 'llamar',
+  'call me', 'speak to someone', 'talk to someone', 'hablar con alguien', 'hablar con una persona',
+  'persona real', 'ejecutivo', 'vendedor', 'representante', 'comunicame', 'comunícame',
+  'me contacte', 'me contacten', 'que me llame', 'que me llames',
+  'urgente', 'urgencia', 'emergencia', 'cotiz', 'presupuesto', 'quote', 'budget'];
 
 // ─── TTS ────────────────────────────────────────────────────────────────────
 export async function playGeminiTTS(text: string, voiceName: string = 'Kore') {
@@ -235,9 +245,11 @@ export const connectLiveSession = async (
   language: any = 'es',
   voiceName: string = 'Kore',
   customGreeting?: string,
-  brandId: any = 'building'
+  brandId: any = 'building',
+  sessionId: string = ''
 ) => {
   let isRecording = true;
+  let voiceEscalated = false;
   let recognition: any = null;
   let voiceState: 'idle' | 'listening' | 'processing' | 'speaking' | 'stopped' = 'idle';
   const messageHistory: any[] = []; // Conversation context for AI calls
@@ -297,11 +309,42 @@ export const connectLiveSession = async (
     }
 
     callbacks.onMessage(transcript, null, false, 'user');
+
+    // ── Paridad con el chat de texto: pedir un asesor/cotización despierta al equipo ──
+    // (una vez por llamada; mismo detector que api/turn-text.js).
+    if (!voiceEscalated && sessionId) {
+      const low = transcript.toLowerCase();
+      if (VOICE_ESCALATION_WORDS.some((kw) => low.includes(kw))) {
+        voiceEscalated = true;
+        const isQuote = /cotiz|presupuesto|quote|budget/.test(low);
+        triggerEscalation({
+          type: isQuote ? 'quote' : 'staff',
+          priority: 'high',
+          message: transcript,
+          brand: brandId || 'unitec',
+          sessionId,
+          transcript: messageHistory.slice(-6),
+          pageUrl: typeof window !== 'undefined' ? window.location.href : '',
+          waitingSince: new Date().toISOString(),
+        }).catch(console.error);
+        updateSessionStatus(sessionId, 'human_requested', undefined, {
+          escalationType: isQuote ? 'quote' : 'staff',
+        }).catch(() => {});
+        callbacks.onMessage(
+          language === 'en'
+            ? '✅ I let our team know — an advisor will write to you shortly.'
+            : '✅ Ya avisé a un asesor del equipo: te escribirá por aquí en breve.',
+          null, false, 'model'
+        );
+      }
+    }
+
     messageHistory.push({ role: 'user', parts: [{ text: transcript }] });
 
-    // ponytail: keep only last 4 turns to prevent context bloat in voice mode
-    if (messageHistory.length > 8) {
-      messageHistory.splice(0, messageHistory.length - 8);
+    // ponytail: mismo criterio que el chat — el servidor recorta el historial; la voz ya no
+    // olvida a los 4 turnos (antes 8 entradas), así que puede hilar una conversación larga.
+    if (messageHistory.length > 24) {
+      messageHistory.splice(0, messageHistory.length - 24);
     }
 
     try {

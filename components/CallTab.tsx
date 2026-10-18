@@ -103,10 +103,16 @@ const CallTab: React.FC<CallTabProps> = ({ emergencyMode, language, voiceName, c
 
     setStatus('connecting');
     
-    // ===== NEW: Initialize conversation session for this call =====
-    createConversation(brandId || 'unitec', language, 'phone')
-      .then(convId => setConversationId(convId))
-      .catch(e => console.warn('Failed to create conversation for call:', e));
+    // ===== Sesión de la llamada: se crea ANTES de conectar para poder grabarla y escalarla =====
+    // (antes se creaba en paralelo y el módulo de voz no tenía sessionId: los turnos de voz no
+    // podían avisar al equipo igual que el chat de texto).
+    let callSessionId = '';
+    try {
+      callSessionId = await createConversation(brandId || 'unitec', language, 'phone');
+      setConversationId(callSessionId);
+    } catch (e) {
+      console.warn('Failed to create conversation for call:', e);
+    }
 
     try {
         const session = await connectLiveSession({
@@ -153,7 +159,7 @@ const CallTab: React.FC<CallTabProps> = ({ emergencyMode, language, voiceName, c
                 setStatus('error');
             },
             onClose: () => setStatus('idle')
-        }, emergencyMode, language, voiceName, customGreeting, brandId);
+        }, emergencyMode, language, voiceName, customGreeting, brandId, callSessionId);
         
         if (session) {
             sessionControllerRef.current = session;
