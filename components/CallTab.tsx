@@ -116,12 +116,15 @@ const CallTab: React.FC<CallTabProps> = ({ emergencyMode, language, voiceName, c
             onStatusChange: (newStatus: any) => {
                 setStatus(newStatus);
             },
-            onMessage: (text: string | null) => {
+            onMessage: (text: string | null, _audio?: any, _isTakeover?: boolean, role?: 'user' | 'model') => {
                 if (text) {
                     setTranscript(prev => {
                         const last = prev[prev.length - 1];
-                        if (last && last.role === 'model' && last.text === text) return prev;
-                        return [...prev, { role: 'model', text }];
+                        const r = role || 'model';
+                        // El turno del CLIENTE se muestra como suyo (antes se pintaba como si lo
+                        // hubiera dicho el bot, y parecía que la llamada no reconocía nada).
+                        if (last && last.role === r && last.text === text) return prev;
+                        return [...prev, { role: r, text }];
                     });
                 }
             },

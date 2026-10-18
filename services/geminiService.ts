@@ -62,7 +62,7 @@ export const resetChatSession = () => {
   }
 };
 
-import { speakTextWithDeepgram } from './deepgramService';
+import { speakTextWithDeepgram, transcribeAudioWithDeepgram } from './deepgramService';
 
 // ─── TTS ────────────────────────────────────────────────────────────────────
 export async function playGeminiTTS(text: string, voiceName: string = 'Kore') {
@@ -280,6 +280,179 @@ export const connectLiveSession = async (
 
   setTimeout(() => callbacks.onOpen(), 100);
 
+  // ── Pipeline único del turno de voz (lo usan los DOS motores de STT) ─────────
+  // 2026-10-18: antes este bloque vivía dentro de recognition.onresult, así que la voz sólo
+  // existía si el navegador tiene Web Speech (Chrome/Edge). En Safari/iOS, Firefox o cuando el
+  // servicio de voz de Chrome falla, la llamada moría. Ahora ambos motores llaman aquí, y el
+  // texto del cliente también se reporta con rol 'user' (antes se pintaba como si fuera del bot).
+  const runVoiceTurn = async (transcript: string) => {
+    if (!transcript) return;
+
+    if (voiceTakeoverReason) {
+      // Mismo contrato que el chat de texto: se registra el turno, pero contesta el humano.
+      callbacks.onMessage(voiceTakeoverReason, null, true, 'model');
+      setState('idle');
+      resumeListening();
+      return;
+    }
+
+    callbacks.onMessage(transcript, null, false, 'user');
+    messageHistory.push({ role: 'user', parts: [{ text: transcript }] });
+
+    // ponytail: keep only last 4 turns to prevent context bloat in voice mode
+    if (messageHistory.length > 8) {
+      messageHistory.splice(0, messageHistory.length - 8);
+    }
+
+    try {
+      const aiStream = sendMessageToGemini(transcript, messageHistory, false, language, undefined, customGreeting, brandId, true);
+      let fullResponse = '';
+      for await (const chunk of aiStream) {
+        const chunkText = typeof chunk === 'string' ? chunk : ((chunk as any)?.text || '');
+        fullResponse += chunkText;
+      }
+
+      if (!fullResponse) fullResponse = language === 'en' ? 'I apologize, could you repeat that?' : 'Disculpa, ¿podrías repetirlo?';
+
+      callbacks.onMessage(fullResponse, null, false, 'model');
+      messageHistory.push({ role: 'model', parts: [{ text: fullResponse }] });
+
+      // TTS phase — no hay micrófono escuchando, no hay riesgo de eco
+      setState('speaking');
+      const ttsModel = language === 'en' ? 'aura-asteria-en' : 'aura-2-celeste-es';
+      await speakTextWithDeepgram(fullResponse, ttsModel, language);
+
+      if (isRecording && voiceState !== 'stopped') {
+        setState('idle');
+        resumeListening();
+      }
+    } catch (err: any) {
+      console.error('Voice processing error:', err);
+      callbacks.onError(err);
+      if (isRecording && voiceState !== 'stopped') {
+        setState('idle');
+        setTimeout(() => resumeListening(), 1000);
+      }
+    }
+  };
+
+  // Qué reanuda la escucha según el motor activo (Web Speech o MediaRecorder+Deepgram).
+  let resumeListening: () => void = () => {};
+  let serverSttActive = false;
+  let serverStream: MediaStream | null = null;
+
+  // ── Motor 2: MediaRecorder + /api/deepgram-stt ────────────────────────────────
+  // Se usa cuando el navegador NO tiene Web Speech (Safari/iOS/Firefox) o cuando el servicio
+  // de voz de Chrome falla (network / language-not-supported / service-not-allowed). VAD por RMS:
+  // empieza a grabar cuando hay voz y corta tras ~1,1 s de silencio (máx 12 s por turno).
+  const startServerSttLoop = async () => {
+    if (serverSttActive) return;
+    serverSttActive = true;
+    try {
+      const stream = await navigator.mediaDevices.getUserMedia({
+        audio: { echoCancellation: true, noiseSuppression: true },
+      });
+      serverStream = stream;
+      const MR: any = (window as any).MediaRecorder;
+      if (!MR) throw new Error('MediaRecorder no disponible en este navegador');
+      const mime = ['audio/webm;codecs=opus', 'audio/webm', 'audio/mp4', 'audio/ogg']
+        .find((m) => (MR.isTypeSupported ? MR.isTypeSupported(m) : false)) || '';
+      const Ctx: any = (window as any).AudioContext || (window as any).webkitAudioContext;
+      const audioCtx = new Ctx();
+      const analyser = audioCtx.createAnalyser();
+      analyser.fftSize = 1024;
+      audioCtx.createMediaStreamSource(stream).connect(analyser);
+      const buf = new Float32Array(analyser.fftSize);
+
+      let recorder: any = null;
+      let chunks: Blob[] = [];
+      let talking = false;
+      let silenceSince = 0;
+      let recordStart = 0;
+      const RMS_THRESHOLD = 0.02;
+      const SILENCE_MS = 1100;
+      const MAX_MS = 12000;
+
+      const stopRec = () => {
+        try { if (recorder && recorder.state !== 'inactive') recorder.stop(); } catch (_) {}
+      };
+
+      const startRec = () => {
+        if (!isRecording || voiceState === 'stopped') return;
+        chunks = [];
+        try { recorder = new MR(stream, mime ? { mimeType: mime } : undefined); } catch (_) { return; }
+        recorder.ondataavailable = (e: any) => { if (e.data && e.data.size) chunks.push(e.data); };
+        recorder.onstop = async () => {
+          const blob = new Blob(chunks, { type: mime || 'audio/webm' });
+          talking = false;
+          if (!blob.size || blob.size < 800) { setState('listening'); return; }
+          setState('processing');
+          const text = await transcribeAudioWithDeepgram(blob, language);
+          if (text && text.trim().length > 1) {
+            await runVoiceTurn(text.trim());
+          } else {
+            setState('listening');
+          }
+        };
+        recorder.start();
+        recordStart = Date.now();
+        talking = true;
+        setState('listening');
+      };
+
+      const tick = () => {
+        if (!isRecording || voiceState === 'stopped') return;
+        const busy = voiceState === 'speaking' || voiceState === 'processing';
+        if (busy) {
+          if (talking) stopRec(); // no grabar mientras el bot habla (eco)
+        } else {
+          analyser.getFloatTimeDomainData(buf);
+          let sum = 0;
+          for (let i = 0; i < buf.length; i++) sum += buf[i] * buf[i];
+          const rms = Math.sqrt(sum / buf.length);
+          if (rms > RMS_THRESHOLD) {
+            if (!talking) startRec();
+            silenceSince = 0;
+          } else if (talking) {
+            if (!silenceSince) silenceSince = Date.now();
+            if (Date.now() - silenceSince > SILENCE_MS || Date.now() - recordStart > MAX_MS) stopRec();
+          }
+        }
+        requestAnimationFrame(tick);
+      };
+
+      resumeListening = () => {
+        if (isRecording && voiceState !== 'stopped' && !talking) setState('listening');
+      };
+      setState('listening');
+      tick();
+    } catch (e: any) {
+      callbacks.onError(new Error(
+        language === 'en'
+          ? `Microphone unavailable for the voice call (${e?.message || e}).`
+          : `No se pudo acceder al micrófono para la llamada de voz (${e?.message || e}).`
+      ));
+    }
+  };
+
+  // Saludo hablado (común a los dos motores): se dice una vez y luego se empieza a escuchar.
+  const speakGreeting = () => {
+    const greeting = customGreeting || (language === 'en'
+      ? 'Hello! How can I help you today?'
+      : brandId === 'unitec' ? '¡Hola! Bienvenido a UNITEC USA DESIGN.' : '¡Hola! Bienvenido a Building Innovation.');
+    setTimeout(() => {
+      callbacks.onMessage(greeting, null, false, 'model');
+      messageHistory.push({ role: 'model', parts: [{ text: greeting }] });
+      setState('speaking');
+      const ttsModel = language === 'en' ? 'aura-asteria-en' : 'aura-2-celeste-es';
+      speakTextWithDeepgram(greeting, ttsModel, language).then(() => {
+        if (isRecording && voiceState !== 'stopped') { setState('idle'); resumeListening(); }
+      }).catch(() => {
+        if (isRecording && voiceState !== 'stopped') { setState('idle'); resumeListening(); }
+      });
+    }, 800);
+  };
+
   const hasWebSpeech = 'webkitSpeechRecognition' in window || 'SpeechRecognition' in window;
   const SpeechRecognitionCtor = (window as any).webkitSpeechRecognition || (window as any).SpeechRecognition;
 
@@ -289,10 +462,11 @@ export const connectLiveSession = async (
     recognition.interimResults = false; // Only final results to avoid partial triggers
     recognition.lang = language === 'en' ? 'en-US' : 'es-CO';
     recognition.maxAlternatives = 1;
+    // Motor activo = Web Speech; si falla de forma dura, resumeListening se reasigna al servidor.
+    resumeListening = () => safeStartRecognition();
 
     recognition.onstart = () => {
       setState('listening');
-      // Dummy audio data for visualizer
       const interval = setInterval(() => {
         if (!isRecording || voiceState !== 'listening') clearInterval(interval);
         if (callbacks.onAudioData) callbacks.onAudioData(new Uint8Array(64).fill(128));
@@ -310,65 +484,23 @@ export const connectLiveSession = async (
       // Stop listening while processing + speaking (prevents echo capture)
       stopRecognition();
       setState('processing');
-
-      if (voiceTakeoverReason) {
-        // Mismo contrato que el chat de texto: se registra el turno, pero contesta el humano.
-        callbacks.onMessage(voiceTakeoverReason, null, true);
-        setState('listening');
-        safeStartRecognition();
-        return;
-      }
-
-      callbacks.onMessage(transcript, null, false);
-      messageHistory.push({ role: 'user', parts: [{ text: transcript }] });
-      
-      // ponytail: keep only last 4 turns to prevent context bloat in voice mode
-      if (messageHistory.length > 8) {
-        messageHistory.splice(0, messageHistory.length - 8);
-      }
-
-      try {
-        const aiStream = sendMessageToGemini(transcript, messageHistory, false, language, undefined, customGreeting, brandId, true);
-        let fullResponse = '';
-        for await (const chunk of aiStream) {
-          const chunkText = typeof chunk === 'string' ? chunk : ((chunk as any)?.text || '');
-          fullResponse += chunkText;
-        }
-
-        if (!fullResponse) fullResponse = language === 'en' ? 'I apologize, could you repeat that?' : 'Disculpa, ¿podrías repetirlo?';
-
-        callbacks.onMessage(fullResponse, null, false);
-        messageHistory.push({ role: 'model', parts: [{ text: fullResponse }] });
-
-        // TTS phase — recognition is already stopped, no echo risk
-        setState('speaking');
-        const ttsModel = language === 'en' ? 'aura-asteria-en' : 'aura-2-celeste-es';
-
-        await speakTextWithDeepgram(fullResponse, ttsModel, language);
-
-        // TTS done — resume listening
-        if (isRecording && voiceState !== 'stopped') {
-          setState('idle');
-          safeStartRecognition();
-        }
-      } catch (err: any) {
-        console.error('Voice processing error:', err);
-        callbacks.onError(err);
-        // Self-heal: go back to listening
-        if (isRecording && voiceState !== 'stopped') {
-          setState('idle');
-          setTimeout(() => safeStartRecognition(), 1000);
-        }
-      }
+      // Un solo pipeline para los dos motores (ver runVoiceTurn arriba).
+      await runVoiceTurn(transcript);
     };
 
     recognition.onerror = (event: any) => {
       const errType = event?.error || '';
       console.warn('Speech recognition error:', errType);
 
-      if (errType === 'not-allowed' || errType === 'service-not-allowed') {
-        callbacks.onError(new Error('Microphone permission denied.'));
-        return; // Don't retry — permission issue
+      // Fallo DURO del servicio de voz del navegador (Chrome sin red hacia Google, idioma sin
+      // soporte, permiso denegado): no reintentar en bucle → cambiar al motor del servidor
+      // (MediaRecorder + Deepgram), que no depende del navegador.
+      if (['network', 'language-not-supported', 'service-not-allowed', 'not-allowed', 'audio-capture'].includes(errType)) {
+        console.warn('[voice] Web Speech no disponible (' + errType + ') → cambiando a Deepgram STT');
+        try { recognition.onend = null; } catch (_) {}
+        stopRecognition();
+        startServerSttLoop();
+        return;
       }
 
       // 'no-speech' is normal during silence — don't treat as error, just restart
@@ -395,33 +527,14 @@ export const connectLiveSession = async (
     };
 
     // Initial greeting
-    const greeting = customGreeting || (language === 'en'
-      ? 'Hello! How can I help you today?'
-      : brandId === 'unitec' ? '¡Hola! Bienvenido a UNITEC USA DESIGN.' : '¡Hola! Bienvenido a Building Innovation.');
-
-    setTimeout(() => {
-      callbacks.onMessage(greeting, null, false);
-      messageHistory.push({ role: 'model', parts: [{ text: greeting }] });
-
-      setState('speaking');
-      const ttsModel = language === 'en' ? 'aura-asteria-en' : 'aura-2-celeste-es';
-
-      speakTextWithDeepgram(greeting, ttsModel, language).then(() => {
-        if (isRecording && voiceState !== 'stopped') {
-          setState('idle');
-          safeStartRecognition();
-        }
-      }).catch(() => {
-        // TTS failed — still start listening
-        if (isRecording && voiceState !== 'stopped') {
-          setState('idle');
-          safeStartRecognition();
-        }
-      });
-    }, 800);
+    speakGreeting();
 
   } else {
-    setTimeout(() => callbacks.onError(new Error('Web Speech API not supported. Please use Chrome or Edge.')), 100);
+    // Sin Web Speech (Safari/iOS/Firefox, o WebView sin esa API): la llamada NO se cae;
+    // se usa el motor del servidor (MediaRecorder + Deepgram) — mismo pipeline, mismo TTS.
+    console.warn('[voice] Web Speech no disponible en este navegador → usando Deepgram STT');
+    startServerSttLoop();
+    speakGreeting();
   }
 
   return {
