@@ -26,6 +26,10 @@
       "schedule": "*/5 * * * *"
     },
     {
+      "path": "/api/chatbot-watch",
+      "schedule": "0 */2 * * *"
+    },
+    {
       "path": "/api/ga-visits",
       "schedule": "0 13 * * *"
     }

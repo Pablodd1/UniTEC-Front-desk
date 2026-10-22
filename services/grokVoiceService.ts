@@ -225,7 +225,7 @@ export async function connectGrokVoice(
     ws.send(JSON.stringify({
       type: 'session.update',
       session: {
-        voice: VOICE,
+        voice: tokenData.voice || VOICE,
         instructions,
         turn_detection: { type: 'server_vad', silence_duration_ms: 700, prefix_padding_ms: 300 },
         audio: {

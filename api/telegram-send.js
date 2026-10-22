@@ -108,3 +108,37 @@ export async function sendTelegramAlert(message) {
   const anySent = results.some((r) => r.ok);
   return { sent: anySent, results, error: anySent ? undefined : (results[0]?.error || 'Telegram send failed'), staffSent: sent };
 }
+
+/**
+ * Envía SOLO a los chat ids indicados (p. ej. el chat del dueño o de Nancy).
+ * Misma resolución de token que sendTelegramAlert: env primero, config/main después.
+ * No manda al chat del equipo ni a HERMES_*: el llamador decide el destinatario.
+ */
+export async function sendTelegramTo(chatIds, message) {
+  const targets = (Array.isArray(chatIds) ? chatIds : [chatIds]).map((c) => String(c || '').trim()).filter(Boolean);
+  if (!targets.length) return { sent: false, error: 'sin chat ids', results: [] };
+
+  let botToken = process.env.TELEGRAM_BOT_TOKEN || '';
+  const fields = await firestoreConfig();
+  if (fields.telegramBotToken?.stringValue) botToken = fields.telegramBotToken.stringValue;
+  const tokens = botToken.split(',').map((t) => t.trim()).filter(Boolean);
+  if (!tokens.length) return { sent: false, error: 'Telegram no configurado (bot token)', results: [] };
+
+  const results = [];
+  for (const chatId of targets) {
+    try {
+      const r = await fetch(`https://api.telegram.org/bot${tokens[0]}/sendMessage`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ chat_id: chatId, text: message, parse_mode: 'HTML', disable_web_page_preview: true }),
+        signal: AbortSignal.timeout(10000),
+      });
+      const data = await r.json().catch(() => ({}));
+      results.push({ chatId, ok: r.ok, messageId: data?.result?.message_id ?? null, error: r.ok ? undefined : (data.description || r.status) });
+    } catch (e) {
+      results.push({ chatId, ok: false, error: e.message });
+    }
+  }
+  const anyOk = results.some((r) => r.ok);
+  return { sent: anyOk, results, error: anyOk ? undefined : (results[0]?.error || 'sendMessage falló') };
+}

@@ -6,7 +6,7 @@ const require = createRequire(import.meta.url);
 const firebaseConfig = require('../firebase-applet-config.json');
 
 // Persistencia de escalaciones: una alerta que nadie puede ver es una alerta que no existió.
-import { addDoc, bumpCounter } from './_firestore-rest.js';
+import { addDoc, bumpCounter, getDoc, setDoc } from './_firestore-rest.js';
 // Link de un toque para el staff (firmado, atado a la sesión): sin esto la alerta cae en el muro de
 // login del panel y "no hay forma de entrar al chat".
 import { staffUrl } from './_staff-token.js';
@@ -359,6 +359,29 @@ async function recordEscalation(d, results, anySuccess) {
         : {}),
     });
   }
+  // Rollup legible para los monitores: `escalations` NO se puede leer con la identidad de la app
+  // (403 verificado), así que la salud de entrega se publica en config/main (legible, sin PII).
+  try {
+    const prev = await getDoc('config/main');
+    const prevHealth = prev?.fields?.escalationHealth || {};
+    const failStreak = anySuccess ? 0 : Number(prevHealth.failStreak || 0) + 1;
+    const firstFailure = channels.find((c) => !c.ok);
+    await setDoc('config/main', {
+      escalationHealth: {
+        at: stamp,
+        ok: !!anySuccess,
+        type: d.type || 'custom',
+        sessionId: String(d.sessionId || '').slice(0, 80),
+        delivered,
+        failed,
+        failStreak,
+        lastError: String(firstFailure?.error || '').slice(0, 200),
+      },
+    }, ['escalationHealth']);
+  } catch (err) {
+    console.error('[escalation] health rollup failed:', err?.message || err);
+  }
+
   return { auditId, counter, delivered, failed };
 }
 
