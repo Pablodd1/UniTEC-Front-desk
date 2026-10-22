@@ -35,6 +35,44 @@ export default async function handler(req, res) {
   const auth = authorized(req);
   if (!auth.ok) return res.status(auth.reason.startsWith('MC_EXPORT_TOKEN') ? 503 : 401).json({ ok: false, error: auth.reason });
 
+  // ?selftest=1 — diagnóstico de canales, protegido por el mismo token. Manda UN correo de prueba
+  // al ADMIN_EMAIL y NO toca teléfonos ni al grupo de asesores.
+  if (String(req.query?.selftest || '') === '1') {
+    const apiKey = process.env.RESEND_API_KEY || process.env.RESEND_KEY || process.env.VITE_RESEND_API_KEY || '';
+    const adminEmail = process.env.ADMIN_EMAIL || 'lidermarketingonline@espaciosimportados.com.co';
+    const out = {
+      ok: true,
+      telegramConfigured: !!(process.env.TELEGRAM_BOT_TOKEN || process.env.TELEGRAM_CHAT_ID),
+      resendConfigured: !!apiKey,
+      adminEmail,
+    };
+    if (!apiKey) {
+      out.ok = false;
+      out.email = { ok: false, error: 'RESEND_API_KEY no configurada' };
+      return res.status(200).json(out);
+    }
+    try {
+      const r = await fetch('https://api.resend.com/emails', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${apiKey}` },
+        body: JSON.stringify({
+          from: 'UniTEC AI Desk <onboarding@resend.dev>',
+          to: [adminEmail],
+          subject: '[PRUEBA] Canal de email del monitor UniTEC',
+          html: '<p>Prueba del canal de email del monitor. Si recibes esto, el canal funciona.</p>',
+        }),
+        signal: AbortSignal.timeout(12000),
+      });
+      const detail = await r.text().catch(() => '');
+      out.email = { ok: r.ok, status: r.status, detail: detail.slice(0, 300) };
+      out.ok = r.ok;
+    } catch (err) {
+      out.ok = false;
+      out.email = { ok: false, error: String(err?.message || err) };
+    }
+    return res.status(200).json(out);
+  }
+
   const windowHours = Number(req.query?.window) === 168 ? 168 : 24;
 
   try {
