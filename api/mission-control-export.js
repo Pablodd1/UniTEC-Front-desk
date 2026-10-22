@@ -27,6 +27,14 @@ function authorized(req) {
   return { ok: true };
 }
 
+/** Clave de Resend tolerante a basura de copy-paste (comillas, espacios, guiones largos U+2014). */
+function resendKey() {
+  const raw = String(process.env.RESEND_API_KEY || process.env.RESEND_KEY || process.env.VITE_RESEND_API_KEY || '')
+    .trim().replace(/^["']|["']$/g, '');
+  const m = raw.match(/re_[A-Za-z0-9_-]+/);
+  return m ? m[0] : raw.replace(/[^\x21-\x7E]/g, '');
+}
+
 export default async function handler(req, res) {
   res.setHeader('Cache-Control', 'no-store');
   if (req.method === 'OPTIONS') return res.status(200).end();
@@ -38,12 +46,14 @@ export default async function handler(req, res) {
   // ?selftest=1 — diagnóstico de canales, protegido por el mismo token. Manda UN correo de prueba
   // al ADMIN_EMAIL y NO toca teléfonos ni al grupo de asesores.
   if (String(req.query?.selftest || '') === '1') {
-    const apiKey = process.env.RESEND_API_KEY || process.env.RESEND_KEY || process.env.VITE_RESEND_API_KEY || '';
+    const apiKey = resendKey();
     const adminEmail = process.env.ADMIN_EMAIL || 'lidermarketingonline@espaciosimportados.com.co';
     const out = {
       ok: true,
       telegramConfigured: !!(process.env.TELEGRAM_BOT_TOKEN || process.env.TELEGRAM_CHAT_ID),
       resendConfigured: !!apiKey,
+      resendKeyLooksValid: /^re_[A-Za-z0-9_-]{16,}$/.test(apiKey),
+      resendKeyLength: apiKey.length,
       adminEmail,
     };
     if (!apiKey) {

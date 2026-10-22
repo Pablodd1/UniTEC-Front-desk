@@ -97,8 +97,16 @@ async function sendTelegram(message) {
 }
 
 // --- Channel: Email (Resend) ---
+/** Clave tolerante a basura de copy-paste: comillas, espacios o guiones largos (U+2014). */
+function resendKey() {
+  const raw = String(process.env.RESEND_API_KEY || process.env.RESEND_KEY || process.env.VITE_RESEND_API_KEY || '')
+    .trim().replace(/^["']|["']$/g, '');
+  const m = raw.match(/re_[A-Za-z0-9_-]+/);
+  return m ? m[0] : raw.replace(/[^\x21-\x7E]/g, '');
+}
+
 async function sendEmail(subject, html) {
-  const apiKey = process.env.RESEND_API_KEY || process.env.RESEND_KEY || process.env.VITE_RESEND_API_KEY || '';
+  const apiKey = resendKey();
   const adminEmail = process.env.ADMIN_EMAIL || 'lidermarketingonline@espaciosimportados.com.co';
   if (!apiKey) return { success: false, error: 'No Resend API key found in env' };
 
