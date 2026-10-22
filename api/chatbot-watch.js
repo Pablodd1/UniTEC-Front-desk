@@ -87,6 +87,8 @@ export function buildMessage(report) {
   if (eh && eh.at) {
     const failed = realFailed(eh);
     lines.push(`<b>Última alerta:</b> ${eh.ok ? 'entregada' : 'NO entregada'}${failed.length ? ` · sin canal: ${escapeHtml(failed.join(', '))}` : ''}${eh.failStreak ? ` · racha de fallos: ${eh.failStreak}` : ''}`);
+    const firstErr = failed.map((c) => eh.channelErrors?.[c]).find(Boolean);
+    if (firstErr) lines.push(`  motivo: ${escapeHtml(String(firstErr).slice(0, 110))}`);
   }
   const healthLine = health.status ? `Gemini ${health.status} (${health.latency || 0} ms)` : `Gemini sin datos`;
   const voiceLine = voice.ok ? 'voz OK' : `voz ${voice.status || 'sin respuesta'}`;
@@ -104,6 +106,8 @@ function pickAction(report) {
   if (report.escalations.undelivered > 0) return 'Hay solicitudes de asesor sin entregar: revisar Telegram/Twilio del equipo.';
   if (report.escalations.stuckRequested > 0) return 'Hay clientes esperando asesor: entrar al panel y tomar la conversación.';
   if (report.escalations.slaFailed > 0) return 'Fallaron re-alertas SLA: revisar /api/notify-escalation.';
+  const downChannels = realFailed(report.escalationHealth);
+  if (downChannels.length > 0) return `Canales caídos (${downChannels.join(', ')}): revisar credenciales de alertas en Vercel.`;
   if (!report.widget.ok) return 'El widget no carga en unitecusadesign.com: revisar el snippet embebido.';
   if (report.integrity.mismatches > 0 || report.integrity.unitMismatches > 0) return 'Precios inconsistentes entre catálogo y bot: definir fuente de verdad.';
   if (report.chat.p50 > 8000) return 'El chat está lento (>8 s): revisar carga del modelo.';

@@ -377,6 +377,9 @@ async function recordEscalation(d, results, anySuccess) {
         sessionId: String(d.sessionId || '').slice(0, 80),
         delivered,
         failed,
+        // Motivo por canal: sin esto, un fallo de SMS solo decía "failed" y había que adivinar.
+        channelErrors: Object.fromEntries(channels.filter((c) => !c.ok && !c.skipped)
+          .map((c) => [c.channel, String(c.error || '').slice(0, 120)])),
         failStreak,
         lastError: String(firstFailure?.error || '').slice(0, 200),
       },
