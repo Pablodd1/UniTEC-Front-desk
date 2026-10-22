@@ -147,7 +147,9 @@ export async function recordChatTurn({ sessionId, userText, replyText, brand = '
         id: { stringValue: `srv_b_${ts}` },
         role: { stringValue: 'model' },
         text: { stringValue: String(replyText).slice(0, 2000) },
-        timestamp: { stringValue: now },
+        // +1ms: user and bot docs land in the same batch with identical timestamps, so Firestore
+        // tie-breaks by document name and renders the reply ABOVE the question it answers.
+        timestamp: { stringValue: new Date(new Date(now).getTime() + 1).toISOString() },
         channel: { stringValue: channel },
       };
       if (Number.isFinite(latencyMs)) botFields.latencyMs = { integerValue: String(Math.round(latencyMs)) };
