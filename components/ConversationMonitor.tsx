@@ -104,6 +104,8 @@ const ConversationMonitor: React.FC<ConversationMonitorProps> = ({
   const [showSlaAlert, setShowSlaAlert] = useState(false);
   
   const messagesEndRef = useRef<HTMLDivElement>(null);
+  // Ref (not state) so the subscription effect does not depend on the message count.
+  const lastCountRef = useRef(0);
   const audioRef = useRef<HTMLAudioElement | null>(null);
   const timerInterval = useRef<NodeJS.Timeout | null>(null);
 
@@ -126,8 +128,10 @@ const ConversationMonitor: React.FC<ConversationMonitorProps> = ({
       if (!session) return;
       setSelectedSession(session);
       
-      // Check for new messages
-      if (session.analytics?.messageCount && session.analytics.messageCount > lastMessageCount) {
+      // Check for new messages. Using state here caused the effect below to tear down and
+      // recreate BOTH Firestore listeners on every message (connection churn / blank panel).
+      if (session.analytics?.messageCount && session.analytics.messageCount > lastCountRef.current) {
+        lastCountRef.current = session.analytics.messageCount;
         setLastMessageCount(session.analytics.messageCount);
         
         // Mark as unread if not currently selected
@@ -167,7 +171,7 @@ const ConversationMonitor: React.FC<ConversationMonitorProps> = ({
       unsubscribe();
       unsubMessages();
     };
-  }, [selectedSessionId, lastMessageCount, playSound]);
+  }, [selectedSessionId, playSound]);
 
   // Conversation timer
   useEffect(() => {
