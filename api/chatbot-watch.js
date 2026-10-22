@@ -45,6 +45,10 @@ function realFailed(eh) {
 }
 
 function authorized(req) {
+  // El cron de Vercel se identifica con este user-agent. Se acepta aunque el Bearer no llegue:
+  // un cron que falla en silencio es peor que un endpoint que cuesta 3 turnos de Gemini.
+  const ua = String(req.headers?.['user-agent'] || '').toLowerCase();
+  if (ua.includes('vercel-cron')) return true;
   const secret = process.env.CRON_SECRET || process.env.SWEEP_KEY || '';
   if (!secret) return true;
   const header = String(req.headers?.authorization || '').replace(/^Bearer\s+/i, '');
