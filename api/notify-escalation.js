@@ -304,10 +304,13 @@ async function recordEscalation(d, results, anySuccess) {
   const channels = Object.entries(results).map(([name, r]) => ({
     channel: name,
     ok: !!r?.success,
+    // Un canal "skipped" (p. ej. WhatsApp cuando el SMS ya salió) no es un fallo: no debe
+    // contar como caído ni empujar el monitor a amarillo.
+    skipped: !!r?.skipped,
     error: r?.error ? String(r.error).slice(0, 160) : '',
   }));
   const delivered = channels.filter((c) => c.ok).map((c) => c.channel);
-  const failed = channels.filter((c) => !c.ok).map((c) => c.channel);
+  const failed = channels.filter((c) => !c.ok && !c.skipped).map((c) => c.channel);
   const stamp = new Date().toISOString();
 
   let auditId = null;

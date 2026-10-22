@@ -35,6 +35,15 @@ const firebaseConfig = require_('../firebase-applet-config.json');
 const QUIET_FROM = 21; // Bogotá
 const QUIET_TO = 7;
 
+/**
+ * Canales realmente caídos. `twilioWhatsApp` aparece como no-ok cuando el SMS ya salió
+ * (se omite a propósito); contarlo como fallo marcaba amarillo para siempre.
+ */
+function realFailed(eh) {
+  const delivered = Array.isArray(eh?.delivered) ? eh.delivered : [];
+  return (Array.isArray(eh?.failed) ? eh.failed : []).filter((c) => c && !(c === 'twilioWhatsApp' && delivered.includes('twilioSms')));
+}
+
 function authorized(req) {
   const secret = process.env.CRON_SECRET || process.env.SWEEP_KEY || '';
   if (!secret) return true;
@@ -73,6 +82,11 @@ export function buildMessage(report) {
   lines.push(`<b>Asesores (2 h):</b> ${escalations.requested} solicitados · ${escalations.attended} atendidos (${escalations.attendanceRate}%) · ${escalations.stuckRequested} esperando`);
   if (escalations.undelivered || escalations.slaFailed) {
     lines.push(`  ⚠️ ${escalations.undelivered} sin entregar · ${escalations.slaFailed} re-alertas fallidas`);
+  }
+  const eh = report.escalationHealth;
+  if (eh && eh.at) {
+    const failed = realFailed(eh);
+    lines.push(`<b>Última alerta:</b> ${eh.ok ? 'entregada' : 'NO entregada'}${failed.length ? ` · sin canal: ${escapeHtml(failed.join(', '))}` : ''}${eh.failStreak ? ` · racha de fallos: ${eh.failStreak}` : ''}`);
   }
   const healthLine = health.status ? `Gemini ${health.status} (${health.latency || 0} ms)` : `Gemini sin datos`;
   const voiceLine = voice.ok ? 'voz OK' : `voz ${voice.status || 'sin respuesta'}`;
@@ -166,17 +180,22 @@ export default async function handler(req, res) {
   if (escHealth.ok) report.escalationHealth = escHealth.value;
 
   // ── Severidad ─────────────────────────────────────────────────────────────
+  const eh = report.escalationHealth;
+  const failedChannels = realFailed(eh);
   const red = report.chat.passed < report.chat.total
     || report.escalations.undelivered > 0
     || report.escalations.stuckRequested > 0
     || report.escalations.slaFailed > 0
-    || !report.widget.ok;
+    || !report.widget.ok
+    || eh?.ok === false
+    || Number(eh?.failStreak || 0) > 0;
   const yellow = report.integrity.mismatches > 0
     || report.integrity.unitMismatches > 0
     || report.escalations.staffNoShow > 0
     || report.chat.p50 > 8000
     || (report.health.status && report.health.status !== 'up')
-    || !report.voice.ok;
+    || !report.voice.ok
+    || failedChannels.length >= 2; // un solo canal caído se informa; dos o más es degradación real
   report.status = red ? 'red' : yellow ? 'yellow' : 'green';
   report.action = pickAction(report);
 
