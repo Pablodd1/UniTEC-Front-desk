@@ -50,6 +50,7 @@ export interface Message {
   role: 'user' | 'model';
   text: string;
   timestamp: Date;
+  skipFirestore?: boolean;
 }
 
 export enum Tab {
@@ -175,7 +176,12 @@ export interface ConversationSession {
   customerName?: string;
   customerEmail?: string;
   customerPhone?: string;
-  status: 'active' | 'human_requested' | 'human_assigned' | 'completed' | 'abandoned' | 'abandoned_at_greeting';
+  // 'resolved' = el asesor cerró la conversación (estado terminal). Sale de la cola de alertas; si el
+  // cliente vuelve a escribir, el servicio la reactiva a 'active' igual que hace con 'completed'.
+  status: 'active' | 'human_requested' | 'human_assigned' | 'resolved' | 'completed' | 'abandoned' | 'abandoned_at_greeting';
+  resolvedAt?: string;
+  resolvedBy?: string;
+  resolution?: string;
   brandId: 'unitec' | 'building';
   language: 'en' | 'es';
   messages?: ConversationMessage[];
@@ -188,7 +194,7 @@ export interface ConversationSession {
   sentimentScore?: number;
   topics: string[];
   duration?: number;
-  source: 'web' | 'phone' | 'whatsapp';
+  source: 'web' | 'website' | 'phone' | 'whatsapp';
   userAgent?: string;
   ipAddress?: string;
   referrer?: string;

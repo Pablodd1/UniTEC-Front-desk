@@ -1,5 +1,5 @@
 ﻿import React, { useState, useEffect } from 'react';
-import { Phone, Headphones, AlertTriangle, CheckCircle, Clock } from 'lucide-react';
+import { Phone, Headphones, AlertTriangle, CheckCircle, Clock, Eye } from 'lucide-react';
 import { 
   ConversationSession, 
   InterventionRequest, 
@@ -150,6 +150,11 @@ const StaffIntervention: React.FC<StaffInterventionProps> = ({ sessions, onCallC
                       <div>
                         <p className="font-semibold text-slate-800 text-sm">
                           {session?.customerName || session?.extractedData?.name || 'Anonymous Customer'}
+                          {(session?.customerPhone || session?.extractedData?.phone) && (
+                            <span className="ml-2 font-normal text-slate-400">
+                              {session?.customerPhone || session?.extractedData?.phone}
+                            </span>
+                          )}
                         </p>
                         <p className="text-xs text-slate-400">
                           Session: {intervention.sessionId.substring(0, 20)}...
@@ -163,7 +168,23 @@ const StaffIntervention: React.FC<StaffInterventionProps> = ({ sessions, onCallC
 
                   <div className="bg-slate-50 p-3 rounded-lg mb-3">
                     <p className="text-sm text-slate-700">{intervention.reason}</p>
+                    {session?.lastMessage && (
+                      <p className="text-xs text-slate-500 mt-2 line-clamp-2">
+                        <span className="font-medium">Último mensaje:</span> {session.lastMessage}
+                      </p>
+                    )}
                   </div>
+
+                  {/* Entrada real al chat: "tomé la conversación y no me salía nada" — la BANDEJA no
+                      mostraba el historial ni dejaba responder. Este enlace abre la sesión en MONITOR. */}
+                  <a
+                    href={`${typeof window !== 'undefined' ? window.location.origin : ''}/?admin=true&session=${encodeURIComponent(intervention.sessionId)}`}
+                    target="_blank"
+                    rel="noreferrer"
+                    className="flex items-center justify-center gap-1 w-full mb-3 px-3 py-2 rounded-lg border border-slate-200 text-slate-600 text-sm font-medium hover:bg-slate-50"
+                  >
+                    <Eye size={14} /> Abrir conversación
+                  </a>
 
                   <div className="flex items-center justify-between text-xs text-slate-400 mb-3">
                     <span className="flex items-center gap-1">

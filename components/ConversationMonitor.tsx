@@ -7,7 +7,7 @@ import {
   ArrowUpRight, Eye, UserCheck, Timer, 
   Check
 } from 'lucide-react';
-import { ConversationSession, subscribeToConversation, subscribeToMessages, ConversationMessage, addMessage, updateSessionStatus, addConversationTag, addConversationNote } from '../services/conversationService';
+import { ConversationSession, subscribeToConversation, subscribeToMessages, ConversationMessage, addMessage, updateSessionStatus, addConversationTag, addConversationNote, bumpSessionCounter, markFirstStaffReply } from '../services/conversationService';
 import { playNotificationSound } from '../services/soundService';
 
 interface ConversationMonitorProps {
@@ -225,17 +225,19 @@ const ConversationMonitor: React.FC<ConversationMonitorProps> = ({
     }
   };
 
-  // Deep-link: when a session is requested from elsewhere (e.g. Analytics "Ver Conversación"),
-  // open that session's conversation automatically.
+  // Deep-link: when a session is requested from elsewhere (e.g. Analytics "Ver Conversación",
+  // or a Telegram alert deep link via ?session=), open that session's conversation automatically.
+  // Retries when `sessions` loads late; fires once per focusSessionId so it never fights the user.
+  const handledFocusRef = useRef<string | null>(null);
   useEffect(() => {
     if (!focusSessionId) return;
-    if (selectedSessionId === focusSessionId) return;
+    if (handledFocusRef.current === focusSessionId) return;
     const target = sessions.find((s) => s.id === focusSessionId);
-    if (target) {
-      handleSelectSession(target);
-    }
+    if (!target) return; // sessions may still be loading — retried when the list updates
+    handledFocusRef.current = focusSessionId;
+    if (selectedSessionId !== target.id) handleSelectSession(target);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [focusSessionId]);
+  }, [focusSessionId, sessions]);
 
   const handleSendAsStaff = async () => {
     if (!staffResponse.trim() || !selectedSessionId) return;
@@ -248,6 +250,15 @@ const ConversationMonitor: React.FC<ConversationMonitorProps> = ({
         isStaff: true,
         staffName: staffName,
       });
+      // `analytics.staffInteractions` seguía en 0 con 6+ mensajes de asesor (métrica muerta en el
+      // panel). Se cuenta aquí, con un increment sobre el path punteado (nunca con updateAnalytics,
+      // que reemplazaría el mapa entero).
+      bumpSessionCounter(selectedSessionId, 'staffInteractions', 1).catch(() => {});
+      // Espera real del cliente hasta esta primera respuesta (política 2026-10-15).
+      {
+        const s: any = sessions.find((x) => x.id === selectedSessionId);
+        markFirstStaffReply(selectedSessionId, s?.claimedAt || s?.lastEscalationAt).catch(() => {});
+      }
       
       setStaffResponse('');
       
@@ -334,14 +345,23 @@ const ConversationMonitor: React.FC<ConversationMonitorProps> = ({
 
   // Filter sessions
   const filteredSessions = sessions.filter(session => {
-    if (filterStatus !== 'all' && session.status !== filterStatus) return false;
+    if (filterStatus === 'abandoned') {
+      if (!String(session.status || '').startsWith('abandoned')) return false;
+    } else if (filterStatus !== 'all' && session.status !== filterStatus) {
+      return false;
+    }
     if (filterBrand !== 'all' && session.brandId !== filterBrand) return false;
     if (filterTag !== 'all' && !session.tags?.includes(filterTag)) return false;
     if (searchQuery) {
       const query = searchQuery.toLowerCase();
+      const clean = query.replace(/[^\d+]/g, '');
       const name = (session.customerName || session.extractedData?.name || '').toLowerCase();
       const text = (session.lastMessage || '').toLowerCase();
-      return name.includes(query) || text.includes(query);
+      const email = (session.customerEmail || session.extractedData?.email || '').toLowerCase();
+      // Búsqueda por TELÉFONO (con o sin formato): era la queja "busco el número registrado y no hay usuario".
+      const phone = String(session.customerPhone || session.extractedData?.phone || '');
+      const phoneHit = phone && clean.replace(/[^\d]/g, '') !== '' && phone.replace(/[^\d]/g, '').includes(clean.replace(/[^\d]/g, ''));
+      return name.includes(query) || text.includes(query) || email.includes(query) || Boolean(phoneHit);
     }
     return true;
   });
@@ -351,6 +371,7 @@ const ConversationMonitor: React.FC<ConversationMonitorProps> = ({
       case 'active': return 'bg-emerald-50 text-emerald-600 border-emerald-100';
       case 'human_requested': return 'bg-amber-50 text-amber-600 border-amber-100';
       case 'human_assigned': return 'bg-blue-50 text-blue-600 border-blue-100';
+      case 'resolved': return 'bg-teal-50 text-teal-700 border-teal-100';
       case 'completed': return 'bg-slate-50 text-slate-500 border-slate-200';
       default: return 'bg-slate-50 text-slate-500';
     }
@@ -361,6 +382,7 @@ const ConversationMonitor: React.FC<ConversationMonitorProps> = ({
       case 'active': return 'AI Active';
       case 'human_requested': return 'Needs Human';
       case 'human_assigned': return 'Staff Active';
+      case 'resolved': return 'Resuelta';
       case 'completed': return 'Closed';
       default: return status;
     }
@@ -452,6 +474,7 @@ const ConversationMonitor: React.FC<ConversationMonitorProps> = ({
               <option value="active">Active</option>
               <option value="human_requested">Needs Human</option>
               <option value="human_assigned">Staff Active</option>
+              <option value="abandoned">Abandoned</option>
               <option value="completed">Completed</option>
             </select>
             <select

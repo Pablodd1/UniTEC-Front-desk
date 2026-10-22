@@ -3,7 +3,7 @@ import { collection, addDoc } from 'firebase/firestore';
 
 // --- Unified escalation: fires Telegram + Email + WhatsApp + SMS in one server call ---
 export interface EscalationData {
-  type: 'quote' | 'staff' | 'custom';
+  type: 'quote' | 'staff' | 'sla' | 'abandon' | 'contact' | 'custom';
   priority?: 'low' | 'medium' | 'high' | 'urgent';
   customerName?: string;
   customerPhone?: string;
@@ -11,6 +11,16 @@ export interface EscalationData {
   message: string;
   brand?: string;
   sessionId?: string;
+  /** Últimos turnos de la conversación — el equipo recibe contexto, no sólo la última línea. */
+  transcript?: { role: string; text: string }[];
+  /** Página donde estaba el cliente (widget iframe incluido). */
+  pageUrl?: string;
+  /** ISO: desde cuándo espera un humano (lo consume el barrido SLA y las re-alertas). */
+  waitingSince?: string;
+  /** Producto/intención detectada, si el cliente puede determinarlo. */
+  product?: string;
+  /** Etapa de re-alerta del barrido SLA (1..3). */
+  slaStage?: number;
 }
 
 export const triggerEscalation = async (data: EscalationData): Promise<{ success: boolean; results?: any }> => {
@@ -29,7 +39,8 @@ export const triggerEscalation = async (data: EscalationData): Promise<{ success
       body: JSON.stringify({
         ...data,
         priority: data.priority || 'high',
-        dashboardUrl: `${window.location.origin}/admin`,
+        // dashboardUrl NO se envía a propósito: el servidor firma un link de un toque (atado a la
+        // sesión, con caducidad) porque /?admin=true cae en el muro de login del panel.
       }),
     });
     const json = await res.json();
@@ -200,7 +211,7 @@ function generateEmailTemplate(payload: NotificationPayload): string {
           ${payload.message ? `<p><strong>Message:</strong> ${payload.message}</p>` : ''}
           <div class="meta">
             <p>Timestamp: ${new Date(payload.timestamp).toLocaleString()}</p>
-            <p>View in Dashboard: <a href="${window.location.origin}/admin">Open Dashboard</a></p>
+            <p>View in Dashboard: <a href="${window.location.origin}/?admin=true&session=${encodeURIComponent(payload.sessionId)}">Open Dashboard</a></p>
           </div>
         </div>
         <div class="footer">
@@ -254,7 +265,7 @@ function generateTelegramMessage(payload: NotificationPayload): string {
   }
 
   lines.push(`<b>Hora:</b> ${new Date(payload.timestamp).toLocaleString('es-CO', { timeZone: 'America/Bogota' })}`);
-  lines.push(`<a href="${window.location.origin}/admin">Ver panel</a>`);
+  lines.push(`<a href="${window.location.origin}/?admin=true&session=${encodeURIComponent(payload.sessionId)}">Ver panel</a>`);
 
   return lines.join('\n');
 }

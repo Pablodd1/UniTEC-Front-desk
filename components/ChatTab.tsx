@@ -6,10 +6,9 @@ import { db } from '../firebase';
 import { doc, getDoc } from 'firebase/firestore';
 import { Message, QuickAction, Language } from '../types';
 import { saveChatSession } from '../services/firestoreService';
-import { sendMessageToGemini, setCurrentChatSessionId } from '../services/geminiService';
-import { createConversation, addMessage, requestIntervention, extractCustomerData, updateSessionStatus, subscribeToConversation, subscribeToMessages } from '../services/conversationService';
+import { sendMessageToGemini, setCurrentChatSessionId, setVoiceTakeover } from '../services/geminiService';
+import { createConversation, addMessage, requestIntervention, extractCustomerData, updateSessionStatus, subscribeToConversation, subscribeToMessages, markStaffNotice, bumpSessionCounter } from '../services/conversationService';
 import { notifyStaffIntervention, triggerEscalation } from '../services/notificationService';
-import { sendTwilioWhatsApp } from '../services/twilioWhatsappService';
 import { Send, User, Box, DollarSign, Hammer, BookOpen, CheckCircle2, Truck, FileText, RefreshCcw, Percent, Headphones, CreditCard, Lock, MessageSquare, MapPin } from 'lucide-react';
 import { GenerateContentResponse } from '@google/genai';
 import { UI_TRANSLATIONS } from '../constants';
@@ -41,17 +40,53 @@ const recordOnboardingTurn = async (
   }
 };
 
-// El primer mensaje del visitante suele ser su PREGUNTA, no su nombre. Si se guarda
-// como nombre ("¡Un gusto conocerte, Buenas días dónde están ubicados!"), la pregunta
-// se pierde y el usuario abandona. Con esto se detecta y se responde.
-const INTENT_RE = /(precio|cotiz|valor|cu[aá]nto|stock|disponib|env[ií]o|despach|instala|m[aá]rmol|pvc|wpc|spc|d[oó]nde|ubicad|producto|cat[aá]logo|comprar|pedido|mayorista|descuento|ficha|asesor|necesito|quiero|quisiera|informaci[oó]n)/i;
+// El primer mensaje del visitante suele ser su PREGUNTA, no su nombre. Novedades Chatbot 8:
+// solo se saluda por su nombre si lo escribió EXPLÍCITAMENTE ("me llamo X", "mi nombre es X",
+// "soy X"). Un nombre "a secas" NO se acepta: aceptarlo produjo "¡Un gusto conocerte, Piso deck!"
+// y dejó sin responder la pregunta del cliente.
+const NAME_PATTERN = /(?:me\s+llamo|mi\s+nombre\s+es|soy)\s+([a-záéíóúñ]{2,30})/i;
+// "soy distribuidor", "soy cliente final"… no son nombres
+const NOT_A_NAME = /^(distribuidor|distribuidora|mayorista|cliente|final|arquitecto|arquitecta|constructor|constructora|dise[nñ]ador|dise[nñ]adora|contratista|ingeniero|ingeniera|maestro|de|del|la|el|un|una|interesado|interesada|proveedor)$/i;
+const INTENT_RE = /(precio|cotiz|valor|cu[aá]nto|stock|disponib|env[ií]o|despach|instala|m[aá]rmol|pvc|wpc|spc|d[oó]nde|ubicad|producto|cat[aá]logo|comprar|pedido|mayorista|descuento|ficha|asesor|necesito|quiero|quisiera|informaci[oó]n|piso|deck|panel|pared|fachada|cubierta|teja|l[aá]mina|cielo|cornisa|list[oó]n|muroflex|uniflex|arqunitec|arqnitec|acolchad|ac[uú]stic|foam|board|policarbonato|jard[ií]n|led|z[oó]calo|omega|vigueta|[aá]ngulo|caballete|perfil|tornillo|clip|esquinero|cinta|adhesivo|pegat|transformador|control|referencia|metros?|m2|m²|medidas?|área|area|obra|remodela)/i;
 const GREETING_RE = /^(hola+|buenas|buenos d[ií]as|buenas tardes|buenas noches|hi|hello|hey|qu[eé] tal)[\s!.,]*$/i;
 const looksLikeIntent = (t: string): boolean => {
   const s = String(t || '').trim();
   if (!s) return false;
   if (INTENT_RE.test(s)) return true;
-  return s.split(/\s+/).length > 4 && !GREETING_RE.test(s);
+  return s.split(/\s+/).length > 2 && !GREETING_RE.test(s);
 };
+// Devuelve el nombre SOLO si viene de una frase explícita ("me llamo Ana") y no es un
+// producto, una profesión ni una necesidad.
+const explicitName = (t: string): string => {
+  const s = String(t || '').trim();
+  const m = s.match(NAME_PATTERN);
+  if (!m) return '';
+  const candidate = m[1].trim();
+  if (NOT_A_NAME.test(candidate) || INTENT_RE.test(candidate)) return '';
+  // "soy X" con una consulta larga detrás no es un saludo por nombre
+  if (!/me\s+llamo|mi\s+nombre\s+es/i.test(s) && looksLikeIntent(s) && s.split(/\s+/).length > 3) return '';
+  return candidate;
+};
+
+// ── Despedida educada (2026-10-15, decisión del owner) ──────────────────────────
+// Espejo CLIENTE de api/turn-text.js detectClosing() — mantener los dos en sync.
+// El cliente que dice que no quiere nada más recibe una despedida cálida con el sitio web
+// en vez de un "¿algo más?" eterno. Guardas para que NUNCA dispare en una consulta real.
+const CLOSING_PHRASES = ['no gracias', 'nada mas', 'nada más', 'eso es todo', 'es todo',
+  'ya esta', 'ya está', 'listo gracias', 'ok gracias', 'muchas gracias', 'solo eso',
+  'por ahora nada', 'así está bien', 'asi esta bien', 'bye', 'chao', 'chau', 'adios', 'adiós',
+  'hasta luego', 'nos vemos'];
+const QUERY_HINT_RE = /(\?|¿|precio|valor|cu[aá]nto|costo|medida|color|referencia|\bref\b|d[oó]nde|donde|ubicaci[oó]n|cotiza|cat[aá]logo|ficha|stock|disponib|env[ií]o|despacho|pago|instala|comercial|residencial|mayorista)/i;
+const detectClosing = (t: string): { isClosing: boolean; phrase: string } => {
+  const raw = String(t || '').trim();
+  const text = raw.toLowerCase();
+  if (!text || raw.length > 90) return { isClosing: false, phrase: '' };
+  if (QUERY_HINT_RE.test(text)) return { isClosing: false, phrase: '' };
+  const phrase = CLOSING_PHRASES.find((p) => text.includes(p)) || '';
+  return { isClosing: Boolean(phrase), phrase };
+};
+const COMPANY_WEBSITE = 'https://www.unitecusadesign.com/';
+const COMPANY_WA = 'https://wa.me/573142332147';
 
 interface ChatTabProps {
   quickActions: QuickAction[];
@@ -87,7 +122,7 @@ const ChatTab: React.FC<ChatTabProps> = ({ quickActions, initialMessage, emergen
         if (saved) {
           const parsed = JSON.parse(saved);
           if (parsed && parsed.length > 0) {
-            return parsed.map((m: any) => ({ ...m, timestamp: new Date(m.timestamp) }));
+            return parsed.map((m: any) => ({ ...m, ...(m?.id === 'welcome' ? { skipFirestore: true } : {}), timestamp: new Date(m.timestamp) }));
           }
         }
       } catch (e) {
@@ -105,7 +140,8 @@ const ChatTab: React.FC<ChatTabProps> = ({ quickActions, initialMessage, emergen
         id: 'welcome',
         role: 'model',
         text: welcomeText,
-        timestamp: new Date()
+        timestamp: new Date(),
+        skipFirestore: true // UI greeting only — never written to the session transcript
       }
     ];
   });
@@ -146,6 +182,7 @@ const ChatTab: React.FC<ChatTabProps> = ({ quickActions, initialMessage, emergen
   
   // ===== NEW: Conversation Tracking =====
   const [conversationId, setConversationId] = useState<string | null>(null);
+  const conversationIdRef = useRef<string | null>(null);
   const [showInterventionRequest, setShowInterventionRequest] = useState(false);
   const [interventionReason, setInterventionReason] = useState('');
   const [isRequestingIntervention, setIsRequestingIntervention] = useState(false);
@@ -189,20 +226,15 @@ const ChatTab: React.FC<ChatTabProps> = ({ quickActions, initialMessage, emergen
         // Create a new session if:
         // 1. No existing session ID in localStorage
         // 2. Previous session is older than 12 hours (new visit/day)
-        const isExpired = !lastSessionTime || (now - parseInt(lastSessionTime, 10) > 12 * 60 * 60 * 1000);
+        const isExpired = !!lastSessionTime && (now - parseInt(lastSessionTime, 10) > 12 * 60 * 60 * 1000);
 
         if (!existingId || isExpired) {
-          const newId = await createConversation(
-            brandId || 'unitec',
-            language,
-            'web',
-            { userAgent: navigator.userAgent, ipAddress: 'unknown' }
-          );
-          existingId = newId;
-          if (typeof window !== 'undefined') {
-            localStorage.setItem(storageKey, newId);
-            localStorage.setItem(timestampKey, now.toString());
+          if (typeof window !== 'undefined' && isExpired) {
+            localStorage.removeItem(storageKey);
+            localStorage.removeItem(timestampKey);
           }
+          // First real message creates the session. Page loads must not.
+          return;
         }
         // else: KEEP the existing session — do NOT create a duplicate.
         // (Old behavior created a new empty session on every reload, which
@@ -211,6 +243,7 @@ const ChatTab: React.FC<ChatTabProps> = ({ quickActions, initialMessage, emergen
         // Expose the session id to the chat proxy so /api/chat records every
         // real turn server-side (analytics ground truth, works on all origins).
         setCurrentChatSessionId(existingId);
+        conversationIdRef.current = existingId;
         setConversationId(existingId);
       } catch (e) {
         console.warn('Failed to initialize conversation session:', e);
@@ -228,6 +261,18 @@ const ChatTab: React.FC<ChatTabProps> = ({ quickActions, initialMessage, emergen
   // escribir, y la mayoría se iba sin preguntar nada).
   const pendingPhoneRequest = useRef(false);
   const phoneAlreadyAsked = useRef(false);
+  const sendingRef = useRef(false); // sync re-entrancy guard (isLoading state lags one render)
+
+  // La voz respeta el takeover igual que el texto (mismo estado que dispara el aviso visible).
+  useEffect(() => {
+    setVoiceTakeover(
+      sessionStatus === 'human_assigned'
+        ? (language === 'en'
+          ? 'An advisor is already handling this conversation - I am listening but I will not answer over them. Your message was recorded.'
+          : 'Un asesor del equipo ya esta atendiendo esta conversacion: escucho, pero no respondo por el. Tu mensaje quedo registrado.')
+        : ''
+    );
+  }, [sessionStatus, language]);
 
   useEffect(() => {
     if (!conversationId || messages.length === 0) return;
@@ -238,6 +283,7 @@ const ChatTab: React.FC<ChatTabProps> = ({ quickActions, initialMessage, emergen
     messages.forEach((msg) => {
       if (savedMessageIds.current.has(msg.id)) return; // Already saved
       if (!msg.text || msg.text.trim() === '') return;   // Skip empty
+      if (msg.skipFirestore) return; // /api/chat already records this turn
 
       savedMessageIds.current.add(msg.id);
       addMessage(conversationId, {
@@ -245,7 +291,10 @@ const ChatTab: React.FC<ChatTabProps> = ({ quickActions, initialMessage, emergen
         role: msg.role as 'user' | 'model',
         text: msg.text,
         timestamp: msg.timestamp instanceof Date ? msg.timestamp.toISOString() : new Date(msg.timestamp).toISOString(),
-      }).catch((e: any) => {
+        // La marca del cierre se PROPAGA al doc: si se pierde, el guardado reabre la sesión que
+        // acabamos de cerrar (verificado en vivo con la despedida del bot).
+        ...((msg as any).keepClosed ? { keepClosed: true } : {}),
+      } as any).catch((e: any) => {
         // Remove from set so it retries next render
         savedMessageIds.current.delete(msg.id);
         console.warn('Failed to save message to Firestore, will retry:', e);
@@ -259,6 +308,10 @@ const ChatTab: React.FC<ChatTabProps> = ({ quickActions, initialMessage, emergen
     const unsubStatus = subscribeToConversation(conversationId, (session) => {
       if (session && session.status) {
         setSessionStatus(session.status);
+      }
+      // Bandera PERSISTIDA del aviso de takeover: sobrevive recargas (no se repite cada vez que entra).
+      if (session && (session as any).staffNoticeAt) {
+        staffNoticeAtRef.current = (session as any).staffNoticeAt;
       }
     });
 
@@ -274,11 +327,18 @@ const ChatTab: React.FC<ChatTabProps> = ({ quickActions, initialMessage, emergen
             .map((m: any) => ({
               id: m.id || Date.now().toString(),
               role: "model" as const,
-              text: `[Staff] ${m.text}`,
-              timestamp: new Date(m.timestamp)
+              // Sin el prefijo "[Staff]": el cliente leía "[Staff] Perfecto señora Maria…" y sonaba a
+              // máquina. La etiqueta del asesor solo se muestra en el panel, nunca al cliente.
+              text: String(m.text || ''),
+              timestamp: new Date(m.timestamp),
+              // ONE WRITER PER TURN. Este mensaje YA está en Firestore (el panel lo escribió con
+              // role:'staff'); sin este flag el efecto de guardado de abajo lo re-escribía con
+              // role:'model' y el prefijo dentro del texto — corrompiendo el doc del asesor.
+              skipFirestore: true,
             }));
           
           if (newMsgs.length > 0) {
+            lastStaffMsgAtRef.current = Date.now();
             return [...prev, ...newMsgs].sort((a, b) => a.timestamp.getTime() - b.timestamp.getTime());
           }
           return prev;
@@ -305,7 +365,8 @@ const ChatTab: React.FC<ChatTabProps> = ({ quickActions, initialMessage, emergen
             id: 'welcome',
             role: 'model',
             text: welcomeText,
-            timestamp: new Date()
+            timestamp: new Date(),
+            skipFirestore: true // UI greeting only — never written to the session transcript
         }]);
     }
   }, [language, brandId]);
@@ -384,12 +445,15 @@ const ChatTab: React.FC<ChatTabProps> = ({ quickActions, initialMessage, emergen
           ? "Are you still there? If you don't respond in a minute, I'll close the chat."
           : "Señor/a, ¿aún continuas en línea? Si no hay respuesta en un minuto, cerraré la conversación.";
           
-        setMessages(prev => [...prev, {
-          id: `idle_warning_${Date.now()}`,
-          role: 'model',
-          text: warningText,
-          timestamp: new Date()
-        }]);
+        setMessages(prev => {
+          if (prev.some(m => String(m.id).startsWith('idle_warning_'))) return prev;
+          return [...prev, {
+            id: `idle_warning_${Date.now()}`,
+            role: 'model',
+            text: warningText,
+            timestamp: new Date()
+          }];
+        });
       } else {
         warningTimer = setTimeout(() => {
           console.log('Session idle for 4 minutes. Sending warning.');
@@ -397,12 +461,15 @@ const ChatTab: React.FC<ChatTabProps> = ({ quickActions, initialMessage, emergen
             ? "Are you still there? If you don't respond in a minute, I'll close the chat."
             : "Señor/a, ¿aún continuas en línea? Si no hay respuesta en un minuto, cerraré la conversación.";
             
-          setMessages(prev => [...prev, {
-            id: `idle_warning_${Date.now()}`,
-            role: 'model',
-            text: warningText,
-            timestamp: new Date()
-          }]);
+          setMessages(prev => {
+            if (prev.some(m => String(m.id).startsWith('idle_warning_'))) return prev;
+            return [...prev, {
+              id: `idle_warning_${Date.now()}`,
+              role: 'model',
+              text: warningText,
+              timestamp: new Date()
+            }];
+          });
         }, remainingTime);
       }
     }
@@ -411,7 +478,39 @@ const ChatTab: React.FC<ChatTabProps> = ({ quickActions, initialMessage, emergen
       if (warningTimer) clearTimeout(warningTimer);
       if (closeTimer) clearTimeout(closeTimer);
     };
-  }, [messages.filter(m => m.role === 'user').length, inputText, sessionStatus, conversationId, language]);
+  }, [messages[messages.length - 1]?.id, messages.filter(m => m.role === 'user').length, sessionStatus, conversationId, language]);
+
+  // ===== Cierre real: pestaña / computador / teléfono =====
+  // Antes el único rastro de abandono era el idle de 15 min del barrido: cerrar la pestaña no dejaba
+  // ninguna señal. Un beacon al cerrar marca la salida en segundos y dispara el aviso al equipo.
+  const stageRef = useRef(onboardingStage);
+  useEffect(() => { stageRef.current = onboardingStage; }, [onboardingStage]);
+
+  useEffect(() => {
+    if (typeof navigator === 'undefined' || !navigator.sendBeacon) return;
+    const send = (reason: string) => {
+      const sid = conversationIdRef.current;
+      if (!sid) return;
+      try {
+        const payload = JSON.stringify({
+          sessionId: sid,
+          brand: brandId || 'unitec',
+          reason,
+          stage: stageRef.current,
+        });
+        // text/plain => petición simple, sin preflight (sendBeacon no admite cabeceras propias).
+        navigator.sendBeacon('/api/session-exit', new Blob([payload], { type: 'text/plain;charset=UTF-8' }));
+      } catch { /* nunca romper la salida de la página */ }
+    };
+    const onPageHide = () => send('pagehide');
+    const onVisibility = () => send(document.visibilityState === 'hidden' ? 'hidden' : 'visible');
+    document.addEventListener('visibilitychange', onVisibility);
+    window.addEventListener('pagehide', onPageHide);
+    return () => {
+      document.removeEventListener('visibilitychange', onVisibility);
+      window.removeEventListener('pagehide', onPageHide);
+    };
+  }, [brandId]);
 
   // Robust Auto-Scroll Implementation
   const scrollToBottom = (behavior: ScrollBehavior = 'smooth') => {
@@ -427,23 +526,49 @@ const ChatTab: React.FC<ChatTabProps> = ({ quickActions, initialMessage, emergen
     scrollToBottom(behavior);
   }, [messages, isLoading]);
 
+  const staffAlertSentRef = useRef(false);
+  // Takeover UX: el aviso de "un asesor ya está atendiendo" se mostraba en CADA mensaje y el cliente
+  // lo vivía como un bucle ("cada que te hablo me sale eso"). Estas banderas lo limitan a una vez.
+  const staffNoticeShownRef = useRef(false);
+  const staffNoticeAtRef = useRef<string | null>(null);
+  const lastAutoAckRef = useRef(0);
+  const lastStaffMsgAtRef = useRef(0);
+  const contactAlertSentRef = useRef(false);
+  // Marca de tiempo de la solicitud humana: el barrido SLA (api/staff-sla-sweep.js) la usa
+  // para saber cuánto lleva esperando el cliente.
+  const escalationAtRef = useRef<string | null>(null);
+  // Alerta al equipo del cliente — SOLO escalamiento real (Novedades Chatbot 8):
+  // una pregunta de precio NO es escalamiento (el bot la responde); se alerta cuando el
+  // cliente pide explícitamente una cotización formal o hablar con una persona, UNA vez
+  // por conversación (antes: cada mensaje con "precio/whatsapp/…" disparaba Telegram +
+  // Email + WhatsApp + SMS, dos veces — esa era la duplicación que veía el equipo).
   const checkAndTriggerWhatsAppAlert = async (textText: string) => {
+    if (staffAlertSentRef.current) return;
     const lowercaseText = textText.toLowerCase();
-    // ponytail: expanded keyword list — quote, budget, price, staff, contact
-    const quoteKeywords = ['price', 'precio', 'costo', 'valor', 'valores', 'cotiz', 'presupuesto', 'budget', 'quote', 'cuanto', 'how much'];
-    const staffKeywords = ['urgent', 'urgencia', 'emergencia', 'staff', 'asesor', 'humano', 'contacto', 'atencion', 'atención', 'agent', 'llamar', 'call me', 'speak to someone', 'talk to someone', 'whatsapp', 'telefono'];
-    const allKeywords = [...quoteKeywords, ...staffKeywords];
+    // mantiene la MISMA política que api/turn-text.js detectEscalation() — sincronizarlas
+    // 2026-10-15: fuera los sustantivos de FAQ (atencion/atención/contacto/telefono/whatsapp):
+    // una pregunta de UBICACIÓN se responde (macro del training), no se escala a un humano.
+    // El botón "Contactar Ventas" sigue escalando por 'representante'/'comunicame'.
+    const formalQuoteKeywords = ['cotiz', 'presupuesto', 'budget', 'quote'];
+    const staffKeywords = ['asesor', 'humano', 'human', 'agente', 'agent', 'staff', 'llamar', 'call me', 'speak to someone', 'talk to someone', 'hablar con alguien', 'hablar con una persona', 'persona real', 'ejecutivo', 'vendedor', 'representante', 'comunicame', 'comunícame', 'me contacte', 'me contacten', 'que me llame', 'que me llames', 'urgente', 'urgencia', 'emergencia'];
 
-    const hasKeyword = allKeywords.some(keyword => lowercaseText.includes(keyword));
-    if (!hasKeyword) return;
-
-    const isQuote = quoteKeywords.some(kw => lowercaseText.includes(kw));
+    const isQuote = formalQuoteKeywords.some(kw => lowercaseText.includes(kw));
     const isStaff = staffKeywords.some(kw => lowercaseText.includes(kw));
+    if (!isQuote && !isStaff) return;
+    staffAlertSentRef.current = true;
+
     const escalationType = isQuote ? 'quote' : 'staff';
+    const waitingSince = new Date().toISOString();
+    escalationAtRef.current = waitingSince;
 
-    console.log(`[Escalation] ${escalationType} intent detected. Firing Telegram + Email + WhatsApp + SMS...`);
+    console.log(`[Escalation] ${escalationType} intent detected. Firing Telegram + Email + WhatsApp + SMS (once per conversation).`);
 
-    // Fire unified escalation (all 4 channels server-side)
+    // Contexto para el equipo: los últimos turnos, no sólo la última línea (queja del cliente:
+    // "no se notifica con suficiente información de la interacción").
+    const transcript = messages.slice(-6).map((m) => ({ role: m.role, text: m.text }));
+
+    // Fire unified escalation (all 4 channels server-side). El Twilio heredado se quitó:
+    // duplicaba el aviso de WhatsApp con el mismo contenido.
     triggerEscalation({
       type: escalationType as 'quote' | 'staff',
       priority: 'high',
@@ -451,22 +576,53 @@ const ChatTab: React.FC<ChatTabProps> = ({ quickActions, initialMessage, emergen
       customerPhone: extractedPii?.phone || '',
       customerEmail: extractedPii?.email || '',
       message: textText,
-      brand: currentBrand || 'unitec',
+      brand: brandId || 'unitec',
       sessionId: conversationId || '',
+      transcript,
+      pageUrl: typeof window !== 'undefined' ? window.location.href : '',
+      waitingSince,
     }).catch(console.error);
 
-    // Also fire legacy Twilio WhatsApp for backward compat
-    const name = extractedPii?.name || 'Cliente';
-    const phone = extractedPii?.phone || 'No proporcionado';
-    const email = extractedPii?.email || 'No proporcionado';
-    const adminMessage = `🔔 *Alerta de Chatbot*\n\n` +
-      `El cliente *${name}* ha enviado un mensaje de interés:\n` +
-      `"${textText}"\n\n` +
-      `*Datos de Contacto:*\n` +
-      `- Teléfono: ${phone}\n` +
-      `- Email: ${email}\n` +
-      `- Conversación ID: ${conversationId || 'N/A'}`;
-    sendTwilioWhatsApp(adminMessage).catch(console.error);
+    // La sesión DEBE quedar como "asesor solicitado": hasta ahora el escalamiento automático
+    // disparaba los avisos pero nunca marcaba el estado (sólo lo hacía el botón manual), así que
+    // el monitor de "staff solicitado" del panel no las veía nunca.
+    if (conversationId) {
+      requestIntervention(
+        conversationId,
+        escalationType === 'quote' ? 'Solicitud de cotización (automática)' : 'Cliente pidió un asesor (automático)',
+        'high'
+      ).catch((e) => console.warn('requestIntervention from escalation failed:', e));
+    }
+
+    // Acompañamiento durante la espera (política 2026-10-15): el cliente sabe que ya se avisó
+    // al equipo Y que el bot sigue disponible para cualquier otra consulta mientras espera.
+    // UNA vez por conversación (antes esto vivía en showEscalationAutoReply, que no tenía llamadores).
+    const isEn = language === 'en';
+    const waLink = COMPANY_WA;
+    setMessages((prev) => [...prev, {
+      id: `escalation-ack-${Date.now()}`,
+      role: 'model',
+      text: isEn
+        ? `✅ I've let our team know — an advisor will write to you right here shortly.\nMeanwhile I'm still here for you 🙂 feel free to ask me about products, prices or measurements and I'll help you right away.\nUrgent? WhatsApp: ${waLink} · More info: ${COMPANY_WEBSITE}`
+        : `✅ Ya avisé a un asesor del equipo: te escribirá por aquí en breve.\nMientras tanto yo sigo contigo 🙂 puedes seguir preguntándome por productos, precios o medidas y te ayudo de una vez.\nSi es urgente, WhatsApp: ${waLink} · Más información: ${COMPANY_WEBSITE}`,
+      timestamp: new Date(),
+    }]);
+
+    // Contacto a demanda (EN VIVO): antes solo lo pedía showEscalationAutoReply, que no tenía
+    // llamadores — por eso la alerta llegaba sin nombre ni teléfono ("no hay usuario"). Se pide UNA
+    // vez, al momento de la cotización; la respuesta la captura el bloque pendingPhoneRequest.
+    if (isQuote && !extractedPii?.phone && !phoneAlreadyAsked.current) {
+      phoneAlreadyAsked.current = true;
+      pendingPhoneRequest.current = true;
+      setMessages((prev) => [...prev, {
+        id: `phone-ask-${Date.now()}`,
+        role: 'model',
+        text: isEn
+          ? 'To send you the exact quote, may I have your WhatsApp number? (or type "later")'
+          : 'Para enviarte la cotización exacta, ¿me compartes tu número de WhatsApp? (o escribe "después")',
+        timestamp: new Date(),
+      }]);
+    }
   };
 
   // Show auto-reply to user after escalation — keeps them engaged while staff responds
@@ -500,8 +656,44 @@ const ChatTab: React.FC<ChatTabProps> = ({ quickActions, initialMessage, emergen
     }]);
   };
 
-  const handleSendMessage = async (text: string) => {
+  const ensureSession = async () => {
+    if (conversationIdRef.current) return conversationIdRef.current;
+    const storageKey = `unitec_chat_conversation_id_${brandId || 'unitec'}`;
+    const timestampKey = `unitec_chat_session_time_${brandId || 'unitec'}`;
+    let existingId = typeof window !== 'undefined' ? localStorage.getItem(storageKey) : null;
+    const lastSessionTime = typeof window !== 'undefined' ? localStorage.getItem(timestampKey) : null;
+    const expired = !lastSessionTime || (Date.now() - parseInt(lastSessionTime, 10) > 12 * 60 * 60 * 1000);
+    if (!existingId || expired) {
+      existingId = await createConversation(
+        brandId || 'unitec',
+        language,
+        'web',
+        { userAgent: navigator.userAgent, ipAddress: 'unknown' }
+      );
+      if (typeof window !== 'undefined') {
+        localStorage.setItem(storageKey, existingId);
+        localStorage.setItem(timestampKey, Date.now().toString());
+      }
+    }
+    conversationIdRef.current = existingId;
+    setCurrentChatSessionId(existingId);
+    setConversationId(existingId);
+    return existingId;
+  };
+
+  // Prewarm: crea/restaura la sesión en cuanto el visitante empieza a escribir,
+  // para que el primer envío no espere la escritura en Firestore.
+  // (ensureSession sigue await-eándose en el envío como respaldo).
+  const sessionPrewarmRef = useRef(false);
+  const prewarmSession = () => {
+    if (sessionPrewarmRef.current || conversationIdRef.current) return;
+    sessionPrewarmRef.current = true;
+    ensureSession().catch(() => { sessionPrewarmRef.current = false; });
+  };
+
+  const sendMessageInner = async (text: string) => {
     if (!text.trim() || isLoading) return;
+    const activeSessionId = await ensureSession().catch(() => conversationIdRef.current);
     
     // Clear previous errors
     setError(null);
@@ -510,7 +702,8 @@ const ChatTab: React.FC<ChatTabProps> = ({ quickActions, initialMessage, emergen
       id: Date.now().toString(),
       role: 'user',
       text: text,
-      timestamp: new Date()
+      timestamp: new Date(),
+      skipFirestore: true
     };
 
     setMessages(prev => [...prev, userMsg]);
@@ -531,8 +724,23 @@ const ChatTab: React.FC<ChatTabProps> = ({ quickActions, initialMessage, emergen
         const ack = language === 'en'
           ? 'Got it! An advisor will contact you on WhatsApp with your quote. Anything else I can check for you?'
           : '¡Listo! Un asesor te contacta por WhatsApp con tu cotización. ¿Algo más que quieras consultar?';
-        setMessages(prev => [...prev, { id: Date.now().toString(), role: 'model', text: ack, timestamp: new Date() }]);
+        setMessages(prev => [...prev, { id: Date.now().toString(), role: 'model', text: ack, timestamp: new Date(), skipFirestore: true }]);
         recordOnboardingTurn(conversationId, text, ack, 'phone', brandId).catch(() => {});
+        // La alerta original salió sin teléfono: el equipo recibe los datos en cuanto el cliente los da
+        // (es exactamente el "no había usuario" del aviso que abrió este trabajo).
+        if (staffAlertSentRef.current) {
+          triggerEscalation({
+            type: 'contact',
+            priority: 'medium',
+            customerName: extractedPii?.name || '',
+            customerPhone: phone,
+            customerEmail: extractedPii?.email || '',
+            message: `El cliente compartió su WhatsApp: ${phone}`,
+            brand: brandId || 'unitec',
+            sessionId: conversationId || '',
+            transcript: messages.slice(-4).map((m) => ({ role: m.role, text: m.text })),
+          }).catch(console.error);
+        }
         return;
       }
       // dijo "después" o no parece un número: se ignora y el flujo sigue normal
@@ -540,12 +748,11 @@ const ChatTab: React.FC<ChatTabProps> = ({ quickActions, initialMessage, emergen
 
     // ── Bienvenida de 1 paso ───────────────────────────────────────────────────
     // El primer mensaje del visitante ya es su necesidad: se responde de inmediato.
-    // El nombre se captura solo si lo escribe ("me llamo X" / "soy X" / su nombre a secas);
-    // el teléfono se pide después y únicamente cuando pide una cotización.
+    // Novedades Chatbot 8: NO se interpreta ese primer mensaje como su nombre; el nombre
+    // solo se usa si lo escribió explícitamente ("me llamo X" / "mi nombre es X" / "soy X").
+    // El teléfono se pide después y únicamente cuando se va a escalar la cotización.
     if (onboardingStage === 'name') {
-      const explicit = text.match(/(?:me\s+llamo|mi\s+nombre\s+es|soy)\s+([a-záéíóúñ]{2,30})/i);
-      const bareName = /^[a-záéíóúñ\s]{2,30}$/i.test(text.trim()) && !looksLikeIntent(text);
-      const captured = explicit?.[1] || (bareName ? text.trim() : '');
+      const captured = explicitName(text);
       setOnboardingStage('ready');
 
       if (captured) {
@@ -558,14 +765,13 @@ const ChatTab: React.FC<ChatTabProps> = ({ quickActions, initialMessage, emergen
         const ack = language === 'en'
           ? `Nice to meet you, ${pretty}! Tell me, what product are you looking for or what do you need a quote for?`
           : `¡Un gusto conocerte, ${pretty}! Cuéntame, ¿qué producto buscas o qué necesitas cotizar?`;
-        setMessages(prev => [...prev, { id: Date.now().toString(), role: 'model', text: ack, timestamp: new Date() }]);
+        setMessages(prev => [...prev, { id: Date.now().toString(), role: 'model', text: ack, timestamp: new Date(), skipFirestore: true }]);
         recordOnboardingTurn(conversationId, text, ack, 'name', brandId).catch(() => {});
         return;
       }
 
-      setExtractedPii(prev => ({ ...(prev || {}), name: prev?.name || 'Cliente' } as typeof prev));
-      // El turno lo registra el flujo normal (/api/chat): aquí NO se registra para no
-      // contar dos veces el mismo mensaje. Sin `return`: la IA responde su pregunta.
+      // Sin nombre explícito: la IA responde su consulta. No se inventa un nombre
+      // ("Cliente") ni se cuenta dos veces el mensaje (lo registra /api/chat).
     }
 
     if (sessionStatus === 'human_assigned') {
@@ -577,11 +783,130 @@ const ChatTab: React.FC<ChatTabProps> = ({ quickActions, initialMessage, emergen
             text: userMsg.text,
           });
           checkAndTriggerWhatsAppAlert(text);
+
+          // ── Identidad durante el takeover ─────────────────────────────────────
+          // Esta rama antes devolvía ANTES de extraer nada: la clienta escribió su nombre y su
+          // teléfono mientras la atendían y el doc quedó sin ellos ("mira lo que me dice la cliente
+          // que dejó el teléfono"). Se extrae aquí, en el camino vivo.
+          const takeoverName = explicitName(text);
+          const takeoverPhone = text.match(/(\+?\d[\d\s\-().]{6,})/);
+          if (takeoverName || takeoverPhone) {
+            const merged: any = {
+              ...(extractedPii || {}),
+              ...(takeoverName ? { name: takeoverName.charAt(0).toUpperCase() + takeoverName.slice(1) } : {}),
+              ...(takeoverPhone ? { phone: takeoverPhone[1].trim() } : {}),
+            };
+            setExtractedPii(merged);
+            extractCustomerData(conversationId, merged).catch(console.warn);
+            if (takeoverPhone && !contactAlertSentRef.current) {
+              contactAlertSentRef.current = true;
+              triggerEscalation({
+                type: 'contact',
+                priority: 'medium',
+                customerName: merged.name || '',
+                customerPhone: merged.phone || '',
+                message: `Datos del cliente durante la conversación: ${merged.name || 'sin nombre'} · ${merged.phone || 'sin teléfono'}`,
+                brand: brandId || 'unitec',
+                sessionId: conversationId,
+                transcript: messages.slice(-4).map((m) => ({ role: m.role, text: m.text })),
+              }).catch(console.error);
+            }
+          }
+
+          markStaffNotice(conversationId).catch(() => {});
         }
       } catch (e) {
         console.warn('Failed to save user message during takeover:', e);
       }
+
+      // Aviso de takeover: con un asesor asignado la IA no responde a propósito. ANTES se repetía el
+      // MISMO párrafo en cada mensaje y el cliente lo vivía como un bucle. Ahora: UNA vez por
+      // conversación (bandera persistida, sobrevive recargas) y después un acuse breve y DISTINTO,
+      // espaciado 3 min y en silencio si el asesor acaba de escribir.
+      const noticeAlreadyShown = staffNoticeShownRef.current || Boolean(staffNoticeAtRef.current);
+      if (!noticeAlreadyShown) {
+        staffNoticeShownRef.current = true;
+        setMessages(prev => [...prev, {
+          id: `handoff-notice-${Date.now()}`,
+          role: 'model',
+          text: language === 'en'
+            ? `🧑‍💼 An advisor from our team is handling this conversation — your message was recorded and they will reply right here. No need to send it again 🙂 More info: ${COMPANY_WEBSITE}`
+            : `🧑‍💼 Un asesor del equipo ya está atendiendo esta conversación: tu mensaje quedó registrado y te responderá por aquí. No necesitas repetirlo 🙂 Más información: ${COMPANY_WEBSITE}`,
+          timestamp: new Date(),
+          // 2026-10-15: SÍ se guarda — el cierre de la conversación y lo que el cliente vio deben
+          // quedar en el registro para la evaluación (antes se pintaba y no quedaba en ninguna parte).
+        }]);
+      } else {
+        const nowMs = Date.now();
+        const staffJustWrote = lastStaffMsgAtRef.current > 0 && nowMs - lastStaffMsgAtRef.current < 3 * 60 * 1000;
+        const tooSoon = nowMs - lastAutoAckRef.current < 3 * 60 * 1000;
+        if (!staffJustWrote && !tooSoon) {
+          lastAutoAckRef.current = nowMs;
+          const lines = language === 'en'
+            ? ['Got it — passed it to the advisor handling your chat 🙌',
+               'Noted, thank you. The advisor will answer you right here.',
+               'Thank you, your message is registered. The advisor is still with you.']
+            : ['¡Listo! Ya quedó con el asesor que te está atendiendo 🙌',
+               'Anotado, gracias. El asesor te responde por aquí mismo.',
+               'Gracias, tu mensaje quedó registrado. El asesor sigue contigo.'];
+          setMessages(prev => [...prev, {
+            id: `waiting-ack-${Date.now()}`,
+            role: 'model',
+            text: lines[Math.floor(Math.random() * lines.length)],
+            timestamp: new Date(),
+            skipFirestore: true,
+          }]);
+        }
+      }
       return;
+    }
+
+    // ── Reapertura (política 2026-10-15) ───────────────────────────────────────
+    // Si el bot se despidió y el cliente VUELVE a escribir, la conversación se reabre: un
+    // mensaje real no puede quedar dentro de una sesión ya cerrada (el panel deja de mirarla).
+    if (sessionStatus === 'completed' && conversationId) {
+      updateSessionStatus(conversationId, 'active', undefined, { reopenedAt: new Date().toISOString() })
+        .catch((e) => console.warn('session reopen failed:', e));
+      bumpSessionCounter(conversationId, 'reopened').catch(() => {});
+    }
+
+    // ── Despedida educada (política 2026-10-15, decisión del owner) ─────────────
+    // Si el cliente deja claro que no quiere nada más y el BOT es quien atiende (activo, sin
+    // asesor en camino ni en el chat), se despide con el sitio web de la compañía y la
+    // conversación se cierra con datos (closedBy + contador + resumen). Los mensajes quedan
+    // grabados por el efecto de guardado de siempre (sin skipFirestore).
+    if (sessionStatus === 'active') {
+      const closing = detectClosing(text);
+      if (closing.isClosing) {
+        const goodbye = language === 'en'
+          ? `My pleasure! I'm here whenever you need 🙌\nYou can see our full portfolio and reach the team here: ${COMPANY_WEBSITE} or on WhatsApp: ${COMPANY_WA}\nHave a great day! 👋`
+          : `¡Con mucho gusto! Quedo atento cuando necesites 🙌\nPuedes ver todo nuestro portafolio y contactar al equipo aquí: ${COMPANY_WEBSITE} o por WhatsApp: ${COMPANY_WA}\n¡Que tengas un excelente día! 👋`;
+        const exitId = `polite-exit-${Date.now()}`;
+        // `keepClosed` en LOS DOS mensajes del cierre: el guardado de mensajes reabría la sesión
+        // que acabamos de cerrar (verificado en vivo: quedaba 'completed' → 'active').
+        setMessages(prev => [...prev, {
+          id: exitId,
+          role: 'model',
+          text: goodbye,
+          timestamp: new Date(),
+          keepClosed: true,
+        } as any]);
+        setIsLoading(false);
+        if (conversationId) {
+          // El mensaje del cliente en esta rama NO lo graba /api/chat (no se llama a la IA): se
+          // escribe aquí para que el turno de cierre quede en la transcripción.
+          try {
+            await addMessage(conversationId, { id: userMsg.id, role: 'user', text, keepClosed: true } as any);
+          } catch (e) { console.warn('polite exit: user turn not recorded', e); }
+          updateSessionStatus(conversationId, 'completed', undefined, {
+            closedBy: 'bot_polite_exit',
+            closedPhrase: closing.phrase,
+          }).catch((e) => console.warn('polite exit close failed:', e));
+          bumpSessionCounter(conversationId, 'botClosed', 1).catch(() => {});
+          summarizeSessionNow(conversationId).catch(console.error);
+        }
+        return;
+      }
     }
 
     setIsLoading(true);
@@ -593,19 +918,10 @@ const ChatTab: React.FC<ChatTabProps> = ({ quickActions, initialMessage, emergen
     }, 30000);
 
     try {
-      // Detect escalation type for auto-reply BEFORE firing alerts
-      const lowerText = text.toLowerCase();
-      const isQuoteIntent = ['price', 'precio', 'costo', 'valor', 'cotiz', 'presupuesto', 'budget', 'quote', 'cuanto', 'how much'].some(kw => lowerText.includes(kw));
-      const isStaffIntent = ['asesor', 'humano', 'staff', 'human', 'agent', 'llamar', 'call me', 'speak to someone', 'talk to someone', 'contacto', 'atencion', 'atención'].some(kw => lowerText.includes(kw));
-      const hasEscalationIntent = isQuoteIntent || isStaffIntent;
-
       checkAndTriggerWhatsAppAlert(text);
 
-      // Show auto-reply to user immediately (don't wait for AI response)
-      if (hasEscalationIntent) {
-        showEscalationAutoReply(isQuoteIntent ? 'quote' : 'staff');
-      }
-      // Prepare history for Gemini
+      // Una sola respuesta al cliente. La alerta al equipo sigue, pero no se
+      // agrega una segunda burbuja encima de la respuesta de la IA.
       const history = messages.slice(1).map(m => ({
         role: m.role as 'user' | 'model',
         parts: [{ text: m.text }]
@@ -659,18 +975,34 @@ const ChatTab: React.FC<ChatTabProps> = ({ quickActions, initialMessage, emergen
         id: botMsgId,
         role: 'model',
         text: '', // Start empty for streaming
-        timestamp: new Date()
+        timestamp: new Date(),
+        skipFirestore: true
       }]);
 
       let fullText = '';
       
       for await (const chunk of responseGenerator) {
+        // Server-sent clean replacement of the final text (capped replies are trimmed
+        // to a clean sentence ending before the turn is recorded).
+        if (chunk && typeof chunk === 'object' && (chunk as any).replace) {
+          fullText = String((chunk as any).replace);
+          setMessages(prev => prev.map(msg => 
+            msg.id === botMsgId ? { ...msg, text: fullText } : msg
+          ));
+          continue;
+        }
         const chunkText = typeof chunk === 'string' ? chunk : ((chunk as any)?.text || (chunk as any)?.candidates?.[0]?.content?.parts?.[0]?.text || '');
         fullText += chunkText;
         
         setMessages(prev => prev.map(msg => 
           msg.id === botMsgId ? { ...msg, text: fullText } : msg
         ));
+      }
+      // Nothing rendered (duplicate suppressed / empty stream): drop the empty bubble
+      // instead of leaving a blank message in the conversation.
+      if (!fullText.trim()) {
+        setMessages(prev => prev.filter(m => m.id !== botMsgId));
+        return;
       }
       // Simulate tool execution since the API doesn't support function calls
       if (fullText.includes('email_conversation_to_admin') || fullText.includes('transferencia electrónica')) {
@@ -714,6 +1046,13 @@ const ChatTab: React.FC<ChatTabProps> = ({ quickActions, initialMessage, emergen
     }
   };
 
+  // Re-entrancy guard: blocks a same-tick double submit (React state `isLoading` lags one render).
+  const handleSendMessage = async (text: string) => {
+    if (sendingRef.current) return;
+    sendingRef.current = true;
+    try { await sendMessageInner(text); } finally { sendingRef.current = false; }
+  };
+
   const getIcon = (name: string) => {
     switch(name) {
       case 'Box': return <Box size={16} />;
@@ -744,7 +1083,7 @@ const ChatTab: React.FC<ChatTabProps> = ({ quickActions, initialMessage, emergen
         customerPhone: extractedPii?.phone || '',
         customerEmail: extractedPii?.email || '',
         message: interventionReason.trim(),
-        brand: currentBrand || 'unitec',
+        brand: brandId || 'unitec',
         sessionId: conversationId,
       }).catch(console.error);
       await notifyStaffIntervention(conversationId, interventionReason.trim(), 'high');
@@ -1213,7 +1552,7 @@ const ChatTab: React.FC<ChatTabProps> = ({ quickActions, initialMessage, emergen
           <input
             type="text"
             value={inputText}
-            onChange={(e) => setInputText(e.target.value)}
+            onChange={(e) => { setInputText(e.target.value); if (e.target.value.trim().length >= 2) prewarmSession(); }}
             onKeyDown={(e) => e.key === 'Enter' && handleSendMessage(inputText)}
             placeholder={error ? (language === 'en' ? "Chat disabled" : "Chat deshabilitado") : t.chatPlaceholder}
             className="flex-1 bg-transparent border-none outline-none text-sm px-2 text-gray-800 placeholder-gray-400 disabled:text-gray-400"

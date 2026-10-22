@@ -1,0 +1,15 @@
+{
+  "_readme": [
+    "Curated price pins. Applied AFTER the fuzzy sheet match in build-price-map.mjs,",
+    "so a generic sheet row (e.g. bare 'CORNISA PVC') can never mis-price a specific ref.",
+    "A pin also CREATES the entry when the sheet has no matching row at all.",
+    "price_cop is COP as an integer; unit is the label shown to the customer.",
+    "Source values must name where the figure came from - never invent one."
+  ],
+  "overrides": {
+    "14032001": { "price_cop": 14999, "unit": "Paquete / Package", "source": "CORNISA PVC (cliente - nuevos)", "note": "CORNISA PVC BLANCA BRILLANTE AM1001" },
+    "14032002": { "price_cop": 14999, "unit": "Paquete / Package", "source": "CORNISA PVC (cliente - nuevos)", "note": "CORNISA PVC BLANCO MADERA BRILLANTE AM1002" },
+    "14032004": { "price_cop": 14999, "unit": "Paquete / Package", "source": "CORNISA PVC (cliente - nuevos)", "note": "CORNISA PVC BEIGE BRILLANTE AM1004" },
+    "14032014": { "price_cop": 14999, "unit": "Paquete / Package", "source": "CORNISA PVC (cliente - nuevos)", "note": "CORNISA PVC BLANCO EJECUTIVO AM1014" }
+  }
+}

@@ -69,7 +69,9 @@ export interface ConversationSession {
   customerPhone?: string;
   // 'abandoned_at_greeting' = left after seeing only the greeting (0 user messages)
   // 'abandoned' = left mid-flow (had at least 1 user message but did not complete)
-  status: 'active' | 'human_requested' | 'human_assigned' | 'completed' | 'abandoned' | 'abandoned_at_greeting';
+  // 'resolved' = closed by staff (terminal). It leaves the alert queue; a new customer message
+  // reactivates the session to 'active', exactly as 'completed' already does.
+  status: 'active' | 'human_requested' | 'human_assigned' | 'resolved' | 'completed' | 'abandoned' | 'abandoned_at_greeting';
   brandId: 'unitec' | 'building';
   language: 'en' | 'es';
   messages?: ConversationMessage[];
@@ -82,7 +84,7 @@ export interface ConversationSession {
   sentimentScore?: number;
   topics: string[];
   duration?: number;
-  source: 'web' | 'phone' | 'whatsapp';
+  source: 'web' | 'website' | 'phone' | 'whatsapp';
   userAgent?: string;
   ipAddress?: string;
   referrer?: string;
@@ -163,7 +165,7 @@ const COLLECTIONS = {
 export const createConversation = async (
   brandId: 'unitec' | 'building',
   language: 'en' | 'es' = 'es',
-  source: 'web' | 'phone' | 'whatsapp' = 'web',
+  source: 'web' | 'website' | 'phone' | 'whatsapp' = 'web',
   metadata?: { userAgent?: string; ipAddress?: string }
 ): Promise<string> => {
   const sessionId = `session_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
@@ -253,7 +255,7 @@ export const addMessage = async (
         local[idx].flowStage = 'engaging';
       }
     }
-    if (local[idx].status === 'completed' || local[idx].status === 'abandoned' || local[idx].status === 'abandoned_at_greeting') {
+    if (!(message as any)?.keepClosed && (local[idx].status === 'completed' || local[idx].status === 'abandoned' || local[idx].status === 'abandoned_at_greeting')) {
       local[idx].status = 'active';
     }
     saveLocalSessions(local);
@@ -282,14 +284,16 @@ export const addMessage = async (
           updatePayload.firstUserMessageAt = now;
           updatePayload.flowStage = 'engaging';
         }
-        if (sessionData.status === 'completed' || sessionData.status === 'abandoned' || sessionData.status === 'abandoned_at_greeting') {
+        if (!(message as any)?.keepClosed && (sessionData.status === 'completed' || sessionData.status === 'abandoned' || sessionData.status === 'abandoned_at_greeting')) {
           updatePayload.status = 'active';
         }
       }
     } else {
       if (sessionSnap.exists()) {
         const sessionData = sessionSnap.data() as ConversationSession;
-        if (sessionData.status === 'completed' || sessionData.status === 'abandoned' || sessionData.status === 'abandoned_at_greeting') {
+        // `keepClosed`: los mensajes que forman parte del CIERRE (despedida del bot) no reabren
+        // la sesión; un mensaje nuevo del cliente (sin la marca) sí la reabre.
+        if (!(message as any)?.keepClosed && (sessionData.status === 'completed' || sessionData.status === 'abandoned' || sessionData.status === 'abandoned_at_greeting')) {
           updatePayload.status = 'active';
         }
       }
@@ -303,7 +307,10 @@ export const addMessage = async (
 export const updateSessionStatus = async (
   sessionId: string,
   status: ConversationSession['status'],
-  assignedTo?: string
+  assignedTo?: string,
+  // Campos extra del cierre (p.ej. closedBy:'bot_polite_exit'). Se escriben en el mismo update
+  // para que "quién cerró y por qué" quede guardado junto al estado (política 2026-10-15).
+  extra?: Record<string, unknown>
 ): Promise<void> => {
   if (getPrivacyMode()) {
     logPrivacy('updateSessionStatus');
@@ -314,6 +321,7 @@ export const updateSessionStatus = async (
   const update: any = {
     status,
     lastUpdated: now,
+    ...(extra || {}),
   };
   if (assignedTo) {
     update.assignedTo = assignedTo;
@@ -737,14 +745,16 @@ export const extractCustomerData = async (
   }
   
   const now = new Date().toISOString();
-  const update: any = {
-    extractedData: data,
-    lastUpdated: now,
-  };
-  
-  if (data?.name) update.customerName = data.name;
-  if (data?.email) update.customerEmail = data.email;
-  if (data?.phone) update.customerPhone = data.phone;
+  // `updateDoc` RECHAZA los valores undefined y el rechazo moría en el catch de abajo: por eso el
+  // teléfono que el bot decía "ya registré" nunca llegaba al doc de la sesión. Se limpian primero.
+  const safeData: any = data
+    ? Object.fromEntries(Object.entries(data).filter(([, v]) => v !== undefined && v !== null && v !== ''))
+    : null;
+  const update: any = { lastUpdated: now };
+  if (safeData && Object.keys(safeData).length) update.extractedData = safeData;
+  if (safeData?.name) update.customerName = safeData.name;
+  if (safeData?.email) update.customerEmail = safeData.email;
+  if (safeData?.phone) update.customerPhone = safeData.phone;
 
   // Update locally
   const local = getLocalSessions();
@@ -762,6 +772,53 @@ export const extractCustomerData = async (
     await updateDoc(doc(db, COLLECTIONS.sessions, sessionId), update);
   } catch (e) {
     console.warn('Failed to update customer data in Firestore:', e);
+  }
+};
+
+// Marca PERSISTIDA de que el aviso de takeover ya se mostró (para no repetirlo en cada recarga).
+export const markStaffNotice = async (sessionId: string): Promise<void> => {
+  if (getPrivacyMode()) return;
+  try {
+    await updateDoc(doc(db, COLLECTIONS.sessions, sessionId), { staffNoticeAt: new Date().toISOString() });
+  } catch (e) {
+    console.warn('Failed to mark staff notice:', e);
+  }
+};
+
+// Sube un contador ANIDADO de analytics con un path punteado + increment.
+// NO usar updateAnalytics para esto: reemplaza el mapa `analytics` completo y borraría los contadores.
+export const bumpSessionCounter = async (sessionId: string, field: string, by = 1): Promise<void> => {
+  if (getPrivacyMode()) return;
+  try {
+    await updateDoc(doc(db, COLLECTIONS.sessions, sessionId), { [`analytics.${field}`]: increment(by) });
+  } catch (e) {
+    console.warn('Failed to bump session counter:', e);
+  }
+};
+
+/**
+ * Espera real del cliente hasta la PRIMERA respuesta de un asesor (política 2026-10-15):
+ * guarda `firstStaffReplyAt` + `analytics.staffWaitMs` UNA sola vez por sesión. Se llama desde
+ * el panel cuando el asesor envía su primer mensaje — así "cuánto esperó el cliente" deja de
+ * ser una suposición y aparece en el informe.
+ */
+export const markFirstStaffReply = async (sessionId: string, waitingSinceIso?: string): Promise<void> => {
+  if (getPrivacyMode()) return;
+  try {
+    const sessionRef = doc(db, COLLECTIONS.sessions, sessionId);
+    const snap = await getDoc(sessionRef);
+    const data: any = snap.exists() ? snap.data() : {};
+    if (data.firstStaffReplyAt) return; // ya registrado: no se reescribe
+    const since = waitingSinceIso || data.claimedAt || data.lastEscalationAt || data.humanRequestedAt;
+    if (!since) return;
+    const waitMs = Date.now() - new Date(since).getTime();
+    if (!Number.isFinite(waitMs) || waitMs < 0) return;
+    await updateDoc(sessionRef, {
+      firstStaffReplyAt: new Date().toISOString(),
+      'analytics.staffWaitMs': Math.round(waitMs),
+    });
+  } catch (e) {
+    console.warn('markFirstStaffReply failed:', e);
   }
 };
 
@@ -1009,20 +1066,79 @@ export const getInterventions = async (
   }
 };
 
-// Clear an intervention request
+// Clear an intervention request AND close the session it belongs to.
+//
+// The second half is the fix for "after the conversation was taken the alert is still there": the old
+// version flipped only the intervention doc and left the SESSION in `human_assigned` forever, so it
+// never left the alert queue. `resolvedAt`/`resolvedBy`/`resolution` are stamped on both so the
+// history tab and the session agree on who closed it and when.
 export const clearIntervention = async (
   interventionId: string,
-  resolution: string = 'Resolved by staff'
+  resolution: string = 'Resolved by staff',
+  staffName: string = 'Asesor'
 ): Promise<void> => {
   if (getPrivacyMode()) {
     logPrivacy('clearIntervention');
     return;
   }
+  const stamp = new Date().toISOString();
   await updateDoc(doc(db, COLLECTIONS.interventions, interventionId), {
     status: 'resolved',
     resolution,
-    resolvedAt: new Date().toISOString(),
+    resolvedAt: stamp,
+    resolvedBy: staffName,
   });
+  try {
+    const snap = await getDoc(doc(db, COLLECTIONS.interventions, interventionId));
+    const sessionId = snap.exists() ? String((snap.data() as InterventionRequest).sessionId || '') : '';
+    if (sessionId) await resolveConversation(sessionId, staffName, resolution);
+  } catch (e) {
+    console.warn('clearIntervention could not close the session:', e);
+  }
+};
+
+// Resolve a conversation: terminal status + stamp, and every still-open intervention for it closed too.
+// This is what actually clears the alert and the "Needs Human" badge, because the panel queue is driven
+// by the SESSION status. Terminal is safe: a new customer message reactivates the session to 'active',
+// exactly as it already does for 'completed' and 'abandoned'.
+export const resolveConversation = async (
+  sessionId: string,
+  staffName: string = 'Asesor',
+  resolution: string = 'Resuelta por el asesor'
+): Promise<void> => {
+  if (getPrivacyMode()) {
+    logPrivacy('resolveConversation');
+    return;
+  }
+  const stamp = new Date().toISOString();
+
+  // 1. close every intervention still open for this session
+  try {
+    const snap = await getDocs(query(collection(db, COLLECTIONS.interventions), where('sessionId', '==', sessionId)));
+    await Promise.all(
+      snap.docs
+        .filter((d) => {
+          const s = d.data().status;
+          return s === 'pending' || s === 'accepted';
+        })
+        .map((d) => updateDoc(d.ref, { status: 'resolved', resolution, resolvedAt: stamp, resolvedBy: staffName }))
+    );
+  } catch (e) {
+    console.warn('resolveConversation: interventions not closed:', e);
+  }
+
+  // 2. the session itself
+  await updateSessionStatus(sessionId, 'resolved', staffName);
+  try {
+    await updateDoc(doc(db, COLLECTIONS.sessions, sessionId), {
+      resolvedAt: stamp,
+      resolvedBy: staffName,
+      resolution,
+      resolvedFrom: 'staff_view',
+    });
+  } catch (e) {
+    console.warn('resolveConversation: session stamp failed:', e);
+  }
 };
 
 // Analytics summary data

@@ -15,10 +15,15 @@ function playAudioBlob(blob: Blob): Promise<void> {
 }
 
 // ─── Fish Audio (primary) ─────────────────────────────────────────────────
+// Si la key no está configurada en el servidor, cada turno gastaba una ida y vuelta (400) antes
+// de caer a Deepgram. Se recuerda el fallo y se salta Fish por el resto de la sesión.
+let fishDisabled = false;
+
 async function speakWithFishAudio(
   text: string,
   language: string
 ): Promise<boolean> {
+  if (fishDisabled) return false;
   try {
     const res = await fetch('/api/fish-tts', {
       method: 'POST',
@@ -32,6 +37,9 @@ async function speakWithFishAudio(
         await playAudioBlob(blob);
         return true;
       }
+    } else if (res.status === 400 || res.status === 401 || res.status === 403) {
+      fishDisabled = true; // sin key / key inválida: no volver a intentarlo en esta sesión
+      console.warn('Fish Audio TTS not configured (status ' + res.status + ') → usando Deepgram directo');
     }
   } catch (err) {
     console.warn('Fish Audio TTS unavailable, trying Deepgram:', err);

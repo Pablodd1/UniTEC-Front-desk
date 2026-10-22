@@ -128,19 +128,29 @@ async function fireAlert(severity, payload, meta) {
     } catch { results.email = false; }
   }
 
-  // WhatsApp + SMS (Sent.dm)
+  // SMS al teléfono del admin (Twilio). Antes usaba Sent.dm; ahora hay un solo proveedor.
+  // La clave `results.whatsapp` se conserva por compatibilidad con quien lea este objeto.
   if (needs.whatsapp()) {
-    const adminPhone = process.env.ADMIN_PHONE || '+573142332147';
-    const apiKey = (process.env.SENT_DM_API_KEY || '').trim();
-    if (apiKey) {
+    const adminPhone = process.env.ADMIN_PHONE || '+573****2147';
+    const accountSid = process.env.TWILIO_ACCOUNT_SID || '';
+    const authToken = process.env.TWILIO_AUTH_TOKEN || '';
+    const from = process.env.TWILIO_PHONE_NUMBER || '';
+    if (accountSid && authToken && from) {
       try {
-        const r = await fetch('https://api.sent.dm/v3/messages', {
+        const form = new URLSearchParams();
+        form.append('To', adminPhone);
+        form.append('From', from);
+        form.append('Body', `🧠 Memoria del asistente UniTEC al ${pct}% (${severity === 'critical' ? 'crítico' : 'alerta'}). La conversación se está llenando y el bot puede volverse lento. Tokens ${payload.contextTokens.toLocaleString('es-CO')} — Mensajes ${payload.conversationMsgs}`);
+        const r = await fetch(`https://api.twilio.com/2010-04-01/Accounts/${accountSid}/Messages.json`, {
           method: 'POST',
-          headers: { 'x-api-key': apiKey, 'Content-Type': 'application/json' },
-          body: JSON.stringify({ to: [adminPhone], text: `🧠 Memoria del asistente UniTEC al ${pct}% (${severity === 'critical' ? 'crítico' : 'alerta'}). La conversación se está llenando y el bot puede volverse lento. Tokens ${payload.contextTokens.toLocaleString('es-CO')} — Mensajes ${payload.conversationMsgs}`, channel: ['whatsapp', 'sms'] }),
+          headers: {
+            Authorization: 'Basic ' + Buffer.from(`${accountSid}:${authToken}`).toString('base64'),
+            'Content-Type': 'application/x-www-form-urlencoded',
+          },
+          body: form,
           signal: AbortSignal.timeout(8000),
         });
-        results.whatsapp = r.ok || r.status === 202;
+        results.whatsapp = r.ok;
       } catch { results.whatsapp = false; }
     }
   }
@@ -235,5 +245,5 @@ export default async function handler(req, res) {
   }
 
   // GET /api/health or /api/ctx-health -> live dashboard/cron metrics
-  return res.status(200).json({ ok: true, ...getHealth() });
+  return res.status(200).json({ ok: true, version: '2.1-styleguard', ...getHealth() });
 }

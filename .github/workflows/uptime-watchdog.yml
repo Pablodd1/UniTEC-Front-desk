@@ -1,0 +1,84 @@
+name: Uptime Watchdog
+
+# Vigía de vida del front desk: cada 15 min comprueba que el sitio y sus endpoints críticos
+# responden, y que el bundle servido existe (detecta un deploy roto, no solo un endpoint muerto).
+# NO toca la aplicación: una alerta por caída (issue de GitHub, que llega por notificación/email)
+# y otra al recuperarse, con deduplicación por issue abierto para no spamear cada 15 minutos.
+
+on:
+  schedule:
+    - cron: '*/15 * * * *'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  issues: write
+
+env:
+  BASE_URL: ${{ vars.BASE_URL || 'https://unitec-front-desk.vercel.app' }}
+  GH_TOKEN: ${{ github.token }}
+
+jobs:
+  watchdog:
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - name: Comprobar sitio, endpoints y bundle (3 intentos c/u)
+        id: check
+        run: |
+          set -u
+          fails=""
+          for p in "/" "/api/health" "/api/warm"; do
+            ok=0; code=000
+            for i in 1 2 3; do
+              code=$(curl -s -o /tmp/body -w '%{http_code}' -m 20 "$BASE_URL$p" 2>/dev/null || echo 000)
+              if [ "$code" = "200" ]; then ok=1; break; fi
+              sleep 20
+            done
+            echo "$p -> $code"
+            if [ "$ok" = "0" ]; then fails="$fails $p($code)"; fi
+          done
+          bundle=$(curl -s -m 20 "$BASE_URL/" 2>/dev/null | grep -o 'assets/index-[A-Za-z0-9_-]*\.js' | head -1)
+          if [ -z "$bundle" ]; then
+            fails="$fails bundle(no-hash)"
+          else
+            bcode=$(curl -s -o /dev/null -w '%{http_code}' -m 25 "$BASE_URL/$bundle" 2>/dev/null || echo 000)
+            echo "bundle $bundle -> $bcode"
+            if [ "$bcode" != "200" ]; then fails="$fails bundle($bcode)"; fi
+          fi
+          echo "fails=$fails" >> "$GITHUB_OUTPUT"
+          echo "bundle=${bundle:-none}" >> "$GITHUB_OUTPUT"
+
+      - name: Caída -> alerta + issue de seguimiento (una por caída)
+        if: steps.check.outputs.fails != ''
+        run: |
+          set -u
+          fails="${{ steps.check.outputs.fails }}"
+          open=$(gh issue list --label watchdog --state open --json number --jq '.[0].number // empty' 2>/dev/null || true)
+          body="El watchdog no pudo confirmar el front desk.
+
+          Fallos: \`$fails\`
+          Bundle: \`${{ steps.check.outputs.bundle }}\`
+          Comprobado: $(date -u '+%Y-%m-%dT%H:%M:%SZ')
+
+          Nota: cada ruta se probó 3 veces con 20 s de espera; esto es una caída real, no un parpadeo."
+          if [ -z "$open" ]; then
+            gh issue create --label watchdog --title "🔴 [watchdog] UniTEC front desk sin responder" --body "$body" || true
+            curl -s -m 20 -X POST "$BASE_URL/api/notify-telegram" -H 'Content-Type: application/json' \
+              -d "{\"message\":\"🔴 WATCHDOG UniTEC: fallos -> $fails\"}" >/dev/null 2>&1 || true
+          else
+            gh issue comment "$open" --body "$body" || true
+          fi
+
+      - name: Recuperado -> cerrar el issue y avisar una vez
+        if: steps.check.outputs.fails == ''
+        run: |
+          set -u
+          open=$(gh issue list --label watchdog --state open --json number --jq '.[0].number // empty' 2>/dev/null || true)
+          if [ -n "$open" ]; then
+            gh issue comment "$open" --body "✅ Recuperado: todas las comprobaciones volvieron a 200 ($(date -u '+%Y-%m-%dT%H:%M:%SZ')). Bundle: \`${{ steps.check.outputs.bundle }}\`" || true
+            gh issue close "$open" || true
+            curl -s -m 20 -X POST "$BASE_URL/api/notify-telegram" -H 'Content-Type: application/json' \
+              -d "{\"message\":\"✅ WATCHDOG UniTEC: recuperado, todo responde 200\"}" >/dev/null 2>&1 || true
+          fi
+          echo "todo en verde"

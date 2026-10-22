@@ -6,6 +6,7 @@ import CallTab from './components/CallTab';
 import AdminDashboard from './components/AdminDashboard';
 import CalendarTab from './components/CalendarTab';
 import LoginScreen from './components/LoginScreen';
+import StaffReply from './components/StaffReply';
 import ServicesTab from './components/ServicesTab';
 import InfoTab from './components/InfoTab';
 import PrivacyTab from './components/PrivacyTab';
@@ -16,17 +17,37 @@ import { resetChatSession } from './services/geminiService';
 import { auth, logOut } from './firebase';
 import { onAuthStateChanged, signInAnonymously } from 'firebase/auth';
 
+// Deep-link support: /admin must behave like ?admin=true (telegram alert buttons point here)
+const isAdminPath = (): boolean =>
+  typeof window !== 'undefined' && /^\/admin\/?$/i.test(window.location.pathname);
+
 const App: React.FC = () => {
   const isEmbedMode = new URLSearchParams(window.location.search).get('embed') === 'true';
 
+  // Deep-link target from Telegram alerts (?admin=true&session=<id>)
+  const [adminDeepLinkSession] = useState<string | undefined>(() => {
+    if (typeof window === 'undefined') return undefined;
+    const sid = new URLSearchParams(window.location.search).get('session') || '';
+    return /^[\w-]{1,80}$/.test(sid) ? sid : undefined;
+  });
+
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [isAuthReady, setIsAuthReady] = useState(false);
+
+  // Deep-link del STAFF (?staff=<token>): la alerta abre SOLO esa conversación, sin el muro de login
+  // del panel (sessionStorage es por pestaña y no se hereda desde Telegram). El token lo firma
+  // /api/notify-escalation y lo valida /api/staff-enter.
+  const [staffToken] = useState<string>(() =>
+    typeof window === 'undefined' ? '' : new URLSearchParams(window.location.search).get('staff') || ''
+  );
+  const [staffAuth, setStaffAuth] = useState<'checking' | 'ok' | 'denied'>(staffToken ? 'checking' : 'denied');
+  const [staffInfo, setStaffInfo] = useState<{ customerName?: string; customerPhone?: string } | null>(null);
 
   const [activeTab, setActiveTab] = useState<Tab>(() => {
     if (typeof window !== 'undefined') {
       const search = window.location.search;
       const hash = window.location.hash;
-      if (search.includes('admin=true') || hash === '#admin' || localStorage.getItem('unitec_show_admin') === 'true') {
+      if (search.includes('admin=true') || hash === '#admin' || isAdminPath() || localStorage.getItem('unitec_show_admin') === 'true') {
         return Tab.ADMIN_SETTINGS;
       }
     }
@@ -41,7 +62,7 @@ const App: React.FC = () => {
     if (typeof window !== 'undefined') {
       const search = window.location.search;
       const hash = window.location.hash;
-      return search.includes('admin=true') || hash === '#admin' || localStorage.getItem('unitec_show_admin') === 'true';
+      return search.includes('admin=true') || hash === '#admin' || isAdminPath() || localStorage.getItem('unitec_show_admin') === 'true';
     }
     return false;
   });
@@ -85,11 +106,35 @@ const App: React.FC = () => {
     resetChatSession();
   }, [emergencyMode, language, currentBrandId]);
 
+  // Valida el link firmado del staff contra /api/staff-enter (token atado a la sesión + caducidad).
+  useEffect(() => {
+    if (!staffToken) return;
+    if (!adminDeepLinkSession) { setStaffAuth('denied'); return; }
+    let cancelled = false;
+    fetch('/api/staff-enter', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ token: staffToken, sessionId: adminDeepLinkSession }),
+    })
+      .then((r) => r.json())
+      .then((j) => {
+        if (cancelled) return;
+        if (j?.ok) {
+          setStaffInfo({ customerName: j.customerName, customerPhone: j.customerPhone });
+          setStaffAuth('ok');
+        } else {
+          setStaffAuth('denied');
+        }
+      })
+      .catch(() => { if (!cancelled) setStaffAuth('denied'); });
+    return () => { cancelled = true; };
+  }, [staffToken, adminDeepLinkSession]);
+
   useEffect(() => {
     const checkAdminMode = () => {
       const hash = window.location.hash;
       const search = window.location.search;
-      const hasAdminParam = search.includes('admin=true') || hash === '#admin';
+      const hasAdminParam = search.includes('admin=true') || hash === '#admin' || isAdminPath();
       const hasStoredAdmin = localStorage.getItem('unitec_show_admin') === 'true';
       
       if (hasAdminParam || hasStoredAdmin) {
@@ -171,7 +216,7 @@ const App: React.FC = () => {
 
   const renderContent = () => {
     if (!isAuthReady) {
-      return <div className="h-full w-full flex itemás-center justify-center bg-slate-50"><div className="animate-spin rounded-full h-8 w-8 border-b-2 border-brand-600"></div></div>;
+      return <div className="h-full w-full flex items-center justify-center bg-slate-50"><div className="animate-spin rounded-full h-8 w-8 border-b-2 border-brand-600"></div></div>;
     }
 
     if ((activeTab === Tab.ADMIN_SETTINGS || activeTab === Tab.CALENDAR) && !isLoggedIn) {
@@ -227,6 +272,7 @@ const App: React.FC = () => {
         return <CalendarTab />;
       case Tab.ADMIN_SETTINGS:
         return <AdminDashboard 
+            initialSessionId={adminDeepLinkSession}
             emergencyMode={emergencyMode}
             setEmergencyMode={setEmergencyMode}
             voiceName={voiceName}
@@ -247,6 +293,38 @@ const App: React.FC = () => {
         />;
     }
   };
+
+  if (staffToken && staffAuth === 'ok' && adminDeepLinkSession) {
+    return <StaffReply sessionId={adminDeepLinkSession} knownName={staffInfo?.customerName} knownPhone={staffInfo?.customerPhone} />;
+  }
+  if (staffToken && staffAuth === 'checking') {
+    return (
+      <div className="min-h-[100dvh] w-full bg-slate-100 flex items-center justify-center">
+        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-brand-600" />
+      </div>
+    );
+  }
+  if (staffToken && staffAuth === 'denied') {
+    // El link de la alerta caducó o fue alterado: se dice QUÉ pasó y se da la entrada al panel, en
+    // vez de dejar al staff en una pantalla que no explica nada (la queja original).
+    return (
+      <div className="min-h-[100dvh] w-full bg-slate-100 flex items-center justify-center p-6 font-sans">
+        <div className="bg-white rounded-2xl shadow-sm border border-slate-200 max-w-md w-full p-6 text-center">
+          <p className="text-3xl mb-2">🔒</p>
+          <h1 className="text-lg font-semibold text-slate-800 mb-2">Este enlace de la alerta expiró o no es válido</h1>
+          <p className="text-sm text-slate-500 mb-5">
+            Los enlaces de atención caducan a las 48 horas. Entra al panel con tu correo y contraseña para ver la conversación.
+          </p>
+          <a
+            className="inline-block px-4 py-2.5 rounded-xl bg-brand-600 text-white text-sm font-semibold hover:bg-brand-700"
+            href={`${window.location.origin}/?admin=true${adminDeepLinkSession ? `&session=${encodeURIComponent(adminDeepLinkSession)}` : ''}`}
+          >
+            Ir al panel
+          </a>
+        </div>
+      </div>
+    );
+  }
 
   if (isEmbedMode) {
     const embedTab = (activeTab === Tab.ADMIN_SETTINGS) ? Tab.CHAT : activeTab;
@@ -300,6 +378,7 @@ const App: React.FC = () => {
     return (
       <div className="min-h-[100dvh] w-full bg-slate-50 flex flex-col font-sans">
         <AdminDashboard 
+            initialSessionId={adminDeepLinkSession}
             emergencyMode={emergencyMode}
             setEmergencyMode={setEmergencyMode}
             voiceName={voiceName}

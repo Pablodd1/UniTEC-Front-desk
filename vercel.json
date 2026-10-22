@@ -2,7 +2,7 @@
   "cleanUrls": true,
   "rewrites": [
     {"source": "/api/(.*)", "destination": "/api/$1"},
-    {"source": "/(.*)", "destination": "/index.html"}
+    {"source": "/(.*)", "destination": "/index"}
   ],
   "crons": [
     {
@@ -16,6 +16,14 @@
     {
       "path": "/api/lifecycle-sweep",
       "schedule": "*/15 * * * *"
+    },
+    {
+      "path": "/api/abandon-sweep",
+      "schedule": "*/5 * * * *"
+    },
+    {
+      "path": "/api/staff-sla-sweep",
+      "schedule": "*/5 * * * *"
     },
     {
       "path": "/api/ga-visits",

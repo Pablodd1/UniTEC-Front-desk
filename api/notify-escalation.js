@@ -5,6 +5,12 @@ import { createRequire } from 'module';
 const require = createRequire(import.meta.url);
 const firebaseConfig = require('../firebase-applet-config.json');
 
+// Persistencia de escalaciones: una alerta que nadie puede ver es una alerta que no existió.
+import { addDoc, bumpCounter } from './_firestore-rest.js';
+// Link de un toque para el staff (firmado, atado a la sesión): sin esto la alerta cae en el muro de
+// login del panel y "no hay forma de entrar al chat".
+import { staffUrl } from './_staff-token.js';
+
 // --- CORS ---
 function setCORS(res, req) {
   const ALLOWED = (process.env.ALLOWED_ORIGINS || '').split(',').map(s => s.trim()).filter(Boolean);
@@ -78,7 +84,11 @@ async function sendTelegram(message) {
         body: JSON.stringify({ chat_id: chatIds[i], text: message, parse_mode: 'HTML' }),
         signal: AbortSignal.timeout(8000),
       });
-      results.push({ chatId: chatIds[i], ok: r.ok });
+      // El message_id es lo que permite CERRAR la alerta más tarde (/api/session-resolve):
+      // un mensaje de Telegram no se puede borrar, sólo editar. Sin este id la alerta se queda
+      // abierta en el teléfono aunque la conversación ya esté atendida.
+      const sent = await r.json().catch(() => ({}));
+      results.push({ chatId: chatIds[i], ok: r.ok, messageId: sent?.result?.message_id ?? null });
     } catch (e) {
       results.push({ chatId: chatIds[i], ok: false, error: e.message });
     }
@@ -104,7 +114,9 @@ async function sendEmail(subject, html) {
       }),
       signal: AbortSignal.timeout(8000),
     });
-    return { success: r.ok, data: r.ok ? await r.json() : await r.text() };
+    if (r.ok) return { success: true, data: await r.json() };
+    const detail = await r.text().catch(() => '');
+    return { success: false, error: String(detail || `HTTP ${r.status}`).slice(0, 200), data: detail };
   } catch (e) {
     return { success: false, error: e.message };
   }
@@ -184,67 +196,64 @@ async function sendTwilioWhatsApp(phone, text) {
       signal: AbortSignal.timeout(8000),
     });
     const data = await r.json();
-    return { success: r.ok, sid: data.sid, data };
+    // Sin esto, un rechazo del proveedor se guardaba como error '' y parecía "no ejecutado".
+    return { success: r.ok, sid: data.sid, error: r.ok ? '' : String(data?.message || `HTTP ${r.status}`), data };
   } catch (e) {
     return { success: false, error: e.message };
   }
 }
 
-// --- Channel: WhatsApp + SMS via Sent.dm ---
-async function sendWhatsAppAndSMS(phones, text) {
-  const apiKey = (process.env.SENT_DM_API_KEY || '').trim();
-  if (!apiKey) return { success: false, error: 'SENT_DM_API_KEY not set' };
-
-  const phoneList = (Array.isArray(phones) ? phones : [phones])
-    .map(p => {
-      let clean = (p || '').trim();
-      if (!clean.startsWith('+')) clean = '+' + clean.replace(/\D/g, '');
-      return clean;
-    })
-    .filter(Boolean);
-
-  if (phoneList.length === 0) return { success: false, error: 'No valid phone numbers' };
-
-  try {
-    const r = await fetch('https://api.sent.dm/v3/messages', {
-      method: 'POST',
-      headers: { 'x-api-key': apiKey, 'Content-Type': 'application/json' },
-      body: JSON.stringify({ to: phoneList, text, channel: ['whatsapp', 'sms'] }),
-      signal: AbortSignal.timeout(8000),
-    });
-    const data = await r.json();
-    return { success: r.ok || r.status === 202, data };
-  } catch (e) {
-    return { success: false, error: e.message };
-  }
-}
+// --- Channel: WhatsApp + SMS (Twilio, único proveedor de teléfono) ---
+// Sent.dm se eliminó: estaba muerto (0/6 entregas) y obligaba a mantener dos integraciones para el
+// mismo trabajo, además de ser lo que empujó a un "primario + respaldo" que enmascaraba el fallo.
+// Twilio entrega SMS de forma comprobada (3/3 en las escalaciones de cotización/asesor).
 
 // --- Templates ---
 function buildTelegramMessage(d) {
-  const icon = d.type === 'quote' ? '💰' : d.type === 'staff' ? '🧑‍💼' : '🚨';
-  const typeLabel = d.type === 'quote' ? 'COTIZACIÓN' : d.type === 'staff' ? 'ASESOR HUMANO' : 'ESCALAMIENTO';
+  const icon = d.type === 'quote' ? '💰' : d.type === 'staff' ? '🧑‍💼' : d.type === 'sla' ? '⏰' : d.type === 'abandon' ? '🚪' : d.type === 'contact' ? '📞' : '🚨';
+  const typeLabel = d.type === 'quote' ? 'COTIZACIÓN' : d.type === 'staff' ? 'ASESOR HUMANO' : d.type === 'sla' ? 'SIN RESPUESTA — SLA' : d.type === 'abandon' ? 'CLIENTE ABANDONÓ' : d.type === 'contact' ? 'DATOS DE CONTACTO' : 'ESCALAMIENTO';
+  const nn = (v) => (v && String(v).trim() ? String(v).trim() : 'no indicado');
+
+  // DETALLE COMPLETO SIEMPRE: el cliente pidió que la alerta llegue con todos los datos, no con
+  // líneas que desaparecen cuando el campo viene vacío. Cada dato tiene su "no indicado".
   const lines = [
     `<b>${icon} ALERTA DE ESCALAMIENTO</b>`,
     ``,
     `<b>Tipo:</b> ${typeLabel}`,
-    `<b>Cliente:</b> ${d.customerName || 'Desconocido'}`,
-    `<b>Teléfono:</b> ${d.customerPhone || 'No indicado'}`,
+    `<b>Prioridad:</b> ${nn(d.priority)}`,
+    `<b>Cliente:</b> ${nn(d.customerName)}`,
+    `<b>Teléfono:</b> ${nn(d.customerPhone)}`,
+    `<b>Correo:</b> ${nn(d.customerEmail)}`,
+    `<b>Producto/intención:</b> ${nn(d.product)}`,
+    `<b>Marca:</b> ${nn(d.brand)}`,
+    `<b>Esperando asesor desde:</b> ${d.waitingSince ? new Date(d.waitingSince).toLocaleString('es-CO', { timeZone: 'America/Bogota' }) : 'no indicado'}`,
+    ``,
+    `<b>Mensaje del cliente:</b>`,
+    d.message ? String(d.message).substring(0, 700) : 'no indicado',
+    ``,
+    `<b>Conversación (últimos turnos):</b>`,
   ];
-  if (d.customerEmail) lines.push(`<b>Correo:</b> ${d.customerEmail}`);
+  const turns = Array.isArray(d.transcript) ? d.transcript.slice(-8) : [];
+  if (turns.length) {
+    turns.forEach((t) => {
+      const txt = String(t?.text || '').replace(/\s+/g, ' ').slice(0, 220);
+      if (txt) lines.push(`${t?.role === 'user' ? '👤 Cliente' : t?.role === 'staff' ? '🧑‍💼 Asesor' : '🤖 Bot'}: ${txt}`);
+    });
+  } else {
+    lines.push('sin turnos registrados');
+  }
   lines.push(``);
-  lines.push(`<b>Mensaje:</b>`);
-  lines.push(d.message ? d.message.substring(0, 500) : 'N/A');
-  lines.push(``);
-  lines.push(`<b>Marca:</b> ${d.brand || 'Desconocida'}`);
-  lines.push(`<b>Sesión:</b> ${d.sessionId || 'N/A'}`);
+  lines.push(`<b>Sesión:</b> ${nn(d.sessionId)}`);
   lines.push(`<b>Hora:</b> ${new Date(d.timestamp).toLocaleString('es-CO', { timeZone: 'America/Bogota' })}`);
-  if (d.dashboardUrl) lines.push(`<a href="${d.dashboardUrl}">📋 Tomar el chat en el panel</a>`);
+  lines.push(`<b>Página:</b> ${nn(d.pageUrl)}`);
+  if (d.slaStage) lines.push(`<b>Re-alerta SLA:</b> etapa ${d.slaStage}`);
+  if (d.dashboardUrl) lines.push(``, `<a href="${d.dashboardUrl}">📋 Tomar el chat en el panel</a>`);
   return lines.join('\n');
 }
 
 function buildEmailHtml(d) {
   const color = d.priority === 'urgent' ? '#dc2626' : d.priority === 'high' ? '#ea580c' : '#ca8a04';
-  const title = d.type === 'quote' ? '💰 Solicitud de cotización' : d.type === 'staff' ? '🧑‍💼 Cliente pidió un asesor' : '🚨 Escalamiento';
+  const title = d.type === 'quote' ? '💰 Solicitud de cotización' : d.type === 'staff' ? '🧑‍💼 Cliente pidió un asesor' : d.type === 'sla' ? '⏰ Cliente esperando — sin respuesta' : d.type === 'abandon' ? '🚪 Cliente abandonó la conversación' : d.type === 'contact' ? '📞 Datos de contacto capturados' : '🚨 Escalamiento';
   return `<!DOCTYPE html><html><head><style>
   body{font-family:Arial,sans-serif;line-height:1.6;color:#333}
   .container{max-width:600px;margin:0 auto;padding:20px}
@@ -261,6 +270,10 @@ function buildEmailHtml(d) {
   <p><strong>Marca:</strong> ${d.brand || 'Desconocida'}</p>
   <p><strong>Mensaje:</strong></p>
   <blockquote>${d.message || 'N/A'}</blockquote>
+  ${Array.isArray(d.transcript) && d.transcript.length ? `<p><strong>Conversación:</strong></p><blockquote>${d.transcript.slice(-6).map((t) => `${t?.role === 'user' ? '👤 Cliente' : '🤖 Bot'}: ${String(t?.text || '').replace(/</g, '&lt;').slice(0, 200)}`).join('<br>')}</blockquote>` : ''}
+  ${d.product ? `<p><strong>Producto/intención:</strong> ${d.product}</p>` : ''}
+  ${d.waitingSince ? `<p><strong>Esperando asesor desde:</strong> ${new Date(d.waitingSince).toLocaleString('es-CO', { timeZone: 'America/Bogota' })}</p>` : ''}
+  ${d.slaStage ? `<p><strong>Re-alerta SLA:</strong> etapa ${d.slaStage}</p>` : ''}
   <div class="meta">
   <p>Sesión: ${d.sessionId || 'N/A'}</p>
   <p>Hora: ${new Date(d.timestamp).toLocaleString('es-CO', { timeZone: 'America/Bogota' })}</p>
@@ -271,8 +284,82 @@ function buildEmailHtml(d) {
 }
 
 function buildWhatsAppText(d) {
-  const prefix = d.type === 'quote' ? '💰 Cotizacion' : d.type === 'staff' ? '🧑‍💼 Asesor' : '🔔 Alerta';
-  return `${prefix} - Cliente: ${d.customerName || 'N/A'} - Msg: ${d.message ? d.message.substring(0, 200) : 'N/A'} - Tel: ${d.customerPhone || 'N/A'} - Sesion: ${d.sessionId || 'N/A'}`;
+  const prefix = d.type === 'quote' ? '💰 COTIZACION' : d.type === 'staff' ? '🧑‍💼 PIDIO ASESOR' : d.type === 'sla' ? '⏰ SIN RESPUESTA' : d.type === 'abandon' ? '🚪 ABANDONO' : d.type === 'contact' ? '📞 CONTACTO' : '🔔 ALERTA';
+  const lastUser = Array.isArray(d.transcript)
+    ? [...d.transcript].reverse().find((t) => t?.role === 'user')?.text
+    : '';
+  const lines = [
+    `${prefix} — ${d.customerName || 'Cliente'}`,
+    `Msj: ${String(lastUser || d.message || 'N/A').replace(/\s+/g, ' ').slice(0, 200)}`,
+    `Tel: ${d.customerPhone || 'no indicado'}`,
+    `Sesion: ${d.sessionId || 'N/A'}`,
+  ];
+  if (d.waitingSince) lines.push(`Esperando desde: ${new Date(d.waitingSince).toLocaleTimeString('es-CO', { timeZone: 'America/Bogota' })}`);
+  if (d.slaStage) lines.push(`Re-alerta SLA etapa ${d.slaStage}`);
+  return lines.join('\n');
+}
+
+// --- Persistence: audit doc + the counters the panels/reports read ---
+async function recordEscalation(d, results, anySuccess) {
+  const channels = Object.entries(results).map(([name, r]) => ({
+    channel: name,
+    ok: !!r?.success,
+    error: r?.error ? String(r.error).slice(0, 160) : '',
+  }));
+  const delivered = channels.filter((c) => c.ok).map((c) => c.channel);
+  const failed = channels.filter((c) => !c.ok).map((c) => c.channel);
+  const stamp = new Date().toISOString();
+
+  let auditId = null;
+  try {
+    auditId = await addDoc('escalations', {
+      sessionId: d.sessionId || '',
+      type: d.type || 'custom',
+      priority: d.priority || 'high',
+      customerName: d.customerName || '',
+      customerPhone: d.customerPhone || '',
+      customerEmail: d.customerEmail || '',
+      brand: d.brand || '',
+      message: String(d.message || '').replace(/\s+/g, ' ').slice(0, 300),
+      pageUrl: d.pageUrl || '',
+      waitingSince: d.waitingSince || stamp,
+      channels, delivered, failed, anyDelivered: anySuccess,
+      createdAt: stamp,
+    });
+  } catch (err) {
+    console.error('[escalation] audit write failed:', err?.message || err);
+  }
+
+  let counter = null;
+  if (d.sessionId) {
+    // NOTE: counters live inside the nested `analytics` map — the mask must use the dotted path and
+    // the body the nested mapValue, or the write is silently dropped.
+    // SLA re-alerts are counted separately from first-time escalations, otherwise the ladder
+    // inflates `escalationCount` and the "how many customers asked for a human" metric lies.
+    const counterField = d.type === 'sla' ? 'analytics.slaRealerts'
+      : d.type === 'abandon' ? 'analytics.abandonAlerts'
+      : 'analytics.escalationCount';
+    // Dónde quedó la alerta de Telegram, para poder cerrarla cuando el asesor atienda.
+    const tg = results?.telegram;
+    const tgFirst = Array.isArray(tg?.details) ? tg.details.find((x) => x.ok && x.messageId) : null;
+    counter = await bumpCounter(`conversations/${d.sessionId}`, counterField, {
+      staffAlertPending: !anySuccess,
+      lastEscalationAt: stamp,
+      escalationType: d.type || 'custom',
+      lastEscalationDelivered: delivered,
+      // Marca de "ya se avisó el abandono": el barrido y el beacon la leen para no repetir el aviso.
+      ...(d.type === 'abandon' ? { abandonAlertedAt: stamp } : {}),
+      ...(tgFirst
+        ? {
+            tgAlertChatId: String(tgFirst.chatId),
+            tgAlertMessageId: String(tgFirst.messageId),
+            tgAlertAt: stamp,
+            tgAlertType: d.type || 'custom',
+          }
+        : {}),
+    });
+  }
+  return { auditId, counter, delivered, failed };
 }
 
 // --- Main handler ---
@@ -293,6 +380,11 @@ export default async function handler(req, res) {
     adminPhone,    // override single target phone
     phones,        // array of target phones
     dashboardUrl,
+    pageUrl,       // where the customer was chatting
+    waitingSince,  // when the customer started waiting for a human
+    transcript,    // [{role, text}] — last turns, so staff gets context not just the last line
+    product,       // product/intent hint when the client can detect one
+    slaStage,      // set by the staff-SLA sweep on re-alerts
   } = req.body || {};
 
   if (!type || !message) {
@@ -303,7 +395,12 @@ export default async function handler(req, res) {
     type, priority: priority || 'high',
     customerName, customerPhone, customerEmail,
     message, brand, sessionId,
-    dashboardUrl: dashboardUrl || (req.headers.origin ? `${req.headers.origin}/admin` : ''),
+    pageUrl, waitingSince, product, slaStage,
+    transcript: Array.isArray(transcript) ? transcript.slice(-8) : null,
+    // LINK DE UN TOQUE: firmado + atado a la sesión, abre SOLO esa conversación sin pedir la
+    // contraseña del panel. Respaldo al panel clásico si ADMIN_SECRET no está configurado.
+    dashboardUrl: dashboardUrl || (sessionId ? staffUrl(sessionId) : '')
+      || (req.headers.origin ? `${req.headers.origin}/?admin=true${sessionId ? `&session=${encodeURIComponent(sessionId)}` : ''}` : ''),
     timestamp: new Date().toISOString(),
   };
 
@@ -322,33 +419,52 @@ export default async function handler(req, res) {
   const targetPhones = phones || (adminPhone ? [adminPhone] : ALL_STAFF_PHONES);
   const primaryPhone = Array.isArray(targetPhones) ? targetPhones[0] : targetPhones;
 
-  // Fire all channels in parallel: Telegram + Email + Twilio SMS + Twilio WhatsApp + Sent.dm
-  const [telegram, email, twilioSms, twilioWa, whatsapp] = await Promise.allSettled([
-    sendTelegram(buildTelegramMessage(d)),
-    sendEmail(
-      `[${d.priority.toUpperCase()}] ${d.type === 'quote' ? 'Solicitud de cotización' : d.type === 'staff' ? 'Cliente pidió un asesor' : 'Escalamiento'} — ${customerName || 'Cliente'}`,
-      buildEmailHtml(d)
-    ),
-    sendTwilioSMS(targetPhones, buildWhatsAppText(d)),
-    sendTwilioWhatsApp(primaryPhone, buildWhatsAppText(d)),
-    sendWhatsAppAndSMS(targetPhones, buildWhatsAppText(d)),
-  ]);
-
+  // UN raíl de mensajería con respaldo: Sent.dm primario, Twilio SOLO si el primario falla.
+  // Antes los tres envíos salían siempre → cada uno de los 8 teléfonos del equipo recibía la misma
+  // alerta 2-3 veces (la queja de "duplicados"). Así se conserva la entrega y se elimina el ruido.
+  const waText = buildWhatsAppText(d);
   const extract = (r) => r.status === 'fulfilled' ? r.value : { success: false, error: r.reason?.message };
 
+  const [telegramR, emailR, smsR] = await Promise.allSettled([
+    sendTelegram(buildTelegramMessage(d)),
+    sendEmail(
+      `[${d.priority.toUpperCase()}] ${d.type === 'quote' ? 'Solicitud de cotización' : d.type === 'staff' ? 'Cliente pidió un asesor' : d.type === 'sla' ? 'CLIENTE SIN RESPUESTA (SLA)' : d.type === 'abandon' ? 'CLIENTE ABANDONÓ LA CONVERSACIÓN' : d.type === 'contact' ? 'DATOS DE CONTACTO CAPTURADOS' : 'Escalamiento'} — ${customerName || 'Cliente'}`,
+      buildEmailHtml(d)
+    ),
+    // UN SOLO RAÍL DE TELÉFONO: Twilio SMS. Sin Sent.dm no hay primario muerto que esconda el fallo.
+    sendTwilioSMS(targetPhones, waText),
+  ]);
+
+  const twilioSms = extract(smsR);
+  let twilioWa = { success: false, skipped: 'sms_ok' };
+  if (!twilioSms?.success) {
+    // Respaldo único y sólo si el SMS falló del todo: evita el doble aviso por teléfono.
+    try {
+      twilioWa = await sendTwilioWhatsApp(primaryPhone, waText);
+    } catch (e) {
+      twilioWa = { success: false, error: e?.message };
+    }
+  }
+
   const results = {
-    telegram: extract(telegram),
-    email: extract(email),
-    twilioSms: extract(twilioSms),
-    twilioWhatsApp: extract(twilioWa),
-    sentDmWhatsApp: extract(whatsapp),
+    telegram: extract(telegramR),
+    email: extract(emailR),
+    twilioSms,
+    twilioWhatsApp: twilioWa,
   };
 
   const anySuccess = Object.values(results).some(r => r.success);
 
+  // Persist BEFORE answering, and even when every channel failed: an undelivered alert must still
+  // show up in the audit trail and in the session counters the monitors read.
+  const persistence = await recordEscalation(d, results, anySuccess).catch((err) => {
+    console.error('[escalation] persistence failed:', err?.message || err);
+    return { error: String(err?.message || err) };
+  });
+
   if (!anySuccess) {
-    return res.status(500).json({ error: 'All notification channels failed', results });
+    return res.status(500).json({ error: 'All notification channels failed', results, persistence });
   }
 
-  return res.status(200).json({ success: true, results });
+  return res.status(200).json({ success: true, results, persistence });
 }

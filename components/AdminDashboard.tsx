@@ -2,7 +2,7 @@
 import React, { useState, useEffect } from 'react';
 import { Plug, Phone, ShieldCheck, Database, Mic2, Save, RefreshCw, Check, Loader2, Volume2, TrendingUp, Zap, Gauge, Building2, Store, Brain, Code, Copy, ExternalLink, Rocket, ToggleRight, ToggleLeft, DollarSign, MessageSquare, Headphones, BarChart3, AlertTriangle, X, Send } from 'lucide-react';
 import { EscalaConfig, VoiceName, VoiceProvider, BillingInvoice, ConversationSession, InterventionRequest, ConversationMessage } from '../types';
-import { playGeminiTTS } from '../services/geminiService';
+import { playGeminiTTS, generateEmbedding } from '../services/geminiService';
 import { getEscalaConfig, saveEscalaConfig, testEscalaConnection } from '../services/escalaService';
 import { getUsageStats, getProfitEstimate, generateInvoice, trackUsage } from '../services/usageService';
 import { generateImage, editImage } from '../services/imageService';
@@ -31,6 +31,7 @@ interface AdminDashboardProps {
   onUpdateBackground?: (url: string) => void;
   language?: 'en' | 'es';
   onBack?: () => void;
+  initialSessionId?: string;
 }
 
 const GEMINI_VOICE_DESCRIPTIONS: Record<string, { gender: 'Male' | 'Female', style: string }> = {
@@ -49,9 +50,10 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({
     onToggleBrand,
     onUpdateBackground,
     onBack,
-    language
+    language,
+    initialSessionId
 }) => {
-  const [activeSubTab, setActiveSubTab] = useState<'chats' | 'catalogs' | 'usage' | 'voice' | 'visuals' | 'training' | 'integrations' | 'telegram' | 'deploy' | 'functionalities' | 'general' | 'conversations' | 'interventions' | 'analytics' | 'health' | 'retraining'>('chats');
+  const [activeSubTab, setActiveSubTab] = useState<'chats' | 'catalogs' | 'usage' | 'voice' | 'visuals' | 'training' | 'integrations' | 'telegram' | 'deploy' | 'functionalities' | 'general' | 'conversations' | 'interventions' | 'analytics' | 'health' | 'retraining'>(initialSessionId ? 'conversations' : 'chats');
   
   // NEW: Conversation Tracking States
   const [conversations, setConversations] = useState<ConversationSession[]>([]);
@@ -318,7 +320,7 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({
           requestNotificationPermission().then(granted => {
             if (granted) showBrowserNotification('Intervencion Urgente', alert.reason || 'Cliente solicitó atención del personal');
           });
-          const msg = '🚨 INTERVENCIÓN URGENTE\n\nSesión: ' + alert.sessionId + '\nRazón: ' + (alert.reason || 'El cliente pidió hablar con alguien') + '\nHora: ' + new Date(alert.requestedAt).toLocaleTimeString('es-CO', { timeZone: 'America/Bogota' }) + '\n\nAbrir panel: ' + window.location.origin + '/?admin=true';
+          const msg = '🚨 INTERVENCIÓN URGENTE\n\nSesión: ' + alert.sessionId + '\nRazón: ' + (alert.reason || 'El cliente pidió hablar con alguien') + '\nHora: ' + new Date(alert.requestedAt).toLocaleTimeString('es-CO', { timeZone: 'America/Bogota' }) + '\n\nAbrir panel: ' + window.location.origin + '/?admin=true&session=' + alert.sessionId;
           fetch('/api/notify-telegram', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
@@ -1148,7 +1150,6 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({
                                 </div>
                                 <button 
                                     onClick={async () => {
-                                        const { generateEmbedding } = await import('../services/geminiService');
                                         const sampleText = "Test embedding generation";
                                         const result = await generateEmbedding(sampleText);
                                         if (result) {
@@ -2077,7 +2078,7 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({
                 <div className="h-[calc(100vh-200px)] animate-in slide-in-from-bottom-2 duration-500">
                     <ConversationMonitor 
                         sessions={conversations}
-                        focusSessionId={_selectedConversation?.id ?? null}
+                        focusSessionId={_selectedConversation?.id ?? initialSessionId ?? null}
                         onSelectSession={(session) => {
                             _setSelectedConversation(session);
                         }}
