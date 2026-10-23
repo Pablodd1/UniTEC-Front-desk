@@ -87,15 +87,17 @@ export function buildMessage(report) {
   if (escalations.undelivered || escalations.slaFailed) {
     lines.push(`  ⚠️ ${escalations.undelivered} sin entregar · ${escalations.slaFailed} re-alertas fallidas`);
   }
-  const eh = report.escalationHealth;
+  const ch = report.channels || {};
   if (eh && eh.at) {
     const failed = realFailed(eh);
     const hoursOld = Math.round((Date.now() - Date.parse(eh.at)) / 3600000);
     lines.push(`<b>Última alerta:</b> ${eh.ok ? 'entregada' : 'NO entregada'}${failed.length ? ` · sin canal: ${escapeHtml(failed.join(', '))}` : ''} (hace ${hoursOld} h)`);
+    // El motivo del historial solo se muestra si el canal sigue caído en vivo: si ya está OK,
+    // repetir un error viejo solo confunde.
+    const stillDown = !ch.email?.ok || !ch.sms?.ok || !ch.telegram?.ok;
     const firstErr = failed.map((c) => eh.channelErrors?.[c]).find(Boolean);
-    if (firstErr) lines.push(`  motivo: ${escapeHtml(String(firstErr).slice(0, 110))}`);
+    if (firstErr && stillDown) lines.push(`  motivo: ${escapeHtml(String(firstErr).slice(0, 110))}`);
   }
-  const ch = report.channels || {};
   const smsLabel = ch.sms?.ok ? 'OK' : (ch.sms?.configured ? 'sin saldo' : 'sin número');
   lines.push(`<b>Canales en vivo:</b> Telegram ${ch.telegram?.ok ? 'OK' : 'CAÍDO'} · email ${ch.email?.ok ? 'OK' : 'CAÍDO'} · SMS ${smsLabel}`);
   const healthLine = health.status ? `Gemini ${health.status} (${health.latency || 0} ms)` : `Gemini sin datos`;
