@@ -445,6 +445,28 @@ export default async function handler(req, res) {
     timestamp: new Date().toISOString(),
   };
 
+  // ── Dedupe: Vercel dispara el mismo cron dos veces (dos deploys activos) y el cliente puede
+  // reintentar. Sin esto, la misma alerta suena dos veces en el teléfono del equipo.
+  // Los escalones SLA (tipo 'sla') se excluyen: están separados por 3 minutos a propósito.
+  if (sessionId && d.type !== 'sla') {
+    try {
+      const prev = await getDoc(`conversations/${sessionId}`);
+      const lastAt = Date.parse(prev?.fields?.lastEscalationAt || '') || 0;
+      const lastType = String(prev?.fields?.escalationType || '');
+      if (lastAt && Date.now() - lastAt < 90000 && lastType === (d.type || 'custom')) {
+        return res.status(200).json({
+          success: true,
+          deduped: true,
+          reason: 'duplicate_within_90s',
+          results: { deduped: { success: true, skipped: 'duplicate_within_90s' } },
+          persistence: { skipped: true, lastEscalationAt: prev?.fields?.lastEscalationAt },
+        });
+      }
+    } catch (err) {
+      console.warn('[escalation] dedupe check failed:', err?.message || err);
+    }
+  }
+
   // Staff team list
   const ALL_STAFF_PHONES = [
     '+17869708366',  // Jasmel (Admin)

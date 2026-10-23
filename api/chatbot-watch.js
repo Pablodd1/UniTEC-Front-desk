@@ -138,6 +138,21 @@ export default async function handler(req, res) {
   const now = bogotaNow();
   const quiet = !force && (now.hour < QUIET_TO || now.hour >= QUIET_FROM);
   const started = Date.now();
+  // Clave del slot de 2 h en UTC: el cron dispara dos veces por slot (dos deploys activos) y sin
+  // esto el destinatario recibiría el mismo reporte dos veces.
+  const utcHour = new Date().getUTCHours();
+  const slot = `${now.iso.slice(0, 10)}T${String(utcHour - (utcHour % 2)).padStart(2, '0')}Z`;
+
+  // ── Una sola corrida por slot (Vercel invoca el cron dos veces en el mismo minuto) ──
+  // Se corta antes de las sondas: si ya corrió en este slot, no gasta Gemini ni duplica el reporte.
+  // `?force=true` lo salta para pruebas manuales.
+  if (!dryRun && !force) {
+    const prevRun = await readMonitorHistory().catch(() => null);
+    const prevAt = Date.parse(prevRun?.last?.at || '') || 0;
+    if (prevRun?.last?.slot === slot && prevAt && Date.now() - prevAt < 30 * 60 * 1000) {
+      return res.status(200).json({ ok: true, skipped: 'already_ran_this_slot', slot, lastAt: prevRun.last.at, status: prevRun.last.status });
+    }
+  }
 
   const report = {
     source: 'unitec-chatbot',
@@ -232,7 +247,15 @@ export default async function handler(req, res) {
   const recipients = await resolveRecipients().catch(() => ({ chatIds: [], via: 'sin destinatario' }));
   report.recipients = recipients;
 
-  const shouldSend = recipients.chatIds.length > 0 && (!quiet || report.status === 'red');
+  const shouldSendBase = recipients.chatIds.length > 0 && (!quiet || report.status === 'red');
+  let alreadySentThisSlot = false;
+  if (shouldSendBase) {
+    const prev = await readMonitorHistory().catch(() => null);
+    alreadySentThisSlot = prev?.last?.slot === slot && !!prev?.last?.telegram?.sent;
+  }
+  const shouldSend = shouldSendBase && !alreadySentThisSlot;
+  report.slot = slot;
+  report.alreadySentThisSlot = alreadySentThisSlot;
   if (!dryRun && shouldSend) {
     const message = buildMessage(report);
     report.telegram = await sendTelegramTo(recipients.chatIds, message).catch((e) => ({ sent: false, error: String(e?.message || e) }));
@@ -275,6 +298,7 @@ export default async function handler(req, res) {
     at: now.iso,
     dayKey: now.dayKey,
     hm: now.hm,
+    slot,
     status: report.status,
     chat: { passed: report.chat.passed, total: report.chat.total, p50: report.chat.p50 },
     escalations: {
