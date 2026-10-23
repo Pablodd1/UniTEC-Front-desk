@@ -14,7 +14,7 @@ const firebaseConfig = require_('../firebase-applet-config.json');
 export const projectId = firebaseConfig.projectId;
 
 /** Sesiones de diagnóstico/prueba creadas en desarrollo o en auditorías — se excluyen SIEMPRE. */
-export const TEST_ID_RE = /^(diag|lat-test|analytics-verify|post-fix|warm-check|secret-verify|verify-|test-|review-|plan-)/i;
+export const TEST_ID_RE = /^(diag|lat-test|analytics-verify|post-fix|warm-check|secret-verify|verify-|test-|review-|plan-|probe[-_])/i;
 export const isTestSession = (id) => TEST_ID_RE.test(String(id || ''));
 
 /** Orden del embudo. Cada sesión se contabiliza en la etapa MÁS ALTA que alcanzó. */
