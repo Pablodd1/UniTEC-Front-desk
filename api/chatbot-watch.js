@@ -56,14 +56,20 @@ function authorized(req) {
   return provided === secret;
 }
 
-/** Destinatarios: Nancy primero, luego un respaldo explícito. Nunca el chat del equipo por defecto. */
+/** Destinatarios: env primero, luego config/main.monitorChatId (sobrevive a despliegues). */
 async function resolveRecipients() {
   const nancy = String(process.env.NANCY_TELEGRAM_CHAT_ID || '').split(',').map((s) => s.trim()).filter(Boolean);
   if (nancy.length) return { chatIds: nancy, via: 'NANCY_TELEGRAM_CHAT_ID' };
   const fallback = String(process.env.MONITOR_TELEGRAM_CHAT_ID || '').split(',').map((s) => s.trim()).filter(Boolean);
   if (fallback.length) return { chatIds: fallback, via: 'MONITOR_TELEGRAM_CHAT_ID' };
-  // Sin destinatario explícito NO se manda al chat del equipo: un monitor cada 2 h no debe
-  // empezar a sonar en el grupo de 8 asesores sin que alguien lo haya pedido.
+  // Firestore como respaldo: una variable de entorno que no llega a una invocación del cron dejaba
+  // el reporte en silencio (pasó a las 16:00 y 18:00). El doc se lee siempre.
+  try {
+    const { getDoc } = await import('./_firestore-rest.js');
+    const doc = await getDoc('config/main');
+    const fromDoc = String(doc?.fields?.monitorChatId || '').split(',').map((s) => s.trim()).filter(Boolean);
+    if (fromDoc.length) return { chatIds: fromDoc, via: 'config/main.monitorChatId' };
+  } catch (_) { /* sin config */ }
   return { chatIds: [], via: 'sin destinatario (configura NANCY_TELEGRAM_CHAT_ID)' };
 }
 
@@ -311,6 +317,8 @@ export default async function handler(req, res) {
     services: { widget: report.widget.ok, gemini: report.health.status, voice: report.voice.ok },
     channels: { telegram: !!report.channels?.telegram?.ok, email: !!report.channels?.email?.ok, sms: !!report.channels?.sms?.ok },
     telegram: report.telegram ? { sent: !!report.telegram.sent, via: recipients.via } : null,
+    sendAttempted: !dryRun && shouldSend,
+    alreadySentThisSlot,
     missionControl: report.missionControl ? { ok: !!report.missionControl.ok } : null,
     durationMs: Date.now() - started,
   };
