@@ -259,8 +259,10 @@ export const CHAT_PROBES = [
   {
     name: 'precio/stock',
     message: '¿Cuánto cuesta la lámina PVC blanca brillante H-01-I?',
-    assert: (t) => /H-?01|PVC/i.test(t) && /\$\s?\d{1,3}[.,]?\d{3}|\d{2}\.000/.test(t),
-    assertLabel: 'nombra el producto y da un precio',
+    // El bot puede responder sin repetir el SKU ("El precio es de $27.000… mide 30cm x 5.95m").
+    // Se exige precio CON contexto de producto (nombre, SKU o medidas), no que repita la referencia.
+    assert: (t) => /\$\s?\d{1,3}[.,]?\d{3}|\d{2}\.000/.test(t) && /(H-?01|PVC|30\s*cm|5[.,]95)/i.test(t),
+    assertLabel: 'da un precio con contexto del producto',
   },
   {
     name: 'especificaciones',
