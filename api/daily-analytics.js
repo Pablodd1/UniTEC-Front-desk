@@ -732,7 +732,7 @@ export default async function handler(req, res) {
     if (RESEND_API_KEY) {
       try {
         const emailBody = {
-          from: 'UniTEC AI Desk <onboarding@resend.dev>',
+          from: process.env.RESEND_FROM || 'UniTEC AI Desk <alertas@cedexx.net>',
           to: [ADMIN_EMAIL],
           subject: `Reporte ${isWeekly ? 'Semanal' : 'Diario'} Chatbot - ${dateLabel}`,
           html: reportText.replace(/\n/g, '<br/>')

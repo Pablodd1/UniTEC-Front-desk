@@ -117,7 +117,7 @@ async function fireAlert(severity, payload, meta) {
         method: 'POST',
         headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${apiKey}` },
         body: JSON.stringify({
-          from: 'UniTEC AI Desk <onboarding@resend.dev>',
+          from: process.env.RESEND_FROM || 'UniTEC AI Desk <alertas@cedexx.net>',
           to: [adminEmail],
           subject: `[${severity === 'critical' ? 'CRÍTICO' : 'ALERTA'}] Memoria del asistente UniTEC al ${pct}%`,
           html: `<h2>🧠 Memoria del asistente UniTEC — ${severity === 'critical' ? 'CRÍTICO' : 'ALERTA'}</h2><p>El contexto de la conversación está al <b>${pct}%</b> de la memoria del modelo.</p><p>Tokens: <b>${payload.contextTokens.toLocaleString('es-CO')}</b></p><p>Mensajes: <b>${payload.conversationMsgs}</b></p><p>Marca: ${meta.brand || 'desconocida'}</p><p>Hora: ${new Date().toISOString()}</p>`,

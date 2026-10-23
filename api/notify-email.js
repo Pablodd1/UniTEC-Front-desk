@@ -64,7 +64,7 @@ export default async function handler(req, res) {
         'Authorization': `Bearer ${RESEND_API_KEY}`
       },
       body: JSON.stringify({
-        from: 'UniTEC AI Desk <onboarding@resend.dev>',
+        from: process.env.RESEND_FROM || 'UniTEC AI Desk <alertas@cedexx.net>',
         to: [recipient],
         subject: subject,
         html: html

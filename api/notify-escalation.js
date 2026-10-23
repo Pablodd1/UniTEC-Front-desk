@@ -105,6 +105,10 @@ function resendKey() {
   return m ? m[0] : raw.replace(/[^\x21-\x7E]/g, '');
 }
 
+// Dominio verificado en Resend: cedexx.net. onboarding@resend.dev solo entrega al dueño de la
+// cuenta, así que con un dominio verificado se usa ese remitente (configurable por RESEND_FROM).
+const RESEND_FROM = () => process.env.RESEND_FROM || 'UniTEC AI Desk <alertas@cedexx.net>';
+
 async function sendEmail(subject, html) {
   const apiKey = resendKey();
   const adminEmail = process.env.ADMIN_EMAIL || 'lidermarketingonline@espaciosimportados.com.co';
@@ -115,7 +119,7 @@ async function sendEmail(subject, html) {
       method: 'POST',
       headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${apiKey}` },
       body: JSON.stringify({
-        from: 'UniTEC AI Desk <onboarding@resend.dev>',
+        from: process.env.RESEND_FROM || 'UniTEC AI Desk <alertas@cedexx.net>',
         to: [adminEmail],
         subject,
         html,

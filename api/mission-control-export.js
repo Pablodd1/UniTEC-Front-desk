@@ -68,7 +68,7 @@ export default async function handler(req, res) {
         method: 'POST',
         headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${apiKey}` },
         body: JSON.stringify({
-          from: 'UniTEC AI Desk <onboarding@resend.dev>',
+          from: process.env.RESEND_FROM || 'UniTEC AI Desk <alertas@cedexx.net>',
           to: [adminEmail],
           subject: '[PRUEBA] Canal de email del monitor UniTEC',
           html: '<p>Prueba del canal de email del monitor. Si recibes esto, el canal funciona.</p>',
