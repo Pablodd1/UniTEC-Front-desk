@@ -221,8 +221,7 @@ export default async function handler(req, res) {
     || report.escalations.staffNoShow > 0
     || report.chat.p50 > 8000
     || (report.health.status && report.health.status !== 'up')
-    || !report.voice.ok
-    || failedChannels.length >= 2; // un solo canal caído se informa; dos o más es degradación real
+    || !report.voice.ok;
   report.status = red ? 'red' : yellow ? 'yellow' : 'green';
   report.action = pickAction(report);
 
