@@ -83,7 +83,7 @@ export function buildMessage(report) {
       lines.push(`  ✗ ${escapeHtml(r.name)}: ${escapeHtml(r.error || 'sin respuesta')}`);
     }
   }
-  lines.push(`<b>Asesores (2 h):</b> ${escalations.requested} solicitados · ${escalations.attended} atendidos (${escalations.attendanceRate}%) · ${escalations.stuckRequested} esperando`);
+  lines.push(`<b>Asesores (2 h):</b> ${escalations.requested} solicitados · ${escalations.attended} atendidos (${escalations.attendanceRate}%) · ${escalations.stuckRequested} esperando${report.escalations.stuckRequested > 0 && report.quiet ? ' (silencio nocturno, se atiende 07:00)' : ''}`);
   if (escalations.undelivered || escalations.slaFailed) {
     lines.push(`  ⚠️ ${escalations.undelivered} sin entregar · ${escalations.slaFailed} re-alertas fallidas`);
   }
@@ -111,7 +111,10 @@ function pickAction(report) {
   if (report.escalations.stuckRequested > 0) return 'Hay clientes esperando asesor: entrar al panel y tomar la conversación.';
   if (report.escalations.slaFailed > 0) return 'Fallaron re-alertas SLA: revisar /api/notify-escalation.';
   const downChannels = realFailed(report.escalationHealth);
-  if (downChannels.length > 0) return `Canales caídos (${downChannels.join(', ')}): revisar credenciales de alertas en Vercel.`;
+  if (downChannels.length > 0) {
+    const firstErr = downChannels.map((c) => report.escalationHealth?.channelErrors?.[c]).find(Boolean);
+    return `Canales caídos (${downChannels.join(', ')}): ${firstErr || 'revisar credenciales de alertas en Vercel'}.`;
+  }
   if (!report.widget.ok) return 'El widget no carga en unitecusadesign.com: revisar el snippet embebido.';
   if (report.integrity.mismatches > 0 || report.integrity.unitMismatches > 0) return 'Precios inconsistentes entre catálogo y bot: definir fuente de verdad.';
   if (report.chat.p50 > 8000) return 'El chat está lento (>8 s): revisar carga del modelo.';
@@ -190,14 +193,19 @@ export default async function handler(req, res) {
   // ── Severidad ─────────────────────────────────────────────────────────────
   const eh = report.escalationHealth;
   const failedChannels = realFailed(eh);
+  // En silencio nocturno (21:00–07:00 Bogotá) el sweep difiere a propósito: un cliente que pidió
+  // asesor a las 23:00 no debe pintar ROJO toda la madrugada. Se informa en amarillo y se escala
+  // a rojo cuando abre la operación.
+  const overnightWait = report.escalations.stuckRequested > 0 && quiet;
   const red = report.chat.passed < report.chat.total
     || report.escalations.undelivered > 0
-    || report.escalations.stuckRequested > 0
+    || (report.escalations.stuckRequested > 0 && !overnightWait)
     || report.escalations.slaFailed > 0
     || !report.widget.ok
     || eh?.ok === false
     || Number(eh?.failStreak || 0) > 0;
-  const yellow = report.integrity.mismatches > 0
+  const yellow = overnightWait
+    || report.integrity.mismatches > 0
     || report.integrity.unitMismatches > 0
     || report.escalations.staffNoShow > 0
     || report.chat.p50 > 8000
