@@ -24,7 +24,7 @@
 import {
   bogotaNow, recentSessions, auditEscalations, priceIntegrity, widgetHealth,
   runChatProbes, probe, readEscalationHealth, readMonitorHistory, writeMonitorHistory,
-  brandSnapshot,
+  brandSnapshot, channelHealth,
 } from './_monitor-core.js';
 import { sendTelegramTo, escapeHtml } from './telegram-send.js';
 import { createRequire } from 'module';
@@ -90,10 +90,14 @@ export function buildMessage(report) {
   const eh = report.escalationHealth;
   if (eh && eh.at) {
     const failed = realFailed(eh);
-    lines.push(`<b>Última alerta:</b> ${eh.ok ? 'entregada' : 'NO entregada'}${failed.length ? ` · sin canal: ${escapeHtml(failed.join(', '))}` : ''}${eh.failStreak ? ` · racha de fallos: ${eh.failStreak}` : ''}`);
+    const hoursOld = Math.round((Date.now() - Date.parse(eh.at)) / 3600000);
+    lines.push(`<b>Última alerta:</b> ${eh.ok ? 'entregada' : 'NO entregada'}${failed.length ? ` · sin canal: ${escapeHtml(failed.join(', '))}` : ''} (hace ${hoursOld} h)`);
     const firstErr = failed.map((c) => eh.channelErrors?.[c]).find(Boolean);
     if (firstErr) lines.push(`  motivo: ${escapeHtml(String(firstErr).slice(0, 110))}`);
   }
+  const ch = report.channels || {};
+  const smsLabel = ch.sms?.ok ? 'OK' : (ch.sms?.configured ? 'sin saldo' : 'sin número');
+  lines.push(`<b>Canales en vivo:</b> Telegram ${ch.telegram?.ok ? 'OK' : 'CAÍDO'} · email ${ch.email?.ok ? 'OK' : 'CAÍDO'} · SMS ${smsLabel}`);
   const healthLine = health.status ? `Gemini ${health.status} (${health.latency || 0} ms)` : `Gemini sin datos`;
   const voiceLine = voice.ok ? 'voz OK' : `voz ${voice.status || 'sin respuesta'}`;
   const widgetLine = widget.ok ? 'widget OK' : `widget: ${escapeHtml((widget.problems || []).join(', ') || 'falla')}`;
@@ -110,11 +114,12 @@ function pickAction(report) {
   if (report.escalations.undelivered > 0) return 'Hay solicitudes de asesor sin entregar: revisar Telegram/Twilio del equipo.';
   if (report.escalations.stuckRequested > 0) return 'Hay clientes esperando asesor: entrar al panel y tomar la conversación.';
   if (report.escalations.slaFailed > 0) return 'Fallaron re-alertas SLA: revisar /api/notify-escalation.';
-  const downChannels = realFailed(report.escalationHealth);
-  if (downChannels.length > 0) {
-    const firstErr = downChannels.map((c) => report.escalationHealth?.channelErrors?.[c]).find(Boolean);
-    return `Canales caídos (${downChannels.join(', ')}): ${firstErr || 'revisar credenciales de alertas en Vercel'}.`;
-  }
+  const ch = report.channels || {};
+  if (!ch.telegram?.ok) return 'Telegram caído: hoy no hay ningún canal de alerta. Revisar TELEGRAM_BOT_TOKEN / TELEGRAM_CHAT_ID.';
+  const down = [['email', ch.email], ['sms', ch.sms]]
+    .filter(([, v]) => v && !v.ok)
+    .map(([k, v]) => `${k}: ${v.error || (v.configured ? `HTTP ${v.status || '?'}` : 'sin configurar')}`);
+  if (down.length) return `Canales caídos → ${down.join(' · ')}.`;
   if (!report.widget.ok) return 'El widget no carga en unitecusadesign.com: revisar el snippet embebido.';
   if (report.integrity.mismatches > 0 || report.integrity.unitMismatches > 0) return 'Precios inconsistentes entre catálogo y bot: definir fuente de verdad.';
   if (report.chat.p50 > 8000) return 'El chat está lento (>8 s): revisar carga del modelo.';
@@ -147,6 +152,7 @@ export default async function handler(req, res) {
     analytics: null,
     escalationHealth: null,
     recipients: { chatIds: [], via: 'sin destinatario' },
+    channels: { telegram: { ok: false }, email: { ok: false }, sms: { ok: false } },
     telegram: null,
     missionControl: null,
     history: null,
@@ -173,12 +179,13 @@ export default async function handler(req, res) {
   }
 
   // ── Integridad y servicios (capa C) ───────────────────────────────────────
-  const [integrity, widget, sysHealth, voiceToken, escHealth] = await Promise.all([
+  const [integrity, widget, sysHealth, voiceToken, escHealth, channels] = await Promise.all([
     soft(priceIntegrity),
     soft(() => widgetHealth({ full: fullWidget })),
     soft(() => probe('/api/system-health', { timeoutMs: 12000 })),
     soft(() => probe('/api/xai-voice-token', { method: 'POST', body: { model: 'grok-voice-latest' }, timeoutMs: 15000 })),
     soft(readEscalationHealth),
+    soft(channelHealth),
   ]);
 
   if (integrity.ok) report.integrity = integrity.value;
@@ -189,10 +196,12 @@ export default async function handler(req, res) {
   else report.health = { status: 'sin respuesta', latency: 0 };
   if (voiceToken.ok) report.voice = { ok: voiceToken.value.ok && voiceToken.value.json?.ok !== false, status: voiceToken.value.status };
   if (escHealth.ok) report.escalationHealth = escHealth.value;
+  if (channels.ok) report.channels = channels.value;
 
   // ── Severidad ─────────────────────────────────────────────────────────────
   const eh = report.escalationHealth;
-  const failedChannels = realFailed(eh);
+  const ch = report.channels;
+  const ehFresh = eh?.at ? (Date.now() - Date.parse(eh.at)) < 3 * 3600000 : false;
   // En silencio nocturno (21:00–07:00 Bogotá) el sweep difiere a propósito: un cliente que pidió
   // asesor a las 23:00 no debe pintar ROJO toda la madrugada. Se informa en amarillo y se escala
   // a rojo cuando abre la operación.
@@ -202,9 +211,11 @@ export default async function handler(req, res) {
     || (report.escalations.stuckRequested > 0 && !overnightWait)
     || report.escalations.slaFailed > 0
     || !report.widget.ok
-    || eh?.ok === false
-    || Number(eh?.failStreak || 0) > 0;
+    || !ch.telegram?.ok
+    || (ehFresh && (eh?.ok === false || Number(eh?.failStreak || 0) > 0));
   const yellow = overnightWait
+    || !ch.email?.ok
+    || !ch.sms?.ok
     || report.integrity.mismatches > 0
     || report.integrity.unitMismatches > 0
     || report.escalations.staffNoShow > 0
@@ -272,6 +283,7 @@ export default async function handler(req, res) {
     },
     integrity: { mismatches: report.integrity.mismatches, unitMismatches: report.integrity.unitMismatches },
     services: { widget: report.widget.ok, gemini: report.health.status, voice: report.voice.ok },
+    channels: { telegram: !!report.channels?.telegram?.ok, email: !!report.channels?.email?.ok, sms: !!report.channels?.sms?.ok },
     telegram: report.telegram ? { sent: !!report.telegram.sent, via: recipients.via } : null,
     missionControl: report.missionControl ? { ok: !!report.missionControl.ok } : null,
     durationMs: Date.now() - started,

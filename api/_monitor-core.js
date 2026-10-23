@@ -232,6 +232,63 @@ export async function widgetHealth({ full = false } = {}) {
   return { ok: problems.length === 0, fast: true, problems, checks };
 }
 
+/** Salud REAL de los canales de alerta, consultada en vivo (no del historial de escalaciones). */
+export async function channelHealth() {
+  const out = {
+    telegram: { ok: false, configured: false },
+    email: { ok: false, configured: false },
+    sms: { ok: false, configured: false },
+  };
+  // Telegram: token + chat (env o config/main)
+  try {
+    const token = process.env.TELEGRAM_BOT_TOKEN || '';
+    const chat = process.env.TELEGRAM_CHAT_ID || '';
+    let hasToken = !!token;
+    let hasChat = !!chat;
+    if (!hasToken || !hasChat) {
+      const doc = await getDoc('config/main').catch(() => null);
+      hasToken = hasToken || !!doc?.fields?.telegramBotToken;
+      hasChat = hasChat || !!doc?.fields?.telegramChatId;
+    }
+    out.telegram = { ok: hasToken && hasChat, configured: hasToken && hasChat, error: hasToken && hasChat ? '' : 'token o chat sin configurar' };
+  } catch (err) {
+    out.telegram = { ok: false, configured: false, error: String(err?.message || err) };
+  }
+  // Email: una llamada de lectura a Resend (no envía nada)
+  const key = String(process.env.RESEND_API_KEY || process.env.RESEND_KEY || '').trim().replace(/^["']|["']$/g, '');
+  const m = key.match(/re_[A-Za-z0-9_-]+/);
+  const resendKey = m ? m[0] : '';
+  if (!resendKey) {
+    out.email = { ok: false, configured: false, error: 'RESEND_API_KEY vacía' };
+  } else {
+    try {
+      const r = await fetch('https://api.resend.com/domains', { headers: { Authorization: `Bearer ${resendKey}` }, signal: AbortSignal.timeout(8000) });
+      out.email = { ok: r.ok, configured: true, status: r.status };
+    } catch (err) {
+      out.email = { ok: false, configured: true, error: String(err?.message || err) };
+    }
+  }
+  // SMS: credenciales + saldo real de Twilio
+  const sid = process.env.TWILIO_ACCOUNT_SID || '';
+  const tok = process.env.TWILIO_AUTH_TOKEN || '';
+  const from = process.env.TWILIO_PHONE_NUMBER || '';
+  if (!sid || !tok || !from) {
+    out.sms = { ok: false, configured: false, error: 'falta SID, token o número en Vercel' };
+  } else {
+    try {
+      const r = await fetch(`https://api.twilio.com/2010-04-01/Accounts/${sid}/Balance.json`, {
+        headers: { Authorization: 'Basic ' + Buffer.from(`${sid}:${tok}`).toString('base64') },
+        signal: AbortSignal.timeout(8000),
+      });
+      const j = await r.json().catch(() => ({}));
+      out.sms = { ok: r.ok && Number(j.balance) > 0, configured: true, status: r.status, balance: j.balance ?? null };
+    } catch (err) {
+      out.sms = { ok: false, configured: true, error: String(err?.message || err) };
+    }
+  }
+  return out;
+}
+
 /** Base pública del propio deploy (para sondear /api/chat y /api/system-health). */
 export const BASE_URL = () => (process.env.MONITOR_BASE_URL || process.env.BASE_URL || 'https://unitec-front-desk.vercel.app').replace(/\/$/, '');
 
