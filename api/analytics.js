@@ -77,8 +77,8 @@ export default async function handler(req, res) {
       .map((s) => ({
         id: s.id,
         day: bogotaDayKey(s.createdAt),
-        name: s.customerName || s.extractedData?.name || 'Anónimo',
-        phone: s.customerPhone || s.extractedData?.phone || '',
+        name: (() => { const v = String(s.customerName || s.extractedData?.name || '').trim(); return v ? v.slice(0, 1) + '***' : 'Anónimo'; })(),
+        phone: (() => { const d = String(s.customerPhone || s.extractedData?.phone || '').replace(/\D/g, ''); return d ? '••••' + d.slice(-2) : ''; })(),
         step: s.funnelStep || '',
         status: s.status,
         userMessages: Number(s.analytics?.userMessageCount || 0),

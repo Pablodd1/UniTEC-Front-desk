@@ -12,6 +12,9 @@ export default async function handler(req, res) {
     } catch (e) {}
   }
 
+  // Sin Origin = llamada servidor-a-servidor (curl): ese era el relay abierto.
+  if (!origin) return res.status(403).json({ error: 'Origin required' });
+
   if (ALLOWED_ORIGINS.length > 0 && origin) {
     const isAllowed = ALLOWED_ORIGINS.some(allowed => {
       const allowedClean = allowed.replace(/^https?:\/\//, '').toLowerCase();

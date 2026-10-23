@@ -30,6 +30,10 @@
       "schedule": "0 */2 * * *"
     },
     {
+      "path": "/api/mission-control-export?window=24",
+      "schedule": "0 */2 * * *"
+    },
+    {
       "path": "/api/ga-visits",
       "schedule": "0 13 * * *"
     }

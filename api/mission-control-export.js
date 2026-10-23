@@ -9,7 +9,7 @@
 // No expone nombre, teléfono ni email de ningún cliente.
 
 import { createRequire } from 'module';
-import { getFirestoreToken, listAllSessions, funnel } from './_analytics-core.js';
+import { getFirestoreToken, listAllSessions, funnel, bogotaDayKey } from './_analytics-core.js';
 import {
   auditEscalations, priceIntegrity, readMonitorHistory, readEscalationHealth,
   brandSnapshot, bogotaNow, BASE_URL, probe,
@@ -22,8 +22,10 @@ function authorized(req) {
   const expected = process.env.MC_EXPORT_TOKEN || '';
   if (!expected) return { ok: false, reason: 'MC_EXPORT_TOKEN no configurado en el servidor' };
   const header = String(req.headers?.authorization || '').replace(/^Bearer\s+/i, '').trim();
-  const provided = header || String(req.query?.token || '').trim();
-  if (!provided || provided !== expected) return { ok: false, reason: 'token inválido' };
+  // Acepta X-MC-Token (spec de Mission Control), Bearer, ?token= y el Bearer que inyecta Vercel Cron.
+  const provided = String(req.headers?.['x-mc-token'] || '').trim() || header || String(req.query?.token || '').trim();
+  const accepted = [expected, process.env.CRON_SECRET || ''].filter(Boolean);
+  if (!provided || !accepted.includes(provided)) return { ok: false, reason: 'token inválido' };
   return { ok: true };
 }
 
@@ -110,6 +112,67 @@ export default async function handler(req, res) {
       { id: 'price_integrity', label: 'Precios catálogo vs bot', target: '0 diferencias', actual: `${integrity.mismatches} valor / ${integrity.unitMismatches} unidad`, ok: integrity.mismatches === 0 && integrity.unitMismatches === 0 },
     ];
 
+    // ---- Push a Mission Control (esquema acordado) ----
+    const todayKey = bogotaDayKey(new Date().toISOString());
+    const dayOf = (s) => bogotaDayKey(s.lastUpdated || s.createdAt || '');
+    const todays = real.filter((s) => dayOf(s) === todayKey);
+    const userMsgs = (s) => Number(s.analytics?.userMessageCount ?? s.userMessageCount ?? 0) || 0;
+    const withUser = (s) => userMsgs(s) > 0;
+    const hasPhone = (s) => Boolean(String(s.customerPhone || s.extractedData?.phone || '').trim());
+    const brandOf = (s) => (String(s.brand || s.brandId || 'unitec').toLowerCase().includes('build') ? 'building' : 'unitec');
+    const todayReal = todays.filter(withUser);
+    const realOnes = real.filter(withUser);
+    const abandoned = real.filter((s) => Number(s.analytics?.messageCount ?? s.messageCount ?? 0) <= 1 && !withUser(s)).length;
+    const mcPayload = {
+      generatedAt: new Date().toISOString(),
+      health: { status: widget.ok ? 'up' : 'down', latencyMs: monitor?.last?.latencyMs || 0, websiteUp: widget.ok, embedLoads: widget.ok },
+      five_key_numbers: {
+        real_conversations_today: {
+          unitec: todayReal.filter((s) => brandOf(s) === 'unitec').length,
+          building: todayReal.filter((s) => brandOf(s) === 'building').length,
+          total_today: todayReal.length,
+        },
+        contacts_captured_phone: { today: todays.filter(hasPhone).length, all_time: real.filter(hasPhone).length },
+        advisor_requests: {
+          today: todays.filter((s) => Number(s.analytics?.escalationCount ?? s.escalationCount ?? 0) > 0).length,
+          human_assigned: real.filter((s) => s.status === 'human_assigned').length,
+          completed: real.filter((s) => s.status === 'completed').length,
+        },
+        alert_delivery: {
+          failed_visible: escalations.undelivered || 0,
+          escalations_collection_status: (escalations.undelivered || 0) === 0 ? 'OK' : 'DEGRADED',
+        },
+        greeting_abandonment: {
+          abandoned,
+          total_raw: real.length,
+          rate_pct: real.length ? +((abandoned / real.length) * 100).toFixed(1) : 0,
+        },
+      },
+      kpis: {
+        total_sessions: real.length,
+        real_interactions: realOnes.length,
+        real_interaction_rate_pct: real.length ? +((realOnes.length / real.length) * 100).toFixed(2) : 0,
+        avg_user_messages: realOnes.length ? +(realOnes.reduce((a, s) => a + userMsgs(s), 0) / realOnes.length).toFixed(1) : 0,
+        contacts_captured: real.filter(hasPhone).length,
+      },
+      by_brand_all_time: real.reduce((acc, s) => { const b = brandOf(s); acc[b] = (acc[b] || 0) + 1; return acc; }, { unitec: 0, building: 0 }),
+    };
+    const mcTarget = process.env.MC_INGEST_URL || '';
+    let mcPush = { attempted: false, skipped: true, reason: 'MC_INGEST_URL no configurado' };
+    if (mcTarget) {
+      mcPush = { attempted: true, ok: false };
+      try {
+        const pr = await fetch(mcTarget, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json', 'X-MC-Token': process.env.MC_EXPORT_TOKEN || '' },
+          body: JSON.stringify(mcPayload),
+        });
+        mcPush = { attempted: true, ok: pr.ok, status: pr.status };
+      } catch (e) {
+        mcPush = { attempted: true, ok: false, error: String(e).slice(0, 160) };
+      }
+    }
+
     return res.status(200).json({
       ok: true,
       source: 'unitec-chatbot',
@@ -132,6 +195,7 @@ export default async function handler(req, res) {
       services: { widget, gemini: monitor?.last?.services?.gemini || null, voice: monitor?.last?.services?.voice ?? null },
       monitor: { last: monitor?.last || null, runs: (monitor?.runs || []).slice(0, 12) },
       slos,
+      missionControl: { push: mcPush, payload: mcPayload },
       meta: { durationMs: Date.now() - started, note: 'Agregados. Sin PII. Las sesiones de prueba del monitor están excluidas.' },
     });
   } catch (err) {
