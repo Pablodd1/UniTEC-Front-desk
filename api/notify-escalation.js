@@ -459,6 +459,10 @@ export default async function handler(req, res) {
 
   const targetPhones = phones || (adminPhone ? [adminPhone] : ALL_STAFF_PHONES);
   const primaryPhone = Array.isArray(targetPhones) ? targetPhones[0] : targetPhones;
+  // `phones: []` es una decisión de diseño del que llama (p. ej. abandono sin contacto capturado:
+  // "Telegram + correo bastan"). No es un fallo del canal: se marca skipped para no pintar el
+  // monitor de amarillo por una omisión intencional.
+  const noPhoneByDesign = Array.isArray(phones) && phones.length === 0;
 
   // UN raíl de mensajería con respaldo: Sent.dm primario, Twilio SOLO si el primario falla.
   // Antes los tres envíos salían siempre → cada uno de los 8 teléfonos del equipo recibía la misma
@@ -473,12 +477,16 @@ export default async function handler(req, res) {
       buildEmailHtml(d)
     ),
     // UN SOLO RAÍL DE TELÉFONO: Twilio SMS. Sin Sent.dm no hay primario muerto que esconda el fallo.
-    sendTwilioSMS(targetPhones, waText),
+    noPhoneByDesign
+      ? Promise.resolve({ success: false, skipped: 'no_phones_by_design' })
+      : sendTwilioSMS(targetPhones, waText),
   ]);
 
   const twilioSms = extract(smsR);
   let twilioWa = { success: false, skipped: 'sms_ok' };
-  if (!twilioSms?.success) {
+  if (noPhoneByDesign) {
+    twilioWa = { success: false, skipped: 'no_phones_by_design' };
+  } else if (!twilioSms?.success) {
     // Respaldo único y sólo si el SMS falló del todo: evita el doble aviso por teléfono.
     try {
       twilioWa = await sendTwilioWhatsApp(primaryPhone, waText);
