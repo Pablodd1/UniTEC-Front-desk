@@ -88,6 +88,7 @@ export function buildMessage(report) {
     lines.push(`  ⚠️ ${escalations.undelivered} sin entregar · ${escalations.slaFailed} re-alertas fallidas`);
   }
   const ch = report.channels || {};
+  const eh = report.escalationHealth;
   if (eh && eh.at) {
     const failed = realFailed(eh);
     const hoursOld = Math.round((Date.now() - Date.parse(eh.at)) / 3600000);
