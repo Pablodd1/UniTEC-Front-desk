@@ -7,7 +7,7 @@
 import notifyEscalation from './notify-escalation.js';
 
 /** Test/diagnostic session ids (same family the analytics core excludes from reports). */
-export const TEST_SESSION_RE = /^(diag|lat-test|verify|warm-check|secret-verify|post-fix|analytics-verify|sweep|abandon-test|staff-test|rules-probe)/;
+export const TEST_SESSION_RE = /^(diag|lat-test|verify|warm-check|secret-verify|post-fix|analytics-verify|sweep|abandon-test|staff-test|rules-probe|test[-_]|probe[-_]|monitor)/;
 
 /** Statuses an abandon alert must never touch: a human is involved or the chat is closed. */
 export const PROTECTED_STATUS = /^(human_requested|human_assigned|completed|resolved)$/;
@@ -53,6 +53,17 @@ export async function alertAbandon(session, { stage, brand, origin } = {}) {
 
   const userMessages = Number(f.analytics?.userMessageCount || 0);
   if (userMessages < 1) return { sent: false, why: 'no_customer_message' };
+
+  // Solo el día en curso (Bogotá). Sin esto, una sesión de días anteriores seguía generando
+  // la misma alerta en cada corrida de 2 h.
+  const dayKey = (v) => {
+    const t = new Date(v || '');
+    return Number.isNaN(t.getTime()) ? '' : new Intl.DateTimeFormat('en-CA', { timeZone: 'America/Bogota' }).format(t);
+  };
+  const activity = f.lastUpdated || f.firstUserMessageAt || f.createdAt || '';
+  if (dayKey(activity) && dayKey(activity) !== dayKey(new Date())) {
+    return { sent: false, why: 'stale_day' };
+  }
 
   const step = stage || f.funnelStep || '';
   const hasContact = Boolean(String(f.customerPhone || '').trim());
