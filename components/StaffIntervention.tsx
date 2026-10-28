@@ -5,7 +5,8 @@ import {
   InterventionRequest, 
   getInterventionRequests, 
   subscribeToInterventions,
-  acceptIntervention
+  acceptIntervention,
+  updateSessionStatus
 } from '../services/conversationService';
 import { sendTwilioCall } from '../services/twilioService';
 import { notifyInterventionAccepted } from '../services/notificationService';
@@ -13,9 +14,11 @@ import { notifyInterventionAccepted } from '../services/notificationService';
 interface StaffInterventionProps {
   sessions: ConversationSession[];
   onCallCustomer: (phone: string) => void;
+  /** Al tomar una intervención, abrir ESA conversación (antes se cerraba y el chat se perdía). */
+  onOpenConversation?: (sessionId: string) => void;
 }
 
-const StaffIntervention: React.FC<StaffInterventionProps> = ({ sessions, onCallCustomer: _onCallCustomer }) => {
+const StaffIntervention: React.FC<StaffInterventionProps> = ({ sessions, onCallCustomer: _onCallCustomer, onOpenConversation }) => {
   const [interventions, setInterventions] = useState<InterventionRequest[]>([]);
   const [activeTab, setActiveTab] = useState<'pending' | 'active' | 'history'>('pending');
   const [_selectedIntervention, _setSelectedIntervention] = useState<InterventionRequest | null>(null);
@@ -40,6 +43,8 @@ const StaffIntervention: React.FC<StaffInterventionProps> = ({ sessions, onCallC
     setIsTakingOver(true);
     try {
       await acceptIntervention(intervention.id, 'staff_001');
+      // El bot debe callarse y la conversación debe quedar abierta para el asesor.
+      try { await updateSessionStatus(intervention.sessionId, 'human_assigned', 'staff_001'); } catch { /* no bloquea */ }
       await notifyInterventionAccepted(intervention.sessionId, 'Staff Member');
       
       // Update the intervention status locally
@@ -48,6 +53,7 @@ const StaffIntervention: React.FC<StaffInterventionProps> = ({ sessions, onCallC
       );
       
       _setSelectedIntervention(null);
+      onOpenConversation?.(intervention.sessionId);
     } catch (e) {
       console.error('Failed to take over:', e);
     } finally {

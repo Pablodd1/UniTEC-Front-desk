@@ -2096,6 +2096,11 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({
                         onCallCustomer={(phone) => {
                             console.log('Calling customer:', phone);
                         }}
+                        onOpenConversation={(sessionId) => {
+                            const s = conversations.find((x) => x.id === sessionId);
+                            if (s) _setSelectedConversation(s);
+                            setActiveSubTab('conversations');
+                        }}
                     />
                 </div>
             );
