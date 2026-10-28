@@ -121,6 +121,21 @@ export async function recordChatTurn({ sessionId, userText, replyText, brand = '
       sessionFields.analytics = { mapValue: { fields: analyticsFields } };
     }
 
+    // Idempotencia: si el mismo texto ya se escribió en esta ventana de 5 s, no se duplica
+    // el mensaje ni los contadores (el loop de voz reenvía el mismo turno 3-4 veces).
+    let userDocId = '';
+    if (userText) {
+      const normText = String(userText).toLowerCase().replace(/\s+/g, ' ').trim();
+      let h = 5381;
+      for (let i = 0; i < normText.length; i++) h = ((h * 33) ^ normText.charCodeAt(i)) >>> 0;
+      const bucket = Math.floor(Date.now() / 5000);
+      userDocId = `srv_u_${bucket}_${h.toString(36)}`;
+      try {
+        const probe = await fetch(`${base}/conversations/${sessionId}/messages/${userDocId}`, { headers: auth });
+        if (probe.ok) return { ok: true, skipped: 'duplicate_turn' };
+      } catch { /* si la sonda falla, se escribe normal */ }
+    }
+
     const writes = [
       { updateMask: { fieldPaths: sessionMask }, update: { name: docPath, fields: sessionFields } },
     ];
@@ -128,9 +143,9 @@ export async function recordChatTurn({ sessionId, userText, replyText, brand = '
     if (userText) {
       writes.push({
         update: {
-          name: `${docPath}/messages/srv_u_${ts}`,
+          name: `${docPath}/messages/${userDocId}`,
           fields: {
-            id: { stringValue: `srv_u_${ts}` },
+            id: { stringValue: userDocId },
             role: { stringValue: 'user' },
             text: { stringValue: String(userText).slice(0, 2000) },
             timestamp: { stringValue: now },

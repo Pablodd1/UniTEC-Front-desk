@@ -297,8 +297,16 @@ export const connectLiveSession = async (
   // existía si el navegador tiene Web Speech (Chrome/Edge). En Safari/iOS, Firefox o cuando el
   // servicio de voz de Chrome falla, la llamada moría. Ahora ambos motores llaman aquí, y el
   // texto del cliente también se reporta con rol 'user' (antes se pintaba como si fuera del bot).
+  // Single-flight: the recognizer/retry can deliver the SAME final transcript several times
+  // within a second. Drop identical repeats inside 5 s so we neither resend nor duplicate the turn.
+  let lastVoiceTurnKey = '';
+  let lastVoiceTurnAt = 0;
   const runVoiceTurn = async (transcript: string) => {
     if (!transcript) return;
+    const turnKey = String(transcript).toLowerCase().replace(/\s+/g, ' ').replace(/[¿?¡!.,;:]/g, '').trim();
+    if (turnKey && turnKey === lastVoiceTurnKey && Date.now() - lastVoiceTurnAt < 5000) return;
+    lastVoiceTurnKey = turnKey;
+    lastVoiceTurnAt = Date.now();
 
     if (voiceTakeoverReason) {
       // Mismo contrato que el chat de texto: se registra el turno, pero contesta el humano.
