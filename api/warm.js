@@ -1,3 +1,4 @@
+import { skipForeignCron } from './_cron-guard.js';
 // /api/warm — keep-alive endpoint. Pinged every 5 min by Vercel Cron
 // (see vercel.json) so the serverless function never fully sleeps, which
 // eliminates the 10-20s cold-start "not responding" window for the first
@@ -26,6 +27,7 @@ async function getFirestoreToken() {
 }
 
 export default async function handler(req, res) {
+  if (skipForeignCron(req, res)) return; // cron de un proyecto duplicado: no ejecutar
   if (req.method !== 'GET' && req.method !== 'HEAD') {
     return res.status(405).json({ error: 'Method Not Allowed' });
   }

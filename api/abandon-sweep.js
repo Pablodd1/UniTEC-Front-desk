@@ -1,3 +1,4 @@
+import { skipForeignCron } from './_cron-guard.js';
 // GET /api/abandon-sweep?dryRun=true — fallback abandonment alert (cron */5).
 //
 // Why: the beacon (/api/session-exit) catches a closed tab, but a killed browser, a locked phone that
@@ -44,6 +45,7 @@ const minutesSince = (iso) => {
 const bogotaHour = () => Number(new Intl.DateTimeFormat('en-US', { hour: 'numeric', hour12: false, timeZone: 'America/Bogota' }).format(new Date()));
 
 export default async function handler(req, res) {
+  if (skipForeignCron(req, res)) return; // cron de un proyecto duplicado: no ejecutar
   res.setHeader('Access-Control-Allow-Origin', '*');
   if (req.method === 'OPTIONS') return res.status(204).end();
 

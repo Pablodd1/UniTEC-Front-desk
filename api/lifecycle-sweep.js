@@ -1,3 +1,4 @@
+import { skipForeignCron } from './_cron-guard.js';
 // GET /api/lifecycle-sweep?dryRun=true
 // Cierra el ciclo de vida de las sesiones para que el embudo tenga caídas reales por paso.
 //
@@ -28,6 +29,7 @@ function minutesSince(iso) {
 }
 
 export default async function handler(req, res) {
+  if (skipForeignCron(req, res)) return; // cron de un proyecto duplicado: no ejecutar
   res.setHeader('Access-Control-Allow-Origin', '*');
   if (req.method === 'OPTIONS') return res.status(204).end();
 

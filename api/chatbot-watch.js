@@ -1,3 +1,4 @@
+import { skipForeignCron } from './_cron-guard.js';
 // api/chatbot-watch.js — monitor del chatbot UniTEC. Cron cada 2 h.
 //
 // Qué hace, en este orden:
@@ -136,6 +137,7 @@ function pickAction(report) {
 }
 
 export default async function handler(req, res) {
+  if (skipForeignCron(req, res)) return; // cron de un proyecto duplicado: no ejecutar
   if (!authorized(req)) return res.status(401).json({ ok: false, error: 'unauthorized' });
 
   const dryRun = String(req.query?.dryRun || '') === 'true';

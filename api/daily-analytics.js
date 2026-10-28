@@ -1,3 +1,4 @@
+import { skipForeignCron } from './_cron-guard.js';
 import { createRequire } from 'module';
 const require = createRequire(import.meta.url);
 const firebaseConfig = require('../firebase-applet-config.json');
@@ -523,6 +524,7 @@ function parseFirestoreDoc(doc) {
 }
 
 export default async function handler(req, res) {
+  if (skipForeignCron(req, res)) return; // cron de un proyecto duplicado: no ejecutar
   res.setHeader('Access-Control-Allow-Origin', '*');
   res.setHeader('Access-Control-Allow-Methods', 'GET,POST,OPTIONS');
   res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');

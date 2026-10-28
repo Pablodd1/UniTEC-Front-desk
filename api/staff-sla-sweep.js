@@ -1,3 +1,4 @@
+import { skipForeignCron } from './_cron-guard.js';
 // api/staff-sla-sweep.js — "si el asesor no llega, el sistema insiste solo".
 //
 // The complaint this closes: a customer asks for a human (or a quote), the alert fires ONCE, and if
@@ -97,6 +98,7 @@ async function writeCustomerNotice(sessionId, text, flag) {
 }
 
 export default async function handler(req, res) {
+  if (skipForeignCron(req, res)) return; // cron de un proyecto duplicado: no ejecutar
   const secret = process.env.CRON_SECRET || process.env.SWEEP_KEY || '';
   if (secret) {
     const header = String(req.headers.authorization || '').replace(/^Bearer\s+/i, '');

@@ -1,3 +1,4 @@
+import { skipForeignCron } from './_cron-guard.js';
 // GET /api/ga-visits
 // Trae las VISITAS REALES de Google Analytics 4 y las guarda en config/main.googleAnalyticsVisits
 // (el campo que leen el panel Mission Control y el informe diario). Antes ese KPI mostraba un
@@ -82,6 +83,7 @@ async function saveToConfig(idToken, projectId, visits, detail) {
 }
 
 export default async function handler(req, res) {
+  if (skipForeignCron(req, res)) return; // cron de un proyecto duplicado: no ejecutar
   res.setHeader('Access-Control-Allow-Origin', '*');
   if (req.method === 'OPTIONS') return res.status(204).end();
 
