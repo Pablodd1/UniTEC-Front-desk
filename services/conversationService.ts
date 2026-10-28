@@ -554,6 +554,10 @@ if (typeof window !== 'undefined') {
   });
 }
 
+// Sesiones de prueba/sondas del monitor: nunca deben aparecer en el panel ni en sus contadores.
+const TEST_SESSION_RE = /^(diag|lat-test|verify|warm-check|secret-verify|post-fix|analytics-verify|sweep|abandon-test|staff-test|rules-probe|test[-_]|probe[-_]|monitor)/i;
+const realOnly = (list: ConversationSession[]) => list.filter((s) => !TEST_SESSION_RE.test(String(s.id || '')));
+
 // Subscribe to real-time conversation updates
 export const subscribeToConversations = (
   callback: (sessions: ConversationSession[]) => void
@@ -565,7 +569,7 @@ export const subscribeToConversations = (
   }
   
   // Return local storage fallback immediately
-  callback(getLocalSessions());
+  callback(realOnly(getLocalSessions()));
   
   const subRecord: ActiveSubscription = { type: 'conversations', callback };
   activeSubs.push(subRecord);
@@ -575,7 +579,7 @@ export const subscribeToConversations = (
   let unsubSnapshot = () => {};
   try {
     unsubSnapshot = onSnapshot(q, (snapshot) => {
-      const sessions = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() } as ConversationSession));
+      const sessions = realOnly(snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() } as ConversationSession)));
       const local = getLocalSessions();
       const merged = [...sessions];
       local.forEach(l => {
@@ -588,7 +592,7 @@ export const subscribeToConversations = (
       callback(merged);
     }, (error) => {
       console.warn('Error subscribing to conversations, returning local sessions:', error);
-      callback(getLocalSessions());
+      callback(realOnly(getLocalSessions()));
     });
   } catch (e) {
     console.warn('Failed to setup conversations snapshot subscription:', e);
