@@ -129,11 +129,15 @@ export async function recordChatTurn({ sessionId, userText, replyText, brand = '
       let h = 5381;
       for (let i = 0; i < normText.length; i++) h = ((h * 33) ^ normText.charCodeAt(i)) >>> 0;
       const bucket = Math.floor(Date.now() / 5000);
+      const hasTurn = async (b) => {
+        try {
+          const r = await fetch(`${base}/conversations/${sessionId}/messages/srv_u_${b}_${h.toString(36)}`, { headers: auth });
+          return r.ok;
+        } catch { return false; }
+      };
+      // Ventana actual + anterior: evita el borde del bucket cuando el reintento cae 1 s después.
+      if ((await hasTurn(bucket)) || (await hasTurn(bucket - 1))) return { ok: true, skipped: 'duplicate_turn' };
       userDocId = `srv_u_${bucket}_${h.toString(36)}`;
-      try {
-        const probe = await fetch(`${base}/conversations/${sessionId}/messages/${userDocId}`, { headers: auth });
-        if (probe.ok) return { ok: true, skipped: 'duplicate_turn' };
-      } catch { /* si la sonda falla, se escribe normal */ }
     }
 
     const writes = [
