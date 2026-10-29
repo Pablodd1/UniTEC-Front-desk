@@ -63,5 +63,13 @@ export default async function handler(req, res) {
     });
   }
 
-  return res.status(200).json({ success: true, data: result.data, via: result.via });
+  // Qué remitente entregó de verdad y cuántos intentos costó: sin esto no se puede auditar si el
+  // dominio de marca ya quedó verificado (la preferencia es marca → respaldo).
+  return res.status(200).json({
+    success: true,
+    data: result.data,
+    via: result.via,
+    from: result.from,
+    attempts: (result.attempts || []).map((a) => ({ via: a.via, status: a.status, from: a.from })),
+  });
 }
