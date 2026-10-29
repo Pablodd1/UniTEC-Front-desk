@@ -35,16 +35,19 @@ export function resendSenders() {
   const altKey = clean(process.env.RESEND_API_KEY_ALT);
   if (altKey) keys.push({ via: 'alt', key: altKey });
 
+  // Orden: primero el REMITENTE que queremos (marca), después el histórico. Para cada remitente se
+  // prueban todas las claves. Así, cuando el dominio de marca quede verificado en la cuenta de la
+  // clave alterna, el correo sale con la marca aunque la cuenta primaria no tenga ese dominio — en
+  // lugar de quedarse eternamente en el remitente viejo solo porque la primaria responde antes.
+  const froms = [];
+  for (const f of [clean(process.env.RESEND_FROM_BRAND), clean(process.env.RESEND_FROM), DEFAULT_FROM]) {
+    if (f && !froms.includes(f)) froms.push(f);
+  }
+
   const out = [];
   const now = Date.now();
-  for (const k of keys) {
-    const froms = k.via === 'primary'
-      ? [clean(process.env.RESEND_FROM_BRAND), clean(process.env.RESEND_FROM), DEFAULT_FROM]
-      : [clean(process.env.RESEND_FROM_ALT), clean(process.env.RESEND_FROM_BRAND), clean(process.env.RESEND_FROM), DEFAULT_FROM];
-    const seen = new Set();
-    for (const f of froms) {
-      if (!f || seen.has(f)) continue;
-      seen.add(f);
+  for (const f of froms) {
+    for (const k of keys) {
       if ((downUntil.get(k.via + ':' + f) || 0) > now) continue;
       out.push({ via: k.via, key: k.key, from: f });
     }
