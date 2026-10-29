@@ -1,3 +1,4 @@
+import { sendEmail as sendEmailShared } from './_email.js';
 // Unified escalation: fires Telegram + Email + WhatsApp + SMS simultaneously.
 // Called when a user requests a quote, budget, price, or asks to talk to staff.
 
@@ -110,28 +111,12 @@ function resendKey() {
 const RESEND_FROM = () => process.env.RESEND_FROM || 'UniTEC AI Desk <alertas@cedexx.net>';
 
 async function sendEmail(subject, html) {
-  const apiKey = resendKey();
   const adminEmail = process.env.ADMIN_EMAIL || 'lidermarketingonline@espaciosimportados.com.co';
-  if (!apiKey) return { success: false, error: 'No Resend API key found in env' };
-
-  try {
-    const r = await fetch('https://api.resend.com/emails', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${apiKey}` },
-      body: JSON.stringify({
-        from: process.env.RESEND_FROM || 'UniTEC AI Desk <alertas@cedexx.net>',
-        to: [adminEmail],
-        subject,
-        html,
-      }),
-      signal: AbortSignal.timeout(8000),
-    });
-    if (r.ok) return { success: true, data: await r.json() };
-    const detail = await r.text().catch(() => '');
-    return { success: false, error: String(detail || `HTTP ${r.status}`).slice(0, 200), data: detail };
-  } catch (e) {
-    return { success: false, error: e.message };
-  }
+  // Cadena de remitentes: si la clave primaria no puede enviar (clave restringida o dominio sin
+  // verificar), se reintenta con RESEND_API_KEY_ALT en lugar de perder la alerta. Ver api/_email.js.
+  const r = await sendEmailShared({ subject, html, to: [adminEmail] });
+  if (r.success) return { success: true, data: r.data, via: r.via };
+  return { success: false, error: r.error, attempts: r.attempts };
 }
 
 // --- Channel: Twilio SMS ---

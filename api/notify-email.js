@@ -1,3 +1,4 @@
+import { sendEmail } from './_email.js';
 export default async function handler(req, res) {
   const ALLOWED_ORIGINS = (process.env.ALLOWED_ORIGINS || '')
     .split(',')
@@ -47,40 +48,20 @@ export default async function handler(req, res) {
     return res.status(400).json({ error: 'Missing subject or html parameter' });
   }
 
-  const RESEND_API_KEY = process.env.RESEND_API_KEY;
   const ADMIN_EMAIL = process.env.ADMIN_EMAIL || 'lidermarketingonline@espaciosimportados.com.co';
   const recipient = to || ADMIN_EMAIL;
 
-  if (!RESEND_API_KEY) {
-    console.error("Missing Resend API Key.");
-    return res.status(500).json({ error: 'Email configuration is missing on the server.' });
-  }
+  // Cadena de remitentes (RESEND_API_KEY → RESEND_API_KEY_ALT). Ver api/_email.js.
+  const result = await sendEmail({ subject, html, to: [recipient] });
 
-  try {
-    const response = await fetch('https://api.resend.com/emails', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${RESEND_API_KEY}`
-      },
-      body: JSON.stringify({
-        from: process.env.RESEND_FROM || 'UniTEC AI Desk <alertas@cedexx.net>',
-        to: [recipient],
-        subject: subject,
-        html: html
-      }),
+  if (!result.success) {
+    console.error('Resend API Error:', result.error, JSON.stringify(result.attempts || []));
+    const missingKey = /No Resend API key found/.test(String(result.error || ''));
+    return res.status(500).json({
+      error: missingKey ? 'Email configuration is missing on the server.' : 'Failed to send Email',
+      details: result.attempts && result.attempts.length ? result.attempts : { message: result.error },
     });
-
-    const data = await response.json();
-
-    if (!response.ok) {
-      console.error("Resend API Error:", data);
-      return res.status(500).json({ error: 'Failed to send Email', details: data });
-    }
-
-    return res.status(200).json({ success: true, data });
-  } catch (error) {
-    console.error("Error sending Email:", error);
-    return res.status(500).json({ error: 'Internal Server Error' });
   }
+
+  return res.status(200).json({ success: true, data: result.data, via: result.via });
 }
