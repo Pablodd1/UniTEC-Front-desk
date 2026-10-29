@@ -41,7 +41,9 @@ export const isTestSessionId = (sessionId) => TEST_SESSION_RE.test(String(sessio
 export async function recordChatTurn({ sessionId, userText, replyText, brand = 'unitec', stage, parentHost, latencyMs, channel = 'text', deliveryStatus = 'ok' }) {
   if (!sessionId) return { recorded: false, reason: 'no_session' };
   // Sondas del monitor y pruebas internas: no se persisten (no ensucian sesiones, embudo ni contadores).
-  if (isTestSessionId(sessionId)) return { ok: true, recorded: false, skipped: 'test_session', sessionId };
+  // `recorded: null` = no aplica (sesión de prueba). Antes era `false`, y el caller interpretaba
+  // ese false como fallo real → alerta REGISTRO_FALLIDO en cada verify/probe.
+  if (isTestSessionId(sessionId)) return { ok: true, recorded: null, skipped: 'test_session', sessionId };
   try {
     const idToken = await getFirestoreToken();
     if (!idToken) return { recorded: false, reason: 'no_token' };
@@ -149,7 +151,7 @@ export async function recordChatTurn({ sessionId, userText, replyText, brand = '
         } catch { return false; }
       };
       // Ventana actual + anterior: evita el borde del bucket cuando el reintento cae 1 s después.
-      if ((await hasTurn(bucket)) || (await hasTurn(bucket - 1))) return { ok: true, skipped: 'duplicate_turn' };
+      if ((await hasTurn(bucket)) || (await hasTurn(bucket - 1))) return { ok: true, recorded: null, skipped: 'duplicate_turn' };
       userDocId = `srv_u_${bucket}_${h.toString(36)}`;
     }
 
