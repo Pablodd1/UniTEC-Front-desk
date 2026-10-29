@@ -17,6 +17,17 @@ const firebaseConfig = require_('../firebase-applet-config.json');
 
 const PROTECTED_STATUSES = new Set(['human_requested', 'human_assigned']);
 
+// Sesiones de prueba / sondas del monitor (test-monitor-*, probe_*, diag-*, lat-test, verify-*…).
+// Misma lista que usa el panel (services/conversationService.ts: TEST_SESSION_RE).
+// Antes se persistían igual que un cliente real: el monitor crea 3 sondas cada 2 h, así que
+// Firestore acumulaba cientos de documentos al mes que luego había que filtrar en todos lados.
+// Ahora se descartan en el origen: no se escribe sesión, ni mensajes, ni contadores, ni embudo.
+const TEST_SESSION_RE = /^(diag|lat-test|verify|warm-check|secret-verify|post-fix|analytics-verify|sweep|abandon-test|staff-test|rules-probe|test[-_]|probe[-_]|monitor)/i;
+
+/** ¿El id pertenece a una sonda/prueba interna (nunca a un cliente)? */
+export const isTestSessionId = (sessionId) => TEST_SESSION_RE.test(String(sessionId || ''));
+
+
 /**
  * Registra un turno.
  * @param {string} sessionId
@@ -29,6 +40,8 @@ const PROTECTED_STATUSES = new Set(['human_requested', 'human_assigned']);
  */
 export async function recordChatTurn({ sessionId, userText, replyText, brand = 'unitec', stage, parentHost, latencyMs, channel = 'text', deliveryStatus = 'ok' }) {
   if (!sessionId) return { recorded: false, reason: 'no_session' };
+  // Sondas del monitor y pruebas internas: no se persisten (no ensucian sesiones, embudo ni contadores).
+  if (isTestSessionId(sessionId)) return { ok: true, recorded: false, skipped: 'test_session', sessionId };
   try {
     const idToken = await getFirestoreToken();
     if (!idToken) return { recorded: false, reason: 'no_token' };
