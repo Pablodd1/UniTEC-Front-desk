@@ -261,9 +261,33 @@ export async function channelHealth() {
   if (!resendKey) {
     out.email = { ok: false, configured: false, error: 'RESEND_API_KEY vacía' };
   } else {
+    // Dos tipos de clave de Resend:
+    //   · permiso total  → GET /domains responde 200 y se usa como prueba de vida.
+    //   · "restricted to send emails" → GET /domains responde 401 restricted_api_key AUNQUE la clave sirva
+    //     para enviar. Antes eso pintaba el canal en rojo/amarillo sin motivo.
+    // Para la clave restringida se comprueba el permiso con un POST /emails INVÁLIDO a propósito (from y to
+    // mal formados): Resend valida el payload antes de enviar y devuelve 422 validation_error => la clave
+    // autentica y puede enviar, sin que salga ningún correo real.
+    const probeSendPermission = async () => {
+      try {
+        const r = await fetch('https://api.resend.com/emails', {
+          method: 'POST',
+          headers: { Authorization: `Bearer ${resendKey}`, 'Content-Type': 'application/json' },
+          body: JSON.stringify({ from: 'probe@invalid', to: ['not-an-email'], subject: 'permission-probe', html: 'probe' }),
+          signal: AbortSignal.timeout(8000),
+        });
+        const j = await r.json().catch(() => ({}));
+        if (r.status === 422 && j?.name === 'validation_error') return { ok: true, configured: true, mode: 'send_only' };
+        return { ok: false, configured: true, status: r.status, error: j?.message || 'clave sin permiso de envío' };
+      } catch (err) {
+        return { ok: false, configured: true, error: String(err?.message || err) };
+      }
+    };
     try {
       const r = await fetch('https://api.resend.com/domains', { headers: { Authorization: `Bearer ${resendKey}` }, signal: AbortSignal.timeout(8000) });
-      out.email = { ok: r.ok, configured: true, status: r.status };
+      if (r.ok) out.email = { ok: true, configured: true, status: r.status, mode: 'full' };
+      else if (r.status === 401 || r.status === 403) out.email = await probeSendPermission();
+      else out.email = { ok: false, configured: true, status: r.status };
     } catch (err) {
       out.email = { ok: false, configured: true, error: String(err?.message || err) };
     }
