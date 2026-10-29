@@ -53,10 +53,15 @@ export async function sendEmail({ subject, html, to, timeoutMs = 8000, fetchImpl
   const attempts = [];
   for (const s of senders) {
     try {
+      // Reply-To: sin esto, un cliente que responde a una alerta escribe a la dirección
+      // técnica del remitente (alertas@cedexx.net) y el correo se pierde. Se apunta a la
+      // bandeja real de ventas/administración.
+      const replyTo = clean(process.env.RESEND_REPLY_TO) || clean(process.env.ADMIN_EMAIL) || '';
+      const payload = { from: s.from, to: recipients, subject, html, ...(replyTo ? { reply_to: replyTo } : {}) };
       const r = await fetchImpl('https://api.resend.com/emails', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${s.key}` },
-        body: JSON.stringify({ from: s.from, to: recipients, subject, html }),
+        body: JSON.stringify(payload),
         signal: AbortSignal.timeout(timeoutMs),
       });
       const body = await r.json().catch(() => ({}));
