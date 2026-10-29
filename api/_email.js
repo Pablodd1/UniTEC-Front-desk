@@ -15,22 +15,52 @@
 const DEFAULT_FROM = 'UniTEC AI Desk <alertas@cedexx.net>';
 const clean = (v) => String(v || '').trim().replace(/^["']|["']$/g, '');
 
-/** Remitentes disponibles, en orden de intento. */
+// Cuarentena por remitente: si un dominio responde "not verified" no se reintenta durante 30 min.
+// Sin esto, cada alerta pagaría ~300 ms de 403 antes de caer al remitente bueno. Vive en memoria
+// del lambda (se reinicia solo, coste cero) y nunca deja la lista vacía.
+const DOWN_MS = 30 * 60 * 1000;
+const downUntil = new Map();
+
+/**
+ * Remitentes disponibles, en orden de intento.
+ * Preferencia dentro de cada clave: marca (RESEND_FROM_BRAND) → configurado (RESEND_FROM) →
+ * histórico (cedexx). Así el día que el dominio de la marca quede verificado los envíos salen
+ * con la marca SIN tocar código ni variables, y si esa verificación se cae el correo sigue
+ * saliendo por el remitente que ya funcionaba en lugar de morir en silencio.
+ */
 export function resendSenders() {
-  const list = [];
+  const keys = [];
   const primaryKey = clean(process.env.RESEND_API_KEY) || clean(process.env.RESEND_KEY);
-  if (primaryKey) {
-    list.push({ via: 'primary', key: primaryKey, from: clean(process.env.RESEND_FROM) || DEFAULT_FROM });
-  }
+  if (primaryKey) keys.push({ via: 'primary', key: primaryKey });
   const altKey = clean(process.env.RESEND_API_KEY_ALT);
-  if (altKey) {
-    list.push({
-      via: 'alt',
-      key: altKey,
-      from: clean(process.env.RESEND_FROM_ALT) || clean(process.env.RESEND_FROM) || DEFAULT_FROM,
-    });
+  if (altKey) keys.push({ via: 'alt', key: altKey });
+
+  const out = [];
+  const now = Date.now();
+  for (const k of keys) {
+    const froms = k.via === 'primary'
+      ? [clean(process.env.RESEND_FROM_BRAND), clean(process.env.RESEND_FROM), DEFAULT_FROM]
+      : [clean(process.env.RESEND_FROM_ALT), clean(process.env.RESEND_FROM_BRAND), clean(process.env.RESEND_FROM), DEFAULT_FROM];
+    const seen = new Set();
+    for (const f of froms) {
+      if (!f || seen.has(f)) continue;
+      seen.add(f);
+      if ((downUntil.get(k.via + ':' + f) || 0) > now) continue;
+      out.push({ via: k.via, key: k.key, from: f });
+    }
   }
-  return list;
+  if (!out.length && keys.length) {
+    out.push({ via: keys[0].via, key: keys[0].key, from: clean(process.env.RESEND_FROM) || DEFAULT_FROM });
+  }
+  return out;
+}
+
+/** ¿El fallo es de la CLAVE (no del remitente)? Entonces no sirve probar otro 'from' con la misma
+ *  clave: hay que pasar a la siguiente cuenta. */
+export function isKeyLevelFailure(status, message) {
+  const m = String(message || '');
+  if (status === 401) return true;
+  return /restricted_api_key|api ?key is invalid|incorrect api key|missing_api_key|unauthorized/i.test(m);
 }
 
 /** ¿El fallo es del remitente (clave/dominio) y por tanto vale la pena probar otra clave? */
@@ -51,7 +81,9 @@ export async function sendEmail({ subject, html, to, timeoutMs = 8000, fetchImpl
   if (!senders.length) return { success: false, error: 'No Resend API key found in env', attempts: [] };
 
   const attempts = [];
+  const deadKeys = new Set();
   for (const s of senders) {
+    if (deadKeys.has(s.via)) continue;
     try {
       // Reply-To: sin esto, un cliente que responde a una alerta escribe a la dirección
       // técnica del remitente (alertas@cedexx.net) y el correo se pierde. Se apunta a la
@@ -69,6 +101,14 @@ export async function sendEmail({ subject, html, to, timeoutMs = 8000, fetchImpl
 
       const message = body?.message || body?.error || `HTTP ${r.status}`;
       attempts.push({ via: s.via, status: r.status, error: message, from: s.from });
+      if (/not verified|restricted_api_key|invalid api ?key/i.test(message)) {
+        downUntil.set(s.via + ':' + s.from, Date.now() + DOWN_MS);
+      }
+      // Clave muerta: no perder tiempo probando otro remitente con la misma clave.
+      if (isKeyLevelFailure(r.status, message)) {
+        deadKeys.add(s.via);
+        continue;
+      }
       if (!isSenderLevelFailure(r.status, message)) {
         return { success: false, error: message, status: r.status, data: body, via: s.via, attempts };
       }
