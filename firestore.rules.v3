@@ -1,0 +1,175 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // ===============================================================
+    // Helper Functions
+    // ===============================================================
+    function isAuthenticated() {
+      return request.auth != null;
+    }
+    
+    function isOwner(userId) {
+      return isAuthenticated() && request.auth.uid == userId;
+    }
+    
+    function isAdmin() {
+      // Any authenticated user qualifies - the admin is gated by app-level password check (signInAnonymously)
+      return isAuthenticated();
+    }
+    
+    function isStaff() {
+      // Any authenticated user qualifies - the admin is gated by app-level password check (signInAnonymously)
+      return isAuthenticated();
+    }
+    
+    function uidUnchanged() {
+      return !('userId' in request.resource.data) || request.resource.data.userId == request.auth.uid;
+    }
+    
+    function uidNotModified() {
+      return !('userId' in request.resource.data) || request.resource.data.userId == resource.data.userId;
+    }
+    
+    function hasRequiredFields(fields) {
+      return request.resource.data.keys().hasAll(fields);
+    }
+
+    // ===============================================================
+    // Domain Validators
+    // ===============================================================
+    function isValidCrmLog() {
+      return hasRequiredFields(['id', 'timestamp', 'customerName', 'summary', 'actionTaken', 'sentiment', 'userId']) &&
+             request.resource.data.id is string && request.resource.data.id.size() < 100 &&
+             request.resource.data.timestamp is string && request.resource.data.timestamp.size() < 50 &&
+             request.resource.data.customerName is string && request.resource.data.customerName.size() < 200 &&
+             request.resource.data.summary is string && request.resource.data.summary.size() < 2000 &&
+             request.resource.data.actionTaken is string && request.resource.data.actionTaken.size() < 1000 &&
+             request.resource.data.sentiment in ['Positive', 'Neutral', 'Negative'] &&
+             (!('provider' in request.resource.data) || request.resource.data.provider in ['Internal', 'Escala']) &&
+             request.resource.data.userId is string && request.resource.data.userId.size() < 100;
+    }
+    
+    function isValidCallRecording() {
+      return hasRequiredFields(['id', 'name', 'timestamp', 'duration', 'userId']) &&
+             request.resource.data.id is string && request.resource.data.id.size() < 100 &&
+             request.resource.data.name is string && request.resource.data.name.size() < 200 &&
+             request.resource.data.timestamp is string && request.resource.data.timestamp.size() < 50 &&
+             request.resource.data.duration is string && request.resource.data.duration.size() < 50 &&
+             (!('blobUrl' in request.resource.data) || (request.resource.data.blobUrl is string && request.resource.data.blobUrl.size() < 2000)) &&
+             (!('transcript' in request.resource.data) || (request.resource.data.transcript is string && request.resource.data.transcript.size() < 100000)) &&
+             request.resource.data.userId is string && request.resource.data.userId.size() < 100;
+    }
+
+    function isValidAppConfig() {
+      return hasRequiredFields(['userId']) &&
+             (!('escalaApiKey' in request.resource.data) || (request.resource.data.escalaApiKey is string && request.resource.data.escalaApiKey.size() < 500)) &&
+             (!('escalaAccountId' in request.resource.data) || (request.resource.data.escalaAccountId is string && request.resource.data.escalaAccountId.size() < 500)) &&
+             (!('escalaIsActive' in request.resource.data) || request.resource.data.escalaIsActive is bool) &&
+             (!('trainingData' in request.resource.data) || (request.resource.data.trainingData is string && request.resource.data.trainingData.size() < 500000)) &&
+             (!('geminiApiKey' in request.resource.data)) &&
+              request.resource.data.userId is string && request.resource.data.userId.size() < 100;
+    }
+    
+    function isValidCall() {
+      return request.resource.data.keys().hasAll(['id', 'to', 'from', 'status', 'direction', 'startedAt']) &&
+             request.resource.data.id is string &&
+             request.resource.data.status in ['initiated', 'ringing', 'in-progress', 'completed', 'failed', 'busy', 'no-answer'] &&
+             request.resource.data.direction in ['outbound', 'inbound'];
+    }
+
+    // ===============================================================
+    // Rules
+    // ===============================================================
+    
+    // -- User-scoped data (requires auth + ownership) --
+    match /users/{userId}/crmLogs/{logId} {
+      allow read: if isOwner(userId);
+      allow create: if isOwner(userId) && isValidCrmLog() && uidUnchanged();
+      allow update: if isOwner(userId) && isValidCrmLog() && uidNotModified();
+      allow delete: if isOwner(userId);
+    }
+    
+    match /users/{userId}/callRecordings/{recordingId} {
+      allow read: if isOwner(userId);
+      allow create: if isOwner(userId) && isValidCallRecording() && uidUnchanged();
+      allow update: if isOwner(userId) && isValidCallRecording() && uidNotModified();
+      allow delete: if isOwner(userId);
+    }
+    
+    match /users/{userId}/config/main {
+      allow read: if isOwner(userId);
+      allow create: if isOwner(userId) && isValidAppConfig() && uidUnchanged();
+      allow update: if isOwner(userId) && isValidAppConfig() && uidNotModified();
+      allow delete: if isOwner(userId);
+    }
+
+    match /config/main {
+      // El widget SOLO lee (precios, greeting, trainingData vía geminiService). Quien escribe es
+      // el panel (signInAnonymously) o los endpoints del servidor (_firestore-rest firma con token
+      // anónimo => request.auth != null). Cerrar el write anónimo elimina la puerta abierta de
+      // "cualquiera sobrescribe precios/prompt/telegram ids" SIN tocar el chat. Review 2026-11-02.
+      allow read: if true;
+      allow create, update, delete: if isAuthenticated();
+    }
+
+    match /users/{userId}/chatSessions/{sessionId} {
+      allow read, write: if true;
+    }
+    
+    // -- Conversations: public read & write --
+    match /conversations/{sessionId} {
+      allow read, write: if true;
+      
+      // -- Messages subcollection: public read & write --
+      match /messages/{messageId} {
+        allow read, write: if true;
+      }
+    }
+
+    // -- Interventions: public read & write --
+    match /interventions/{interventionId} {
+      allow read, write: if true;
+    }
+
+    // -- Conversation archives: authenticated read & write (retention sweep + Memoria tab) --
+    match /conversation_archives/{archiveId} {
+      allow read, write: if isAuthenticated();
+    }
+    
+    // -- Calls: authenticated only --
+    match /calls/{callId} {
+      allow read: if isAuthenticated();
+      allow create: if isAuthenticated() && isValidCall();
+      allow update: if isAuthenticated();
+      allow delete: if isAuthenticated();
+    }
+    
+    // -- Staff: authenticated read, admin write --
+    match /staff/{staffId} {
+      allow read: if isAuthenticated();
+      allow create: if isAdmin();
+      allow update: if isStaff();
+      allow delete: if isAdmin();
+    }
+    
+    // -- Notifications: authenticated read/update, public create --
+    match /notifications/{notificationId} {
+      allow read, update: if isStaff();
+      allow create: if true;
+    }
+    // Rastro de auditoría de escalaciones (lo escribe el servidor: api/notify-escalation.js →
+    // api/_firestore-rest.js). Create + read; nunca editable ni borrable desde el cliente.
+    match /escalations/{docId} {
+      allow create: if isAuthenticated();
+      allow read: if isAuthenticated();
+      allow update, delete: if false;
+    }
+
+    // Cola de espera del barrido SLA (api/staff-sla-sweep.js): lee/escribe el servidor.
+    match /sla_queue/{docId} {
+      allow create, read, update: if isAuthenticated();
+      allow delete: if false;
+    }
+
+  }
+}
