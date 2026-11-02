@@ -471,9 +471,9 @@ export default async function handler(req, res) {
   // monitor de amarillo por una omisión intencional.
   const noPhoneByDesign = Array.isArray(phones) && phones.length === 0;
 
-  // UN raíl de mensajería con respaldo: Sent.dm primario, Twilio SOLO si el primario falla.
-  // Antes los tres envíos salían siempre → cada uno de los 8 teléfonos del equipo recibía la misma
-  // alerta 2-3 veces (la queja de "duplicados"). Así se conserva la entrega y se elimina el ruido.
+  // UN raíl de teléfono: Twilio SMS. Sent.dm quedó ELIMINADO (ver referencia 2026-10-11).
+  // Antes los tres proveedores salían siempre → cada uno de los 8 teléfonos del equipo recibía
+  // la misma alerta 2-3 veces (la queja de "duplicados"). Así se conserva la entrega sin ruido.
   const waText = buildWhatsAppText(d);
   const extract = (r) => r.status === 'fulfilled' ? r.value : { success: false, error: r.reason?.message };
 

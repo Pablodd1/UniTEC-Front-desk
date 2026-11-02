@@ -12,7 +12,8 @@ import { skipForeignCron } from './_cron-guard.js';
 //   T+10 min → final notice to the customer with an explicit WhatsApp/phone + `staffNoShow: true`
 // Takeover that goes quiet (human_assigned, no activity for 10 min) gets one nudge to staff.
 //
-// Safety rails: never touches test ids, never reopens sessions older than 6 h, one action per stage,
+// Safety rails: never touches test ids, sessions older than 6 h (except `human_requested`, which
+// must always reach closure — see review 2026-11-02), one action per stage,
 // `?dryRun=true` prints the plan without sending or writing anything.
 //
 // Protected by CRON_SECRET when that env var exists (Vercel cron sends `Authorization: Bearer …`).
@@ -129,7 +130,12 @@ export default async function handler(req, res) {
       if (status !== 'human_requested' && status !== 'human_assigned') continue;
 
       const lastUpdatedMs = Date.parse(s.lastUpdated || '') || 0;
-      if (!lastUpdatedMs || now - lastUpdatedMs > MAX_AGE_MS) continue;
+      // Una escalación nocturna quedaría huérfana para siempre: las horas de silencio difieren
+      // todo y, al amanecer, el cap de 6h sobre lastUpdated la salta en cada corrida (caso real
+      // 2026-11-01 "Pasto", review 2026-11-02). human_requested se procesa sin importar la edad;
+      // human_assigned CONSERVA el cap (no reprocesar sesiones históricas del panel sin decisión).
+      const needsClosure = status === 'human_requested';
+      if (!lastUpdatedMs || (!needsClosure && now - lastUpdatedMs > MAX_AGE_MS)) continue;
 
       // Extra fields (slaStage, lastEscalationAt) live outside the parser's whitelist → read the doc.
       let doc = null;
