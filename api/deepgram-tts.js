@@ -36,8 +36,9 @@ export default async function handler(req, res) {
       return res.status(400).json({ error: 'Text empty after markdown sanitization' });
     }
 
-    // Default to Deepgram Aura 2 model if not specified
-    const selectedModel = model || 'aura-asteria-en';
+    // Default a Aura 2 en ESPAÑOL: el único caller (deepgramService) siempre manda model,
+    // pero un caller sin model no debe recibir una voz en inglés (review voz 2026-11-03).
+    const selectedModel = model || 'aura-2-celeste-es';
     const dgUrl = `https://api.deepgram.com/v1/speak?model=${encodeURIComponent(selectedModel)}&encoding=mp3`;
 
     const dgRes = await fetch(dgUrl, {
