@@ -277,6 +277,23 @@ export const connectLiveSession = async (
     }
   };
 
+
+/** Traduce el error real de getUserMedia a una causa accionable (antes todo decía "permission denied"). */
+const micErrorMessage = (err: any): string => {
+  const name = String(err?.name || '');
+  const ua = typeof navigator !== 'undefined' ? navigator.userAgent : '';
+  const inApp = /(WhatsApp|Instagram|FBAN|FBAV|FB_IAB|Line\/|Twitter)/i.test(ua);
+  if (name === 'NotAllowedError' || name === 'SecurityError') {
+    if (inApp) return 'Tu navegador dentro de la app bloquea el micrófono. Abre unitecusadesign.com en Safari o Chrome y vuelve a intentar.';
+    return 'El micrófono está bloqueado para este sitio. Permítelo en el candado de la barra de direcciones y vuelve a intentar. También puedes usar LLAMAR.';
+  }
+  if (name === 'NotFoundError' || name === 'DevicesNotFoundError') return 'No se detectó un micrófono en este dispositivo. Puedes usar el chat o LLAMAR.';
+  if (name === 'NotReadableError' || name === 'TrackStartError') return 'El micrófono está siendo usado por otra aplicación. Ciérrala y vuelve a intentar.';
+  if (name === 'OverconstrainedError') return 'El micrófono no admite la configuración solicitada. Intenta de nuevo o usa LLAMAR.';
+  if (name === 'AbortError') return 'La captura de audio se interrumpió. Vuelve a intentar.';
+  return `No se pudo acceder al micrófono (${name || 'error desconocido'}). Puedes usar el chat o LLAMAR.`;
+};
+
   const stopRecognition = () => {
     if (!recognition) return;
     try { recognition.stop(); } catch (_) {}
@@ -285,8 +302,8 @@ export const connectLiveSession = async (
   try {
     const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
     stream.getTracks().forEach(t => t.stop());
-  } catch {
-    callbacks.onError(new Error('Microphone permission denied. Please allow access and try again.'));
+  } catch (err) {
+    callbacks.onError(new Error(micErrorMessage(err)));
     return { disconnect: async () => {}, getAudioBlob: () => new Blob(), stream: null };
   }
 
