@@ -1,5 +1,5 @@
 {
-  "source": "LISTA DE PRECIOS OCTUBRE.xlsx",
+  "source": "Productos Actualizados.xlsx",
   "listName": "LISTA MARKETING (cliente final)",
   "month": "OCTUBRE",
   "currency": "COP",
@@ -7,18 +7,51 @@
   "note": "Valores APROXIMADOS por unidad. Dependen de medidas, cantidades y referencia. Informar SIEMPRE que es un aproximado.",
   "sections": [
     {
-      "name": "DESCRIPCION",
-      "items": []
-    },
-    {
       "name": "CIELO RASO (PVC)",
       "items": [
         {
-          "name": "LAMINA PVC",
+          "code": "14031001",
+          "name": "LAMINA PVC BLANCO BRILLANTE 30CM H-01-I",
           "price": 27000
         },
         {
-          "name": "CORNISA PVC",
+          "code": "14031002",
+          "name": "LAMINA PVC BLANCO MADERA BRILLANTE 30CM H-02-I",
+          "price": 27000
+        },
+        {
+          "code": "14031005",
+          "name": "LAMINA PVC BLANCO MATE 30CM H-05-I",
+          "price": 27000
+        },
+        {
+          "code": "14031012",
+          "name": "LAMINA PVC JASPEADO BRILLANTE 30CM H-12-I",
+          "price": 27000
+        },
+        {
+          "code": "14031028",
+          "name": "LAMINA PVC CEDRO 30CM H-28-I",
+          "price": 27000
+        },
+        {
+          "code": "14032001",
+          "name": "CORNISA PVC BLANCA BRILLANTE AM1001",
+          "price": 9500
+        },
+        {
+          "code": "14032014",
+          "name": "CORNISA PVC BLANCO EJECUTIVO AM1014",
+          "price": 9500
+        },
+        {
+          "code": "14032002",
+          "name": "CORNISA PVC BLANCO MADERA BRILLANTE AM1002",
+          "price": 9500
+        },
+        {
+          "code": "14032004",
+          "name": "CORNISA PVC BEIGE BRILLANTE AM1004",
           "price": 9500
         }
       ]
@@ -27,94 +60,122 @@
       "name": "CUBIERTAS UPVC",
       "items": [
         {
+          "code": "14082105",
           "name": "CABALLETE CODO 90° UPVC COLONIAL 2.5mm",
           "price": 45372
         },
         {
+          "code": "14082008",
           "name": "CABALLETE PVC AZUL",
           "price": 34510
         },
         {
+          "code": "14082009",
           "name": "CABALLETE PVC ROJO 590*1.07*2.5",
           "price": 34510
         },
         {
+          "code": "14082104",
           "name": "CABALLETE T TRES AGUAS UPVC COLONIAL 2.5mm",
           "price": 37022
         },
         {
+          "code": "14082004",
           "name": "CABALLETE UPVC BLANCO 2.0mm O.B",
           "price": 18989
         },
         {
+          "code": "14082001",
           "name": "CABALLETE UPVC BLANCO 2.5mm O.A",
           "price": 23092
         },
         {
+          "code": "14082102",
           "name": "CABALLETE UPVC COLONIAL CORTO-LIMATESA 2.5MM",
           "price": 31059
         },
         {
+          "code": "14082201",
           "name": "CABALLETE UPVC ROMA 2.5MM",
           "price": 31059
         },
         {
+          "code": "14082103",
           "name": "CABALLETE Y TRES AGUAS UPVC COLONIAL 2.5mm",
           "price": 34562
         },
         {
+          "code": "14082110",
           "name": "CABALLETE TAPA FINAL COLONIAL 2.5mm",
           "price": 13500
         },
         {
+          "code": "14082101",
           "name": "CABALLETE TERRACOTA COLONIAL",
           "price": 44940
         },
         {
+          "code": "14081201",
           "name": "CUBIERTA ONDULADA ROMA",
           "price": 395626
         },
         {
+          "code": "14081003",
           "name": "CUBIERTA TERMOACUSTICA UPVC 2.0mm BLANCA O.B",
           "price": 287567
         },
         {
+          "code": "14081001",
           "name": "CUBIERTA TERMOACUSTICA UPVC 2.5mm BLANCA O.A",
           "price": 361109
         },
         {
-          "name": "CUBIERTA TERMOACUSTICA UPVC 2.0mm BLANCA O.A",
-          "price": 333850
+          "code": "14081002",
+          "name": "CUBIERTA TERMOACUSTICA UPVC 2.0mm BLANCA O.A 11.80",
+          "price": 266588
         },
         {
+          "code": "14081301",
           "name": "CUBIERTA TRASLUCIDA ONDA ALTA OPAL",
           "price": 561918
         },
         {
+          "code": "14081101",
           "name": "TEJA PVC TERRACOTA COLONIAL 11,80*1.05 DE 2,5MM",
           "price": 374671
         },
         {
+          "code": "14081601",
           "name": "CUBIERTA ACANALADA UPVC 10mm BLANCA 11.80",
           "price": 325000
         },
         {
+          "code": "14131001",
+          "name": "TEJA DE ZINC LARGA 0,17MM * 800MM-3,05MM",
+          "price": 22500
+        },
+        {
+          "code": "14082107",
           "name": "TERMINACION LIMATESA",
           "price": 30000
         },
         {
+          "code": "14082302",
           "name": "TORNILLO KIT PARA UPVC 2.0mm BLANCO",
           "price": 800
         },
         {
+          "code": "14082315",
           "name": "ACCESORIOS CUBIERTA ACANALADA UPVC",
           "price": 6000
         },
         {
+          "code": "14082301",
           "name": "TORNILLO KIT PARA UPVC 2.5mm BLANCO",
           "price": 800
         },
         {
+          "code": "14082311",
           "name": "TORNILLO KIT PARA UPVC COLONIAL",
           "price": 900
         }
@@ -124,7 +185,18 @@
       "name": "POLICARBONATO",
       "items": [
         {
-          "name": "LAMINA ALVEOLAR POLICARBONATO",
+          "code": "14141001",
+          "name": "LAMINA ALVEOLAR POLICARBONATO 6MM BLANCA",
+          "price": 402834
+        },
+        {
+          "code": "14141002",
+          "name": "LAMINA ALVEOLAR POLICARBONATO 6MM BRONCE",
+          "price": 402834
+        },
+        {
+          "code": "14141003",
+          "name": "LAMINA ALVEOLAR POLICARBONATO 6MM TRANSPARENTE",
           "price": 402834
         }
       ]
@@ -133,11 +205,83 @@
       "name": "FACHADAS",
       "items": [
         {
-          "name": "FACHADA DECK",
+          "code": "14091105",
+          "name": "FACHADA DECK CEDRO",
           "price": 45500
         },
         {
-          "name": "POLIFACHADA",
+          "code": "14091104",
+          "name": "FACHADA DECK EBANO",
+          "price": 45500
+        },
+        {
+          "code": "14091107",
+          "name": "FACHADA DECK GRAFITO",
+          "price": 45500
+        },
+        {
+          "code": "14091103",
+          "name": "FACHADA DECK MARRON",
+          "price": 45500
+        },
+        {
+          "code": "14091102",
+          "name": "FACHADA DECK NOGAL",
+          "price": 45500
+        },
+        {
+          "code": "14091101",
+          "name": "FACHADA DECK ROBLE",
+          "price": 45500
+        },
+        {
+          "code": "14091006",
+          "name": "POLIFACHADA TRAPEZOIDAL NEGRO BW008",
+          "price": 78000
+        },
+        {
+          "code": "14091007",
+          "name": "POLIFACHADA TRAPEZOIDAL PLATEADO BW009",
+          "price": 78000
+        },
+        {
+          "code": "14091009",
+          "name": "POLIFACHADA UNITEC ARENA BW004",
+          "price": 78000
+        },
+        {
+          "code": "14091001",
+          "name": "POLIFACHADA UNITEC BLANCO TEX 3.80*36CM",
+          "price": 78000
+        },
+        {
+          "code": "14091011",
+          "name": "POLIFACHADA UNITEC CARBONO BW010",
+          "price": 78000
+        },
+        {
+          "code": "14091005",
+          "name": "POLIFACHADA UNITEC CEDRO 380*36CM",
+          "price": 78000
+        },
+        {
+          "code": "14091008",
+          "name": "POLIFACHADA UNITEC LADRILLO GRIS BW007",
+          "price": 78000
+        },
+        {
+          "code": "14091010",
+          "name": "POLIFACHADA UNITEC LADRILLO GRIS LISO BW005",
+          "price": 78000
+        },
+        {
+          "code": "14091012",
+          "name": "POLIFACHADA UNITEC LADRILLO RUSTICO BW011",
+          "price": 78000
+        },
+        {
+          "code": "14091002",
+          "name": "POLIFACHADA UNITEC PIEDRA TEX 3.80*37 CM",
           "price": 78000
         }
       ]
@@ -146,14 +290,17 @@
       "name": "PERFILERIA",
       "items": [
         {
+          "code": "14101101",
           "name": "OMEGA",
           "price": 3480
         },
         {
+          "code": "14101201",
           "name": "VIGUETA",
           "price": 3480
         },
         {
+          "code": "14101001",
           "name": "ANGULO",
           "price": 2321
         }
@@ -163,15 +310,63 @@
       "name": "PISO SPC",
       "items": [
         {
-          "name": "PISO SPC  (4mm-122*18.3cm)",
+          "code": "14112010",
+          "name": "PISO SPC ROBLE CLARO IXPE (4mm-122*18.3cm)",
           "price": 12000
         },
         {
-          "name": "PISO SPC (4.5mm-122*22.8cm)",
+          "code": "14112011",
+          "name": "PISO SPC GRIS CENIZO IXPE (4mm-122*18.3cm)",
+          "price": 12000
+        },
+        {
+          "code": "14112012",
+          "name": "PISO SPC MADERA TEKA IXPE (4MM 122 18.3CM)",
+          "price": 12000
+        },
+        {
+          "code": "14112013",
+          "name": "PISO SPC AVELLANA IXPE (4mm-122x18.3cm)",
+          "price": 12000
+        },
+        {
+          "code": "14112210",
+          "name": "PISO SPC ROBLE CLARO IXPE (4.5mm-122*22.8cm)",
           "price": 19500
         },
         {
+          "code": "14112211",
+          "name": "PISO SPC GRIS CENIZO IXPE (4.5mm-122*22.8cm)",
+          "price": 19500
+        },
+        {
+          "code": "14112212",
+          "name": "PISO SPC MADERA TEKA IXPE (4.5mm-122*22.8cm)",
+          "price": 19500
+        },
+        {
+          "code": "14112312",
+          "name": "PISO SPC NOGAL  IXPE (5.5mm-152*23cm)",
+          "price": 19500
+        },
+        {
+          "code": "14112410",
           "name": "ZOCALO SPC ROBLE CLARO IXPE S010",
+          "price": 20000
+        },
+        {
+          "code": "14112411",
+          "name": "ZOCALO SPC GRIS CENIZO IXPE S011",
+          "price": 20000
+        },
+        {
+          "code": "14112412",
+          "name": "ZOCALO SPC MADERA TEKA IXPE S012",
+          "price": 20000
+        },
+        {
+          "code": "14112413",
+          "name": "ZOCALO SPC AVELLANA IXPE  S013",
           "price": 20000
         }
       ]
@@ -180,15 +375,53 @@
       "name": "PISO DECK",
       "items": [
         {
-          "name": "PISO DECK EXTERIOR",
+          "code": "14113001",
+          "name": "PISO DECK EXTERIOR CEDRO",
           "price": 78000
         },
         {
-          "name": "ANGULO TERMINACION PISO DECK",
+          "code": "14113002",
+          "name": "PISO DECK EXTERIOR GRAFITO",
+          "price": 78000
+        },
+        {
+          "code": "14113003",
+          "name": "PISO DECK EXTERIOR NOGAL",
+          "price": 78000
+        },
+        {
+          "code": "14113008",
+          "name": "PISO DECK EXTERIOR MAPLE",
+          "price": 78000
+        },
+        {
+          "code": "14113009",
+          "name": "PISO DECK EXTERIOR OAK",
+          "price": 78000
+        },
+        {
+          "code": "14113101",
+          "name": "ANGULO TERMINACION PISO DECK EXTE CEDRO",
           "price": 29500
         },
         {
-          "name": "CLIP Y TORNILLO EN ACERO INOXIDABLE PISO DECK",
+          "code": "14113102",
+          "name": "ANGULO TERMINACION PISO DECK EXTE GRAFITO",
+          "price": 29500
+        },
+        {
+          "code": "14113103",
+          "name": "ANGULO TERMINACION PISO DECK EXTE NOGAL",
+          "price": 29500
+        },
+        {
+          "code": "14113104",
+          "name": "ANGULO TERMINACION PISO DECK EXTE MARRON",
+          "price": 29500
+        },
+        {
+          "code": "14113901",
+          "name": "CLIP Y TORNILLO EN ACERO INOXIDABLE",
           "price": 500
         }
       ]
@@ -197,42 +430,222 @@
       "name": "PARED MARMOL",
       "items": [
         {
+          "code": "14121014",
           "name": "LAMINA MARMOL MATE PIGMENTO M-14-2.90",
           "price": 108000
         },
         {
+          "code": "14121016",
           "name": "LAMINA MARMOL MATE PIEDRA ANGULAR M-16-2.90",
           "price": 108000
         },
         {
-          "name": "LAMINA MARMOL   2.44",
+          "code": "14121201",
+          "name": "LAMINA MARMOL BLANCO M-01-2.44",
           "price": 105000
         },
         {
-          "name": "CINTA ADHESIVA METALICA 30*5",
+          "code": "14121203",
+          "name": "LAMINA MARMOL NEGRO M-03-2.44",
+          "price": 105000
+        },
+        {
+          "code": "14121205",
+          "name": "LAMINA MARMOL GRANITO M-05-2.44",
+          "price": 105000
+        },
+        {
+          "code": "14121206",
+          "name": "LAMINA MARMOL LUNA M-06-2.44",
+          "price": 105000
+        },
+        {
+          "code": "14121207",
+          "name": "LAMINA MARMOL FUSION M-07-2.44",
+          "price": 105000
+        },
+        {
+          "code": "14121209",
+          "name": "LAMINA MARMOL IBIZA M-09-2.44",
+          "price": 105000
+        },
+        {
+          "code": "14121210",
+          "name": "LAMINA MARMOL SAHARA M-10-2.44",
+          "price": 105000
+        },
+        {
+          "code": "14121211",
+          "name": "LAMINA MARMOL ECLIPSE M-11-2.44",
+          "price": 105000
+        },
+        {
+          "code": "14121214",
+          "name": "LAMINA MARMOL MATE PIGMENTO M-14-2.44",
+          "price": 105000
+        },
+        {
+          "code": "14121215",
+          "name": "LAMINA MARMOL MATE GRECIA M-15-2.44",
+          "price": 105000
+        },
+        {
+          "code": "14121216",
+          "name": "LAMINA MARMOL MATE PIEDRA ANGULAR M-16-2.44",
+          "price": 105000
+        },
+        {
+          "code": "14121217",
+          "name": "LAMINA MARMOL BEIGE ACUARELA M-17-2-2,44",
+          "price": 105000
+        },
+        {
+          "code": "14121219",
+          "name": "LAMINA MARMOL VIZCAYA M-19-2.44",
+          "price": 105000
+        },
+        {
+          "code": "14121220",
+          "name": "LAMINA MARMOL GUATAPURI M-20-2.44",
+          "price": 105000
+        },
+        {
+          "code": "14121221",
+          "name": "LAMINA MARMOL VENECIA M-21-2.44",
+          "price": 105000
+        },
+        {
+          "code": "14121222",
+          "name": "LAMINA MARMOL MEDITERRANEO M-22-2.44",
+          "price": 105000
+        },
+        {
+          "code": "14121223",
+          "name": "LAMINA MARMOL OASIS M-23-2.44",
+          "price": 105000
+        },
+        {
+          "code": "14121229",
+          "name": "LAMINA MARMOL VERONA M-29-2.44",
+          "price": 105000
+        },
+        {
+          "code": "14121230",
+          "name": "LAMINA MARMOL ISLANDIA M-30-2.44",
+          "price": 105000
+        },
+        {
+          "code": "14121231",
+          "name": "LAMINA MARMOL NEW YORK M-31-2.44",
+          "price": 105000
+        },
+        {
+          "code": "14121232",
+          "name": "LAMINA MARMOL SANTORINI MIX M-32-2.44",
+          "price": 105000
+        },
+        {
+          "code": "14121233",
+          "name": "LAMINA MARMOL SINGAPUR GRIS M-33-2.44",
+          "price": 105000
+        },
+        {
+          "code": "14121234",
+          "name": "LAMINA MARMOL MONACO ONIX M-34-2.44",
+          "price": 110000
+        },
+        {
+          "code": "14121235",
+          "name": "LAMINA MARMOL DUBAI NEGRO M-35-2.44",
+          "price": 110000
+        },
+        {
+          "code": "14201202",
+          "name": "CINTA ADHESIVA METALICA 30*5M PLATEADA",
           "price": 18300
         },
         {
-          "name": "ACCESORIO MARMOL",
+          "code": "14201203",
+          "name": "CINTA ADHESIVA METALICA 30*5M NEGRA",
+          "price": 18300
+        },
+        {
+          "code": "14201201",
+          "name": "CINTA ADHESIVA METALICA 30*5M DORADA",
+          "price": 18300
+        },
+        {
+          "code": "14201204",
+          "name": "CINTA ADHESIVA METALICA 30*5M PALO DE ROSA",
+          "price": 18300
+        },
+        {
+          "code": "14113201",
+          "name": "ANGULO EN L 10mm *2.5m DORADO",
+          "price": 17000
+        },
+        {
+          "code": "14113202",
+          "name": "ANGULO EN L 10mm *2.5mm PLATA",
+          "price": 17000
+        },
+        {
+          "code": "14121901",
+          "name": "ACCESORIO MARMOL DORADO",
           "price": 14755
         },
         {
+          "code": "14121902",
+          "name": "ACCESORIO MARMOL PLATEADO",
+          "price": 14755
+        },
+        {
+          "code": "14121401",
+          "name": "PANEL ACRILICO MARMOL VENENCIANO (ZS-3D065 Y)",
+          "price": 180000
+        },
+        {
+          "code": "14121402",
+          "name": "PANEL ACRILICO MARMOL ONYX ROYAL (ZS-3D045 J)",
+          "price": 180000
+        },
+        {
+          "code": "14121404",
+          "name": "PANEL ACRILICO MARMOL LEGACY (ZS-3D029 J)",
+          "price": 180000
+        },
+        {
+          "code": "14121407",
+          "name": "PANEL ACRILICO MARMOL SILVER (ZS-3D038 Y)",
+          "price": 180000
+        },
+        {
+          "code": "14121408",
+          "name": "PANEL ACRILICO MARMOL AUREA (ZS-3D030 Y)",
+          "price": 180000
+        },
+        {
+          "code": "14125210",
           "name": "ESQUINERO EXTERIOR DORADO",
           "price": 16480
         },
         {
+          "code": "14125903",
           "name": "ESQUINERO INTERIOR DORADO",
           "price": 16480
         },
         {
+          "code": "14125904",
           "name": "ESQUINERO INTERIOR PLATEADO",
           "price": 16480
         },
         {
+          "code": "14121501",
           "name": "LAMINA SINTETICA PIEDRA DEL SOL",
           "price": 230000
         },
         {
+          "code": "14121502",
           "name": "LAMINA SINTETICA CREMA SELECTA",
           "price": 454000
         }
@@ -242,24 +655,284 @@
       "name": "PANEL WPC",
       "items": [
         {
-          "name": "PANEL WPC RENURADO",
+          "code": "14122001",
+          "name": "PANEL WPC STONE GRIS (01)",
           "price": 23000
         },
         {
-          "name": "PANEL WPC REDONDO",
-          "price": 35000
+          "code": "14122002",
+          "name": "PANEL WPC CARRARA BLANCO (02)",
+          "price": 23000
         },
         {
-          "name": "PANEL WPC PLANO",
-          "price": 25000
+          "code": "14122003",
+          "name": "PANEL WPC POLAR BLANCO (03)",
+          "price": 23000
         },
         {
+          "code": "14122004",
+          "name": "PANEL WPC WENGUE (04)",
+          "price": 23000
+        },
+        {
+          "code": "14122005",
+          "name": "PANEL WPC ROBLE CLARO (05)",
+          "price": 23000
+        },
+        {
+          "code": "14122006",
+          "name": "PANEL WPC TRAVERTINO (06)",
+          "price": 23000
+        },
+        {
+          "code": "14122007",
+          "name": "PANEL WPC CHERRY (07)",
+          "price": 23000
+        },
+        {
+          "code": "14122010",
+          "name": "PANEL WPC MADERA TEKA (10)",
+          "price": 23000
+        },
+        {
+          "code": "14122012",
+          "name": "PANEL WPC CEDRO (12)",
+          "price": 23000
+        },
+        {
+          "code": "14122013",
+          "name": "PANEL WPC EBANO NEGRO (13)",
+          "price": 23000
+        },
+        {
+          "code": "14122014",
+          "name": "PANEL WPC CARRARA NEGRO (14)",
+          "price": 23000
+        },
+        {
+          "code": "14122016",
+          "name": "PANEL WPC MARFIL (16)",
+          "price": 23000
+        },
+        {
+          "code": "14122019",
+          "name": "PANEL WPC CHOCO MIX (19)",
+          "price": 23000
+        },
+        {
+          "code": "14122020",
+          "name": "PANEL WPC OLIVO MIX (20)",
+          "price": 23000
+        },
+        {
+          "code": "14122021",
+          "name": "PANEL WPC MAPLE MIX (21)",
+          "price": 23000
+        },
+        {
+          "code": "14122022",
+          "name": "PANEL WPC GRECIA MIX (22)",
+          "price": 23000
+        },
+        {
+          "code": "14122023",
+          "name": "PANEL WPC NEGRO MATE (23)",
+          "price": 23000
+        },
+        {
+          "code": "14122024",
+          "name": "PANEL WPC CREMA SELECTA NEW (24)",
+          "price": 23000
+        },
+        {
+          "code": "14122025",
+          "name": "PANEL WPC AZUL CELESTE NEW (25)",
+          "price": 23000
+        },
+        {
+          "code": "14122026",
+          "name": "PANEL WPC VERDE MENTA NEW (26)",
+          "price": 23000
+        },
+        {
+          "code": "14122027",
+          "name": "PANEL WPC BLANCO IMPERIAL (27)",
+          "price": 23000
+        },
+        {
+          "code": "14122028",
+          "name": "PANEL WPC MANDARINA NEW (28)",
+          "price": 23000
+        },
+        {
+          "code": "14122029",
+          "name": "PANEL WPC NEGRO IMPERIAL (29)",
+          "price": 23000
+        },
+        {
+          "code": "14123115",
+          "name": "PANEL WPC CASTAÑO OXIDO PH15-N",
+          "price": 23000
+        },
+        {
+          "code": "14122609",
+          "name": "PANEL WPC FRESNO (JUDY 05)",
+          "price": 23000
+        },
+        {
+          "code": "14123104",
+          "name": "PANEL WPC LAUREL NATURAL PH04-N",
+          "price": 23000
+        },
+        {
+          "code": "14123114",
+          "name": "PANEL WPC MADERA RIOJA PH14-N",
+          "price": 23000
+        },
+        {
+          "code": "14123102",
+          "name": "PANEL WPC NEGRO MATE PH02-N",
+          "price": 23000
+        },
+        {
+          "code": "14123112",
+          "name": "PANEL WPC NEGRO VINTAGE PH-12N",
+          "price": 23000
+        },
+        {
+          "code": "14122611",
+          "name": "PANEL WPC NOGAL (JUDY 10)",
+          "price": 23000
+        },
+        {
+          "code": "14123105",
+          "name": "PANEL WPC PARKET CEDRO PH05-N",
+          "price": 23000
+        },
+        {
+          "code": "14123113",
+          "name": "PANEL WPC PINO CLARO PH13-N",
+          "price": 23000
+        },
+        {
+          "code": "14122607",
+          "name": "PARED WPC WH510 280* 16CM",
+          "price": 23000
+        },
+        {
+          "code": "14122606",
+          "name": "PARED WPC-BR 503 280* 16CM",
+          "price": 23000
+        },
+        {
+          "code": "14122902",
           "name": "PLATINAS METALICAS",
           "price": 850
         },
         {
-          "name": "ANGULO WPC",
+          "code": "14122101",
+          "name": "ANGULO WPC STONE GRIS (01)",
           "price": 15100
+        },
+        {
+          "code": "14122102",
+          "name": "ANGULO WPC CARRARA BLANCO (02)",
+          "price": 15100
+        },
+        {
+          "code": "14122103",
+          "name": "ANGULO WPC POLAR BLANCO (03)",
+          "price": 15100
+        },
+        {
+          "code": "14122104",
+          "name": "ANGULO WPC WENGUE (04)",
+          "price": 15100
+        },
+        {
+          "code": "14122105",
+          "name": "ANGULO WPC ROBLE CLARO (05)",
+          "price": 15100
+        },
+        {
+          "code": "14122106",
+          "name": "ANGULO WPC TRAVERTINO (06)",
+          "price": 15100
+        },
+        {
+          "code": "14122107",
+          "name": "ANGULO WPC CHERRY (07)",
+          "price": 15100
+        },
+        {
+          "code": "14122108",
+          "name": "ANGULO WPC GOLDEN BRILLO (08)",
+          "price": 15100
+        },
+        {
+          "code": "14122109",
+          "name": "ANGULO WPC ANOLOC BRILLO (09)",
+          "price": 15100
+        },
+        {
+          "code": "14122110",
+          "name": "ANGULO WPC MADERA TEKA (10)",
+          "price": 15100
+        },
+        {
+          "code": "14122111",
+          "name": "ANGULO WPC VIENA GRIS (11)",
+          "price": 15100
+        },
+        {
+          "code": "14122113",
+          "name": "ANGULO WPC EBANO MADERA (13)",
+          "price": 15100
+        },
+        {
+          "code": "14122114",
+          "name": "ANGULO WPC CARRARA NEGRO (14)",
+          "price": 12700
+        },
+        {
+          "code": "14122115",
+          "name": "ANGULO WPC PINO GRIS (15)",
+          "price": 12700
+        },
+        {
+          "code": "14122116",
+          "name": "ANGULO WPC MARFIL (16)",
+          "price": 12700
+        },
+        {
+          "code": "14122117",
+          "name": "ANGULO WPC CALIZA GRIS (17)",
+          "price": 12700
+        },
+        {
+          "code": "14122119",
+          "name": "ANGULO WPC CHOCO MIX (19)",
+          "price": 12700
+        },
+        {
+          "code": "14122120",
+          "name": "ANGULO WPC OLIVO MIX (20)",
+          "price": 12700
+        },
+        {
+          "code": "14122121",
+          "name": "ANGULO WPC MAPLE MIX (21)",
+          "price": 12700
+        },
+        {
+          "code": "14122122",
+          "name": "ANGULO WPC GRECIA MIX (22)",
+          "price": 12700
+        },
+        {
+          "code": "14122123",
+          "name": "ANGULO WPC NEGRO MATE (23)",
+          "price": 12700
         }
       ]
     },
@@ -267,22 +940,27 @@
       "name": "CINTA LED",
       "items": [
         {
+          "code": "14051112",
           "name": "CINTA LED 1.2M",
           "price": 25000
         },
         {
+          "code": "14051107",
           "name": "CINTA LED 0.7M",
           "price": 17000
         },
         {
+          "code": "14051105",
           "name": "CINTA LED 0.5M",
           "price": 14000
         },
         {
+          "code": "14051201",
           "name": "TRANSFORMADOR CINTA LED",
           "price": 60500
         },
         {
+          "code": "14051202",
           "name": "CONTROL CINTA LED",
           "price": 33000
         }
@@ -292,23 +970,78 @@
       "name": "LISTON PVC",
       "items": [
         {
+          "code": "14122904",
           "name": "KIT TAPONES LISTON PVC ESTRUCTURAL 10CM",
           "price": 7000
         },
         {
-          "name": "LISTON PVC CIELO  9CM",
+          "code": "14122705",
+          "name": "LISTON PVC CIELO RASO CEDRO CLARO 9CM",
           "price": 40000
         },
         {
-          "name": "LISTON PVC ESTRUCTURAL 10CM",
+          "code": "14122710",
+          "name": "LISTON PVC CIELO RASO MADERA TEKA 9CM",
+          "price": 40000
+        },
+        {
+          "code": "14122713",
+          "name": "LISTON PVC CIELO RASO EBANO MADERA 9CM",
+          "price": 40000
+        },
+        {
+          "code": "14122710",
+          "name": "LISTON PVC CIELO RASO MADERA TEKA 9CM",
+          "price": 40000
+        },
+        {
+          "code": "14122713",
+          "name": "LISTON PVC CIELO RASO EBANO MADERA 9CM",
+          "price": 40000
+        },
+        {
+          "code": "14122710",
+          "name": "LISTON PVC CIELO RASO MADERA TEKA 9CM",
+          "price": 40000
+        },
+        {
+          "code": "14122705",
+          "name": "LISTON PVC CIELO RASO CEDRO CLARO 9CM",
+          "price": 40000
+        },
+        {
+          "code": "14122710",
+          "name": "LISTON PVC CIELO RASO MADERA TEKA 9CM",
+          "price": 40000
+        },
+        {
+          "code": "14122713",
+          "name": "LISTON PVC CIELO RASO EBANO MADERA 9CM",
+          "price": 40000
+        },
+        {
+          "code": "14122805",
+          "name": "LISTON PVC ESTRUCTURAL CEDRO CLARO 10CM",
           "price": 55000
         },
         {
+          "code": "14122810",
+          "name": "LISTON PVC ESTRUCTURAL MADERA TEKA 10CM",
+          "price": 55000
+        },
+        {
+          "code": "14122813",
+          "name": "LISTON PVC ESTRUCTURAL EBANO MADERA 10CM",
+          "price": 55000
+        },
+        {
+          "code": "14122906",
           "name": "PERFIL BASE METALICO NEGRO LISTON CIELO RASO",
           "price": 18000
         },
         {
-          "name": "LISTON PVC ESTRUCTURAL  10CM",
+          "code": "14122813",
+          "name": "LISTON PVC ESTRUCTURAL EBANO MADERA 10CM",
           "price": 40000
         }
       ]
@@ -317,14 +1050,87 @@
       "name": "PARED WPC EXT",
       "items": [
         {
-          "name": "PANEL WPC EXT",
+          "code": "14122201",
+          "name": "PANEL WPC EXT ROBLE (01)",
           "price": 70000
         },
         {
-          "name": "ANGULO WPC EXT",
+          "code": "14122202",
+          "name": "PANEL WPC EXT NOGAL (02)",
+          "price": 70000
+        },
+        {
+          "code": "14122203",
+          "name": "PANEL WPC EXT MARRON (03)",
+          "price": 70000
+        },
+        {
+          "code": "14122204",
+          "name": "PANEL WPC EXT EBANO (04)",
+          "price": 70000
+        },
+        {
+          "code": "14122205",
+          "name": "PANEL WPC EXT CEDRO (05)",
+          "price": 70000
+        },
+        {
+          "code": "14122206",
+          "name": "PANEL WPC EXT WENGUE (06)",
+          "price": 70000
+        },
+        {
+          "code": "14122207",
+          "name": "PANEL WPC EXT GRAFITO (07)",
+          "price": 70000
+        },
+        {
+          "code": "14122208",
+          "name": "PANEL WPC EXT AVELLANA MIX COE (08)",
+          "price": 70000
+        },
+        {
+          "code": "14122301",
+          "name": "ANGULO WPC EXT ROBLE (01)",
+          "price": 20255
+        },
+        {
+          "code": "14122302",
+          "name": "ANGULO WPC EXT NOGAL (02)",
+          "price": 20255
+        },
+        {
+          "code": "14122303",
+          "name": "ANGULO WPC EXT MARRON (03)",
+          "price": 20255
+        },
+        {
+          "code": "14122304",
+          "name": "ANGULO WPC EXT EBANO (04)",
+          "price": 20255
+        },
+        {
+          "code": "14122305",
+          "name": "ANGULO WPC EXT CEDRO (05)",
+          "price": 20255
+        },
+        {
+          "code": "14122306",
+          "name": "ANGULO WPC EXT WENGUE (06)",
           "price": 21834
         },
         {
+          "code": "14122307",
+          "name": "ANGULO WPC EXT GRAFITO (07)",
+          "price": 21834
+        },
+        {
+          "code": "14122308",
+          "name": "ANGULO WPC EXT AVELLANA MIX COE (08)",
+          "price": 21834
+        },
+        {
+          "code": "14122901",
           "name": "TORNILLO DE ACERO INOXIDABLE WPC EXTERIOR",
           "price": 500
         }
@@ -334,7 +1140,18 @@
       "name": "LISTON WPC",
       "items": [
         {
+          "code": "14123005",
           "name": "LISTON WPC ESTRUCTURAL CEDRO 05 6*4cm (TUBE)",
+          "price": 74000
+        },
+        {
+          "code": "14123004",
+          "name": "LISTON WPC ESTRUCTURAL EBANO 04 6*4cm (TUBE)",
+          "price": 74000
+        },
+        {
+          "code": "14123002",
+          "name": "LISTON WPC ESTRUCTURAL ROBLE 01  6*4cm (TUBE)",
           "price": 74000
         }
       ]
@@ -343,23 +1160,78 @@
       "name": "PARED PS",
       "items": [
         {
-          "name": "PANEL PS",
+          "code": "14122503",
+          "name": "PANEL PS LUXURY ARENA HH24104",
           "price": 28500
         },
         {
-          "name": "PANEL PS MURALLA",
+          "code": "14122504",
+          "name": "PANEL PS LUXURY NEGRO HH24105",
+          "price": 28500
+        },
+        {
+          "code": "14122506",
+          "name": "PANEL PS LUXURY PLATEADO HH24108",
+          "price": 28500
+        },
+        {
+          "code": "14122517",
+          "name": "PANEL PS LUXURY ROBLE HH24107",
+          "price": 28500
+        },
+        {
+          "code": "14122509",
+          "name": "PANEL PS MURALLA CAFÉ  HH24115",
           "price": 37000
         },
         {
+          "code": "14122510",
+          "name": "PANEL PS MURALLA TEKA HH24116",
+          "price": 37000
+        },
+        {
+          "code": "14122511",
           "name": "PANEL PS BISELADO MALAGA HH24114",
           "price": 28500
         },
         {
-          "name": "PANEL PS BISELADO",
+          "code": "14122512",
+          "name": "PANEL PS BISELADO MADERA TEKA HH24103",
           "price": 54700
         },
         {
-          "name": "PANEL DE PARED RIGIDA",
+          "code": "14122513",
+          "name": "PANEL PS ESTUARIO NEGRO HH24109",
+          "price": 28500
+        },
+        {
+          "code": "14122514",
+          "name": "PANEL PS ESTUARIO GRIS HH24110",
+          "price": 28500
+        },
+        {
+          "code": "14122515",
+          "name": "PANEL PS ESTUARIO CAFÉ FUSIÓN HH24112",
+          "price": 28500
+        },
+        {
+          "code": "14122507",
+          "name": "PANEL PS ESTUARIO CREAM HH24111",
+          "price": 28500
+        },
+        {
+          "code": "14122516",
+          "name": "PANEL PS CHOCO MIX HH24117",
+          "price": 28500
+        },
+        {
+          "code": "14122518",
+          "name": "PANEL PS BISELADO MADERA MIEL  HH24102",
+          "price": 54700
+        },
+        {
+          "code": "14125008",
+          "name": "PANEL DE PARED RIGIDA W-08",
           "price": 28500
         }
       ]
@@ -368,34 +1240,72 @@
       "name": "PARED ARQNITEC",
       "items": [
         {
-          "name": "PARED ARQNITEC",
+          "code": "14123404",
+          "name": "PARED ARQNITEC GRIS TERRA (04)",
           "price": 65000
         },
         {
+          "code": "14123406",
+          "name": "PARED ARQUNITEC ANTRACITA NEGRO (06)",
+          "price": 65000
+        },
+        {
+          "code": "14123402",
+          "name": "PARED ARQUNITEC BLANCO MARFIL (02)",
+          "price": 65000
+        },
+        {
+          "code": "14123403",
+          "name": "PARED ARQUNITEC GRIS CENIZA (03)",
+          "price": 65000
+        },
+        {
+          "code": "14123701",
           "name": "PARED ARQUNITEC PIEDRA NATURAL",
           "price": 317500
         },
         {
-          "name": "PARED ARQUNITEC RECUADROS",
+          "code": "14123512",
+          "name": "PARED ARQUNITEC RECUADROS COLONIAL 12-BRICK RED",
           "price": 65000
         },
         {
+          "code": "14123503",
+          "name": "PARED ARQUNITEC RECUADROS GRIS BASALTO 3A",
+          "price": 65000
+        },
+        {
+          "code": "14123502",
+          "name": "PARED ARQUNITEC RECUADROS MARFIL 2-CREAM",
+          "price": 65000
+        },
+        {
+          "code": "14123506",
+          "name": "PARED ARQUNITEC RECUADROS NEGROS 6-BLACK",
+          "price": 65000
+        },
+        {
+          "code": "14123702",
           "name": "PARED ARQUNITEC TABLON ENVEJECIDO (SW-508)",
           "price": 97815
         },
         {
+          "code": "14123604",
           "name": "FACHADA ARENISCA BEIGE (B4)",
           "price": 125345
         },
         {
+          "code": "14123602",
           "name": "FACHADA CANTERA MIX (B2)",
           "price": 125345
         },
         {
+          "code": "14123603",
           "name": "FACHADA OPALO BLANCO (B3)",
           "price": 125345
         },
         {
+          "code": "14123601",
           "name": "FACHADA PIZARRA MIX (B1)",
           "price": 125345
         }
@@ -405,7 +1315,43 @@
       "name": "PARED MUROFLEX",
       "items": [
         {
-          "name": "PARED MUROFLEX",
+          "code": "14126026",
+          "name": "PARED MUROFLEX CARRARA BLANCO (WPC-02)",
+          "price": 10000
+        },
+        {
+          "code": "14126024",
+          "name": "PARED MUROFLEX CARRARA NEGRO (WPC-14)",
+          "price": 10000
+        },
+        {
+          "code": "14126023",
+          "name": "PARED MUROFLEX MADERA TEKA (WPC-10)",
+          "price": 10000
+        },
+        {
+          "code": "14126025",
+          "name": "PARED MUROFLEX METALUM (SILVERMETAL)",
+          "price": 10000
+        },
+        {
+          "code": "14122628",
+          "name": "PARED MUROFLEX METALUM BRONCE",
+          "price": 10000
+        },
+        {
+          "code": "14122627",
+          "name": "PARED MUROFLEX METALUM DORADO",
+          "price": 10000
+        },
+        {
+          "code": "14126022",
+          "name": "PARED MUROFLEX ROBLE CLARO (WPC-05)",
+          "price": 10000
+        },
+        {
+          "code": "14126021",
+          "name": "PARED MUROFLEX STONE GRIS (WPC-01)",
           "price": 10000
         }
       ]
@@ -414,54 +1360,337 @@
       "name": "PARED UNIFLEX",
       "items": [
         {
-          "name": "PARED UNIFLEX",
+          "code": "14123207",
+          "name": "PARED UNIFLEX ANTRACITA 120x60x0,2CM",
           "price": 65000
         },
         {
-          "name": "JARDIN ARTIFICIAL 40X60CM",
+          "code": "14123302",
+          "name": "PARED UNIFLEX ANTRANCITA 120X60X0,2CM",
+          "price": 65000
+        },
+        {
+          "code": "14123201",
+          "name": "PARED UNIFLEX CITRINO 120x60x0,2CM",
+          "price": 65000
+        },
+        {
+          "code": "14123206",
+          "name": "PARED UNIFLEX GRIS CENIZO 120x60x0,2CM",
+          "price": 65000
+        },
+        {
+          "code": "14123301",
+          "name": "PARED UNIFLEX GRIS CENIZO 120X60X0,2CM",
+          "price": 65000
+        },
+        {
+          "code": "14123215",
+          "name": "PARED UNIFLEX LATTE BEIGE 120X60X0,02CM",
+          "price": 65000
+        },
+        {
+          "code": "14123202",
+          "name": "PARED UNIFLEX MACADAMIA 120x60x0,2CM",
+          "price": 65000
+        },
+        {
+          "code": "14123210",
+          "name": "PARED UNIFLEX MEDIA NOCHE 120X60X0,02CM",
+          "price": 65000
+        },
+        {
+          "code": "14123204",
+          "name": "PARED UNIFLEX MEDIA NOCHE 120x60x0,2CM",
+          "price": 65000
+        },
+        {
+          "code": "14123208",
+          "name": "PARED UNIFLEX NIEVE 120x60x0,2CM",
+          "price": 65000
+        },
+        {
+          "code": "14123303",
+          "name": "PARED UNIFLEX NIEVE 120X60X0,2CM",
+          "price": 65000
+        },
+        {
+          "code": "14123203",
+          "name": "PARED UNIFLEX OXIDO TERRACOTA 120x60x0,2CM",
+          "price": 65000
+        },
+        {
+          "code": "14123209",
+          "name": "PARED UNIFLEX OXIDO TERRACOTA 120X60X0,2CM",
+          "price": 65000
+        }
+      ]
+    },
+    {
+      "name": "JARDIN ARTIFICIAL",
+      "items": [
+        {
+          "code": "14124205",
+          "name": "JARDIN ARTIFICIAL 40X60CM NATURAL (HH-E)",
           "price": 23000
         },
         {
-          "name": "JARDIN ARTIFICIAL 50X50CM",
+          "code": "14124207",
+          "name": "JARDIN ARTIFICIAL 40X60CM PARIS (HH-G)",
+          "price": 23000
+        },
+        {
+          "code": "14124206",
+          "name": "JARDIN ARTIFICIAL 40X60CM VENECIA (HH-F)",
+          "price": 23000
+        },
+        {
+          "code": "14124202",
+          "name": "JARDIN ARTIFICIAL 50X50CM EDEN (HH-B)",
           "price": 30000
         },
         {
-          "name": "FOAM  BOARD",
+          "code": "14124203",
+          "name": "JARDIN ARTIFICIAL 50X50CM PARAISO (HH-C)",
+          "price": 30000
+        },
+        {
+          "code": "14124201",
+          "name": "JARDIN ARTIFICIAL 50X50CM PRADERA (HH-A)",
+          "price": 30000
+        },
+        {
+          "code": "14124204",
+          "name": "JARDIN ARTIFICIAL 50X50CM PRIMAVERA (HH-D)",
+          "price": 30000
+        }
+      ]
+    },
+    {
+      "name": "FERRETERIA",
+      "items": [
+        {
+          "code": "14161101",
+          "name": "ANGULO CRUDO",
+          "price": 11518
+        },
+        {
+          "code": "14161102",
+          "name": "ANGULO BLANCO",
+          "price": 11518
+        },
+        {
+          "code": "14161203",
+          "name": "CORTINERO 111 BRONCE",
+          "price": 15326
+        },
+        {
+          "code": "14161205",
+          "name": "CORTINERO 111 DORADO",
+          "price": 15326
+        },
+        {
+          "code": "14161303",
+          "name": "CORTINERO 112 BRONCE",
+          "price": 24021
+        },
+        {
+          "code": "14161305",
+          "name": "CORTINERO 112 DORADO",
+          "price": 15326
+        },
+        {
+          "code": "14161403",
+          "name": "CORTINERO 113 BRONCE",
+          "price": 15326
+        },
+        {
+          "code": "14161405",
+          "name": "CORTINERO 113 DORADO",
+          "price": 15326
+        },
+        {
+          "code": "14161901",
+          "name": "T117 CODAL TUBULAR RECTANGULAR 50X25",
+          "price": 51722
+        },
+        {
+          "code": "14161902",
+          "name": "T167 CODAL TUBULAR RECTANGULAR 75X35",
+          "price": 51722
+        },
+        {
+          "code": "14161903",
+          "name": "T217 CODAL TUBULAR RECTANGULAR 73X23",
+          "price": 51722
+        },
+        {
+          "code": "14162001",
+          "name": "T DE CIELO RASO BLANCO",
+          "price": 12311
+        },
+        {
+          "code": "14162006",
+          "name": "T DE CIELO RASO CRUDO",
+          "price": 12311
+        },
+        {
+          "code": "14161701",
+          "name": "PIRAGUA",
+          "price": 24021
+        },
+        {
+          "code": "14162301",
+          "name": "WIN ESPAÑOL",
+          "price": 24021
+        },
+        {
+          "code": "14161801",
+          "name": "PIRLA 390",
+          "price": 24021
+        }
+      ]
+    },
+    {
+      "name": "FOAM BOARD",
+      "items": [
+        {
+          "code": "14181405",
+          "name": "FOAM  BOARD  MANDARINA PASTEL (MF-05)",
           "price": 60000
         },
         {
-          "name": "FOAM BOARD COBRE",
+          "code": "14181403",
+          "name": "FOAM  BOARD GRIS ACERO (MF-03)",
+          "price": 60000
+        },
+        {
+          "code": "14181402",
+          "name": "FOAM BOARD BLANCO ESTUARIO (MF-02)",
+          "price": 60000
+        },
+        {
+          "code": "14181109",
+          "name": "FOAM BOARD BLANCO MARFIL",
+          "price": 60000
+        },
+        {
+          "code": "14181410",
+          "name": "FOAM BOARD BRONCE NATURAL (MF-10)",
+          "price": 60000
+        },
+        {
+          "code": "14181104",
+          "name": "FOAM BOARD BURDEO",
+          "price": 95000
+        },
+        {
+          "code": "14181411",
+          "name": "FOAM BOARD COBRE (MF-11)",
           "price": 105000
         },
         {
+          "code": "14181105",
+          "name": "FOAM BOARD CORTEZA",
+          "price": 60000
+        },
+        {
+          "code": "14181404",
+          "name": "FOAM BOARD EVERES CREMA (MF-04)",
+          "price": 60000
+        },
+        {
+          "code": "14181408",
+          "name": "FOAM BOARD GRIS BASALTO (MF-08)",
+          "price": 60000
+        },
+        {
+          "code": "14181106",
+          "name": "FOAM BOARD GRIS NATURAL",
+          "price": 60000
+        },
+        {
+          "code": "14181110",
+          "name": "FOAM BOARD GRIS TRAVERTINO",
+          "price": 60000
+        },
+        {
+          "code": "14181407",
+          "name": "FOAM BOARD GRIS TITANIO (MF-07)",
+          "price": 60000
+        },
+        {
+          "code": "14181401",
+          "name": "FOAM BOARD IVORY LATTE (MF-01)",
+          "price": 60000
+        },
+        {
+          "code": "14181412",
           "name": "FOAM BOARD OCRE OSCURO (MF-12)",
           "price": 95000
         },
         {
-          "name": "FOAM BOARD ESPEJO",
+          "code": "14181406",
+          "name": "FOAM BOARD TIFFANY AZUL PASTEL (MF-06)",
+          "price": 60000
+        },
+        {
+          "code": "14181409",
+          "name": "FOAM BOARD VERDE  PETROLEO (MF-09)",
+          "price": 60000
+        },
+        {
+          "code": "14181202",
+          "name": "FOAM BOARD ESPEJO BLANCO",
           "price": 150000
         },
         {
-          "name": "FOAM BOARD GOTAS DE AGUA",
+          "code": "14181204",
+          "name": "FOAM BOARD ESPEJO DORADO",
           "price": 150000
         },
         {
+          "code": "14181203",
+          "name": "FOAM BOARD ESPEJO NEGRO",
+          "price": 150000
+        },
+        {
+          "code": "14181205",
+          "name": "FOAM BOARD ESPEJO PALO DE ROSA",
+          "price": 150000
+        },
+        {
+          "code": "14181107",
+          "name": "FOAM BOARD GOTAS DE AGUA NEGRO",
+          "price": 150000
+        },
+        {
+          "code": "14181108",
+          "name": "FOAM BOARD GOTAS DE AGUA PLATEADO",
+          "price": 90000
+        },
+        {
+          "code": "14181114",
           "name": "FOAM BOARD METALUM",
           "price": 150000
         },
         {
+          "code": "14181302",
           "name": "FOAM BOARD ARENISCA NEGRO (M JS4166-116)",
           "price": 90000
         },
         {
+          "code": "14181301",
           "name": "FOAM BOARD ARENISCA PLATA (JS4176-189)",
           "price": 180500
         },
         {
+          "code": "14181303",
           "name": "FOAM BOARD COBRE TERRA (JS4156-169)",
           "price": 180500
         },
         {
+          "code": "14181304",
           "name": "FOAM BOARD TABACO RUSTICO (JS4154-116)",
           "price": 90000
         }
@@ -471,26 +1700,32 @@
       "name": "PVC BOARD",
       "items": [
         {
+          "code": "14181012",
           "name": "PVC BOARD 12MM D/0.5 2.44CM X 122CM",
           "price": 106800
         },
         {
+          "code": "14181015",
           "name": "PVC BOARD 15MM D/0.5 2.44CM X 122CM",
           "price": 135000
         },
         {
+          "code": "14181018",
           "name": "PVC BOARD 18MM D/0.5 2.44CM X 122CM",
           "price": 210135
         },
         {
+          "code": "14181003",
           "name": "PVC BOARD 3MM D/0.55 2.44CM X 122CM",
           "price": 35000
         },
         {
+          "code": "14181005",
           "name": "PVC BOARD 5MM D/0.55 2.44CM X 122CM",
           "price": 53500
         },
         {
+          "code": "14181009",
           "name": "PVC BOARD 9MM D/0.5 2.44CM X 122CM",
           "price": 82500
         }
@@ -500,7 +1735,13 @@
       "name": "CINTAS",
       "items": [
         {
-          "name": "CINTA ADHESIVA",
+          "code": "14201001",
+          "name": "CINTA ADHESIVA DORADA",
+          "price": 16000
+        },
+        {
+          "code": "14201002",
+          "name": "CINTA  ADHESIVA PLATEADA",
           "price": 16000
         }
       ]
@@ -509,7 +1750,13 @@
       "name": "PEGA",
       "items": [
         {
-          "name": "ADHESIVO MIXTO MULTIPROPOSITO PEGATEC",
+          "code": "14212102",
+          "name": "ADHESIVO MIXTO MULTIPROPOSITO PEGATEC BLANCO",
+          "price": 17000
+        },
+        {
+          "code": "14212103",
+          "name": "ADHESIVO MIXTO MULTIPROPOSITO PEGATEC TRANSPARENTE",
           "price": 17000
         }
       ]
@@ -518,8 +1765,109 @@
       "name": "PARED ROLLO",
       "items": [
         {
-          "name": "ROLLO ADHESIVO PARED MARMOL",
+          "code": "14121301",
+          "name": "ROLLO ADHESIVO PARED MARMOL GRIS (6210-1)",
           "price": 37098
+        },
+        {
+          "code": "14121302",
+          "name": "ROLLO ADHESIVO PARED MARMOL NEGRO (1735)",
+          "price": 37098
+        },
+        {
+          "code": "14121303",
+          "name": "ROLLO ADHESIVO PARED MARMOL T9 (056801)",
+          "price": 37098
+        },
+        {
+          "code": "14121304",
+          "name": "ROLLO ADHESIVO PARED MARMOL BLANCO (6223)",
+          "price": 37098
+        },
+        {
+          "code": "14121305",
+          "name": "ROLLO ADHESIVO PARED MARMOL PERLA MARFIL (CST03)",
+          "price": 37098
+        },
+        {
+          "code": "14121306",
+          "name": "ROLLO ADHESIVO PARED MARMOL CALACATTA MIX (CST011)",
+          "price": 37098
+        },
+        {
+          "code": "14121307",
+          "name": "ROLLO ADHESIVO PARED MARMOL NEGRO ORO (CST079)",
+          "price": 37098
+        },
+        {
+          "code": "14121308",
+          "name": "ROLLO ADHESIVO PARED MARMOL MADERA LINEAL (YH-W205)",
+          "price": 37098
+        }
+      ]
+    },
+    {
+      "name": "PANEL WPC  PLANO",
+      "items": [
+        {
+          "code": "14121503",
+          "name": "PANEL WPC PLANO MADERA NATURAL (30-147)",
+          "price": 25000
+        },
+        {
+          "code": "14121504",
+          "name": "PANEL WPC PLANO NOGAL OSCURO (30-247)",
+          "price": 25000
+        },
+        {
+          "code": "14121505",
+          "name": "PANEL WPC PLANO ROBLE GRIS (30-237)",
+          "price": 25000
+        },
+        {
+          "code": "14121507",
+          "name": "PANEL WPC PLANO (118-47)",
+          "price": 25000
+        },
+        {
+          "code": "14121508",
+          "name": "PANEL WPC PLANO NEGRO",
+          "price": 25000
+        },
+        {
+          "code": "14121510",
+          "name": "PANEL WPC PLANO ROBLE CLARO (XK066-A189)",
+          "price": 25000
+        },
+        {
+          "code": "14121511",
+          "name": "PANEL WPC PLANO NEGRO MARMOL",
+          "price": 25000
+        },
+        {
+          "code": "14121516",
+          "name": "PANEL WPC PLANO GRIS PINO",
+          "price": 25000
+        },
+        {
+          "code": "14121513",
+          "name": "PANEL WPC PLANO FP-05",
+          "price": 25000
+        },
+        {
+          "code": "14121517",
+          "name": "PANEL WPC PLANO FP-16",
+          "price": 25000
+        },
+        {
+          "code": "14121518",
+          "name": "PANEL WPC PLANO FP-23",
+          "price": 25000
+        },
+        {
+          "code": "14121519",
+          "name": "PANEL WPC PLANO FP-24",
+          "price": 25000
         }
       ]
     },
@@ -527,24 +1875,139 @@
       "name": "PARED ACOLCHADA",
       "items": [
         {
-          "name": "PARED ACOLCHADA PALMA",
+          "code": "14126001",
+          "name": "PARED ACOLCHADA PALMA DIAMANTE NEGRO (017)",
           "price": 221500
         },
         {
-          "name": "PARED ACOLCHADA TRIGO",
+          "code": "14126002",
+          "name": "PARED ACOLCHADA PALMA GRIS LUMINOSO (041)",
           "price": 221500
         },
         {
-          "name": "PARED ACOLCHADA AURORA",
+          "code": "14126006",
+          "name": "PARED ACOLCHADA PALMA VAINILLA (820)",
+          "price": 221500
+        },
+        {
+          "code": "14126008",
+          "name": "PARED ACOLCHADA PALMA SENDERO (854)",
+          "price": 221500
+        },
+        {
+          "code": "14126101",
+          "name": "PARED ACOLCHADA TRIGO DIAMANTE NEGRO (017)",
+          "price": 221500
+        },
+        {
+          "code": "14126102",
+          "name": "PARED ACOLCHADA TRIGO GRIS LUMINOSO (041)",
+          "price": 221500
+        },
+        {
+          "code": "14126106",
+          "name": "PARED ACOLCHADA TRIGO VAINILLA (HARVEST 820)",
+          "price": 221500
+        },
+        {
+          "code": "14126107",
+          "name": "PARED ACOLCHADA TRIGO BRILLO PLATA (823)",
+          "price": 221500
+        },
+        {
+          "code": "14126201",
+          "name": "PARED ACOLCHADA AURORA DIAMANTE NEGRO (017)",
           "price": 357000
         },
         {
-          "name": "PANEL ACOLCHADO DUOBIG",
+          "code": "14126203",
+          "name": "PARED ACOLCHADA AURORA ROCIO FLORAL (802)",
+          "price": 357000
+        },
+        {
+          "code": "14126205",
+          "name": "PARED ACOLCHADA AURORA SIENA CAOBA (816)",
+          "price": 357000
+        },
+        {
+          "code": "14126207",
+          "name": "PARED ACOLCHADA AURORA BRILLO PLATA (823)",
+          "price": 357000
+        },
+        {
+          "code": "14126302",
+          "name": "PANEL ACOLCHADO DUOBIG GRIS LUMINOSO (041)",
           "price": 155900
         },
         {
-          "name": "PANEL ACOLCHADO DUOSMALL",
+          "code": "14126407",
+          "name": "PANEL ACOLCHADO DUOSMALL BRILLO PLATA (823)",
           "price": 70350
+        }
+      ]
+    },
+    {
+      "name": "PANEL WPC REDONDO",
+      "items": [
+        {
+          "code": "14124902",
+          "name": "PANEL WPC REDONDO CARRARA BLANCO (02)",
+          "price": 35138
+        },
+        {
+          "code": "14124903",
+          "name": "PANEL WPC REDONDO POLAR BLANCO (03)",
+          "price": 35138
+        },
+        {
+          "code": "14124905",
+          "name": "PANEL WPC REDONDO ROBLE CLARO (05)",
+          "price": 35138
+        },
+        {
+          "code": "14124906",
+          "name": "PANEL WPC REDONDO TRAVERTINO (06)",
+          "price": 35138
+        },
+        {
+          "code": "14124910",
+          "name": "PANEL WPC REDONDO MADERA TEKA (10)",
+          "price": 35138
+        },
+        {
+          "code": "14124913",
+          "name": "PANEL WPC REDONDO EBANO NEGRO (13)",
+          "price": 35138
+        },
+        {
+          "code": "14124916",
+          "name": "PANEL WPC REDONDO MARFIL (16)",
+          "price": 35138
+        },
+        {
+          "code": "14124923",
+          "name": "PANEL WPC REDONDO NEGRO MATE (23)",
+          "price": 35138
+        },
+        {
+          "code": "14124924",
+          "name": "PANEL WPC REDONDO CREMA SELECTA NEW (24)",
+          "price": 35138
+        },
+        {
+          "code": "14124925",
+          "name": "PANEL WPC REDONDO AZUL CELESTE NEW (25)",
+          "price": 35138
+        },
+        {
+          "code": "14124926",
+          "name": "PANEL WPC REDONDO VERDE MENTA NEW (26)",
+          "price": 35138
+        },
+        {
+          "code": "14124930",
+          "name": "PANEL WPC REDONDO ROSADO (30)",
+          "price": 35138
         }
       ]
     },
@@ -552,27 +2015,88 @@
       "name": "PANEL ACUSTICO",
       "items": [
         {
-          "name": "PANEL ACUSTICO TIPO 1",
+          "code": "14124301",
+          "name": "PANEL ACUSTICO TIPO 1 BLANCO CEDRO (3728N)",
           "price": 163790
         },
         {
+          "code": "14124302",
+          "name": "PANEL ACUSTICO TIPO 1 CEDRO MADERA (8438S)",
+          "price": 163790
+        },
+        {
+          "code": "14124303",
+          "name": "PANEL ACUSTICO TIPO 1 EBANO (8210C)",
+          "price": 163790
+        },
+        {
+          "code": "",
           "name": "PANEL ACUSTICO TIPO 2",
           "price": 56790
         },
         {
-          "name": "PANEL ACUSTICO TIPO 3",
+          "code": "14124501",
+          "name": "PANEL ACUSTICO TIPO 3 BLANCO CEDRO (3728N)",
           "price": 99590
         },
         {
-          "name": "PANEL ACUSTICO TIPO 4",
+          "code": "14124502",
+          "name": "PANEL ACUSTICO TIPO 3 CEDRO MADERA (8438S)",
+          "price": 99590
+        },
+        {
+          "code": "14124503",
+          "name": "PANEL ACUSTICO TIPO 3 EBANO (8210C)",
+          "price": 99590
+        },
+        {
+          "code": "14124504",
+          "name": "PANEL ACUSTICO TIPO 3 AVELLANA (8292C)",
+          "price": 99590
+        },
+        {
+          "code": "14124601",
+          "name": "PANEL ACUSTICO TIPO 4 BLANCO CEDRO (3728N)",
           "price": 239999
         },
         {
-          "name": "PANEL ACUSTICO TIPO 5",
+          "code": "14124602",
+          "name": "PANEL ACUSTICO TIPO 4 CEDRO MADERA (8438S)",
+          "price": 239999
+        },
+        {
+          "code": "14124603",
+          "name": "PANEL ACUSTICO TIPO 4 EBANO (8210C)",
+          "price": 239999
+        },
+        {
+          "code": "14124604",
+          "name": "PANEL ACUSTICO TIPO 4 AVELLANA (8292C)",
+          "price": 239999
+        },
+        {
+          "code": "14124701",
+          "name": "PANEL ACUSTICO TIPO 5 BLANCO CEDRO (3728N)",
           "price": 132999
         },
         {
-          "name": "PANEL ACUSTICO TIPO 6",
+          "code": "14124702",
+          "name": "PANEL ACUSTICO TIPO 5 CEDRO MADERA (8438S)",
+          "price": 133000
+        },
+        {
+          "code": "14124703",
+          "name": "PANEL ACUSTICO TIPO 5 EBANO (8210C)",
+          "price": 133001
+        },
+        {
+          "code": "14124704",
+          "name": "PANEL ACUSTICO TIPO 5 AVELLANA (8292C)",
+          "price": 133002
+        },
+        {
+          "code": "14124802",
+          "name": "PANEL ACUSTICO TIPO 6 CEDRO MADERA MIX AVELLANA",
           "price": 224999
         }
       ]
@@ -581,28 +2105,109 @@
       "name": "PVC BOARD COLOR",
       "items": [
         {
+          "code": "14181601",
           "name": "PVC BOARD 15MM ROSA (M912-88F)",
           "price": 270455
         },
         {
+          "code": "14181602",
           "name": "PVC BOARD 15MM MADERA MEDIANA (MS84306-131)",
           "price": 270455
         },
         {
+          "code": "14181603",
           "name": "PVC BOARD 15MM BLANCO BRILLANTE",
           "price": 270455
         },
         {
+          "code": "14181604",
           "name": "PVC BOARD 15MM NEGRO BRILLANTE",
           "price": 270455
         },
         {
+          "code": "14181605",
           "name": "PVC BOARD 15MM PURPURA (FAN-698)",
           "price": 270455
         },
         {
+          "code": "14181607",
           "name": "PVC BOARD 15MM MADERA OSCURO (MS86101-152)",
           "price": 270455
+        }
+      ]
+    },
+    {
+      "name": "CINTAS",
+      "items": [
+        {
+          "code": "14201201",
+          "name": "CINTA ADHESIVA DORADA 3CM*5M",
+          "price": 18302
+        },
+        {
+          "code": "14201202",
+          "name": "CINTA ADHESIVA PLATEADA 3CM*5M",
+          "price": 18302
+        },
+        {
+          "code": "14201203",
+          "name": "CINTA ADHESIVA NEGRA 3CM*5M",
+          "price": 18302
+        },
+        {
+          "code": "14201204",
+          "name": "CINTA ADHESIVA PALO DE ROSA 3CM*5M",
+          "price": 18302
+        }
+      ]
+    },
+    {
+      "name": "ANGULOS",
+      "items": [
+        {
+          "code": "14113101",
+          "name": "ANGULO TERMINACION PISO DECK EXTE CEDRO",
+          "price": 29157
+        },
+        {
+          "code": "14113102",
+          "name": "ANGULO TERMINACION PISO DECK EXTE GRAFITO",
+          "price": 29157
+        },
+        {
+          "code": "14113103",
+          "name": "ANGULO TERMINACION PISO DECK EXTE NOGAL",
+          "price": 29157
+        },
+        {
+          "code": "14113104",
+          "name": "ANGULO TERMINACION PISO DECK EXTE MARRON",
+          "price": 29157
+        },
+        {
+          "code": "14113105",
+          "name": "ANGULO TERMINACION PISO DECK EXTE TEKA",
+          "price": 37799
+        },
+        {
+          "code": "14113106",
+          "name": "ANGULO TERMINACION PISO DECK EXTE ROSEWOOD",
+          "price": 37799
+        },
+        {
+          "code": "14113107",
+          "name": "ANGULO TERMINACION PISO DECK EXTE MAHOGANY",
+          "price": 37799
+        },
+        {
+          "code": "14113108",
+          "name": "ANGULO TERMINACION PISO DECK EXTE MAPLE",
+          "price": 37799
+        },
+        {
+          "code": "14113109",
+          "name": "ANGULO TERMINACION PISO DECK EXTE OAK",
+          "price": 37799
         }
       ]
     },
@@ -610,8 +2215,44 @@
       "name": "MUROFLEX",
       "items": [
         {
-          "name": "PARED MUROFLEX",
+          "code": "14122621",
+          "name": "PARED MUROFLEX STONE GRIS (WPC-01)",
           "price": 19600
+        },
+        {
+          "code": "14122622",
+          "name": "PARED MUROFLEX ROBLE CLARO (WPC-05)",
+          "price": 19600
+        },
+        {
+          "code": "14122623",
+          "name": "PARED MUROFLEX MADERA TEKA (WPC-10)",
+          "price": 19600
+        },
+        {
+          "code": "14122624",
+          "name": "PARED MUROFLEX CARRARA NEGRO (WPC-14)",
+          "price": 19600
+        },
+        {
+          "code": "14122625",
+          "name": "PARED MUROFLEX METALUM PLATEDO (SILVER)",
+          "price": 19600
+        },
+        {
+          "code": "14122626",
+          "name": "PARED MUROFLEX CARRARA BLANCO (WPC-02)",
+          "price": 19600
+        },
+        {
+          "code": "14122627",
+          "name": "PARED MUROFLEX METALUM DORADO (GOLDEN)",
+          "price": 22663
+        },
+        {
+          "code": "14122628",
+          "name": "PARED MUROFLEX METALUM BRONCE (BRONZE)",
+          "price": 22663
         }
       ]
     }

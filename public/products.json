@@ -191,8 +191,8 @@
     "category": "CIELO RASO PVC",
     "subcategory": "CIELO RASO PVC",
     "collection": "INTERIOR",
-    "price": "$ 14.999",
-    "unit": "Paquete / Package",
+    "price": "$ 9.500",
+    "unit": "Unidad",
     "items_per_box": "32",
     "style_tags": [
       "CIELO RASO PVC",
@@ -213,10 +213,10 @@
     "image_url": "",
     "stock_status": "In Stock",
     "description": "Cornisa Pvc Blanca Brillante Am1001. Producto de la categoría cielo raso pvc, subcategoría techos, desarrollado para aplicaciones arquitectónicas y de diseño interior. Fabricado con materiales de alto desempeño que garantizan estabilidad, resistencia y durabilidad. Permite una instalación eficiente y un acabado uniforme, ideal para proyectos residenciales, comerciales y corporativos. Especificaciones técnicas: dimensiones de 30 x 595 cm, espesor de 8.5 mm.",
-    "price_cop": "$ 14.999",
+    "price_cop": "$ 9.500",
     "price_usd": "Consultar precio",
     "price_approx": true,
-    "price_source": "CORNISA PVC (cliente - nuevos)",
+    "price_source": "LISTA MARKETING OCTUBRE",
     "catalog_specs": "Ancho: 30cm | Largo: 5.95m | Espesor: 8.5mm | Empaque: 32 unidades",
     "catalog_colors": [
       "BLANCO BRILLANTE"
@@ -267,8 +267,8 @@
     "category": "CUBIERTAS UPVC",
     "subcategory": "CUBIERTA ACANALADA UPVC BLANCA 11.80",
     "collection": "EXTERIOR",
-    "price": "Consultar precio",
-    "unit": "Unidad / Unit",
+    "price": "$ 325.000",
+    "unit": "Unidad",
     "items_per_box": "1",
     "style_tags": [
       "CUBIERTAS UPVC",
@@ -289,14 +289,15 @@
     "image_url": "https://drive.google.com/uc?export=view&id=1H727fjgnsZ6H1ZjCgxwN9Hqs0DnLqcWh",
     "stock_status": "In Stock",
     "description": "CUBIERTA ACANALADA UPVC BLANCA 10MM. Ancho total: 885mm | Ancho efectivo: 830mm | Altura onda: 40mm | Longitud máx: 11.80m | Aislamiento acústico: 35dB | Temperatura: -20°C a 60°C. Uso: Techos, cubiertas acanaladas.",
-    "price_cop": "Consultar precio",
+    "price_cop": "$ 325.000",
     "price_usd": "Consultar precio",
-    "price_source": "none",
+    "price_source": "LISTA MARKETING OCTUBRE",
     "catalog_specs": "Ancho total: 885mm | Ancho efectivo: 830mm | Altura onda: 40mm | Longitud máx: 11.80m | Aislamiento acústico: 35dB | Temperatura: -20°C a 60°C",
     "catalog_colors": [
       "BLANCO"
     ],
-    "catalog_use": "Techos, cubiertas acanaladas"
+    "catalog_use": "Techos, cubiertas acanaladas",
+    "price_approx": true
   },
   {
     "id": "14091101",
@@ -338,7 +339,7 @@
     "category": "PAREDES",
     "subcategory": "PANEL PS",
     "collection": "INTERIOR",
-    "price": "$ 28.500",
+    "price": "Consultar precio",
     "unit": "Unidad",
     "items_per_box": "21",
     "style_tags": [
@@ -361,10 +362,10 @@
     "pdf_tech_sheet": "https://drive.google.com/file/d/1mHy1d-Ssz8gCg1GGub_y3D_y1ilxyXU-/view?usp=drive_link",
     "stock_status": "In Stock",
     "description": "Panel Ps Luxury Belice Gris Oscuro Hh24100. Producto de la categoría paredes, subcategoría panel ps, desarrollado para aplicaciones arquitectónicas y de diseño interior. Fabricado con materiales de alto desempeño que garantizan estabilidad, resistencia y durabilidad. Permite una instalación eficiente y un acabado uniforme, ideal para proyectos residenciales, comerciales y corporativos. Especificaciones técnicas: dimensiones de 12 x 290 cm, espesor de 12.0 mm.",
-    "price_cop": "$ 28.500",
+    "price_cop": "Consultar precio",
     "price_usd": "Consultar precio",
     "price_approx": true,
-    "price_source": "LISTA MARKETING OCTUBRE"
+    "price_source": "none"
   },
   {
     "id": "14126302",
@@ -444,8 +445,8 @@
     "category": "PANELES WPC Y ANGULOS",
     "subcategory": "PANELES WPC INTERIOR",
     "collection": "INTERIOR",
-    "price": "Consultar precio",
-    "unit": "Caja / Box",
+    "price": "$ 23.000",
+    "unit": "Unidad",
     "items_per_box": "10",
     "style_tags": [
       "PANELES WPC Y ANGULOS",
@@ -466,14 +467,15 @@
     "image_url": "https://drive.google.com/uc?export=view&id=1dcwRW2v5vqfmBTrkoIW7EagURLn3QAxr",
     "stock_status": "In Stock",
     "description": "PANEL WPC INTERIOR STONE GRIS (01). Ancho: 16cm | Largo: 2.95m | Espesor: 25mm. Uso: Panel WPC interior, paredes.",
-    "price_cop": "Consultar precio",
+    "price_cop": "$ 23.000",
     "price_usd": "Consultar precio",
-    "price_source": "none",
+    "price_source": "LISTA MARKETING OCTUBRE",
     "catalog_specs": "Ancho: 16cm | Largo: 2.95m | Espesor: 25mm",
     "catalog_colors": [
       "STONE GRIS"
     ],
-    "catalog_use": "Panel WPC interior, paredes"
+    "catalog_use": "Panel WPC interior, paredes",
+    "price_approx": true
   },
   {
     "id": "14124902",
@@ -481,7 +483,7 @@
     "category": "PANELES WPC Y ANGULOS",
     "subcategory": "PANELES WPC REDONDOS",
     "collection": "INTERIOR",
-    "price": "$ 35.000",
+    "price": "$ 35.138",
     "unit": "Unidad",
     "items_per_box": "10",
     "style_tags": [
@@ -503,7 +505,7 @@
     "image_url": "https://drive.google.com/uc?export=view&id=1edJ7Ddy2SXovXTCvQPAQg81nG_W7Nzwk",
     "stock_status": "In Stock",
     "description": "PANEL WPC REDONDO CARRARA BLANCO (02). Ancho: 16cm | Largo: 2.95m | Espesor: 2.5mm | PRODUCTO NUEVO. Uso: Panel WPC redondo interior.",
-    "price_cop": "$ 35.000",
+    "price_cop": "$ 35.138",
     "price_usd": "Consultar precio",
     "price_approx": true,
     "price_source": "LISTA MARKETING OCTUBRE",
@@ -553,8 +555,8 @@
     "category": "PISOS",
     "subcategory": "PISOS SPC",
     "collection": "INTERIOR",
-    "price": "Consultar precio",
-    "unit": "Caja / Box",
+    "price": "$ 12.000",
+    "unit": "Unidad",
     "items_per_box": "10",
     "style_tags": [
       "PISOS",
@@ -576,9 +578,10 @@
     "pdf_tech_sheet": "https://drive.google.com/file/d/1qZHyzLsyqXc-6xMNlOFmiaGu0YrDSa_j/view?usp=drive_link",
     "stock_status": "In Stock",
     "description": "Piso Spc Roble Claro Ixpe. Producto de la categoría pisos, subcategoría spc, desarrollado para aplicaciones arquitectónicas y de diseño interior. Fabricado con materiales de alto desempeño que garantizan estabilidad, resistencia y durabilidad. Permite una instalación eficiente y un acabado uniforme, ideal para proyectos residenciales, comerciales y corporativos. Especificaciones técnicas: dimensiones de 18 x 122 cm, espesor de 4.0 mm.",
-    "price_cop": "Consultar precio",
+    "price_cop": "$ 12.000",
     "price_usd": "Consultar precio",
-    "price_source": "none"
+    "price_source": "LISTA MARKETING OCTUBRE",
+    "price_approx": true
   },
   {
     "id": "14112410",
@@ -654,8 +657,8 @@
     "category": "PAREDES",
     "subcategory": "PAREDES PU ARQUNITEC",
     "collection": "INTERIOR",
-    "price": "Consultar precio",
-    "unit": "Caja / Box",
+    "price": "$ 65.000",
+    "unit": "Unidad",
     "items_per_box": "10",
     "style_tags": [
       "PAREDES",
@@ -678,9 +681,10 @@
     "pdf_tech_sheet": "https://drive.google.com/file/d/1QG18_4a7hO-SocOLjpdG751Z1dfWntZm/view?usp=drive_link",
     "stock_status": "In Stock",
     "description": "Pared Arqunitec Blanco Marfil (02). Producto de la categoría paredes, subcategoría pu, desarrollado para aplicaciones arquitectónicas y de diseño interior. Fabricado con materiales de alto desempeño que garantizan estabilidad, resistencia y durabilidad. Permite una instalación eficiente y un acabado uniforme, ideal para proyectos residenciales, comerciales y corporativos. Especificaciones técnicas: dimensiones de 60 x 120 cm, espesor de 30.0 mm.",
-    "price_cop": "Consultar precio",
+    "price_cop": "$ 65.000",
     "price_usd": "Consultar precio",
-    "price_source": "none"
+    "price_source": "LISTA MARKETING OCTUBRE",
+    "price_approx": true
   },
   {
     "id": "14032014",
@@ -688,8 +692,8 @@
     "category": "CIELO RASO PVC",
     "subcategory": "CIELO RASO PVC",
     "collection": "INTERIOR",
-    "price": "$ 14.999",
-    "unit": "Paquete / Package",
+    "price": "$ 9.500",
+    "unit": "Unidad",
     "items_per_box": "32",
     "style_tags": [
       "CIELO RASO PVC",
@@ -711,10 +715,10 @@
     "pdf_tech_sheet": "",
     "stock_status": "In Stock",
     "description": "Cornisa Pvc Blanco Ejecutivo Am1014. Producto de la categoría cielo raso pvc, subcategoría techos, desarrollado para aplicaciones arquitectónicas y de diseño interior. Fabricado con materiales de alto desempeño que garantizan estabilidad, resistencia y durabilidad. Permite una instalación eficiente y un acabado uniforme, ideal para proyectos residenciales, comerciales y corporativos. Especificaciones técnicas: dimensiones de 30 x 595 cm, espesor de 8.5 mm.",
-    "price_cop": "$ 14.999",
+    "price_cop": "$ 9.500",
     "price_usd": "Consultar precio",
     "price_approx": true,
-    "price_source": "CORNISA PVC (cliente - nuevos)",
+    "price_source": "LISTA MARKETING OCTUBRE",
     "catalog_specs": "Ancho: 30cm | Largo: 5.95m | Espesor: 8.5mm | Empaque: 32 unidades",
     "catalog_colors": [
       "BLANCO EJECUTIVO"
@@ -727,8 +731,8 @@
     "category": "CIELO RASO PVC",
     "subcategory": "CIELO RASO PVC",
     "collection": "INTERIOR",
-    "price": "$ 14.999",
-    "unit": "Paquete / Package",
+    "price": "$ 9.500",
+    "unit": "Unidad",
     "items_per_box": "32",
     "style_tags": [
       "CIELO RASO PVC",
@@ -750,10 +754,10 @@
     "pdf_tech_sheet": "",
     "stock_status": "In Stock",
     "description": "Cornisa Pvc Blanco Madera Brillante Am1002. Producto de la categoría cielo raso pvc, subcategoría techos, desarrollado para aplicaciones arquitectónicas y de diseño interior. Fabricado con materiales de alto desempeño que garantizan estabilidad, resistencia y durabilidad. Permite una instalación eficiente y un acabado uniforme, ideal para proyectos residenciales, comerciales y corporativos. Especificaciones técnicas: dimensiones de 30 x 595 cm, espesor de 8.5 mm.",
-    "price_cop": "$ 14.999",
+    "price_cop": "$ 9.500",
     "price_usd": "Consultar precio",
     "price_approx": true,
-    "price_source": "CORNISA PVC (cliente - nuevos)",
+    "price_source": "LISTA MARKETING OCTUBRE",
     "catalog_specs": "Ancho: 30cm | Largo: 5.95m | Espesor: 8.5mm | Empaque: 32 unidades",
     "catalog_colors": [
       "BLANCO MADERA BRILLANTE"
@@ -766,8 +770,8 @@
     "category": "CIELO RASO PVC",
     "subcategory": "CIELO RASO PVC",
     "collection": "INTERIOR",
-    "price": "$ 14.999",
-    "unit": "Paquete / Package",
+    "price": "$ 9.500",
+    "unit": "Unidad",
     "items_per_box": "32",
     "style_tags": [
       "CIELO RASO PVC",
@@ -789,10 +793,10 @@
     "pdf_tech_sheet": "",
     "stock_status": "In Stock",
     "description": "Cornisa Pvc Beige Brillante Am1004. Producto de la categoría cielo raso pvc, subcategoría techos, desarrollado para aplicaciones arquitectónicas y de diseño interior. Fabricado con materiales de alto desempeño que garantizan estabilidad, resistencia y durabilidad. Permite una instalación eficiente y un acabado uniforme, ideal para proyectos residenciales, comerciales y corporativos. Especificaciones técnicas: dimensiones de 30 x 595 cm, espesor de 8.5 mm.",
-    "price_cop": "$ 14.999",
+    "price_cop": "$ 9.500",
     "price_usd": "Consultar precio",
     "price_approx": true,
-    "price_source": "CORNISA PVC (cliente - nuevos)",
+    "price_source": "LISTA MARKETING OCTUBRE",
     "catalog_specs": "Ancho: 30cm | Largo: 5.95m | Espesor: 8.5mm | Empaque: 32 unidades",
     "catalog_colors": [
       "BEIGE BRILLANTE"
@@ -927,8 +931,8 @@
     "category": "NUEVOS",
     "subcategory": "NUEVOS",
     "collection": "NUEVOS",
-    "price": "Consultar precio",
-    "unit": "Piece",
+    "price": "$ 287.567",
+    "unit": "Unidad",
     "items_per_box": "1",
     "style_tags": [
       "NUEVOS"
@@ -938,14 +942,15 @@
     "pdf_tech_sheet": "",
     "stock_status": "In Stock",
     "description": "CUBIERTA TERMOACUSTICA UPVC 2.0MM ONDA BAJA. Longitud: 11.80m | Ancho: 1.13m | Ancho útil: 1.05m | Crestas: 6 | Distancia: 0.90m | Radio: <6m. Uso: Techos, cubiertas termoacústicas.",
-    "price_cop": "Consultar precio",
+    "price_cop": "$ 287.567",
     "price_usd": "Consultar precio",
-    "price_source": "none",
+    "price_source": "LISTA MARKETING OCTUBRE",
     "catalog_specs": "Longitud: 11.80m | Ancho: 1.13m | Ancho útil: 1.05m | Crestas: 6 | Distancia: 0.90m | Radio: <6m",
     "catalog_colors": [
       "BLANCO"
     ],
-    "catalog_use": "Techos, cubiertas termoacústicas"
+    "catalog_use": "Techos, cubiertas termoacústicas",
+    "price_approx": true
   },
   {
     "id": "14082004",
@@ -1034,8 +1039,8 @@
     "category": "NUEVOS",
     "subcategory": "NUEVOS",
     "collection": "NUEVOS",
-    "price": "Consultar precio",
-    "unit": "Piece",
+    "price": "$ 266.588",
+    "unit": "Unidad",
     "items_per_box": "1",
     "style_tags": [
       "NUEVOS"
@@ -1045,9 +1050,10 @@
     "pdf_tech_sheet": "",
     "stock_status": "In Stock",
     "description": "CUBIERTA TERMOACUSTICA UPVC 2.0mm BLANCA O.A 11.80",
-    "price_cop": "Consultar precio",
+    "price_cop": "$ 266.588",
     "price_usd": "Consultar precio",
-    "price_source": "none"
+    "price_source": "LISTA MARKETING OCTUBRE",
+    "price_approx": true
   },
   {
     "id": "14082001",
@@ -1261,8 +1267,8 @@
     "category": "NUEVOS",
     "subcategory": "NUEVOS",
     "collection": "NUEVOS",
-    "price": "Consultar precio",
-    "unit": "Piece",
+    "price": "$ 34.562",
+    "unit": "Unidad",
     "items_per_box": "1",
     "style_tags": [
       "NUEVOS"
@@ -1272,14 +1278,15 @@
     "pdf_tech_sheet": "",
     "stock_status": "In Stock",
     "description": "CABALLETE Y TRES AGUAS UPVC COLONIAL 2.5MM. Caballete en Y para 3 aguas. Uso: Caballete Y colonial.",
-    "price_cop": "Consultar precio",
+    "price_cop": "$ 34.562",
     "price_usd": "Consultar precio",
-    "price_source": "none",
+    "price_source": "LISTA MARKETING OCTUBRE",
     "catalog_specs": "Caballete en Y para 3 aguas",
     "catalog_colors": [
       "ROJO"
     ],
-    "catalog_use": "Caballete Y colonial"
+    "catalog_use": "Caballete Y colonial",
+    "price_approx": true
   },
   {
     "id": "14082104",
@@ -1287,8 +1294,8 @@
     "category": "NUEVOS",
     "subcategory": "NUEVOS",
     "collection": "NUEVOS",
-    "price": "Consultar precio",
-    "unit": "Piece",
+    "price": "$ 37.022",
+    "unit": "Unidad",
     "items_per_box": "1",
     "style_tags": [
       "NUEVOS"
@@ -1298,14 +1305,15 @@
     "pdf_tech_sheet": "",
     "stock_status": "In Stock",
     "description": "CABALLETE T TRES AGUAS UPVC COLONIAL 2.5MM. Caballete en T para 3 aguas. Uso: Caballete T colonial.",
-    "price_cop": "Consultar precio",
+    "price_cop": "$ 37.022",
     "price_usd": "Consultar precio",
-    "price_source": "none",
+    "price_source": "LISTA MARKETING OCTUBRE",
     "catalog_specs": "Caballete en T para 3 aguas",
     "catalog_colors": [
       "ROJO"
     ],
-    "catalog_use": "Caballete T colonial"
+    "catalog_use": "Caballete T colonial",
+    "price_approx": true
   },
   {
     "id": "14082105",
@@ -1548,8 +1556,8 @@
     "category": "NUEVOS",
     "subcategory": "NUEVOS",
     "collection": "NUEVOS",
-    "price": "Consultar precio",
-    "unit": "Piece",
+    "price": "$ 25.000",
+    "unit": "Unidad",
     "items_per_box": "1",
     "style_tags": [
       "NUEVOS"
@@ -1559,12 +1567,13 @@
     "pdf_tech_sheet": "",
     "stock_status": "In Stock",
     "description": "PERFIL LED 1.20M. Largo: 1.20m | Barra rígida doble fila | Blanco cálido. Uso: Iluminación panel WPC interior.",
-    "price_cop": "Consultar precio",
+    "price_cop": "$ 25.000",
     "price_usd": "Consultar precio",
-    "price_source": "none",
+    "price_source": "LISTA MARKETING OCTUBRE",
     "catalog_specs": "Largo: 1.20m | Barra rígida doble fila | Blanco cálido",
     "catalog_colors": [],
-    "catalog_use": "Iluminación panel WPC interior"
+    "catalog_use": "Iluminación panel WPC interior",
+    "price_approx": true
   },
   {
     "id": "14051107",
@@ -1572,8 +1581,8 @@
     "category": "NUEVOS",
     "subcategory": "NUEVOS",
     "collection": "NUEVOS",
-    "price": "Consultar precio",
-    "unit": "Piece",
+    "price": "$ 17.000",
+    "unit": "Unidad",
     "items_per_box": "1",
     "style_tags": [
       "NUEVOS"
@@ -1583,12 +1592,13 @@
     "pdf_tech_sheet": "",
     "stock_status": "In Stock",
     "description": "PERFIL LED 70CM. Largo: 70cm | Barra rígida doble fila | Blanco cálido. Uso: Iluminación panel WPC interior.",
-    "price_cop": "Consultar precio",
+    "price_cop": "$ 17.000",
     "price_usd": "Consultar precio",
-    "price_source": "none",
+    "price_source": "LISTA MARKETING OCTUBRE",
     "catalog_specs": "Largo: 70cm | Barra rígida doble fila | Blanco cálido",
     "catalog_colors": [],
-    "catalog_use": "Iluminación panel WPC interior"
+    "catalog_use": "Iluminación panel WPC interior",
+    "price_approx": true
   },
   {
     "id": "14051105",
@@ -1596,8 +1606,8 @@
     "category": "NUEVOS",
     "subcategory": "NUEVOS",
     "collection": "NUEVOS",
-    "price": "Consultar precio",
-    "unit": "Piece",
+    "price": "$ 14.000",
+    "unit": "Unidad",
     "items_per_box": "1",
     "style_tags": [
       "NUEVOS"
@@ -1607,12 +1617,13 @@
     "pdf_tech_sheet": "",
     "stock_status": "In Stock",
     "description": "PERFIL LED 50CM. Largo: 50cm | Barra rígida doble fila | Blanco cálido. Uso: Iluminación panel WPC interior.",
-    "price_cop": "Consultar precio",
+    "price_cop": "$ 14.000",
     "price_usd": "Consultar precio",
-    "price_source": "none",
+    "price_source": "LISTA MARKETING OCTUBRE",
     "catalog_specs": "Largo: 50cm | Barra rígida doble fila | Blanco cálido",
     "catalog_colors": [],
-    "catalog_use": "Iluminación panel WPC interior"
+    "catalog_use": "Iluminación panel WPC interior",
+    "price_approx": true
   },
   {
     "id": "14051201",
@@ -2208,7 +2219,7 @@
     "category": "NUEVOS",
     "subcategory": "NUEVOS",
     "collection": "NUEVOS",
-    "price": "$ 60.000",
+    "price": "Consultar precio",
     "unit": "Unidad",
     "items_per_box": "1",
     "style_tags": [
@@ -2219,10 +2230,10 @@
     "pdf_tech_sheet": "",
     "stock_status": "In Stock",
     "description": "PINO (ZEN). Ancho: 122cm | Largo: 2.44m | Espesor: 0.5mm | Peso: 13.3kg | Acabado: Mate. Uso: Foam board decorativo interior.",
-    "price_cop": "$ 60.000",
+    "price_cop": "Consultar precio",
     "price_usd": "Consultar precio",
     "price_approx": true,
-    "price_source": "LISTA MARKETING OCTUBRE",
+    "price_source": "none",
     "catalog_specs": "Ancho: 122cm | Largo: 2.44m | Espesor: 0.5mm | Peso: 13.3kg | Acabado: Mate",
     "catalog_colors": [
       "PINO"
@@ -2235,7 +2246,7 @@
     "category": "NUEVOS",
     "subcategory": "NUEVOS",
     "collection": "NUEVOS",
-    "price": "$ 60.000",
+    "price": "Consultar precio",
     "unit": "Unidad",
     "items_per_box": "1",
     "style_tags": [
@@ -2246,10 +2257,10 @@
     "pdf_tech_sheet": "",
     "stock_status": "In Stock",
     "description": "MAPLE (ZEN). Ancho: 122cm | Largo: 2.44m | Espesor: 0.5mm | Peso: 13.3kg | Acabado: Mate. Uso: Foam board decorativo interior.",
-    "price_cop": "$ 60.000",
+    "price_cop": "Consultar precio",
     "price_usd": "Consultar precio",
     "price_approx": true,
-    "price_source": "LISTA MARKETING OCTUBRE",
+    "price_source": "none",
     "catalog_specs": "Ancho: 122cm | Largo: 2.44m | Espesor: 0.5mm | Peso: 13.3kg | Acabado: Mate",
     "catalog_colors": [
       "MAPLE"
@@ -2262,7 +2273,7 @@
     "category": "NUEVOS",
     "subcategory": "NUEVOS",
     "collection": "NUEVOS",
-    "price": "$ 60.000",
+    "price": "$ 95.000",
     "unit": "Unidad",
     "items_per_box": "1",
     "style_tags": [
@@ -2273,7 +2284,7 @@
     "pdf_tech_sheet": "",
     "stock_status": "In Stock",
     "description": "BURDEO (ZEN). Ancho: 122cm | Largo: 2.44m | Espesor: 0.5mm | Peso: 13.3kg | Acabado: Mate. Uso: Foam board decorativo interior.",
-    "price_cop": "$ 60.000",
+    "price_cop": "$ 95.000",
     "price_usd": "Consultar precio",
     "price_approx": true,
     "price_source": "LISTA MARKETING OCTUBRE",
@@ -2397,7 +2408,7 @@
     "category": "NUEVOS",
     "subcategory": "NUEVOS",
     "collection": "NUEVOS",
-    "price": "$ 150.000",
+    "price": "Consultar precio",
     "unit": "Unidad",
     "items_per_box": "1",
     "style_tags": [
@@ -2408,10 +2419,10 @@
     "pdf_tech_sheet": "",
     "stock_status": "In Stock",
     "description": "PLATEADO (ESPEJO). Ancho: 122cm | Largo: 2.44m | Espesor: 0.5mm | Peso: 13.3kg | Acabado: Metálico. Uso: Foam board espejo decorativo.",
-    "price_cop": "$ 150.000",
+    "price_cop": "Consultar precio",
     "price_usd": "Consultar precio",
     "price_approx": true,
-    "price_source": "LISTA MARKETING OCTUBRE",
+    "price_source": "none",
     "catalog_specs": "Ancho: 122cm | Largo: 2.44m | Espesor: 0.5mm | Peso: 13.3kg | Acabado: Metálico",
     "catalog_colors": [
       "PLATEADO"
@@ -2559,7 +2570,7 @@
     "category": "NUEVOS",
     "subcategory": "NUEVOS",
     "collection": "NUEVOS",
-    "price": "$ 150.000",
+    "price": "$ 90.000",
     "unit": "Unidad",
     "items_per_box": "1",
     "style_tags": [
@@ -2570,7 +2581,7 @@
     "pdf_tech_sheet": "",
     "stock_status": "In Stock",
     "description": "PLATEADO (GOTAS DE AGUA). Ancho: 122cm | Largo: 2.44m | Espesor: 0.5mm | Peso: 13.3kg | Acabado: Metálico. Uso: Foam board gotas de agua.",
-    "price_cop": "$ 150.000",
+    "price_cop": "$ 90.000",
     "price_usd": "Consultar precio",
     "price_approx": true,
     "price_source": "LISTA MARKETING OCTUBRE",
@@ -2775,7 +2786,7 @@
     "category": "NUEVOS",
     "subcategory": "NUEVOS",
     "collection": "NUEVOS",
-    "price": "$ 105.000",
+    "price": "Consultar precio",
     "unit": "Unidad",
     "items_per_box": "1",
     "style_tags": [
@@ -2786,10 +2797,10 @@
     "pdf_tech_sheet": "",
     "stock_status": "In Stock",
     "description": "MÁRMOL GRIS (M02). Ancho: 122cm | Largo: 2.44m | Área: 2.9m² | Peso: 19kg. Uso: Paredes interior, decoración.",
-    "price_cop": "$ 105.000",
+    "price_cop": "Consultar precio",
     "price_usd": "Consultar precio",
     "price_approx": true,
-    "price_source": "LISTA MARKETING OCTUBRE",
+    "price_source": "none",
     "catalog_specs": "Ancho: 122cm | Largo: 2.44m | Área: 2.9m² | Peso: 19kg",
     "catalog_colors": [
       "GRIS"
@@ -2829,7 +2840,7 @@
     "category": "NUEVOS",
     "subcategory": "NUEVOS",
     "collection": "NUEVOS",
-    "price": "$ 105.000",
+    "price": "Consultar precio",
     "unit": "Unidad",
     "items_per_box": "1",
     "style_tags": [
@@ -2840,10 +2851,10 @@
     "pdf_tech_sheet": "",
     "stock_status": "In Stock",
     "description": "MÁRMOL VETEADO (M04). Ancho: 122cm | Largo: 2.44m | Área: 2.9m² | Peso: 19kg. Uso: Paredes interior, decoración.",
-    "price_cop": "$ 105.000",
+    "price_cop": "Consultar precio",
     "price_usd": "Consultar precio",
     "price_approx": true,
-    "price_source": "LISTA MARKETING OCTUBRE",
+    "price_source": "none",
     "catalog_specs": "Ancho: 122cm | Largo: 2.44m | Área: 2.9m² | Peso: 19kg",
     "catalog_colors": [
       "VETEADO"
@@ -2937,7 +2948,7 @@
     "category": "NUEVOS",
     "subcategory": "NUEVOS",
     "collection": "NUEVOS",
-    "price": "$ 105.000",
+    "price": "Consultar precio",
     "unit": "Unidad",
     "items_per_box": "1",
     "style_tags": [
@@ -2948,10 +2959,10 @@
     "pdf_tech_sheet": "",
     "stock_status": "In Stock",
     "description": "MÁRMOL LONDRES (M08). Ancho: 122cm | Largo: 2.44m | Área: 2.9m² | Peso: 19kg. Uso: Paredes interior, decoración.",
-    "price_cop": "$ 105.000",
+    "price_cop": "Consultar precio",
     "price_usd": "Consultar precio",
     "price_approx": true,
-    "price_source": "LISTA MARKETING OCTUBRE",
+    "price_source": "none",
     "catalog_specs": "Ancho: 122cm | Largo: 2.44m | Área: 2.9m² | Peso: 19kg",
     "catalog_colors": [
       "LONDRES"
@@ -3153,7 +3164,7 @@
     "category": "NUEVOS",
     "subcategory": "NUEVOS",
     "collection": "NUEVOS",
-    "price": "$ 105.000",
+    "price": "Consultar precio",
     "unit": "Unidad",
     "items_per_box": "1",
     "style_tags": [
@@ -3164,10 +3175,10 @@
     "pdf_tech_sheet": "",
     "stock_status": "In Stock",
     "description": "DESTELLOS DE ORO (M18). Ancho: 122cm | Largo: 2.44m | Área: 2.9m² | Peso: 19kg. Uso: Paredes interior, decoración.",
-    "price_cop": "$ 105.000",
+    "price_cop": "Consultar precio",
     "price_usd": "Consultar precio",
     "price_approx": true,
-    "price_source": "LISTA MARKETING OCTUBRE",
+    "price_source": "none",
     "catalog_specs": "Ancho: 122cm | Largo: 2.44m | Área: 2.9m² | Peso: 19kg",
     "catalog_colors": [
       "DESTELLOS DE ORO"
@@ -3450,7 +3461,7 @@
     "category": "NUEVOS",
     "subcategory": "NUEVOS",
     "collection": "NUEVOS",
-    "price": "$ 105.000",
+    "price": "$ 110.000",
     "unit": "Unidad",
     "items_per_box": "1",
     "style_tags": [
@@ -3461,7 +3472,7 @@
     "pdf_tech_sheet": "",
     "stock_status": "In Stock",
     "description": "MÁRMOL MONACO (M34). Ancho: 122cm | Largo: 2.44m | Área: 2.9m² | Peso: 19kg. Uso: Paredes interior, decoración.",
-    "price_cop": "$ 105.000",
+    "price_cop": "$ 110.000",
     "price_usd": "Consultar precio",
     "price_approx": true,
     "price_source": "LISTA MARKETING OCTUBRE",
@@ -3477,7 +3488,7 @@
     "category": "NUEVOS",
     "subcategory": "NUEVOS",
     "collection": "NUEVOS",
-    "price": "$ 105.000",
+    "price": "$ 110.000",
     "unit": "Unidad",
     "items_per_box": "1",
     "style_tags": [
@@ -3488,7 +3499,7 @@
     "pdf_tech_sheet": "",
     "stock_status": "In Stock",
     "description": "MÁRMOL DUBAI NEGRO (M35). Ancho: 122cm | Largo: 2.44m | Área: 2.9m² | Peso: 19kg. Uso: Paredes interior, decoración.",
-    "price_cop": "$ 105.000",
+    "price_cop": "$ 110.000",
     "price_usd": "Consultar precio",
     "price_approx": true,
     "price_source": "LISTA MARKETING OCTUBRE",
@@ -3504,7 +3515,7 @@
     "category": "NUEVOS",
     "subcategory": "NUEVOS",
     "collection": "NUEVOS",
-    "price": "$ 16.000",
+    "price": "Consultar precio",
     "unit": "Unidad",
     "items_per_box": "1",
     "style_tags": [
@@ -3515,10 +3526,10 @@
     "pdf_tech_sheet": "",
     "stock_status": "In Stock",
     "description": "CINTA ADHESIVA DORADA 3CM 5M. Ancho: 3cm | Largo: 5m | Tipo: Metálica. Uso: Cinta adhesiva decorativa mármol.",
-    "price_cop": "$ 16.000",
+    "price_cop": "Consultar precio",
     "price_usd": "Consultar precio",
     "price_approx": true,
-    "price_source": "LISTA MARKETING OCTUBRE",
+    "price_source": "none",
     "catalog_specs": "Ancho: 3cm | Largo: 5m | Tipo: Metálica",
     "catalog_colors": [
       "DORADA"
@@ -3531,7 +3542,7 @@
     "category": "NUEVOS",
     "subcategory": "NUEVOS",
     "collection": "NUEVOS",
-    "price": "$ 16.000",
+    "price": "Consultar precio",
     "unit": "Unidad",
     "items_per_box": "1",
     "style_tags": [
@@ -3542,10 +3553,10 @@
     "pdf_tech_sheet": "",
     "stock_status": "In Stock",
     "description": "CINTA ADHESIVA PLATEADA 3CM 5M. Ancho: 3cm | Largo: 5m | Tipo: Metálica. Uso: Cinta adhesiva decorativa mármol.",
-    "price_cop": "$ 16.000",
+    "price_cop": "Consultar precio",
     "price_usd": "Consultar precio",
     "price_approx": true,
-    "price_source": "LISTA MARKETING OCTUBRE",
+    "price_source": "none",
     "catalog_specs": "Ancho: 3cm | Largo: 5m | Tipo: Metálica",
     "catalog_colors": [
       "PLATEADA"
@@ -3558,7 +3569,7 @@
     "category": "NUEVOS",
     "subcategory": "NUEVOS",
     "collection": "NUEVOS",
-    "price": "$ 16.000",
+    "price": "Consultar precio",
     "unit": "Unidad",
     "items_per_box": "1",
     "style_tags": [
@@ -3569,10 +3580,10 @@
     "pdf_tech_sheet": "",
     "stock_status": "In Stock",
     "description": "CINTA ADHESIVA NEGRA 3CM 5M. Ancho: 3cm | Largo: 5m | Tipo: Metálica. Uso: Cinta adhesiva decorativa mármol.",
-    "price_cop": "$ 16.000",
+    "price_cop": "Consultar precio",
     "price_usd": "Consultar precio",
     "price_approx": true,
-    "price_source": "LISTA MARKETING OCTUBRE",
+    "price_source": "none",
     "catalog_specs": "Ancho: 3cm | Largo: 5m | Tipo: Metálica",
     "catalog_colors": [
       "NEGRA"
@@ -3585,7 +3596,7 @@
     "category": "NUEVOS",
     "subcategory": "NUEVOS",
     "collection": "NUEVOS",
-    "price": "$ 16.000",
+    "price": "Consultar precio",
     "unit": "Unidad",
     "items_per_box": "1",
     "style_tags": [
@@ -3596,10 +3607,10 @@
     "pdf_tech_sheet": "",
     "stock_status": "In Stock",
     "description": "CINTA ADHESIVA PALO DE ROSA 3CM 5M. Ancho: 3cm | Largo: 5m | Tipo: Metálica. Uso: Cinta adhesiva decorativa mármol.",
-    "price_cop": "$ 16.000",
+    "price_cop": "Consultar precio",
     "price_usd": "Consultar precio",
     "price_approx": true,
-    "price_source": "LISTA MARKETING OCTUBRE",
+    "price_source": "none",
     "catalog_specs": "Ancho: 3cm | Largo: 5m | Tipo: Metálica",
     "catalog_colors": [
       "PALO DE ROSA"
@@ -3639,7 +3650,7 @@
     "category": "NUEVOS",
     "subcategory": "NUEVOS",
     "collection": "NUEVOS",
-    "price": "$ 2.321",
+    "price": "$ 17.000",
     "unit": "Unidad",
     "items_per_box": "1",
     "style_tags": [
@@ -3650,7 +3661,7 @@
     "pdf_tech_sheet": "",
     "stock_status": "In Stock",
     "description": "ANGULO EN L 10MM ×2.5M DORADO. Espesor: 10mm | Largo: 2.5m | Color: Dorado. Uso: Terminación lámina mármol.",
-    "price_cop": "$ 2.321",
+    "price_cop": "$ 17.000",
     "price_usd": "Consultar precio",
     "price_approx": true,
     "price_source": "LISTA MARKETING OCTUBRE",
@@ -3666,7 +3677,7 @@
     "category": "NUEVOS",
     "subcategory": "NUEVOS",
     "collection": "NUEVOS",
-    "price": "$ 2.321",
+    "price": "$ 17.000",
     "unit": "Unidad",
     "items_per_box": "1",
     "style_tags": [
@@ -3677,7 +3688,7 @@
     "pdf_tech_sheet": "",
     "stock_status": "In Stock",
     "description": "ANGULO EN L 10MM ×2.5MM PLATA. Espesor: 10mm × 2.5mm | Color: Plata. Uso: Terminación lámina mármol.",
-    "price_cop": "$ 2.321",
+    "price_cop": "$ 17.000",
     "price_usd": "Consultar precio",
     "price_approx": true,
     "price_source": "LISTA MARKETING OCTUBRE",
@@ -3693,7 +3704,7 @@
     "category": "NUEVOS",
     "subcategory": "NUEVOS",
     "collection": "NUEVOS",
-    "price": "$ 14.755",
+    "price": "$ 180.000",
     "unit": "Unidad",
     "items_per_box": "1",
     "style_tags": [
@@ -3704,7 +3715,7 @@
     "pdf_tech_sheet": "",
     "stock_status": "In Stock",
     "description": "ACCESORIO MARMOL T 0.8MM ×3M DORADO. Espesor: 0.8mm | Largo: 3m | Color: Dorado. Uso: Accesorio lámina mármol.",
-    "price_cop": "$ 14.755",
+    "price_cop": "$ 180.000",
     "price_usd": "Consultar precio",
     "price_approx": true,
     "price_source": "LISTA MARKETING OCTUBRE",
@@ -3720,7 +3731,7 @@
     "category": "NUEVOS",
     "subcategory": "NUEVOS",
     "collection": "NUEVOS",
-    "price": "$ 14.755",
+    "price": "$ 180.000",
     "unit": "Unidad",
     "items_per_box": "1",
     "style_tags": [
@@ -3731,7 +3742,7 @@
     "pdf_tech_sheet": "",
     "stock_status": "In Stock",
     "description": "ACCESORIO MARMOL T 0.8MM ×3M PLATA. Espesor: 0.8mm | Largo: 3m | Color: Plata. Uso: Accesorio lámina mármol.",
-    "price_cop": "$ 14.755",
+    "price_cop": "$ 180.000",
     "price_usd": "Consultar precio",
     "price_approx": true,
     "price_source": "LISTA MARKETING OCTUBRE",
@@ -3975,8 +3986,8 @@
     "category": "NUEVOS",
     "subcategory": "NUEVOS",
     "collection": "NUEVOS",
-    "price": "Consultar precio",
-    "unit": "Piece",
+    "price": "$ 270.455",
+    "unit": "Unidad",
     "items_per_box": "1",
     "style_tags": [
       "NUEVOS"
@@ -3986,14 +3997,15 @@
     "pdf_tech_sheet": "",
     "stock_status": "In Stock",
     "description": "PVC BOARD ROSA (M912-88F). Ancho: 122cm | Largo: 2.44m | Espesor: 15mm | Área: 2.9m² | Peso: 5kg. Uso: PVC board colores decorativo.",
-    "price_cop": "Consultar precio",
+    "price_cop": "$ 270.455",
     "price_usd": "Consultar precio",
-    "price_source": "none",
+    "price_source": "LISTA MARKETING OCTUBRE",
     "catalog_specs": "Ancho: 122cm | Largo: 2.44m | Espesor: 15mm | Área: 2.9m² | Peso: 5kg",
     "catalog_colors": [
       "ROSA"
     ],
-    "catalog_use": "PVC board colores decorativo"
+    "catalog_use": "PVC board colores decorativo",
+    "price_approx": true
   },
   {
     "id": "14181602",
@@ -4001,8 +4013,8 @@
     "category": "NUEVOS",
     "subcategory": "NUEVOS",
     "collection": "NUEVOS",
-    "price": "Consultar precio",
-    "unit": "Piece",
+    "price": "$ 270.455",
+    "unit": "Unidad",
     "items_per_box": "1",
     "style_tags": [
       "NUEVOS"
@@ -4012,14 +4024,15 @@
     "pdf_tech_sheet": "",
     "stock_status": "In Stock",
     "description": "PVC BOARD MADERA MEDIANA (MS84306-131). Ancho: 122cm | Largo: 2.44m | Espesor: 15mm | Área: 2.9m² | Peso: 5kg. Uso: PVC board colores decorativo.",
-    "price_cop": "Consultar precio",
+    "price_cop": "$ 270.455",
     "price_usd": "Consultar precio",
-    "price_source": "none",
+    "price_source": "LISTA MARKETING OCTUBRE",
     "catalog_specs": "Ancho: 122cm | Largo: 2.44m | Espesor: 15mm | Área: 2.9m² | Peso: 5kg",
     "catalog_colors": [
       "MADERA MEDIANA"
     ],
-    "catalog_use": "PVC board colores decorativo"
+    "catalog_use": "PVC board colores decorativo",
+    "price_approx": true
   },
   {
     "id": "14181603",
@@ -4027,8 +4040,8 @@
     "category": "NUEVOS",
     "subcategory": "NUEVOS",
     "collection": "NUEVOS",
-    "price": "Consultar precio",
-    "unit": "Piece",
+    "price": "$ 270.455",
+    "unit": "Unidad",
     "items_per_box": "1",
     "style_tags": [
       "NUEVOS"
@@ -4038,14 +4051,15 @@
     "pdf_tech_sheet": "",
     "stock_status": "In Stock",
     "description": "PVC BOARD BLANCO BRILLANTE. Ancho: 122cm | Largo: 2.44m | Espesor: 15mm | Área: 2.9m² | Peso: 5kg. Uso: PVC board colores decorativo.",
-    "price_cop": "Consultar precio",
+    "price_cop": "$ 270.455",
     "price_usd": "Consultar precio",
-    "price_source": "none",
+    "price_source": "LISTA MARKETING OCTUBRE",
     "catalog_specs": "Ancho: 122cm | Largo: 2.44m | Espesor: 15mm | Área: 2.9m² | Peso: 5kg",
     "catalog_colors": [
       "BLANCO BRILLANTE"
     ],
-    "catalog_use": "PVC board colores decorativo"
+    "catalog_use": "PVC board colores decorativo",
+    "price_approx": true
   },
   {
     "id": "14181604",
@@ -4053,8 +4067,8 @@
     "category": "NUEVOS",
     "subcategory": "NUEVOS",
     "collection": "NUEVOS",
-    "price": "Consultar precio",
-    "unit": "Piece",
+    "price": "$ 270.455",
+    "unit": "Unidad",
     "items_per_box": "1",
     "style_tags": [
       "NUEVOS"
@@ -4064,14 +4078,15 @@
     "pdf_tech_sheet": "",
     "stock_status": "In Stock",
     "description": "PVC BOARD NEGRO BRILLANTE. Ancho: 122cm | Largo: 2.44m | Espesor: 15mm | Área: 2.9m² | Peso: 5kg. Uso: PVC board colores decorativo.",
-    "price_cop": "Consultar precio",
+    "price_cop": "$ 270.455",
     "price_usd": "Consultar precio",
-    "price_source": "none",
+    "price_source": "LISTA MARKETING OCTUBRE",
     "catalog_specs": "Ancho: 122cm | Largo: 2.44m | Espesor: 15mm | Área: 2.9m² | Peso: 5kg",
     "catalog_colors": [
       "NEGRO BRILLANTE"
     ],
-    "catalog_use": "PVC board colores decorativo"
+    "catalog_use": "PVC board colores decorativo",
+    "price_approx": true
   },
   {
     "id": "14181605",
@@ -4079,8 +4094,8 @@
     "category": "NUEVOS",
     "subcategory": "NUEVOS",
     "collection": "NUEVOS",
-    "price": "Consultar precio",
-    "unit": "Piece",
+    "price": "$ 270.455",
+    "unit": "Unidad",
     "items_per_box": "1",
     "style_tags": [
       "NUEVOS"
@@ -4090,14 +4105,15 @@
     "pdf_tech_sheet": "",
     "stock_status": "In Stock",
     "description": "PVC BOARD PURPURA (FAN-698). Ancho: 122cm | Largo: 2.44m | Espesor: 15mm | Área: 2.9m² | Peso: 5kg. Uso: PVC board colores decorativo.",
-    "price_cop": "Consultar precio",
+    "price_cop": "$ 270.455",
     "price_usd": "Consultar precio",
-    "price_source": "none",
+    "price_source": "LISTA MARKETING OCTUBRE",
     "catalog_specs": "Ancho: 122cm | Largo: 2.44m | Espesor: 15mm | Área: 2.9m² | Peso: 5kg",
     "catalog_colors": [
       "PURPURA"
     ],
-    "catalog_use": "PVC board colores decorativo"
+    "catalog_use": "PVC board colores decorativo",
+    "price_approx": true
   },
   {
     "id": "14181606",
@@ -4131,8 +4147,8 @@
     "category": "NUEVOS",
     "subcategory": "NUEVOS",
     "collection": "NUEVOS",
-    "price": "Consultar precio",
-    "unit": "Piece",
+    "price": "$ 270.455",
+    "unit": "Unidad",
     "items_per_box": "1",
     "style_tags": [
       "NUEVOS"
@@ -4142,14 +4158,15 @@
     "pdf_tech_sheet": "",
     "stock_status": "In Stock",
     "description": "PVC BOARD MADERA OSCURO (MS86101-152). Ancho: 122cm | Largo: 2.44m | Espesor: 15mm | Área: 2.9m² | Peso: 5kg. Uso: PVC board colores decorativo.",
-    "price_cop": "Consultar precio",
+    "price_cop": "$ 270.455",
     "price_usd": "Consultar precio",
-    "price_source": "none",
+    "price_source": "LISTA MARKETING OCTUBRE",
     "catalog_specs": "Ancho: 122cm | Largo: 2.44m | Espesor: 15mm | Área: 2.9m² | Peso: 5kg",
     "catalog_colors": [
       "MADERA OSCURO"
     ],
-    "catalog_use": "PVC board colores decorativo"
+    "catalog_use": "PVC board colores decorativo",
+    "price_approx": true
   },
   {
     "id": "14121501",
@@ -4292,8 +4309,8 @@
     "category": "NUEVOS",
     "subcategory": "NUEVOS",
     "collection": "NUEVOS",
-    "price": "Consultar precio",
-    "unit": "Piece",
+    "price": "$ 55.000",
+    "unit": "Unidad",
     "items_per_box": "1",
     "style_tags": [
       "NUEVOS"
@@ -4303,14 +4320,15 @@
     "pdf_tech_sheet": "",
     "stock_status": "In Stock",
     "description": "PVC ESTRUCTURAL CEDRO CLARO 10CM. Ancho: 10cm | Largo: 2.60m | Espesor: 3mm. Uso: Listón estructural interior.",
-    "price_cop": "Consultar precio",
+    "price_cop": "$ 55.000",
     "price_usd": "Consultar precio",
-    "price_source": "none",
+    "price_source": "LISTA MARKETING OCTUBRE",
     "catalog_specs": "Ancho: 10cm | Largo: 2.60m | Espesor: 3mm",
     "catalog_colors": [
       "CEDRO CLARO"
     ],
-    "catalog_use": "Listón estructural interior"
+    "catalog_use": "Listón estructural interior",
+    "price_approx": true
   },
   {
     "id": "14122813",
@@ -4344,8 +4362,8 @@
     "category": "NUEVOS",
     "subcategory": "NUEVOS",
     "collection": "NUEVOS",
-    "price": "Consultar precio",
-    "unit": "Piece",
+    "price": "$ 55.000",
+    "unit": "Unidad",
     "items_per_box": "1",
     "style_tags": [
       "NUEVOS"
@@ -4355,14 +4373,15 @@
     "pdf_tech_sheet": "",
     "stock_status": "In Stock",
     "description": "PVC ESTRUCTURAL MADERA TEKA 10CM. Ancho: 10cm | Largo: 2.60m | Espesor: 3mm. Uso: Listón estructural interior.",
-    "price_cop": "Consultar precio",
+    "price_cop": "$ 55.000",
     "price_usd": "Consultar precio",
-    "price_source": "none",
+    "price_source": "LISTA MARKETING OCTUBRE",
     "catalog_specs": "Ancho: 10cm | Largo: 2.60m | Espesor: 3mm",
     "catalog_colors": [
       "MADERA TEKA"
     ],
-    "catalog_use": "Listón estructural interior"
+    "catalog_use": "Listón estructural interior",
+    "price_approx": true
   },
   {
     "id": "14123001",
@@ -4396,8 +4415,8 @@
     "category": "NUEVOS",
     "subcategory": "NUEVOS",
     "collection": "NUEVOS",
-    "price": "Consultar precio",
-    "unit": "Piece",
+    "price": "$ 74.000",
+    "unit": "Unidad",
     "items_per_box": "1",
     "style_tags": [
       "NUEVOS"
@@ -4407,14 +4426,15 @@
     "pdf_tech_sheet": "",
     "stock_status": "In Stock",
     "description": "LISTON WPC EXTERIOR NOGAL (TUBE). Largo: 5.60m | Ancho: 6cm | Alto: 4cm | Espesor: 6mm | Peso: 8.8kg. Uso: Listón WPC exterior, pérgolas, fachadas.",
-    "price_cop": "Consultar precio",
+    "price_cop": "$ 74.000",
     "price_usd": "Consultar precio",
-    "price_source": "none",
+    "price_source": "LISTA MARKETING OCTUBRE",
     "catalog_specs": "Largo: 5.60m | Ancho: 6cm | Alto: 4cm | Espesor: 6mm | Peso: 8.8kg",
     "catalog_colors": [
       "NOGAL"
     ],
-    "catalog_use": "Listón WPC exterior, pérgolas, fachadas"
+    "catalog_use": "Listón WPC exterior, pérgolas, fachadas",
+    "price_approx": true
   },
   {
     "id": "14123004",
@@ -4422,8 +4442,8 @@
     "category": "NUEVOS",
     "subcategory": "NUEVOS",
     "collection": "NUEVOS",
-    "price": "Consultar precio",
-    "unit": "Piece",
+    "price": "$ 74.000",
+    "unit": "Unidad",
     "items_per_box": "1",
     "style_tags": [
       "NUEVOS"
@@ -4433,14 +4453,15 @@
     "pdf_tech_sheet": "",
     "stock_status": "In Stock",
     "description": "LISTON WPC EXTERIOR ÉBANO NEGRO (TUBE). Largo: 5.60m | Ancho: 6cm | Alto: 4cm | Espesor: 6mm | Peso: 8.8kg. Uso: Listón WPC exterior, pérgolas, fachadas.",
-    "price_cop": "Consultar precio",
+    "price_cop": "$ 74.000",
     "price_usd": "Consultar precio",
-    "price_source": "none",
+    "price_source": "LISTA MARKETING OCTUBRE",
     "catalog_specs": "Largo: 5.60m | Ancho: 6cm | Alto: 4cm | Espesor: 6mm | Peso: 8.8kg",
     "catalog_colors": [
       "ÉBANO NEGRO"
     ],
-    "catalog_use": "Listón WPC exterior, pérgolas, fachadas"
+    "catalog_use": "Listón WPC exterior, pérgolas, fachadas",
+    "price_approx": true
   },
   {
     "id": "14123005",
@@ -4448,8 +4469,8 @@
     "category": "NUEVOS",
     "subcategory": "NUEVOS",
     "collection": "NUEVOS",
-    "price": "Consultar precio",
-    "unit": "Piece",
+    "price": "$ 74.000",
+    "unit": "Unidad",
     "items_per_box": "1",
     "style_tags": [
       "NUEVOS"
@@ -4459,14 +4480,15 @@
     "pdf_tech_sheet": "",
     "stock_status": "In Stock",
     "description": "LISTON WPC EXTERIOR CEDRO (TUBE). Largo: 5.60m | Ancho: 6cm | Alto: 4cm | Espesor: 6mm | Peso: 8.8kg. Uso: Listón WPC exterior, pérgolas, fachadas.",
-    "price_cop": "Consultar precio",
+    "price_cop": "$ 74.000",
     "price_usd": "Consultar precio",
-    "price_source": "none",
+    "price_source": "LISTA MARKETING OCTUBRE",
     "catalog_specs": "Largo: 5.60m | Ancho: 6cm | Alto: 4cm | Espesor: 6mm | Peso: 8.8kg",
     "catalog_colors": [
       "CEDRO"
     ],
-    "catalog_use": "Listón WPC exterior, pérgolas, fachadas"
+    "catalog_use": "Listón WPC exterior, pérgolas, fachadas",
+    "price_approx": true
   },
   {
     "id": "14122202",
@@ -4740,7 +4762,7 @@
     "category": "NUEVOS",
     "subcategory": "NUEVOS",
     "collection": "NUEVOS",
-    "price": "$ 21.834",
+    "price": "$ 20.255",
     "unit": "Unidad",
     "items_per_box": "1",
     "style_tags": [
@@ -4751,7 +4773,7 @@
     "pdf_tech_sheet": "",
     "stock_status": "In Stock",
     "description": "ANGULO WPC EXT ROBLE (01)",
-    "price_cop": "$ 21.834",
+    "price_cop": "$ 20.255",
     "price_usd": "Consultar precio",
     "price_approx": true,
     "price_source": "LISTA MARKETING OCTUBRE"
@@ -4762,7 +4784,7 @@
     "category": "NUEVOS",
     "subcategory": "NUEVOS",
     "collection": "NUEVOS",
-    "price": "$ 21.834",
+    "price": "$ 20.255",
     "unit": "Unidad",
     "items_per_box": "1",
     "style_tags": [
@@ -4773,7 +4795,7 @@
     "pdf_tech_sheet": "",
     "stock_status": "In Stock",
     "description": "ANGULO WPC EXT NOGAL 02. Ancho: 6cm × 6cm | Largo: 5.60m | Espesor: 66mm. Uso: Ángulo panel WPC exterior.",
-    "price_cop": "$ 21.834",
+    "price_cop": "$ 20.255",
     "price_usd": "Consultar precio",
     "price_approx": true,
     "price_source": "LISTA MARKETING OCTUBRE",
@@ -4789,7 +4811,7 @@
     "category": "NUEVOS",
     "subcategory": "NUEVOS",
     "collection": "NUEVOS",
-    "price": "$ 21.834",
+    "price": "$ 20.255",
     "unit": "Unidad",
     "items_per_box": "1",
     "style_tags": [
@@ -4800,7 +4822,7 @@
     "pdf_tech_sheet": "",
     "stock_status": "In Stock",
     "description": "ANGULO WPC EXT MARRÓN 03. Ancho: 6cm × 6cm | Largo: 5.60m | Espesor: 66mm. Uso: Ángulo panel WPC exterior.",
-    "price_cop": "$ 21.834",
+    "price_cop": "$ 20.255",
     "price_usd": "Consultar precio",
     "price_approx": true,
     "price_source": "LISTA MARKETING OCTUBRE",
@@ -4816,7 +4838,7 @@
     "category": "NUEVOS",
     "subcategory": "NUEVOS",
     "collection": "NUEVOS",
-    "price": "$ 21.834",
+    "price": "$ 20.255",
     "unit": "Unidad",
     "items_per_box": "1",
     "style_tags": [
@@ -4827,7 +4849,7 @@
     "pdf_tech_sheet": "",
     "stock_status": "In Stock",
     "description": "ANGULO WPC EXT EBANO 04. Ancho: 6cm × 6cm | Largo: 5.60m | Espesor: 66mm. Uso: Ángulo panel WPC exterior.",
-    "price_cop": "$ 21.834",
+    "price_cop": "$ 20.255",
     "price_usd": "Consultar precio",
     "price_approx": true,
     "price_source": "LISTA MARKETING OCTUBRE",
@@ -4843,7 +4865,7 @@
     "category": "NUEVOS",
     "subcategory": "NUEVOS",
     "collection": "NUEVOS",
-    "price": "$ 21.834",
+    "price": "$ 20.255",
     "unit": "Unidad",
     "items_per_box": "1",
     "style_tags": [
@@ -4854,7 +4876,7 @@
     "pdf_tech_sheet": "",
     "stock_status": "In Stock",
     "description": "ANGULO WPC EXT CEDRO 05. Ancho: 6cm × 6cm | Largo: 5.60m | Espesor: 66mm. Uso: Ángulo panel WPC exterior.",
-    "price_cop": "$ 21.834",
+    "price_cop": "$ 20.255",
     "price_usd": "Consultar precio",
     "price_approx": true,
     "price_source": "LISTA MARKETING OCTUBRE",
@@ -4978,8 +5000,8 @@
     "category": "NUEVOS",
     "subcategory": "NUEVOS",
     "collection": "NUEVOS",
-    "price": "Consultar precio",
-    "unit": "Piece",
+    "price": "$ 23.000",
+    "unit": "Unidad",
     "items_per_box": "1",
     "style_tags": [
       "NUEVOS"
@@ -5000,14 +5022,15 @@
     "pdf_tech_sheet": "",
     "stock_status": "In Stock",
     "description": "PANEL WPC INTERIOR CARRARA BLANCO (02). Ancho: 16cm | Largo: 2.95m | Espesor: 25mm. Uso: Panel WPC interior, paredes.",
-    "price_cop": "Consultar precio",
+    "price_cop": "$ 23.000",
     "price_usd": "Consultar precio",
-    "price_source": "none",
+    "price_source": "LISTA MARKETING OCTUBRE",
     "catalog_specs": "Ancho: 16cm | Largo: 2.95m | Espesor: 25mm",
     "catalog_colors": [
       "CARRARA BLANCO"
     ],
-    "catalog_use": "Panel WPC interior, paredes"
+    "catalog_use": "Panel WPC interior, paredes",
+    "price_approx": true
   },
   {
     "id": "14122003",
@@ -5015,8 +5038,8 @@
     "category": "NUEVOS",
     "subcategory": "NUEVOS",
     "collection": "NUEVOS",
-    "price": "Consultar precio",
-    "unit": "Piece",
+    "price": "$ 23.000",
+    "unit": "Unidad",
     "items_per_box": "1",
     "style_tags": [
       "NUEVOS"
@@ -5037,14 +5060,15 @@
     "pdf_tech_sheet": "",
     "stock_status": "In Stock",
     "description": "PANEL WPC INTERIOR POLAR BLANCO (03). Ancho: 16cm | Largo: 2.95m | Espesor: 25mm. Uso: Panel WPC interior, paredes.",
-    "price_cop": "Consultar precio",
+    "price_cop": "$ 23.000",
     "price_usd": "Consultar precio",
-    "price_source": "none",
+    "price_source": "LISTA MARKETING OCTUBRE",
     "catalog_specs": "Ancho: 16cm | Largo: 2.95m | Espesor: 25mm",
     "catalog_colors": [
       "POLAR BLANCO"
     ],
-    "catalog_use": "Panel WPC interior, paredes"
+    "catalog_use": "Panel WPC interior, paredes",
+    "price_approx": true
   },
   {
     "id": "14122004",
@@ -5052,8 +5076,8 @@
     "category": "NUEVOS",
     "subcategory": "NUEVOS",
     "collection": "NUEVOS",
-    "price": "Consultar precio",
-    "unit": "Piece",
+    "price": "$ 23.000",
+    "unit": "Unidad",
     "items_per_box": "1",
     "style_tags": [
       "NUEVOS"
@@ -5074,14 +5098,15 @@
     "pdf_tech_sheet": "",
     "stock_status": "In Stock",
     "description": "PANEL WPC INTERIOR WENGUE (04). Ancho: 16cm | Largo: 2.95m | Espesor: 25mm. Uso: Panel WPC interior, paredes.",
-    "price_cop": "Consultar precio",
+    "price_cop": "$ 23.000",
     "price_usd": "Consultar precio",
-    "price_source": "none",
+    "price_source": "LISTA MARKETING OCTUBRE",
     "catalog_specs": "Ancho: 16cm | Largo: 2.95m | Espesor: 25mm",
     "catalog_colors": [
       "WENGUE"
     ],
-    "catalog_use": "Panel WPC interior, paredes"
+    "catalog_use": "Panel WPC interior, paredes",
+    "price_approx": true
   },
   {
     "id": "14122005",
@@ -5089,8 +5114,8 @@
     "category": "NUEVOS",
     "subcategory": "NUEVOS",
     "collection": "NUEVOS",
-    "price": "Consultar precio",
-    "unit": "Piece",
+    "price": "$ 23.000",
+    "unit": "Unidad",
     "items_per_box": "1",
     "style_tags": [
       "NUEVOS"
@@ -5100,9 +5125,10 @@
     "pdf_tech_sheet": "",
     "stock_status": "In Stock",
     "description": "PANEL WPC ROBLE CLARO (05)",
-    "price_cop": "Consultar precio",
+    "price_cop": "$ 23.000",
     "price_usd": "Consultar precio",
-    "price_source": "none"
+    "price_source": "LISTA MARKETING OCTUBRE",
+    "price_approx": true
   },
   {
     "id": "14122006",
@@ -5110,8 +5136,8 @@
     "category": "NUEVOS",
     "subcategory": "NUEVOS",
     "collection": "NUEVOS",
-    "price": "Consultar precio",
-    "unit": "Piece",
+    "price": "$ 23.000",
+    "unit": "Unidad",
     "items_per_box": "1",
     "style_tags": [
       "NUEVOS"
@@ -5132,14 +5158,15 @@
     "pdf_tech_sheet": "",
     "stock_status": "In Stock",
     "description": "PANEL WPC INTERIOR TRAVERTINO (06). Ancho: 16cm | Largo: 2.95m | Espesor: 25mm. Uso: Panel WPC interior, paredes.",
-    "price_cop": "Consultar precio",
+    "price_cop": "$ 23.000",
     "price_usd": "Consultar precio",
-    "price_source": "none",
+    "price_source": "LISTA MARKETING OCTUBRE",
     "catalog_specs": "Ancho: 16cm | Largo: 2.95m | Espesor: 25mm",
     "catalog_colors": [
       "TRAVERTINO"
     ],
-    "catalog_use": "Panel WPC interior, paredes"
+    "catalog_use": "Panel WPC interior, paredes",
+    "price_approx": true
   },
   {
     "id": "14122007",
@@ -5147,8 +5174,8 @@
     "category": "NUEVOS",
     "subcategory": "NUEVOS",
     "collection": "NUEVOS",
-    "price": "Consultar precio",
-    "unit": "Piece",
+    "price": "$ 23.000",
+    "unit": "Unidad",
     "items_per_box": "1",
     "style_tags": [
       "NUEVOS"
@@ -5169,14 +5196,15 @@
     "pdf_tech_sheet": "",
     "stock_status": "In Stock",
     "description": "PANEL WPC INTERIOR CHERRY (07). Ancho: 16cm | Largo: 2.95m | Espesor: 25mm. Uso: Panel WPC interior, paredes.",
-    "price_cop": "Consultar precio",
+    "price_cop": "$ 23.000",
     "price_usd": "Consultar precio",
-    "price_source": "none",
+    "price_source": "LISTA MARKETING OCTUBRE",
     "catalog_specs": "Ancho: 16cm | Largo: 2.95m | Espesor: 25mm",
     "catalog_colors": [
       "CHERRY"
     ],
-    "catalog_use": "Panel WPC interior, paredes"
+    "catalog_use": "Panel WPC interior, paredes",
+    "price_approx": true
   },
   {
     "id": "14122008",
@@ -5226,8 +5254,8 @@
     "category": "NUEVOS",
     "subcategory": "NUEVOS",
     "collection": "NUEVOS",
-    "price": "Consultar precio",
-    "unit": "Piece",
+    "price": "$ 23.000",
+    "unit": "Unidad",
     "items_per_box": "1",
     "style_tags": [
       "NUEVOS"
@@ -5248,14 +5276,15 @@
     "pdf_tech_sheet": "",
     "stock_status": "In Stock",
     "description": "PANEL WPC INTERIOR MADERA TEKA (10). Ancho: 16cm | Largo: 2.95m | Espesor: 25mm. Uso: Panel WPC interior, paredes.",
-    "price_cop": "Consultar precio",
+    "price_cop": "$ 23.000",
     "price_usd": "Consultar precio",
-    "price_source": "none",
+    "price_source": "LISTA MARKETING OCTUBRE",
     "catalog_specs": "Ancho: 16cm | Largo: 2.95m | Espesor: 25mm",
     "catalog_colors": [
       "MADERA TEKA"
     ],
-    "catalog_use": "Panel WPC interior, paredes"
+    "catalog_use": "Panel WPC interior, paredes",
+    "price_approx": true
   },
   {
     "id": "14122011",
@@ -5284,8 +5313,8 @@
     "category": "NUEVOS",
     "subcategory": "NUEVOS",
     "collection": "NUEVOS",
-    "price": "Consultar precio",
-    "unit": "Piece",
+    "price": "$ 23.000",
+    "unit": "Unidad",
     "items_per_box": "1",
     "style_tags": [
       "NUEVOS"
@@ -5295,9 +5324,10 @@
     "pdf_tech_sheet": "",
     "stock_status": "In Stock",
     "description": "PANEL WPC CEDRO (12)",
-    "price_cop": "Consultar precio",
+    "price_cop": "$ 23.000",
     "price_usd": "Consultar precio",
-    "price_source": "none"
+    "price_source": "LISTA MARKETING OCTUBRE",
+    "price_approx": true
   },
   {
     "id": "14122013",
@@ -5305,8 +5335,8 @@
     "category": "NUEVOS",
     "subcategory": "NUEVOS",
     "collection": "NUEVOS",
-    "price": "Consultar precio",
-    "unit": "Piece",
+    "price": "$ 23.000",
+    "unit": "Unidad",
     "items_per_box": "1",
     "style_tags": [
       "NUEVOS"
@@ -5327,14 +5357,15 @@
     "pdf_tech_sheet": "",
     "stock_status": "In Stock",
     "description": "PANEL WPC INTERIOR EBANO NEGRO (13). Ancho: 16cm | Largo: 2.95m | Espesor: 25mm. Uso: Panel WPC interior, paredes.",
-    "price_cop": "Consultar precio",
+    "price_cop": "$ 23.000",
     "price_usd": "Consultar precio",
-    "price_source": "none",
+    "price_source": "LISTA MARKETING OCTUBRE",
     "catalog_specs": "Ancho: 16cm | Largo: 2.95m | Espesor: 25mm",
     "catalog_colors": [
       "EBANO NEGRO"
     ],
-    "catalog_use": "Panel WPC interior, paredes"
+    "catalog_use": "Panel WPC interior, paredes",
+    "price_approx": true
   },
   {
     "id": "14122014",
@@ -5342,8 +5373,8 @@
     "category": "NUEVOS",
     "subcategory": "NUEVOS",
     "collection": "NUEVOS",
-    "price": "Consultar precio",
-    "unit": "Piece",
+    "price": "$ 23.000",
+    "unit": "Unidad",
     "items_per_box": "1",
     "style_tags": [
       "NUEVOS"
@@ -5364,14 +5395,15 @@
     "pdf_tech_sheet": "",
     "stock_status": "In Stock",
     "description": "PANEL WPC INTERIOR GRAFITO MIX. Ancho: 16cm | Largo: 2.95m | Espesor: 25mm. Uso: Panel WPC interior, paredes.",
-    "price_cop": "Consultar precio",
+    "price_cop": "$ 23.000",
     "price_usd": "Consultar precio",
-    "price_source": "none",
+    "price_source": "LISTA MARKETING OCTUBRE",
     "catalog_specs": "Ancho: 16cm | Largo: 2.95m | Espesor: 25mm",
     "catalog_colors": [
       "GRAFITO MIX"
     ],
-    "catalog_use": "Panel WPC interior, paredes"
+    "catalog_use": "Panel WPC interior, paredes",
+    "price_approx": true
   },
   {
     "id": "14122016",
@@ -5379,8 +5411,8 @@
     "category": "NUEVOS",
     "subcategory": "NUEVOS",
     "collection": "NUEVOS",
-    "price": "Consultar precio",
-    "unit": "Piece",
+    "price": "$ 23.000",
+    "unit": "Unidad",
     "items_per_box": "1",
     "style_tags": [
       "NUEVOS"
@@ -5401,14 +5433,15 @@
     "pdf_tech_sheet": "",
     "stock_status": "In Stock",
     "description": "PANEL WPC INTERIOR MARFIL (16). Ancho: 16cm | Largo: 2.95m | Espesor: 25mm. Uso: Panel WPC interior, paredes.",
-    "price_cop": "Consultar precio",
+    "price_cop": "$ 23.000",
     "price_usd": "Consultar precio",
-    "price_source": "none",
+    "price_source": "LISTA MARKETING OCTUBRE",
     "catalog_specs": "Ancho: 16cm | Largo: 2.95m | Espesor: 25mm",
     "catalog_colors": [
       "MARFIL"
     ],
-    "catalog_use": "Panel WPC interior, paredes"
+    "catalog_use": "Panel WPC interior, paredes",
+    "price_approx": true
   },
   {
     "id": "14122017",
@@ -5458,8 +5491,8 @@
     "category": "NUEVOS",
     "subcategory": "NUEVOS",
     "collection": "NUEVOS",
-    "price": "Consultar precio",
-    "unit": "Piece",
+    "price": "$ 23.000",
+    "unit": "Unidad",
     "items_per_box": "1",
     "style_tags": [
       "NUEVOS"
@@ -5480,14 +5513,15 @@
     "pdf_tech_sheet": "",
     "stock_status": "In Stock",
     "description": "PANEL WPC INTERIOR CHOCO MIX (19). Ancho: 16cm | Largo: 2.95m | Espesor: 25mm. Uso: Panel WPC interior, paredes.",
-    "price_cop": "Consultar precio",
+    "price_cop": "$ 23.000",
     "price_usd": "Consultar precio",
-    "price_source": "none",
+    "price_source": "LISTA MARKETING OCTUBRE",
     "catalog_specs": "Ancho: 16cm | Largo: 2.95m | Espesor: 25mm",
     "catalog_colors": [
       "CHOCO MIX"
     ],
-    "catalog_use": "Panel WPC interior, paredes"
+    "catalog_use": "Panel WPC interior, paredes",
+    "price_approx": true
   },
   {
     "id": "14122020",
@@ -5495,8 +5529,8 @@
     "category": "NUEVOS",
     "subcategory": "NUEVOS",
     "collection": "NUEVOS",
-    "price": "Consultar precio",
-    "unit": "Piece",
+    "price": "$ 23.000",
+    "unit": "Unidad",
     "items_per_box": "1",
     "style_tags": [
       "NUEVOS"
@@ -5517,14 +5551,15 @@
     "pdf_tech_sheet": "",
     "stock_status": "In Stock",
     "description": "PANEL WPC INTERIOR OLIVO MIX (20). Ancho: 16cm | Largo: 2.95m | Espesor: 25mm. Uso: Panel WPC interior, paredes.",
-    "price_cop": "Consultar precio",
+    "price_cop": "$ 23.000",
     "price_usd": "Consultar precio",
-    "price_source": "none",
+    "price_source": "LISTA MARKETING OCTUBRE",
     "catalog_specs": "Ancho: 16cm | Largo: 2.95m | Espesor: 25mm",
     "catalog_colors": [
       "OLIVO MIX"
     ],
-    "catalog_use": "Panel WPC interior, paredes"
+    "catalog_use": "Panel WPC interior, paredes",
+    "price_approx": true
   },
   {
     "id": "14122021",
@@ -5532,8 +5567,8 @@
     "category": "NUEVOS",
     "subcategory": "NUEVOS",
     "collection": "NUEVOS",
-    "price": "Consultar precio",
-    "unit": "Piece",
+    "price": "$ 23.000",
+    "unit": "Unidad",
     "items_per_box": "1",
     "style_tags": [
       "NUEVOS"
@@ -5554,14 +5589,15 @@
     "pdf_tech_sheet": "",
     "stock_status": "In Stock",
     "description": "PANEL WPC INTERIOR MAPLE MIX (21). Ancho: 16cm | Largo: 2.95m | Espesor: 25mm. Uso: Panel WPC interior, paredes.",
-    "price_cop": "Consultar precio",
+    "price_cop": "$ 23.000",
     "price_usd": "Consultar precio",
-    "price_source": "none",
+    "price_source": "LISTA MARKETING OCTUBRE",
     "catalog_specs": "Ancho: 16cm | Largo: 2.95m | Espesor: 25mm",
     "catalog_colors": [
       "MAPLE MIX"
     ],
-    "catalog_use": "Panel WPC interior, paredes"
+    "catalog_use": "Panel WPC interior, paredes",
+    "price_approx": true
   },
   {
     "id": "14122022",
@@ -5569,8 +5605,8 @@
     "category": "NUEVOS",
     "subcategory": "NUEVOS",
     "collection": "NUEVOS",
-    "price": "Consultar precio",
-    "unit": "Piece",
+    "price": "$ 23.000",
+    "unit": "Unidad",
     "items_per_box": "1",
     "style_tags": [
       "NUEVOS"
@@ -5591,14 +5627,15 @@
     "pdf_tech_sheet": "",
     "stock_status": "In Stock",
     "description": "PANEL WPC INTERIOR GRECIA MIX (22). Ancho: 16cm | Largo: 2.95m | Espesor: 25mm. Uso: Panel WPC interior, paredes.",
-    "price_cop": "Consultar precio",
+    "price_cop": "$ 23.000",
     "price_usd": "Consultar precio",
-    "price_source": "none",
+    "price_source": "LISTA MARKETING OCTUBRE",
     "catalog_specs": "Ancho: 16cm | Largo: 2.95m | Espesor: 25mm",
     "catalog_colors": [
       "GRECIA MIX"
     ],
-    "catalog_use": "Panel WPC interior, paredes"
+    "catalog_use": "Panel WPC interior, paredes",
+    "price_approx": true
   },
   {
     "id": "14122023",
@@ -5606,8 +5643,8 @@
     "category": "NUEVOS",
     "subcategory": "NUEVOS",
     "collection": "NUEVOS",
-    "price": "Consultar precio",
-    "unit": "Piece",
+    "price": "$ 23.000",
+    "unit": "Unidad",
     "items_per_box": "1",
     "style_tags": [
       "NUEVOS"
@@ -5628,14 +5665,15 @@
     "pdf_tech_sheet": "",
     "stock_status": "In Stock",
     "description": "PANEL WPC INTERIOR NEGRO MATE (23). Ancho: 16cm | Largo: 2.95m | Espesor: 25mm. Uso: Panel WPC interior, paredes.",
-    "price_cop": "Consultar precio",
+    "price_cop": "$ 23.000",
     "price_usd": "Consultar precio",
-    "price_source": "none",
+    "price_source": "LISTA MARKETING OCTUBRE",
     "catalog_specs": "Ancho: 16cm | Largo: 2.95m | Espesor: 25mm",
     "catalog_colors": [
       "NEGRO MATE"
     ],
-    "catalog_use": "Panel WPC interior, paredes"
+    "catalog_use": "Panel WPC interior, paredes",
+    "price_approx": true
   },
   {
     "id": "14122024",
@@ -5643,8 +5681,8 @@
     "category": "NUEVOS",
     "subcategory": "NUEVOS",
     "collection": "NUEVOS",
-    "price": "Consultar precio",
-    "unit": "Piece",
+    "price": "$ 23.000",
+    "unit": "Unidad",
     "items_per_box": "1",
     "style_tags": [
       "NUEVOS"
@@ -5665,14 +5703,15 @@
     "pdf_tech_sheet": "",
     "stock_status": "In Stock",
     "description": "PANEL WPC INTERIOR CREMA SELECTA NEW (24). Ancho: 16cm | Largo: 2.95m | Espesor: 25mm. Uso: Panel WPC interior, paredes.",
-    "price_cop": "Consultar precio",
+    "price_cop": "$ 23.000",
     "price_usd": "Consultar precio",
-    "price_source": "none",
+    "price_source": "LISTA MARKETING OCTUBRE",
     "catalog_specs": "Ancho: 16cm | Largo: 2.95m | Espesor: 25mm",
     "catalog_colors": [
       "CREMA SELECTA"
     ],
-    "catalog_use": "Panel WPC interior, paredes"
+    "catalog_use": "Panel WPC interior, paredes",
+    "price_approx": true
   },
   {
     "id": "14122025",
@@ -5680,8 +5719,8 @@
     "category": "NUEVOS",
     "subcategory": "NUEVOS",
     "collection": "NUEVOS",
-    "price": "Consultar precio",
-    "unit": "Piece",
+    "price": "$ 23.000",
+    "unit": "Unidad",
     "items_per_box": "1",
     "style_tags": [
       "NUEVOS"
@@ -5702,14 +5741,15 @@
     "pdf_tech_sheet": "",
     "stock_status": "In Stock",
     "description": "PANEL WPC INTERIOR AZUL CELESTE NEW (25). Ancho: 16cm | Largo: 2.95m | Espesor: 25mm. Uso: Panel WPC interior, paredes.",
-    "price_cop": "Consultar precio",
+    "price_cop": "$ 23.000",
     "price_usd": "Consultar precio",
-    "price_source": "none",
+    "price_source": "LISTA MARKETING OCTUBRE",
     "catalog_specs": "Ancho: 16cm | Largo: 2.95m | Espesor: 25mm",
     "catalog_colors": [
       "AZUL CELESTE"
     ],
-    "catalog_use": "Panel WPC interior, paredes"
+    "catalog_use": "Panel WPC interior, paredes",
+    "price_approx": true
   },
   {
     "id": "14122026",
@@ -5717,8 +5757,8 @@
     "category": "NUEVOS",
     "subcategory": "NUEVOS",
     "collection": "NUEVOS",
-    "price": "Consultar precio",
-    "unit": "Piece",
+    "price": "$ 23.000",
+    "unit": "Unidad",
     "items_per_box": "1",
     "style_tags": [
       "NUEVOS"
@@ -5739,14 +5779,15 @@
     "pdf_tech_sheet": "",
     "stock_status": "In Stock",
     "description": "PANEL WPC INTERIOR VERDE MENTA NEW (26). Ancho: 16cm | Largo: 2.95m | Espesor: 25mm. Uso: Panel WPC interior, paredes.",
-    "price_cop": "Consultar precio",
+    "price_cop": "$ 23.000",
     "price_usd": "Consultar precio",
-    "price_source": "none",
+    "price_source": "LISTA MARKETING OCTUBRE",
     "catalog_specs": "Ancho: 16cm | Largo: 2.95m | Espesor: 25mm",
     "catalog_colors": [
       "VERDE MENTA"
     ],
-    "catalog_use": "Panel WPC interior, paredes"
+    "catalog_use": "Panel WPC interior, paredes",
+    "price_approx": true
   },
   {
     "id": "14122027",
@@ -5754,8 +5795,8 @@
     "category": "NUEVOS",
     "subcategory": "NUEVOS",
     "collection": "NUEVOS",
-    "price": "Consultar precio",
-    "unit": "Piece",
+    "price": "$ 23.000",
+    "unit": "Unidad",
     "items_per_box": "1",
     "style_tags": [
       "NUEVOS"
@@ -5776,14 +5817,15 @@
     "pdf_tech_sheet": "",
     "stock_status": "In Stock",
     "description": "PANEL WPC INTERIOR BLANCO IMPERIAL (27). Ancho: 16cm | Largo: 2.95m | Espesor: 25mm. Uso: Panel WPC interior, paredes.",
-    "price_cop": "Consultar precio",
+    "price_cop": "$ 23.000",
     "price_usd": "Consultar precio",
-    "price_source": "none",
+    "price_source": "LISTA MARKETING OCTUBRE",
     "catalog_specs": "Ancho: 16cm | Largo: 2.95m | Espesor: 25mm",
     "catalog_colors": [
       "BLANCO IMPERIAL"
     ],
-    "catalog_use": "Panel WPC interior, paredes"
+    "catalog_use": "Panel WPC interior, paredes",
+    "price_approx": true
   },
   {
     "id": "14122028",
@@ -5791,8 +5833,8 @@
     "category": "NUEVOS",
     "subcategory": "NUEVOS",
     "collection": "NUEVOS",
-    "price": "Consultar precio",
-    "unit": "Piece",
+    "price": "$ 23.000",
+    "unit": "Unidad",
     "items_per_box": "1",
     "style_tags": [
       "NUEVOS"
@@ -5813,14 +5855,15 @@
     "pdf_tech_sheet": "",
     "stock_status": "In Stock",
     "description": "PANEL WPC INTERIOR MANDARINA NEW (28). Ancho: 16cm | Largo: 2.95m | Espesor: 25mm. Uso: Panel WPC interior, paredes.",
-    "price_cop": "Consultar precio",
+    "price_cop": "$ 23.000",
     "price_usd": "Consultar precio",
-    "price_source": "none",
+    "price_source": "LISTA MARKETING OCTUBRE",
     "catalog_specs": "Ancho: 16cm | Largo: 2.95m | Espesor: 25mm",
     "catalog_colors": [
       "MANDARINA"
     ],
-    "catalog_use": "Panel WPC interior, paredes"
+    "catalog_use": "Panel WPC interior, paredes",
+    "price_approx": true
   },
   {
     "id": "14122029",
@@ -5828,8 +5871,8 @@
     "category": "NUEVOS",
     "subcategory": "NUEVOS",
     "collection": "NUEVOS",
-    "price": "Consultar precio",
-    "unit": "Piece",
+    "price": "$ 23.000",
+    "unit": "Unidad",
     "items_per_box": "1",
     "style_tags": [
       "NUEVOS"
@@ -5850,14 +5893,15 @@
     "pdf_tech_sheet": "",
     "stock_status": "In Stock",
     "description": "PANEL WPC INTERIOR NEGRO IMPERIAL (29). Ancho: 16cm | Largo: 2.95m | Espesor: 2.5mm. Uso: Panel WPC interior, paredes.",
-    "price_cop": "Consultar precio",
+    "price_cop": "$ 23.000",
     "price_usd": "Consultar precio",
-    "price_source": "none",
+    "price_source": "LISTA MARKETING OCTUBRE",
     "catalog_specs": "Ancho: 16cm | Largo: 2.95m | Espesor: 2.5mm",
     "catalog_colors": [
       "NEGRO IMPERIAL"
     ],
-    "catalog_use": "Panel WPC interior, paredes"
+    "catalog_use": "Panel WPC interior, paredes",
+    "price_approx": true
   },
   {
     "id": "14122609",
@@ -5865,8 +5909,8 @@
     "category": "NUEVOS",
     "subcategory": "NUEVOS",
     "collection": "NUEVOS",
-    "price": "Consultar precio",
-    "unit": "Piece",
+    "price": "$ 23.000",
+    "unit": "Unidad",
     "items_per_box": "1",
     "style_tags": [
       "NUEVOS"
@@ -5887,14 +5931,15 @@
     "pdf_tech_sheet": "",
     "stock_status": "In Stock",
     "description": "PANEL WPC INTERIOR FRESNO (JUDY 05). Ancho: 16cm | Largo: 2.95m | Espesor: 25mm. Uso: Panel WPC interior, paredes.",
-    "price_cop": "Consultar precio",
+    "price_cop": "$ 23.000",
     "price_usd": "Consultar precio",
-    "price_source": "none",
+    "price_source": "LISTA MARKETING OCTUBRE",
     "catalog_specs": "Ancho: 16cm | Largo: 2.95m | Espesor: 25mm",
     "catalog_colors": [
       "FRESNO"
     ],
-    "catalog_use": "Panel WPC interior, paredes"
+    "catalog_use": "Panel WPC interior, paredes",
+    "price_approx": true
   },
   {
     "id": "14122611",
@@ -5902,8 +5947,8 @@
     "category": "NUEVOS",
     "subcategory": "NUEVOS",
     "collection": "NUEVOS",
-    "price": "Consultar precio",
-    "unit": "Piece",
+    "price": "$ 23.000",
+    "unit": "Unidad",
     "items_per_box": "1",
     "style_tags": [
       "NUEVOS"
@@ -5924,14 +5969,15 @@
     "pdf_tech_sheet": "",
     "stock_status": "In Stock",
     "description": "PANEL WPC INTERIOR MADERA (JUDY). Ancho: 16cm | Largo: 2.95m | Espesor: 25mm. Uso: Panel WPC interior, paredes.",
-    "price_cop": "Consultar precio",
+    "price_cop": "$ 23.000",
     "price_usd": "Consultar precio",
-    "price_source": "none",
+    "price_source": "LISTA MARKETING OCTUBRE",
     "catalog_specs": "Ancho: 16cm | Largo: 2.95m | Espesor: 25mm",
     "catalog_colors": [
       "MADERA"
     ],
-    "catalog_use": "Panel WPC interior, paredes"
+    "catalog_use": "Panel WPC interior, paredes",
+    "price_approx": true
   },
   {
     "id": "14122902",
@@ -6233,7 +6279,7 @@
     "category": "NUEVOS",
     "subcategory": "NUEVOS",
     "collection": "NUEVOS",
-    "price": "$ 15.100",
+    "price": "$ 2.321",
     "unit": "Unidad",
     "items_per_box": "1",
     "style_tags": [
@@ -6244,7 +6290,7 @@
     "pdf_tech_sheet": "",
     "stock_status": "In Stock",
     "description": "ANGULO WPC CEDRO (12). Ancho: 3cm × 3cm | Largo: 2.90m. Uso: Ángulo panel WPC interior.",
-    "price_cop": "$ 15.100",
+    "price_cop": "$ 2.321",
     "price_usd": "Consultar precio",
     "price_approx": true,
     "price_source": "LISTA MARKETING OCTUBRE",
@@ -6287,7 +6333,7 @@
     "category": "NUEVOS",
     "subcategory": "NUEVOS",
     "collection": "NUEVOS",
-    "price": "$ 15.100",
+    "price": "$ 12.700",
     "unit": "Unidad",
     "items_per_box": "1",
     "style_tags": [
@@ -6298,7 +6344,7 @@
     "pdf_tech_sheet": "",
     "stock_status": "In Stock",
     "description": "ANGULO WPC CARRARA NEGRO (14). Ancho: 3cm × 3cm | Largo: 2.90m. Uso: Ángulo panel WPC interior.",
-    "price_cop": "$ 15.100",
+    "price_cop": "$ 12.700",
     "price_usd": "Consultar precio",
     "price_approx": true,
     "price_source": "LISTA MARKETING OCTUBRE",
@@ -6314,7 +6360,7 @@
     "category": "NUEVOS",
     "subcategory": "NUEVOS",
     "collection": "NUEVOS",
-    "price": "$ 15.100",
+    "price": "$ 12.700",
     "unit": "Unidad",
     "items_per_box": "1",
     "style_tags": [
@@ -6325,7 +6371,7 @@
     "pdf_tech_sheet": "",
     "stock_status": "In Stock",
     "description": "ANGULO WPC PINO GRIS (15)",
-    "price_cop": "$ 15.100",
+    "price_cop": "$ 12.700",
     "price_usd": "Consultar precio",
     "price_approx": true,
     "price_source": "LISTA MARKETING OCTUBRE"
@@ -6336,7 +6382,7 @@
     "category": "NUEVOS",
     "subcategory": "NUEVOS",
     "collection": "NUEVOS",
-    "price": "$ 15.100",
+    "price": "$ 12.700",
     "unit": "Unidad",
     "items_per_box": "1",
     "style_tags": [
@@ -6347,7 +6393,7 @@
     "pdf_tech_sheet": "",
     "stock_status": "In Stock",
     "description": "ANGULO WPC MARFIL (16)",
-    "price_cop": "$ 15.100",
+    "price_cop": "$ 12.700",
     "price_usd": "Consultar precio",
     "price_approx": true,
     "price_source": "LISTA MARKETING OCTUBRE"
@@ -6358,7 +6404,7 @@
     "category": "NUEVOS",
     "subcategory": "NUEVOS",
     "collection": "NUEVOS",
-    "price": "$ 15.100",
+    "price": "$ 12.700",
     "unit": "Unidad",
     "items_per_box": "1",
     "style_tags": [
@@ -6369,7 +6415,7 @@
     "pdf_tech_sheet": "",
     "stock_status": "In Stock",
     "description": "ANGULO WPC CALIZA GRIS (17)",
-    "price_cop": "$ 15.100",
+    "price_cop": "$ 12.700",
     "price_usd": "Consultar precio",
     "price_approx": true,
     "price_source": "LISTA MARKETING OCTUBRE"
@@ -6380,7 +6426,7 @@
     "category": "NUEVOS",
     "subcategory": "NUEVOS",
     "collection": "NUEVOS",
-    "price": "$ 15.100",
+    "price": "$ 12.700",
     "unit": "Unidad",
     "items_per_box": "1",
     "style_tags": [
@@ -6391,7 +6437,7 @@
     "pdf_tech_sheet": "",
     "stock_status": "In Stock",
     "description": "ANGULO WPC CHOCO MIX (19). Ancho: 3cm × 3cm | Largo: 2.90m. Uso: Ángulo panel WPC interior.",
-    "price_cop": "$ 15.100",
+    "price_cop": "$ 12.700",
     "price_usd": "Consultar precio",
     "price_approx": true,
     "price_source": "LISTA MARKETING OCTUBRE",
@@ -6407,7 +6453,7 @@
     "category": "NUEVOS",
     "subcategory": "NUEVOS",
     "collection": "NUEVOS",
-    "price": "$ 15.100",
+    "price": "$ 12.700",
     "unit": "Unidad",
     "items_per_box": "1",
     "style_tags": [
@@ -6418,7 +6464,7 @@
     "pdf_tech_sheet": "",
     "stock_status": "In Stock",
     "description": "ANGULO WPC OLIVO MIX (20). Ancho: 3cm × 3cm | Largo: 2.90m. Uso: Ángulo panel WPC interior.",
-    "price_cop": "$ 15.100",
+    "price_cop": "$ 12.700",
     "price_usd": "Consultar precio",
     "price_approx": true,
     "price_source": "LISTA MARKETING OCTUBRE",
@@ -6434,7 +6480,7 @@
     "category": "NUEVOS",
     "subcategory": "NUEVOS",
     "collection": "NUEVOS",
-    "price": "$ 15.100",
+    "price": "$ 12.700",
     "unit": "Unidad",
     "items_per_box": "1",
     "style_tags": [
@@ -6445,7 +6491,7 @@
     "pdf_tech_sheet": "",
     "stock_status": "In Stock",
     "description": "ANGULO WPC MAPLE MIX (21)",
-    "price_cop": "$ 15.100",
+    "price_cop": "$ 12.700",
     "price_usd": "Consultar precio",
     "price_approx": true,
     "price_source": "LISTA MARKETING OCTUBRE"
@@ -6456,7 +6502,7 @@
     "category": "NUEVOS",
     "subcategory": "NUEVOS",
     "collection": "NUEVOS",
-    "price": "$ 15.100",
+    "price": "$ 12.700",
     "unit": "Unidad",
     "items_per_box": "1",
     "style_tags": [
@@ -6467,7 +6513,7 @@
     "pdf_tech_sheet": "",
     "stock_status": "In Stock",
     "description": "ANGULO WPC GRECIA MIX (22). Ancho: 3cm × 3cm | Largo: 2.90m. Uso: Ángulo panel WPC interior.",
-    "price_cop": "$ 15.100",
+    "price_cop": "$ 12.700",
     "price_usd": "Consultar precio",
     "price_approx": true,
     "price_source": "LISTA MARKETING OCTUBRE",
@@ -6483,7 +6529,7 @@
     "category": "NUEVOS",
     "subcategory": "NUEVOS",
     "collection": "NUEVOS",
-    "price": "$ 15.100",
+    "price": "$ 12.700",
     "unit": "Unidad",
     "items_per_box": "1",
     "style_tags": [
@@ -6494,7 +6540,7 @@
     "pdf_tech_sheet": "",
     "stock_status": "In Stock",
     "description": "ANGULO WPC NEGRO MATE (23)",
-    "price_cop": "$ 15.100",
+    "price_cop": "$ 12.700",
     "price_usd": "Consultar precio",
     "price_approx": true,
     "price_source": "LISTA MARKETING OCTUBRE"
@@ -6505,7 +6551,7 @@
     "category": "NUEVOS",
     "subcategory": "NUEVOS",
     "collection": "NUEVOS",
-    "price": "$ 35.000",
+    "price": "$ 35.138",
     "unit": "Unidad",
     "items_per_box": "1",
     "style_tags": [
@@ -6527,7 +6573,7 @@
     "pdf_tech_sheet": "",
     "stock_status": "In Stock",
     "description": "PANEL WPC REDONDO POLAR BLANCO (03). Ancho: 16cm | Largo: 2.95m | Espesor: 2.5mm | PRODUCTO NUEVO. Uso: Panel WPC redondo interior.",
-    "price_cop": "$ 35.000",
+    "price_cop": "$ 35.138",
     "price_usd": "Consultar precio",
     "price_approx": true,
     "price_source": "LISTA MARKETING OCTUBRE",
@@ -6543,7 +6589,7 @@
     "category": "NUEVOS",
     "subcategory": "NUEVOS",
     "collection": "NUEVOS",
-    "price": "$ 35.000",
+    "price": "$ 35.138",
     "unit": "Unidad",
     "items_per_box": "1",
     "style_tags": [
@@ -6565,7 +6611,7 @@
     "pdf_tech_sheet": "",
     "stock_status": "In Stock",
     "description": "PANEL WPC REDONDO ROBLE CLARO (05). Ancho: 16cm | Largo: 2.95m | Espesor: 2.5mm | PRODUCTO NUEVO. Uso: Panel WPC redondo interior.",
-    "price_cop": "$ 35.000",
+    "price_cop": "$ 35.138",
     "price_usd": "Consultar precio",
     "price_approx": true,
     "price_source": "LISTA MARKETING OCTUBRE",
@@ -6581,7 +6627,7 @@
     "category": "NUEVOS",
     "subcategory": "NUEVOS",
     "collection": "NUEVOS",
-    "price": "$ 35.000",
+    "price": "$ 35.138",
     "unit": "Unidad",
     "items_per_box": "1",
     "style_tags": [
@@ -6603,7 +6649,7 @@
     "pdf_tech_sheet": "",
     "stock_status": "In Stock",
     "description": "PANEL WPC REDONDO TRAVERTINO (06). Ancho: 16cm | Largo: 2.95m | Espesor: 2.5mm | PRODUCTO NUEVO. Uso: Panel WPC redondo interior.",
-    "price_cop": "$ 35.000",
+    "price_cop": "$ 35.138",
     "price_usd": "Consultar precio",
     "price_approx": true,
     "price_source": "LISTA MARKETING OCTUBRE",
@@ -6619,7 +6665,7 @@
     "category": "NUEVOS",
     "subcategory": "NUEVOS",
     "collection": "NUEVOS",
-    "price": "$ 35.000",
+    "price": "$ 35.138",
     "unit": "Unidad",
     "items_per_box": "1",
     "style_tags": [
@@ -6641,7 +6687,7 @@
     "pdf_tech_sheet": "",
     "stock_status": "In Stock",
     "description": "PANEL WPC REDONDO MADERA (10). Ancho: 16cm | Largo: 2.95m | Espesor: 2.5mm | PRODUCTO NUEVO. Uso: Panel WPC redondo interior.",
-    "price_cop": "$ 35.000",
+    "price_cop": "$ 35.138",
     "price_usd": "Consultar precio",
     "price_approx": true,
     "price_source": "LISTA MARKETING OCTUBRE",
@@ -6657,7 +6703,7 @@
     "category": "NUEVOS",
     "subcategory": "NUEVOS",
     "collection": "NUEVOS",
-    "price": "$ 35.000",
+    "price": "$ 35.138",
     "unit": "Unidad",
     "items_per_box": "1",
     "style_tags": [
@@ -6679,7 +6725,7 @@
     "pdf_tech_sheet": "",
     "stock_status": "In Stock",
     "description": "PANEL WPC REDONDO EBANO NEGRO (13). Ancho: 16cm | Largo: 2.95m | Espesor: 2.5mm | PRODUCTO NUEVO. Uso: Panel WPC redondo interior.",
-    "price_cop": "$ 35.000",
+    "price_cop": "$ 35.138",
     "price_usd": "Consultar precio",
     "price_approx": true,
     "price_source": "LISTA MARKETING OCTUBRE",
@@ -6695,7 +6741,7 @@
     "category": "NUEVOS",
     "subcategory": "NUEVOS",
     "collection": "NUEVOS",
-    "price": "$ 35.000",
+    "price": "$ 35.138",
     "unit": "Unidad",
     "items_per_box": "1",
     "style_tags": [
@@ -6717,7 +6763,7 @@
     "pdf_tech_sheet": "",
     "stock_status": "In Stock",
     "description": "PANEL WPC REDONDO MARFIL (16). Ancho: 16cm | Largo: 2.95m | Espesor: 2.5mm | PRODUCTO NUEVO. Uso: Panel WPC redondo interior.",
-    "price_cop": "$ 35.000",
+    "price_cop": "$ 35.138",
     "price_usd": "Consultar precio",
     "price_approx": true,
     "price_source": "LISTA MARKETING OCTUBRE",
@@ -6733,7 +6779,7 @@
     "category": "NUEVOS",
     "subcategory": "NUEVOS",
     "collection": "NUEVOS",
-    "price": "$ 35.000",
+    "price": "$ 35.138",
     "unit": "Unidad",
     "items_per_box": "1",
     "style_tags": [
@@ -6755,7 +6801,7 @@
     "pdf_tech_sheet": "",
     "stock_status": "In Stock",
     "description": "PANEL WPC REDONDO NEGRO MATE (23). Ancho: 16cm | Largo: 2.95m | Espesor: 2.5mm | PRODUCTO NUEVO. Uso: Panel WPC redondo interior.",
-    "price_cop": "$ 35.000",
+    "price_cop": "$ 35.138",
     "price_usd": "Consultar precio",
     "price_approx": true,
     "price_source": "LISTA MARKETING OCTUBRE",
@@ -6771,7 +6817,7 @@
     "category": "NUEVOS",
     "subcategory": "NUEVOS",
     "collection": "NUEVOS",
-    "price": "$ 35.000",
+    "price": "$ 35.138",
     "unit": "Unidad",
     "items_per_box": "1",
     "style_tags": [
@@ -6793,7 +6839,7 @@
     "pdf_tech_sheet": "",
     "stock_status": "In Stock",
     "description": "PANEL WPC REDONDO CREMA SELECTA NEW (24). Ancho: 16cm | Largo: 2.95m | Espesor: 2.5mm | PRODUCTO NUEVO. Uso: Panel WPC redondo interior.",
-    "price_cop": "$ 35.000",
+    "price_cop": "$ 35.138",
     "price_usd": "Consultar precio",
     "price_approx": true,
     "price_source": "LISTA MARKETING OCTUBRE",
@@ -6809,7 +6855,7 @@
     "category": "NUEVOS",
     "subcategory": "NUEVOS",
     "collection": "NUEVOS",
-    "price": "$ 35.000",
+    "price": "$ 35.138",
     "unit": "Unidad",
     "items_per_box": "1",
     "style_tags": [
@@ -6831,7 +6877,7 @@
     "pdf_tech_sheet": "",
     "stock_status": "In Stock",
     "description": "PANEL WPC REDONDO AZUL CELESTE NEW (25). Ancho: 16cm | Largo: 2.95m | Espesor: 2.5mm | PRODUCTO NUEVO. Uso: Panel WPC redondo interior.",
-    "price_cop": "$ 35.000",
+    "price_cop": "$ 35.138",
     "price_usd": "Consultar precio",
     "price_approx": true,
     "price_source": "LISTA MARKETING OCTUBRE",
@@ -6847,7 +6893,7 @@
     "category": "NUEVOS",
     "subcategory": "NUEVOS",
     "collection": "NUEVOS",
-    "price": "$ 35.000",
+    "price": "$ 35.138",
     "unit": "Unidad",
     "items_per_box": "1",
     "style_tags": [
@@ -6869,7 +6915,7 @@
     "pdf_tech_sheet": "",
     "stock_status": "In Stock",
     "description": "PANEL WPC REDONDO VERDE MENTA NEW (26). Ancho: 16cm | Largo: 2.95m | Espesor: 2.5mm | PRODUCTO NUEVO. Uso: Panel WPC redondo interior.",
-    "price_cop": "$ 35.000",
+    "price_cop": "$ 35.138",
     "price_usd": "Consultar precio",
     "price_approx": true,
     "price_source": "LISTA MARKETING OCTUBRE",
@@ -6885,7 +6931,7 @@
     "category": "NUEVOS",
     "subcategory": "NUEVOS",
     "collection": "NUEVOS",
-    "price": "$ 35.000",
+    "price": "$ 35.138",
     "unit": "Unidad",
     "items_per_box": "1",
     "style_tags": [
@@ -6907,7 +6953,7 @@
     "pdf_tech_sheet": "",
     "stock_status": "In Stock",
     "description": "PANEL WPC REDONDO ROSADO (30). Ancho: 16cm | Largo: 2.95m | Espesor: 2.5mm | PRODUCTO NUEVO. Uso: Panel WPC redondo interior.",
-    "price_cop": "$ 35.000",
+    "price_cop": "$ 35.138",
     "price_usd": "Consultar precio",
     "price_approx": true,
     "price_source": "LISTA MARKETING OCTUBRE",
@@ -7121,8 +7167,8 @@
     "category": "NUEVOS",
     "subcategory": "NUEVOS",
     "collection": "NUEVOS",
-    "price": "Consultar precio",
-    "unit": "Piece",
+    "price": "$ 317.500",
+    "unit": "Unidad",
     "items_per_box": "1",
     "style_tags": [
       "NUEVOS"
@@ -7132,9 +7178,10 @@
     "pdf_tech_sheet": "",
     "stock_status": "In Stock",
     "description": "FACHADA PVC MURALLA GRIS",
-    "price_cop": "Consultar precio",
+    "price_cop": "$ 317.500",
     "price_usd": "Consultar precio",
-    "price_source": "none"
+    "price_source": "LISTA MARKETING OCTUBRE",
+    "price_approx": true
   },
   {
     "id": "14123702",
@@ -7142,8 +7189,8 @@
     "category": "NUEVOS",
     "subcategory": "NUEVOS",
     "collection": "NUEVOS",
-    "price": "Consultar precio",
-    "unit": "Piece",
+    "price": "$ 97.815",
+    "unit": "Unidad",
     "items_per_box": "1",
     "style_tags": [
       "NUEVOS"
@@ -7153,9 +7200,10 @@
     "pdf_tech_sheet": "",
     "stock_status": "In Stock",
     "description": "FACHADA EN PVC AMBAR RUSTICO (SW508)",
-    "price_cop": "Consultar precio",
+    "price_cop": "$ 97.815",
     "price_usd": "Consultar precio",
-    "price_source": "none"
+    "price_source": "LISTA MARKETING OCTUBRE",
+    "price_approx": true
   },
   {
     "id": "14121403",
@@ -7184,8 +7232,8 @@
     "category": "NUEVOS",
     "subcategory": "NUEVOS",
     "collection": "NUEVOS",
-    "price": "Consultar precio",
-    "unit": "Piece",
+    "price": "$ 180.000",
+    "unit": "Unidad",
     "items_per_box": "1",
     "style_tags": [
       "NUEVOS"
@@ -7195,9 +7243,10 @@
     "pdf_tech_sheet": "",
     "stock_status": "In Stock",
     "description": "PANEL ACRILICO MARMOL LEGACY (ZS3D029 J)",
-    "price_cop": "Consultar precio",
+    "price_cop": "$ 180.000",
     "price_usd": "Consultar precio",
-    "price_source": "none"
+    "price_source": "LISTA MARKETING OCTUBRE",
+    "price_approx": true
   },
   {
     "id": "14121405",
@@ -7247,8 +7296,8 @@
     "category": "NUEVOS",
     "subcategory": "NUEVOS",
     "collection": "NUEVOS",
-    "price": "Consultar precio",
-    "unit": "Piece",
+    "price": "$ 180.000",
+    "unit": "Unidad",
     "items_per_box": "1",
     "style_tags": [
       "NUEVOS"
@@ -7258,9 +7307,10 @@
     "pdf_tech_sheet": "",
     "stock_status": "In Stock",
     "description": "PANEL ACRILICO MARMOL SILVER (ZS3D038 Y)",
-    "price_cop": "Consultar precio",
+    "price_cop": "$ 180.000",
     "price_usd": "Consultar precio",
-    "price_source": "none"
+    "price_source": "LISTA MARKETING OCTUBRE",
+    "price_approx": true
   },
   {
     "id": "14121408",
@@ -7268,8 +7318,8 @@
     "category": "NUEVOS",
     "subcategory": "NUEVOS",
     "collection": "NUEVOS",
-    "price": "Consultar precio",
-    "unit": "Piece",
+    "price": "$ 180.000",
+    "unit": "Unidad",
     "items_per_box": "1",
     "style_tags": [
       "NUEVOS"
@@ -7279,9 +7329,10 @@
     "pdf_tech_sheet": "",
     "stock_status": "In Stock",
     "description": "PANEL ACRILICO MARMOL AUREA (ZS3D030 Y)",
-    "price_cop": "Consultar precio",
+    "price_cop": "$ 180.000",
     "price_usd": "Consultar precio",
-    "price_source": "none"
+    "price_source": "LISTA MARKETING OCTUBRE",
+    "price_approx": true
   },
   {
     "id": "14121409",
@@ -7573,7 +7624,7 @@
     "category": "NUEVOS",
     "subcategory": "NUEVOS",
     "collection": "NUEVOS",
-    "price": "$ 357.000",
+    "price": "Consultar precio",
     "unit": "Unidad",
     "items_per_box": "1",
     "style_tags": [
@@ -7584,10 +7635,10 @@
     "pdf_tech_sheet": "",
     "stock_status": "In Stock",
     "description": "PARED ACOLCHADA AURORA VAINILLA (820)",
-    "price_cop": "$ 357.000",
+    "price_cop": "Consultar precio",
     "price_usd": "Consultar precio",
     "price_approx": true,
-    "price_source": "LISTA MARKETING OCTUBRE"
+    "price_source": "none"
   },
   {
     "id": "14126207",
@@ -7617,7 +7668,7 @@
     "category": "NUEVOS",
     "subcategory": "NUEVOS",
     "collection": "NUEVOS",
-    "price": "$ 155.900",
+    "price": "Consultar precio",
     "unit": "Unidad",
     "items_per_box": "1",
     "style_tags": [
@@ -7628,10 +7679,10 @@
     "pdf_tech_sheet": "",
     "stock_status": "In Stock",
     "description": "PANEL ACOLCHADO DUOBIG AZUL FRACTAL (806)",
-    "price_cop": "$ 155.900",
+    "price_cop": "Consultar precio",
     "price_usd": "Consultar precio",
     "price_approx": true,
-    "price_source": "LISTA MARKETING OCTUBRE"
+    "price_source": "none"
   },
   {
     "id": "14126306",
@@ -7639,7 +7690,7 @@
     "category": "NUEVOS",
     "subcategory": "NUEVOS",
     "collection": "NUEVOS",
-    "price": "$ 155.900",
+    "price": "Consultar precio",
     "unit": "Unidad",
     "items_per_box": "1",
     "style_tags": [
@@ -7650,10 +7701,10 @@
     "pdf_tech_sheet": "",
     "stock_status": "In Stock",
     "description": "PANEL ACOLCHADO DUOBIG VAINILLA (820)",
-    "price_cop": "$ 155.900",
+    "price_cop": "Consultar precio",
     "price_usd": "Consultar precio",
     "price_approx": true,
-    "price_source": "LISTA MARKETING OCTUBRE"
+    "price_source": "none"
   },
   {
     "id": "14126307",
@@ -7661,7 +7712,7 @@
     "category": "NUEVOS",
     "subcategory": "NUEVOS",
     "collection": "NUEVOS",
-    "price": "$ 155.900",
+    "price": "Consultar precio",
     "unit": "Unidad",
     "items_per_box": "1",
     "style_tags": [
@@ -7672,10 +7723,10 @@
     "pdf_tech_sheet": "",
     "stock_status": "In Stock",
     "description": "PANEL ACOLCHADO DUOBIG BRILLO PLATA (823)",
-    "price_cop": "$ 155.900",
+    "price_cop": "Consultar precio",
     "price_usd": "Consultar precio",
     "price_approx": true,
-    "price_source": "LISTA MARKETING OCTUBRE"
+    "price_source": "none"
   },
   {
     "id": "14126402",
@@ -7683,7 +7734,7 @@
     "category": "NUEVOS",
     "subcategory": "NUEVOS",
     "collection": "NUEVOS",
-    "price": "$ 70.350",
+    "price": "Consultar precio",
     "unit": "Unidad",
     "items_per_box": "1",
     "style_tags": [
@@ -7694,10 +7745,10 @@
     "pdf_tech_sheet": "",
     "stock_status": "In Stock",
     "description": "PANEL ACOLCHADO DUOSMALL GRIS LUMINOSO (041)",
-    "price_cop": "$ 70.350",
+    "price_cop": "Consultar precio",
     "price_usd": "Consultar precio",
     "price_approx": true,
-    "price_source": "LISTA MARKETING OCTUBRE"
+    "price_source": "none"
   },
   {
     "id": "14126404",
@@ -7705,7 +7756,7 @@
     "category": "NUEVOS",
     "subcategory": "NUEVOS",
     "collection": "NUEVOS",
-    "price": "$ 70.350",
+    "price": "Consultar precio",
     "unit": "Unidad",
     "items_per_box": "1",
     "style_tags": [
@@ -7716,10 +7767,10 @@
     "pdf_tech_sheet": "",
     "stock_status": "In Stock",
     "description": "PANEL ACOLCHADO DUOSMALL AZUL  FRACTAL (806)",
-    "price_cop": "$ 70.350",
+    "price_cop": "Consultar precio",
     "price_usd": "Consultar precio",
     "price_approx": true,
-    "price_source": "LISTA MARKETING OCTUBRE"
+    "price_source": "none"
   },
   {
     "id": "14126406",
@@ -7727,7 +7778,7 @@
     "category": "NUEVOS",
     "subcategory": "NUEVOS",
     "collection": "NUEVOS",
-    "price": "$ 70.350",
+    "price": "Consultar precio",
     "unit": "Unidad",
     "items_per_box": "1",
     "style_tags": [
@@ -7738,10 +7789,10 @@
     "pdf_tech_sheet": "",
     "stock_status": "In Stock",
     "description": "PANEL ACOLCHADO DUOSMALL VAINILLA (820)",
-    "price_cop": "$ 70.350",
+    "price_cop": "Consultar precio",
     "price_usd": "Consultar precio",
     "price_approx": true,
-    "price_source": "LISTA MARKETING OCTUBRE"
+    "price_source": "none"
   },
   {
     "id": "14126407",
@@ -7837,7 +7888,7 @@
     "category": "NUEVOS",
     "subcategory": "NUEVOS",
     "collection": "NUEVOS",
-    "price": "$ 163.790",
+    "price": "Consultar precio",
     "unit": "Unidad",
     "items_per_box": "1",
     "style_tags": [
@@ -7848,10 +7899,10 @@
     "pdf_tech_sheet": "",
     "stock_status": "In Stock",
     "description": "PANEL ACUSTICO TIPO 1 WALNUT 8292C",
-    "price_cop": "$ 163.790",
+    "price_cop": "Consultar precio",
     "price_usd": "Consultar precio",
     "price_approx": true,
-    "price_source": "LISTA MARKETING OCTUBRE"
+    "price_source": "none"
   },
   {
     "id": "14124401",
@@ -8145,7 +8196,7 @@
     "category": "NUEVOS",
     "subcategory": "NUEVOS",
     "collection": "NUEVOS",
-    "price": "$ 132.999",
+    "price": "$ 133.000",
     "unit": "Unidad",
     "items_per_box": "1",
     "style_tags": [
@@ -8156,7 +8207,7 @@
     "pdf_tech_sheet": "",
     "stock_status": "In Stock",
     "description": "PANEL ACUSTICO TIPO 5 YELLOW OAK 8438S",
-    "price_cop": "$ 132.999",
+    "price_cop": "$ 133.000",
     "price_usd": "Consultar precio",
     "price_approx": true,
     "price_source": "LISTA MARKETING OCTUBRE"
@@ -8167,7 +8218,7 @@
     "category": "NUEVOS",
     "subcategory": "NUEVOS",
     "collection": "NUEVOS",
-    "price": "$ 132.999",
+    "price": "$ 133.001",
     "unit": "Unidad",
     "items_per_box": "1",
     "style_tags": [
@@ -8178,7 +8229,7 @@
     "pdf_tech_sheet": "",
     "stock_status": "In Stock",
     "description": "PANEL ACUSTICO TIPO 5 BLACK OAK 8210C",
-    "price_cop": "$ 132.999",
+    "price_cop": "$ 133.001",
     "price_usd": "Consultar precio",
     "price_approx": true,
     "price_source": "LISTA MARKETING OCTUBRE"
@@ -8189,7 +8240,7 @@
     "category": "NUEVOS",
     "subcategory": "NUEVOS",
     "collection": "NUEVOS",
-    "price": "$ 132.999",
+    "price": "$ 133.002",
     "unit": "Unidad",
     "items_per_box": "1",
     "style_tags": [
@@ -8200,7 +8251,7 @@
     "pdf_tech_sheet": "",
     "stock_status": "In Stock",
     "description": "PANEL ACUSTICO TIPO 5 WALNUT 8292C",
-    "price_cop": "$ 132.999",
+    "price_cop": "$ 133.002",
     "price_usd": "Consultar precio",
     "price_approx": true,
     "price_source": "LISTA MARKETING OCTUBRE"
@@ -8211,7 +8262,7 @@
     "category": "NUEVOS",
     "subcategory": "NUEVOS",
     "collection": "NUEVOS",
-    "price": "$ 224.999",
+    "price": "Consultar precio",
     "unit": "Unidad",
     "items_per_box": "1",
     "style_tags": [
@@ -8222,10 +8273,10 @@
     "pdf_tech_sheet": "",
     "stock_status": "In Stock",
     "description": "PANEL ACUSTICO TIPO 6 WHITE OAK + WALNUT",
-    "price_cop": "$ 224.999",
+    "price_cop": "Consultar precio",
     "price_usd": "Consultar precio",
     "price_approx": true,
-    "price_source": "LISTA MARKETING OCTUBRE"
+    "price_source": "none"
   },
   {
     "id": "14124802",
@@ -8255,7 +8306,7 @@
     "category": "NUEVOS",
     "subcategory": "NUEVOS",
     "collection": "NUEVOS",
-    "price": "$ 224.999",
+    "price": "Consultar precio",
     "unit": "Unidad",
     "items_per_box": "1",
     "style_tags": [
@@ -8266,10 +8317,10 @@
     "pdf_tech_sheet": "",
     "stock_status": "In Stock",
     "description": "PANEL ACUSTICO TIPO 6 WHITE OAK + BLACK OAK",
-    "price_cop": "$ 224.999",
+    "price_cop": "Consultar precio",
     "price_usd": "Consultar precio",
     "price_approx": true,
-    "price_source": "LISTA MARKETING OCTUBRE"
+    "price_source": "none"
   },
   {
     "id": "14124804",
@@ -8277,7 +8328,7 @@
     "category": "NUEVOS",
     "subcategory": "NUEVOS",
     "collection": "NUEVOS",
-    "price": "$ 224.999",
+    "price": "Consultar precio",
     "unit": "Unidad",
     "items_per_box": "1",
     "style_tags": [
@@ -8288,10 +8339,10 @@
     "pdf_tech_sheet": "",
     "stock_status": "In Stock",
     "description": "PANEL ACUSTICO TIPO 6 YELLOW OAK + BLACK OAK",
-    "price_cop": "$ 224.999",
+    "price_cop": "Consultar precio",
     "price_usd": "Consultar precio",
     "price_approx": true,
-    "price_source": "LISTA MARKETING OCTUBRE"
+    "price_source": "none"
   },
   {
     "id": "14122502",
@@ -8429,7 +8480,7 @@
     "category": "NUEVOS",
     "subcategory": "NUEVOS",
     "collection": "NUEVOS",
-    "price": "$ 37.000",
+    "price": "Consultar precio",
     "unit": "Unidad",
     "items_per_box": "1",
     "style_tags": [
@@ -8440,10 +8491,10 @@
     "pdf_tech_sheet": "",
     "stock_status": "In Stock",
     "description": "PANEL PS MURALLA GRIS HH24113",
-    "price_cop": "$ 37.000",
+    "price_cop": "Consultar precio",
     "price_usd": "Consultar precio",
     "price_approx": true,
-    "price_source": "LISTA MARKETING OCTUBRE"
+    "price_source": "none"
   },
   {
     "id": "14122509",
@@ -8671,8 +8722,8 @@
     "category": "NUEVOS",
     "subcategory": "NUEVOS",
     "collection": "NUEVOS",
-    "price": "Consultar precio",
-    "unit": "Piece",
+    "price": "$ 10.000",
+    "unit": "Unidad",
     "items_per_box": "1",
     "style_tags": [
       "NUEVOS"
@@ -8682,9 +8733,10 @@
     "pdf_tech_sheet": "",
     "stock_status": "In Stock",
     "description": "PARED MUROFLEX CARRARA BLANCO (WPC-02)",
-    "price_cop": "Consultar precio",
+    "price_cop": "$ 10.000",
     "price_usd": "Consultar precio",
-    "price_source": "none"
+    "price_source": "LISTA MARKETING OCTUBRE",
+    "price_approx": true
   },
   {
     "id": "14126024",
@@ -8692,8 +8744,8 @@
     "category": "NUEVOS",
     "subcategory": "NUEVOS",
     "collection": "NUEVOS",
-    "price": "Consultar precio",
-    "unit": "Piece",
+    "price": "$ 10.000",
+    "unit": "Unidad",
     "items_per_box": "1",
     "style_tags": [
       "NUEVOS"
@@ -8703,9 +8755,10 @@
     "pdf_tech_sheet": "",
     "stock_status": "In Stock",
     "description": "PARED MUROFLEX CARRARA NEGRO (WPC-14)",
-    "price_cop": "Consultar precio",
+    "price_cop": "$ 10.000",
     "price_usd": "Consultar precio",
-    "price_source": "none"
+    "price_source": "LISTA MARKETING OCTUBRE",
+    "price_approx": true
   },
   {
     "id": "14126023",
@@ -8713,8 +8766,8 @@
     "category": "NUEVOS",
     "subcategory": "NUEVOS",
     "collection": "NUEVOS",
-    "price": "Consultar precio",
-    "unit": "Piece",
+    "price": "$ 10.000",
+    "unit": "Unidad",
     "items_per_box": "1",
     "style_tags": [
       "NUEVOS"
@@ -8724,9 +8777,10 @@
     "pdf_tech_sheet": "",
     "stock_status": "In Stock",
     "description": "PARED MUROFLEX MADERA TEKA (WPC-10)",
-    "price_cop": "Consultar precio",
+    "price_cop": "$ 10.000",
     "price_usd": "Consultar precio",
-    "price_source": "none"
+    "price_source": "LISTA MARKETING OCTUBRE",
+    "price_approx": true
   },
   {
     "id": "14126025",
@@ -8734,8 +8788,8 @@
     "category": "NUEVOS",
     "subcategory": "NUEVOS",
     "collection": "NUEVOS",
-    "price": "Consultar precio",
-    "unit": "Piece",
+    "price": "$ 10.000",
+    "unit": "Unidad",
     "items_per_box": "1",
     "style_tags": [
       "NUEVOS"
@@ -8745,9 +8799,10 @@
     "pdf_tech_sheet": "",
     "stock_status": "In Stock",
     "description": "PARED MUROFLEX METALUM (SILVERMETAL)",
-    "price_cop": "Consultar precio",
+    "price_cop": "$ 10.000",
     "price_usd": "Consultar precio",
-    "price_source": "none"
+    "price_source": "LISTA MARKETING OCTUBRE",
+    "price_approx": true
   },
   {
     "id": "14122628",
@@ -8776,8 +8831,8 @@
     "category": "NUEVOS",
     "subcategory": "NUEVOS",
     "collection": "NUEVOS",
-    "price": "Consultar precio",
-    "unit": "Piece",
+    "price": "$ 10.000",
+    "unit": "Unidad",
     "items_per_box": "1",
     "style_tags": [
       "NUEVOS"
@@ -8787,9 +8842,10 @@
     "pdf_tech_sheet": "",
     "stock_status": "In Stock",
     "description": "PARED MUROFLEX ROBLE CLARO (WPC-05)",
-    "price_cop": "Consultar precio",
+    "price_cop": "$ 10.000",
     "price_usd": "Consultar precio",
-    "price_source": "none"
+    "price_source": "LISTA MARKETING OCTUBRE",
+    "price_approx": true
   },
   {
     "id": "14126021",
@@ -8797,8 +8853,8 @@
     "category": "NUEVOS",
     "subcategory": "NUEVOS",
     "collection": "NUEVOS",
-    "price": "Consultar precio",
-    "unit": "Piece",
+    "price": "$ 10.000",
+    "unit": "Unidad",
     "items_per_box": "1",
     "style_tags": [
       "NUEVOS"
@@ -8808,9 +8864,10 @@
     "pdf_tech_sheet": "",
     "stock_status": "In Stock",
     "description": "PARED MUROFLEX STONE GRIS (WPC-01)",
-    "price_cop": "Consultar precio",
+    "price_cop": "$ 10.000",
     "price_usd": "Consultar precio",
-    "price_source": "none"
+    "price_source": "LISTA MARKETING OCTUBRE",
+    "price_approx": true
   },
   {
     "id": "14123403",
@@ -8818,8 +8875,8 @@
     "category": "NUEVOS",
     "subcategory": "NUEVOS",
     "collection": "NUEVOS",
-    "price": "Consultar precio",
-    "unit": "Piece",
+    "price": "$ 65.000",
+    "unit": "Unidad",
     "items_per_box": "1",
     "style_tags": [
       "NUEVOS"
@@ -8829,9 +8886,10 @@
     "pdf_tech_sheet": "",
     "stock_status": "In Stock",
     "description": "PARED ARQUNITEC GRIS CENIZA (03)",
-    "price_cop": "Consultar precio",
+    "price_cop": "$ 65.000",
     "price_usd": "Consultar precio",
-    "price_source": "none"
+    "price_source": "LISTA MARKETING OCTUBRE",
+    "price_approx": true
   },
   {
     "id": "14123404",
@@ -8882,8 +8940,8 @@
     "category": "NUEVOS",
     "subcategory": "NUEVOS",
     "collection": "NUEVOS",
-    "price": "Consultar precio",
-    "unit": "Piece",
+    "price": "$ 65.000",
+    "unit": "Unidad",
     "items_per_box": "1",
     "style_tags": [
       "NUEVOS"
@@ -8893,9 +8951,10 @@
     "pdf_tech_sheet": "",
     "stock_status": "In Stock",
     "description": "PARED ARQUNITEC ANTRACITA NEGRO (06)",
-    "price_cop": "Consultar precio",
+    "price_cop": "$ 65.000",
     "price_usd": "Consultar precio",
-    "price_source": "none"
+    "price_source": "LISTA MARKETING OCTUBRE",
+    "price_approx": true
   },
   {
     "id": "14123407",
@@ -9408,8 +9467,8 @@
     "category": "NUEVOS",
     "subcategory": "NUEVOS",
     "collection": "NUEVOS",
-    "price": "Consultar precio",
-    "unit": "Piece",
+    "price": "$ 37.098",
+    "unit": "Unidad",
     "items_per_box": "1",
     "style_tags": [
       "NUEVOS"
@@ -9419,9 +9478,10 @@
     "pdf_tech_sheet": "",
     "stock_status": "In Stock",
     "description": "ADHESIVO DE PARED EN ROLLO GRIS (6210-1)",
-    "price_cop": "Consultar precio",
+    "price_cop": "$ 37.098",
     "price_usd": "Consultar precio",
-    "price_source": "none"
+    "price_source": "LISTA MARKETING OCTUBRE",
+    "price_approx": true
   },
   {
     "id": "14121302",
@@ -9429,8 +9489,8 @@
     "category": "NUEVOS",
     "subcategory": "NUEVOS",
     "collection": "NUEVOS",
-    "price": "Consultar precio",
-    "unit": "Piece",
+    "price": "$ 37.098",
+    "unit": "Unidad",
     "items_per_box": "1",
     "style_tags": [
       "NUEVOS"
@@ -9440,9 +9500,10 @@
     "pdf_tech_sheet": "",
     "stock_status": "In Stock",
     "description": "ADHESIVO DE PARED EN ROLLO NEGRO (1735)",
-    "price_cop": "Consultar precio",
+    "price_cop": "$ 37.098",
     "price_usd": "Consultar precio",
-    "price_source": "none"
+    "price_source": "LISTA MARKETING OCTUBRE",
+    "price_approx": true
   },
   {
     "id": "14121303",
@@ -9450,8 +9511,8 @@
     "category": "NUEVOS",
     "subcategory": "NUEVOS",
     "collection": "NUEVOS",
-    "price": "Consultar precio",
-    "unit": "Piece",
+    "price": "$ 37.098",
+    "unit": "Unidad",
     "items_per_box": "1",
     "style_tags": [
       "NUEVOS"
@@ -9461,9 +9522,10 @@
     "pdf_tech_sheet": "",
     "stock_status": "In Stock",
     "description": "ADHESIVO DE PARED EN ROLLO MARMOL (T9 056801)",
-    "price_cop": "Consultar precio",
+    "price_cop": "$ 37.098",
     "price_usd": "Consultar precio",
-    "price_source": "none"
+    "price_source": "LISTA MARKETING OCTUBRE",
+    "price_approx": true
   },
   {
     "id": "14121304",
@@ -9471,8 +9533,8 @@
     "category": "NUEVOS",
     "subcategory": "NUEVOS",
     "collection": "NUEVOS",
-    "price": "Consultar precio",
-    "unit": "Piece",
+    "price": "$ 37.098",
+    "unit": "Unidad",
     "items_per_box": "1",
     "style_tags": [
       "NUEVOS"
@@ -9482,9 +9544,10 @@
     "pdf_tech_sheet": "",
     "stock_status": "In Stock",
     "description": "ADHESIVO DE PARED EN ROLLO MARMOL BLANCO (6223)",
-    "price_cop": "Consultar precio",
+    "price_cop": "$ 37.098",
     "price_usd": "Consultar precio",
-    "price_source": "none"
+    "price_source": "LISTA MARKETING OCTUBRE",
+    "price_approx": true
   },
   {
     "id": "14212102",
@@ -9958,7 +10021,7 @@
     "category": "NUEVOS",
     "subcategory": "NUEVOS",
     "collection": "NUEVOS",
-    "price": "$ 78.000",
+    "price": "Consultar precio",
     "unit": "Unidad",
     "items_per_box": "1",
     "style_tags": [
@@ -9969,10 +10032,10 @@
     "pdf_tech_sheet": "",
     "stock_status": "In Stock",
     "description": "PISO DECK EXTERIOR MARRON",
-    "price_cop": "$ 78.000",
+    "price_cop": "Consultar precio",
     "price_usd": "Consultar precio",
     "price_approx": true,
-    "price_source": "LISTA MARKETING OCTUBRE"
+    "price_source": "none"
   },
   {
     "id": "14113005",
@@ -10066,7 +10129,7 @@
     "category": "NUEVOS",
     "subcategory": "NUEVOS",
     "collection": "NUEVOS",
-    "price": "$ 29.500",
+    "price": "Consultar precio",
     "unit": "Unidad",
     "items_per_box": "1",
     "style_tags": [
@@ -10077,10 +10140,10 @@
     "pdf_tech_sheet": "",
     "stock_status": "In Stock",
     "description": "ANGULO TERMINACION PISO DECK EXTE CEDRO",
-    "price_cop": "$ 29.500",
+    "price_cop": "Consultar precio",
     "price_usd": "Consultar precio",
     "price_approx": true,
-    "price_source": "LISTA MARKETING OCTUBRE"
+    "price_source": "none"
   },
   {
     "id": "14113102",
@@ -10088,7 +10151,7 @@
     "category": "NUEVOS",
     "subcategory": "NUEVOS",
     "collection": "NUEVOS",
-    "price": "$ 29.500",
+    "price": "Consultar precio",
     "unit": "Unidad",
     "items_per_box": "1",
     "style_tags": [
@@ -10099,10 +10162,10 @@
     "pdf_tech_sheet": "",
     "stock_status": "In Stock",
     "description": "ANGULO TERMINACION PISO DECK EXTE GRAFITO",
-    "price_cop": "$ 29.500",
+    "price_cop": "Consultar precio",
     "price_usd": "Consultar precio",
     "price_approx": true,
-    "price_source": "LISTA MARKETING OCTUBRE"
+    "price_source": "none"
   },
   {
     "id": "14113103",
@@ -10110,7 +10173,7 @@
     "category": "NUEVOS",
     "subcategory": "NUEVOS",
     "collection": "NUEVOS",
-    "price": "$ 29.500",
+    "price": "Consultar precio",
     "unit": "Unidad",
     "items_per_box": "1",
     "style_tags": [
@@ -10121,10 +10184,10 @@
     "pdf_tech_sheet": "",
     "stock_status": "In Stock",
     "description": "ANGULO TERMINACION PISO DECK EXTE NOGAL",
-    "price_cop": "$ 29.500",
+    "price_cop": "Consultar precio",
     "price_usd": "Consultar precio",
     "price_approx": true,
-    "price_source": "LISTA MARKETING OCTUBRE"
+    "price_source": "none"
   },
   {
     "id": "14113104",
@@ -10132,7 +10195,7 @@
     "category": "NUEVOS",
     "subcategory": "NUEVOS",
     "collection": "NUEVOS",
-    "price": "$ 29.500",
+    "price": "Consultar precio",
     "unit": "Unidad",
     "items_per_box": "1",
     "style_tags": [
@@ -10143,10 +10206,10 @@
     "pdf_tech_sheet": "",
     "stock_status": "In Stock",
     "description": "ANGULO TERMINACION PISO DECK EXTE MARRON",
-    "price_cop": "$ 29.500",
+    "price_cop": "Consultar precio",
     "price_usd": "Consultar precio",
     "price_approx": true,
-    "price_source": "LISTA MARKETING OCTUBRE"
+    "price_source": "none"
   },
   {
     "id": "14113108",
@@ -10154,7 +10217,7 @@
     "category": "NUEVOS",
     "subcategory": "NUEVOS",
     "collection": "NUEVOS",
-    "price": "$ 29.500",
+    "price": "$ 37.799",
     "unit": "Unidad",
     "items_per_box": "1",
     "style_tags": [
@@ -10165,7 +10228,7 @@
     "pdf_tech_sheet": "",
     "stock_status": "In Stock",
     "description": "ANGULO TERMINACION PISO DECK EXTE MAPLE",
-    "price_cop": "$ 29.500",
+    "price_cop": "$ 37.799",
     "price_usd": "Consultar precio",
     "price_approx": true,
     "price_source": "LISTA MARKETING OCTUBRE"
@@ -10176,7 +10239,7 @@
     "category": "NUEVOS",
     "subcategory": "NUEVOS",
     "collection": "NUEVOS",
-    "price": "$ 29.500",
+    "price": "$ 37.799",
     "unit": "Unidad",
     "items_per_box": "1",
     "style_tags": [
@@ -10187,7 +10250,7 @@
     "pdf_tech_sheet": "",
     "stock_status": "In Stock",
     "description": "ANGULO TERMINACION PISO DECK EXTE OAK",
-    "price_cop": "$ 29.500",
+    "price_cop": "$ 37.799",
     "price_usd": "Consultar precio",
     "price_approx": true,
     "price_source": "LISTA MARKETING OCTUBRE"
@@ -10219,8 +10282,8 @@
     "category": "NUEVOS",
     "subcategory": "NUEVOS",
     "collection": "NUEVOS",
-    "price": "Consultar precio",
-    "unit": "Piece",
+    "price": "$ 500",
+    "unit": "Unidad",
     "items_per_box": "1",
     "style_tags": [
       "NUEVOS"
@@ -10230,9 +10293,10 @@
     "pdf_tech_sheet": "",
     "stock_status": "In Stock",
     "description": "CLIP Y TORNILLO EN ACERO INOXIDABLE",
-    "price_cop": "Consultar precio",
+    "price_cop": "$ 500",
     "price_usd": "Consultar precio",
-    "price_source": "none"
+    "price_source": "LISTA MARKETING OCTUBRE",
+    "price_approx": true
   },
   {
     "id": "14112011",
@@ -10284,8 +10348,8 @@
     "category": "NUEVOS",
     "subcategory": "NUEVOS",
     "collection": "NUEVOS",
-    "price": "Consultar precio",
-    "unit": "Piece",
+    "price": "$ 12.000",
+    "unit": "Unidad",
     "items_per_box": "1",
     "style_tags": [
       "NUEVOS"
@@ -10295,9 +10359,10 @@
     "pdf_tech_sheet": "",
     "stock_status": "In Stock",
     "description": "PISO SPC AVELLANA IXPE (4mm-122x18.3cm)",
-    "price_cop": "Consultar precio",
+    "price_cop": "$ 12.000",
     "price_usd": "Consultar precio",
-    "price_source": "none"
+    "price_source": "LISTA MARKETING OCTUBRE",
+    "price_approx": true
   },
   {
     "id": "14112210",
@@ -10371,8 +10436,8 @@
     "category": "NUEVOS",
     "subcategory": "NUEVOS",
     "collection": "NUEVOS",
-    "price": "Consultar precio",
-    "unit": "Piece",
+    "price": "$ 19.500",
+    "unit": "Unidad",
     "items_per_box": "1",
     "style_tags": [
       "NUEVOS"
@@ -10382,9 +10447,10 @@
     "pdf_tech_sheet": "",
     "stock_status": "In Stock",
     "description": "PISO SPC NOGAL  IXPE (5.5mm-152*23cm)",
-    "price_cop": "Consultar precio",
+    "price_cop": "$ 19.500",
     "price_usd": "Consultar precio",
-    "price_source": "none"
+    "price_source": "LISTA MARKETING OCTUBRE",
+    "price_approx": true
   },
   {
     "id": "14112411",
@@ -10392,8 +10458,8 @@
     "category": "NUEVOS",
     "subcategory": "NUEVOS",
     "collection": "NUEVOS",
-    "price": "Consultar precio",
-    "unit": "Piece",
+    "price": "$ 20.000",
+    "unit": "Unidad",
     "items_per_box": "1",
     "style_tags": [
       "NUEVOS"
@@ -10403,9 +10469,10 @@
     "pdf_tech_sheet": "",
     "stock_status": "In Stock",
     "description": "ZOCALO SPC GRIS CENIZO IXPE S011",
-    "price_cop": "Consultar precio",
+    "price_cop": "$ 20.000",
     "price_usd": "Consultar precio",
-    "price_source": "none"
+    "price_source": "LISTA MARKETING OCTUBRE",
+    "price_approx": true
   },
   {
     "id": "14112412",
@@ -10413,8 +10480,8 @@
     "category": "NUEVOS",
     "subcategory": "NUEVOS",
     "collection": "NUEVOS",
-    "price": "Consultar precio",
-    "unit": "Piece",
+    "price": "$ 20.000",
+    "unit": "Unidad",
     "items_per_box": "1",
     "style_tags": [
       "NUEVOS"
@@ -10424,9 +10491,10 @@
     "pdf_tech_sheet": "",
     "stock_status": "In Stock",
     "description": "ZOCALO SPC MADERA TEKA IXPE S012",
-    "price_cop": "Consultar precio",
+    "price_cop": "$ 20.000",
     "price_usd": "Consultar precio",
-    "price_source": "none"
+    "price_source": "LISTA MARKETING OCTUBRE",
+    "price_approx": true
   },
   {
     "id": "14112413",
@@ -10434,8 +10502,8 @@
     "category": "NUEVOS",
     "subcategory": "NUEVOS",
     "collection": "NUEVOS",
-    "price": "Consultar precio",
-    "unit": "Piece",
+    "price": "$ 20.000",
+    "unit": "Unidad",
     "items_per_box": "1",
     "style_tags": [
       "NUEVOS"
@@ -10445,9 +10513,10 @@
     "pdf_tech_sheet": "",
     "stock_status": "In Stock",
     "description": "ZOCALO SPC AVELLANA IXPE  S013",
-    "price_cop": "Consultar precio",
+    "price_cop": "$ 20.000",
     "price_usd": "Consultar precio",
-    "price_source": "none"
+    "price_source": "LISTA MARKETING OCTUBRE",
+    "price_approx": true
   },
   {
     "id": "14112510",
@@ -10477,8 +10546,8 @@
     "category": "NUEVOS",
     "subcategory": "NUEVOS",
     "collection": "NUEVOS",
-    "price": "Consultar precio",
-    "unit": "Piece",
+    "price": "$ 20.000",
+    "unit": "Unidad",
     "items_per_box": "1",
     "style_tags": [
       "NUEVOS"
@@ -10488,9 +10557,10 @@
     "pdf_tech_sheet": "",
     "stock_status": "In Stock",
     "description": "ZOCALO SPC GRIS CENIZO IXPE S011 NEW",
-    "price_cop": "Consultar precio",
+    "price_cop": "$ 20.000",
     "price_usd": "Consultar precio",
-    "price_source": "none"
+    "price_source": "LISTA MARKETING OCTUBRE",
+    "price_approx": true
   },
   {
     "id": "14112512",
@@ -10498,8 +10568,8 @@
     "category": "NUEVOS",
     "subcategory": "NUEVOS",
     "collection": "NUEVOS",
-    "price": "Consultar precio",
-    "unit": "Piece",
+    "price": "$ 20.000",
+    "unit": "Unidad",
     "items_per_box": "1",
     "style_tags": [
       "NUEVOS"
@@ -10509,9 +10579,10 @@
     "pdf_tech_sheet": "",
     "stock_status": "In Stock",
     "description": "ZOCALO SPC MADERA TEKA IXPE S012 NEW",
-    "price_cop": "Consultar precio",
+    "price_cop": "$ 20.000",
     "price_usd": "Consultar precio",
-    "price_source": "none"
+    "price_source": "LISTA MARKETING OCTUBRE",
+    "price_approx": true
   },
   {
     "id": "14112513",
@@ -10519,8 +10590,8 @@
     "category": "NUEVOS",
     "subcategory": "NUEVOS",
     "collection": "NUEVOS",
-    "price": "Consultar precio",
-    "unit": "Piece",
+    "price": "$ 20.000",
+    "unit": "Unidad",
     "items_per_box": "1",
     "style_tags": [
       "NUEVOS"
@@ -10530,9 +10601,10 @@
     "pdf_tech_sheet": "",
     "stock_status": "In Stock",
     "description": "ZOCALO SPC AVELLANA IXPE S013 NEW",
-    "price_cop": "Consultar precio",
+    "price_cop": "$ 20.000",
     "price_usd": "Consultar precio",
-    "price_source": "none"
+    "price_source": "LISTA MARKETING OCTUBRE",
+    "price_approx": true
   },
   {
     "id": "14121504",
@@ -10625,7 +10697,7 @@
     "price_cop": "Consultar precio",
     "price_usd": "Consultar precio",
     "price_approx": true,
-    "price_source": "CATALOGO 2026",
+    "price_source": "none",
     "unit": "Unidad",
     "stock_status": "In Stock",
     "description": "LAMINA PVC BEIGE BRILLANTE. Ancho: 30cm | Largo: 5.95m | Espesor: 8.5mm | Peso: 5.3kg/m². Uso: Cielo raso y paredes interior.",
@@ -10648,7 +10720,7 @@
     "price_cop": "Consultar precio",
     "price_usd": "Consultar precio",
     "price_approx": true,
-    "price_source": "CATALOGO 2026",
+    "price_source": "none",
     "unit": "Unidad",
     "stock_status": "In Stock",
     "description": "LAMINA PVC BLANCO EJECUTIVO. Ancho: 30cm | Largo: 5.95m | Espesor: 8.5mm | Peso: 5.3kg/m². Uso: Cielo raso y paredes interior.",
@@ -10671,7 +10743,7 @@
     "price_cop": "Consultar precio",
     "price_usd": "Consultar precio",
     "price_approx": true,
-    "price_source": "CATALOGO 2026",
+    "price_source": "none",
     "unit": "Unidad",
     "stock_status": "In Stock",
     "description": "LAMINA PVC MARMOLIZADA. Ancho: 30cm | Largo: 5.95m | Espesor: 8.5mm | Peso: 5.3kg/m². Uso: Cielo raso y paredes interior.",
@@ -10694,7 +10766,7 @@
     "price_cop": "Consultar precio",
     "price_usd": "Consultar precio",
     "price_approx": true,
-    "price_source": "CATALOGO 2026",
+    "price_source": "none",
     "unit": "Unidad",
     "stock_status": "In Stock",
     "description": "LAMINA PVC BLANCO MADERA PINO. Ancho: 30cm | Largo: 5.95m | Espesor: 8.5mm | Peso: 5.3kg/m². Uso: Cielo raso y paredes interior.",
@@ -10717,7 +10789,7 @@
     "price_cop": "Consultar precio",
     "price_usd": "Consultar precio",
     "price_approx": true,
-    "price_source": "CATALOGO 2026",
+    "price_source": "none",
     "unit": "Unidad",
     "stock_status": "In Stock",
     "description": "PERIMETRAL U. Perfil U perimetral para lámina PVC. Uso: Terminación perímetro lámina PVC.",
@@ -10738,7 +10810,7 @@
     "price_cop": "Consultar precio",
     "price_usd": "Consultar precio",
     "price_approx": true,
-    "price_source": "CATALOGO 2026",
+    "price_source": "none",
     "unit": "Unidad",
     "stock_status": "In Stock",
     "description": "PERIMETRAL F. Perfil F perimetral para lámina PVC. Uso: Terminación perímetro lámina PVC.",
@@ -10759,7 +10831,7 @@
     "price_cop": "Consultar precio",
     "price_usd": "Consultar precio",
     "price_approx": true,
-    "price_source": "CATALOGO 2026",
+    "price_source": "none",
     "unit": "Unidad",
     "stock_status": "In Stock",
     "description": "LAMINA PVC BLANCO MADERA ACANALADA. Ancho: 30cm | Largo: 5.95m | Espesor: 8.5mm | Peso: 5.3kg/m². Uso: Cielo raso y paredes interior.",
@@ -10782,7 +10854,7 @@
     "price_cop": "Consultar precio",
     "price_usd": "Consultar precio",
     "price_approx": true,
-    "price_source": "CATALOGO 2026",
+    "price_source": "none",
     "unit": "Unidad",
     "stock_status": "In Stock",
     "description": "UNIÓN H. Perfil H unión para lámina PVC. Uso: Unión láminas PVC.",
@@ -10803,7 +10875,7 @@
     "price_cop": "Consultar precio",
     "price_usd": "Consultar precio",
     "price_approx": true,
-    "price_source": "CATALOGO 2026",
+    "price_source": "none",
     "unit": "Unidad",
     "stock_status": "In Stock",
     "description": "ESQUINERO. Perfil esquinero para lámina PVC. Uso: Esquinas lámina PVC.",
@@ -10824,7 +10896,7 @@
     "price_cop": "Consultar precio",
     "price_usd": "Consultar precio",
     "price_approx": true,
-    "price_source": "CATALOGO 2026",
+    "price_source": "none",
     "unit": "Unidad",
     "stock_status": "In Stock",
     "description": "CABALLETE LIMATESA UPVC 50/50. Compatible con cubierta ROMA. Uso: Caballete limatesa.",
@@ -10847,7 +10919,7 @@
     "price_cop": "Consultar precio",
     "price_usd": "Consultar precio",
     "price_approx": true,
-    "price_source": "CATALOGO 2026",
+    "price_source": "none",
     "unit": "Unidad",
     "stock_status": "In Stock",
     "description": "LAMINA MARMOL ALASKA. Ancho: 122cm | Largo: 2.44m | Área: 2.9m² | Peso: 19kg | PRODUCTO NUEVO. Uso: Paredes interior, decoración.",
@@ -10870,7 +10942,7 @@
     "price_cop": "Consultar precio",
     "price_usd": "Consultar precio",
     "price_approx": true,
-    "price_source": "CATALOGO 2026",
+    "price_source": "none",
     "unit": "Unidad",
     "stock_status": "In Stock",
     "description": "LAMINA MARMOL NERO GOLD. Ancho: 122cm | Largo: 2.44m | Área: 2.9m² | Peso: 19kg. Uso: Paredes interior, decoración.",
@@ -10893,7 +10965,7 @@
     "price_cop": "Consultar precio",
     "price_usd": "Consultar precio",
     "price_approx": true,
-    "price_source": "CATALOGO 2026",
+    "price_source": "none",
     "unit": "Unidad",
     "stock_status": "In Stock",
     "description": "LAMINA MARMOL POLAR. Ancho: 122cm | Largo: 2.44m | Área: 2.9m² | Peso: 19kg. Uso: Paredes interior, decoración.",
@@ -10916,7 +10988,7 @@
     "price_cop": "Consultar precio",
     "price_usd": "Consultar precio",
     "price_approx": true,
-    "price_source": "CATALOGO 2026",
+    "price_source": "none",
     "unit": "Unidad",
     "stock_status": "In Stock",
     "description": "LAMINA MARMOL CATALATTA ROYAL. Ancho: 122cm | Largo: 2.44m | Área: 2.9m² | Peso: 19kg. Uso: Paredes interior, decoración.",
@@ -10939,7 +11011,7 @@
     "price_cop": "Consultar precio",
     "price_usd": "Consultar precio",
     "price_approx": true,
-    "price_source": "CATALOGO 2026",
+    "price_source": "none",
     "unit": "Unidad",
     "stock_status": "In Stock",
     "description": "MÁRMOL ESENCIA MARINA. Ancho: 122cm | Largo: 2.44m | Área: 2.9m² | Peso: 19kg | PRODUCTO NUEVO. Uso: Paredes interior, decoración.",
@@ -10962,7 +11034,7 @@
     "price_cop": "Consultar precio",
     "price_usd": "Consultar precio",
     "price_approx": true,
-    "price_source": "CATALOGO 2026",
+    "price_source": "none",
     "unit": "Unidad",
     "stock_status": "In Stock",
     "description": "LAMINA MARMOL TITAN. Ancho: 122cm | Largo: 2.44m | Área: 2.9m² | Peso: 19kg. Uso: Paredes interior, decoración.",
@@ -10985,7 +11057,7 @@
     "price_cop": "Consultar precio",
     "price_usd": "Consultar precio",
     "price_approx": true,
-    "price_source": "CATALOGO 2026",
+    "price_source": "none",
     "unit": "Unidad",
     "stock_status": "In Stock",
     "description": "LAMINA MARMOL ARTIC. Ancho: 122cm | Largo: 2.44m | Área: 2.9m² | Peso: 19kg. Uso: Paredes interior, decoración.",
@@ -11008,7 +11080,7 @@
     "price_cop": "Consultar precio",
     "price_usd": "Consultar precio",
     "price_approx": true,
-    "price_source": "CATALOGO 2026",
+    "price_source": "none",
     "unit": "Unidad",
     "stock_status": "In Stock",
     "description": "LAMINA MARMOL URBAN STONE. Ancho: 122cm | Largo: 2.44m | Área: 2.9m² | Peso: 19kg. Uso: Paredes interior, decoración.",
@@ -11031,7 +11103,7 @@
     "price_cop": "Consultar precio",
     "price_usd": "Consultar precio",
     "price_approx": true,
-    "price_source": "CATALOGO 2026",
+    "price_source": "none",
     "unit": "Unidad",
     "stock_status": "In Stock",
     "description": "LAMINA MARMOL OCEANIC. Ancho: 122cm | Largo: 2.44m | Área: 2.9m² | Peso: 19kg | PRODUCTO NUEVO. Uso: Paredes interior, decoración.",
@@ -11054,7 +11126,7 @@
     "price_cop": "Consultar precio",
     "price_usd": "Consultar precio",
     "price_approx": true,
-    "price_source": "CATALOGO 2026",
+    "price_source": "none",
     "unit": "Unidad",
     "stock_status": "In Stock",
     "description": "LAMINA MARMOL NATURAL. Ancho: 122cm | Largo: 2.44m | Área: 2.9m² | Peso: 19kg. Uso: Paredes interior, decoración.",
@@ -11077,7 +11149,7 @@
     "price_cop": "Consultar precio",
     "price_usd": "Consultar precio",
     "price_approx": true,
-    "price_source": "CATALOGO 2026",
+    "price_source": "none",
     "unit": "Unidad",
     "stock_status": "In Stock",
     "description": "LAMINA MARMOL TERRA. Ancho: 122cm | Largo: 2.44m | Área: 2.9m² | Peso: 19kg. Uso: Paredes interior, decoración.",
@@ -11100,7 +11172,7 @@
     "price_cop": "Consultar precio",
     "price_usd": "Consultar precio",
     "price_approx": true,
-    "price_source": "CATALOGO 2026",
+    "price_source": "none",
     "unit": "Unidad",
     "stock_status": "In Stock",
     "description": "LAMINA MARMOL SILVER. Ancho: 122cm | Largo: 2.44m | Área: 2.9m² | Peso: 19kg. Uso: Paredes interior, decoración.",
@@ -11123,7 +11195,7 @@
     "price_cop": "Consultar precio",
     "price_usd": "Consultar precio",
     "price_approx": true,
-    "price_source": "CATALOGO 2026",
+    "price_source": "none",
     "unit": "Unidad",
     "stock_status": "In Stock",
     "description": "PANEL WPC PLANO RANURADO MADERA TEKA. Ancho: 30cm | Largo: 2.95m | Espesor: 8mm | PRODUCTO NUEVO. Uso: Panel WPC plano ranurado.",
@@ -11146,7 +11218,7 @@
     "price_cop": "Consultar precio",
     "price_usd": "Consultar precio",
     "price_approx": true,
-    "price_source": "CATALOGO 2026",
+    "price_source": "none",
     "unit": "Unidad",
     "stock_status": "In Stock",
     "description": "PANEL WPC PLANO RANURADO CEDRO. Ancho: 30cm | Largo: 2.95m | Espesor: 8mm | PRODUCTO NUEVO. Uso: Panel WPC plano ranurado.",
@@ -11169,7 +11241,7 @@
     "price_cop": "Consultar precio",
     "price_usd": "Consultar precio",
     "price_approx": true,
-    "price_source": "CATALOGO 2026",
+    "price_source": "none",
     "unit": "Unidad",
     "stock_status": "In Stock",
     "description": "MÁRMOL NOBLEZA. Ancho: 122cm | Largo: 2.44m | Área: 2.9m². Uso: Paredes interior, decoración premium.",
@@ -11192,7 +11264,7 @@
     "price_cop": "Consultar precio",
     "price_usd": "Consultar precio",
     "price_approx": true,
-    "price_source": "CATALOGO 2026",
+    "price_source": "none",
     "unit": "Unidad",
     "stock_status": "In Stock",
     "description": "MÁRMOL ORO LIQUIDO. Ancho: 122cm | Largo: 2.44m | Área: 2.9m². Uso: Paredes interior, decoración premium.",
@@ -11215,7 +11287,7 @@
     "price_cop": "Consultar precio",
     "price_usd": "Consultar precio",
     "price_approx": true,
-    "price_source": "CATALOGO 2026",
+    "price_source": "none",
     "unit": "Unidad",
     "stock_status": "In Stock",
     "description": "MÁRMOL ESTELAR. Ancho: 122cm | Largo: 2.44m | Área: 2.9m². Uso: Paredes interior, decoración premium.",
@@ -11238,7 +11310,7 @@
     "price_cop": "Consultar precio",
     "price_usd": "Consultar precio",
     "price_approx": true,
-    "price_source": "CATALOGO 2026",
+    "price_source": "none",
     "unit": "Unidad",
     "stock_status": "In Stock",
     "description": "MÁRMOL NEVADO DE ORO. Ancho: 122cm | Largo: 2.44m | Área: 2.9m². Uso: Paredes interior, decoración premium.",
@@ -11261,7 +11333,7 @@
     "price_cop": "Consultar precio",
     "price_usd": "Consultar precio",
     "price_approx": true,
-    "price_source": "CATALOGO 2026",
+    "price_source": "none",
     "unit": "Unidad",
     "stock_status": "In Stock",
     "description": "MÁRMOL ZEUS. Ancho: 122cm | Largo: 2.44m | Área: 2.9m². Uso: Paredes interior, decoración premium.",
@@ -11284,7 +11356,7 @@
     "price_cop": "Consultar precio",
     "price_usd": "Consultar precio",
     "price_approx": true,
-    "price_source": "CATALOGO 2026",
+    "price_source": "none",
     "unit": "Unidad",
     "stock_status": "In Stock",
     "description": "MÁRMOL GOLD PAONAZZO. Ancho: 122cm | Largo: 2.44m | Área: 2.9m². Uso: Paredes interior, decoración premium.",
@@ -11307,7 +11379,7 @@
     "price_cop": "Consultar precio",
     "price_usd": "Consultar precio",
     "price_approx": true,
-    "price_source": "CATALOGO 2026",
+    "price_source": "none",
     "unit": "Unidad",
     "stock_status": "In Stock",
     "description": "MÁRMOL CALACATTA. Ancho: 122cm | Largo: 2.44m | Área: 2.9m². Uso: Paredes interior, decoración premium.",
@@ -11330,7 +11402,7 @@
     "price_cop": "Consultar precio",
     "price_usd": "Consultar precio",
     "price_approx": true,
-    "price_source": "CATALOGO 2026",
+    "price_source": "none",
     "unit": "Unidad",
     "stock_status": "In Stock",
     "description": "MÁRMOL ELEGANCE GOLD. Ancho: 122cm | Largo: 2.44m | Área: 2.9m². Uso: Paredes interior, decoración premium.",
@@ -11353,7 +11425,7 @@
     "price_cop": "Consultar precio",
     "price_usd": "Consultar precio",
     "price_approx": true,
-    "price_source": "CATALOGO 2026",
+    "price_source": "none",
     "unit": "Unidad",
     "stock_status": "In Stock",
     "description": "MÁRMOL LUNA. Ancho: 122cm | Largo: 2.44m | Área: 2.9m². Uso: Paredes interior, decoración premium.",
@@ -11376,7 +11448,7 @@
     "price_cop": "Consultar precio",
     "price_usd": "Consultar precio",
     "price_approx": true,
-    "price_source": "CATALOGO 2026",
+    "price_source": "none",
     "unit": "Unidad",
     "stock_status": "In Stock",
     "description": "MÁRMOL STATUARIO. Ancho: 122cm | Largo: 2.44m | Área: 2.9m². Uso: Paredes interior, decoración premium.",
@@ -11399,7 +11471,7 @@
     "price_cop": "Consultar precio",
     "price_usd": "Consultar precio",
     "price_approx": true,
-    "price_source": "CATALOGO 2026",
+    "price_source": "none",
     "unit": "Unidad",
     "stock_status": "In Stock",
     "description": "PANEL WPC INTERIOR ROBLE ARENA. Ancho: 16cm | Largo: 2.95m | Espesor: 20mm | PRODUCTO NUEVO. Uso: Panel WPC interior, paredes.",
@@ -11434,7 +11506,7 @@
     "price_cop": "Consultar precio",
     "price_usd": "Consultar precio",
     "price_approx": true,
-    "price_source": "CATALOGO 2026",
+    "price_source": "none",
     "unit": "Unidad",
     "stock_status": "In Stock",
     "description": "PANEL WPC INTERIOR CAOBA PREMIUM. Ancho: 16cm | Largo: 2.95m | Espesor: 20mm | PRODUCTO NUEVO. Uso: Panel WPC interior, paredes.",
@@ -11469,7 +11541,7 @@
     "price_cop": "Consultar precio",
     "price_usd": "Consultar precio",
     "price_approx": true,
-    "price_source": "CATALOGO 2026",
+    "price_source": "none",
     "unit": "Unidad",
     "stock_status": "In Stock",
     "description": "PANEL WPC INTERIOR NOGAL SELECTO. Ancho: 16cm | Largo: 2.95m | Espesor: 20mm | PRODUCTO NUEVO. Uso: Panel WPC interior, paredes.",
@@ -11504,7 +11576,7 @@
     "price_cop": "Consultar precio",
     "price_usd": "Consultar precio",
     "price_approx": true,
-    "price_source": "CATALOGO 2026",
+    "price_source": "none",
     "unit": "Unidad",
     "stock_status": "In Stock",
     "description": "PANEL WPC INTERIOR TECA IMPERIAL. Ancho: 16cm | Largo: 2.95m | Espesor: 20mm | PRODUCTO NUEVO. Uso: Panel WPC interior, paredes.",
@@ -11539,7 +11611,7 @@
     "price_cop": "$ 7.000",
     "price_usd": "Consultar precio",
     "price_approx": true,
-    "price_source": "CATALOGO 2026",
+    "price_source": "LISTA MARKETING OCTUBRE",
     "unit": "Unidad",
     "stock_status": "In Stock",
     "description": "KIT TAPONES LISTON PVC ESTRUCTURAL 10CM. Tapones para listón estructural 10cm. Uso: Tapones listón estructural.",
@@ -11558,11 +11630,11 @@
     "category": "CIELO RASO PVC",
     "subcategory": "CIELO RASO PVC",
     "collection": "INTERIOR",
-    "price": "Consultar precio",
-    "price_cop": "Consultar precio",
+    "price": "$ 18.000",
+    "price_cop": "$ 18.000",
     "price_usd": "Consultar precio",
     "price_approx": true,
-    "price_source": "CATALOGO 2026",
+    "price_source": "LISTA MARKETING OCTUBRE",
     "unit": "Unidad",
     "stock_status": "In Stock",
     "description": "PERFIL BASE METÁLICO NEGRO LISTON CIELO RASO. Material: Metal galvanizado | Acabado: Negro | Perforaciones: 10cm | Largo: 2.90m. Uso: Base metálica listón cielo raso.",
@@ -11581,11 +11653,11 @@
     "category": "PANELES WPC INTERIOR",
     "subcategory": "PANELES WPC INTERIOR",
     "collection": "INTERIOR",
-    "price": "Consultar precio",
-    "price_cop": "Consultar precio",
+    "price": "$ 23.000",
+    "price_cop": "$ 23.000",
     "price_usd": "Consultar precio",
     "price_approx": true,
-    "price_source": "CATALOGO 2026",
+    "price_source": "LISTA MARKETING OCTUBRE",
     "unit": "Unidad",
     "stock_status": "In Stock",
     "description": "PANEL WPC INTERIOR CASTAÑO OXIDO (PH15). Ancho: 16cm | Largo: 2.95m | Espesor: 25mm. Uso: Panel WPC interior, paredes.",
@@ -11616,11 +11688,11 @@
     "category": "PANELES WPC INTERIOR",
     "subcategory": "PANELES WPC INTERIOR",
     "collection": "INTERIOR",
-    "price": "Consultar precio",
-    "price_cop": "Consultar precio",
+    "price": "$ 23.000",
+    "price_cop": "$ 23.000",
     "price_usd": "Consultar precio",
     "price_approx": true,
-    "price_source": "CATALOGO 2026",
+    "price_source": "LISTA MARKETING OCTUBRE",
     "unit": "Unidad",
     "stock_status": "In Stock",
     "description": "PANEL WPC REDONDO STONE GRIS (01). Ancho: 16cm | Largo: 2.95m | Espesor: 2.5mm | PRODUCTO NUEVO. Uso: Panel WPC redondo interior.",
@@ -11655,7 +11727,7 @@
     "price_cop": "Consultar precio",
     "price_usd": "Consultar precio",
     "price_approx": true,
-    "price_source": "CATALOGO 2026",
+    "price_source": "none",
     "unit": "Unidad",
     "stock_status": "In Stock",
     "description": "PANEL WPC REDONDO PLATEADO. Ancho: 16cm | Largo: 2.95m | Espesor: 2.5mm | PRODUCTO NUEVO. Uso: Panel WPC redondo interior.",

@@ -5,7 +5,7 @@
     "unit": "Unidad",
     "approx": true,
     "source": "LISTA MARKETING CIELO RASO (PVC)",
-    "row_name": "LAMINA PVC",
+    "row_name": "LAMINA PVC BLANCO BRILLANTE 30CM H-01-I",
     "row_price": 27000
   },
   "14031002": {
@@ -14,16 +14,7 @@
     "unit": "Unidad",
     "approx": true,
     "source": "LISTA MARKETING CIELO RASO (PVC)",
-    "row_name": "LAMINA PVC",
-    "row_price": 27000
-  },
-  "14031004": {
-    "price_cop": "$ 27.000",
-    "price_usd": "Consultar precio",
-    "unit": "Unidad",
-    "approx": true,
-    "source": "LISTA MARKETING CIELO RASO (PVC)",
-    "row_name": "LAMINA PVC",
+    "row_name": "LAMINA PVC BLANCO MADERA BRILLANTE 30CM H-02-I",
     "row_price": 27000
   },
   "14031005": {
@@ -32,7 +23,7 @@
     "unit": "Unidad",
     "approx": true,
     "source": "LISTA MARKETING CIELO RASO (PVC)",
-    "row_name": "LAMINA PVC",
+    "row_name": "LAMINA PVC BLANCO MATE 30CM H-05-I",
     "row_price": 27000
   },
   "14031012": {
@@ -41,34 +32,7 @@
     "unit": "Unidad",
     "approx": true,
     "source": "LISTA MARKETING CIELO RASO (PVC)",
-    "row_name": "LAMINA PVC",
-    "row_price": 27000
-  },
-  "14031014": {
-    "price_cop": "$ 27.000",
-    "price_usd": "Consultar precio",
-    "unit": "Unidad",
-    "approx": true,
-    "source": "LISTA MARKETING CIELO RASO (PVC)",
-    "row_name": "LAMINA PVC",
-    "row_price": 27000
-  },
-  "14031015": {
-    "price_cop": "$ 27.000",
-    "price_usd": "Consultar precio",
-    "unit": "Unidad",
-    "approx": true,
-    "source": "LISTA MARKETING CIELO RASO (PVC)",
-    "row_name": "LAMINA PVC",
-    "row_price": 27000
-  },
-  "14031016": {
-    "price_cop": "$ 27.000",
-    "price_usd": "Consultar precio",
-    "unit": "Unidad",
-    "approx": true,
-    "source": "LISTA MARKETING CIELO RASO (PVC)",
-    "row_name": "LAMINA PVC",
+    "row_name": "LAMINA PVC JASPEADO BRILLANTE 30CM H-12-I",
     "row_price": 27000
   },
   "14031028": {
@@ -77,57 +41,71 @@
     "unit": "Unidad",
     "approx": true,
     "source": "LISTA MARKETING CIELO RASO (PVC)",
-    "row_name": "LAMINA PVC",
+    "row_name": "LAMINA PVC CEDRO 30CM H-28-I",
     "row_price": 27000
   },
   "14032001": {
-    "price_cop": "$ 14.999",
-    "price_usd": "Consultar precio",
-    "unit": "Paquete / Package",
-    "approx": true,
-    "source": "CORNISA PVC (cliente - nuevos)",
-    "row_name": "CORNISA PVC BLANCA BRILLANTE AM1001",
-    "row_price": 14999,
-    "overridden": true
-  },
-  "14032002": {
-    "price_cop": "$ 14.999",
-    "price_usd": "Consultar precio",
-    "unit": "Paquete / Package",
-    "approx": true,
-    "source": "CORNISA PVC (cliente - nuevos)",
-    "row_name": "CORNISA PVC BLANCO MADERA BRILLANTE AM1002",
-    "row_price": 14999,
-    "overridden": true
-  },
-  "14032004": {
-    "price_cop": "$ 14.999",
-    "price_usd": "Consultar precio",
-    "unit": "Paquete / Package",
-    "approx": true,
-    "source": "CORNISA PVC (cliente - nuevos)",
-    "row_name": "CORNISA PVC BEIGE BRILLANTE AM1004",
-    "row_price": 14999,
-    "overridden": true
-  },
-  "14032014": {
-    "price_cop": "$ 14.999",
-    "price_usd": "Consultar precio",
-    "unit": "Paquete / Package",
-    "approx": true,
-    "source": "CORNISA PVC (cliente - nuevos)",
-    "row_name": "CORNISA PVC BLANCO EJECUTIVO AM1014",
-    "row_price": 14999,
-    "overridden": true
-  },
-  "14032301": {
-    "price_cop": "$ 27.000",
+    "price_cop": "$ 9.500",
     "price_usd": "Consultar precio",
     "unit": "Unidad",
     "approx": true,
     "source": "LISTA MARKETING CIELO RASO (PVC)",
-    "row_name": "LAMINA PVC",
-    "row_price": 27000
+    "row_name": "CORNISA PVC BLANCA BRILLANTE AM1001",
+    "row_price": 9500
+  },
+  "14032002": {
+    "price_cop": "$ 9.500",
+    "price_usd": "Consultar precio",
+    "unit": "Unidad",
+    "approx": true,
+    "source": "LISTA MARKETING CIELO RASO (PVC)",
+    "row_name": "CORNISA PVC BLANCO MADERA BRILLANTE AM1002",
+    "row_price": 9500
+  },
+  "14032004": {
+    "price_cop": "$ 9.500",
+    "price_usd": "Consultar precio",
+    "unit": "Unidad",
+    "approx": true,
+    "source": "LISTA MARKETING CIELO RASO (PVC)",
+    "row_name": "CORNISA PVC BEIGE BRILLANTE AM1004",
+    "row_price": 9500
+  },
+  "14032014": {
+    "price_cop": "$ 9.500",
+    "price_usd": "Consultar precio",
+    "unit": "Unidad",
+    "approx": true,
+    "source": "LISTA MARKETING CIELO RASO (PVC)",
+    "row_name": "CORNISA PVC BLANCO EJECUTIVO AM1014",
+    "row_price": 9500
+  },
+  "14051105": {
+    "price_cop": "$ 14.000",
+    "price_usd": "Consultar precio",
+    "unit": "Unidad",
+    "approx": true,
+    "source": "LISTA MARKETING CINTA LED",
+    "row_name": "CINTA LED 0.5M",
+    "row_price": 14000
+  },
+  "14051107": {
+    "price_cop": "$ 17.000",
+    "price_usd": "Consultar precio",
+    "unit": "Unidad",
+    "approx": true,
+    "source": "LISTA MARKETING CINTA LED",
+    "row_name": "CINTA LED 0.7M",
+    "row_price": 17000
+  },
+  "14051112": {
+    "price_cop": "$ 25.000",
+    "price_usd": "Consultar precio",
+    "unit": "Unidad",
+    "approx": true,
+    "source": "LISTA MARKETING CINTA LED",
+    "row_name": "CINTA LED 1.2M",
+    "row_price": 25000
   },
   "14051201": {
     "price_cop": "$ 60.500",
@@ -156,6 +134,24 @@
     "row_name": "CUBIERTA TERMOACUSTICA UPVC 2.5mm BLANCA O.A",
     "row_price": 361109
   },
+  "14081002": {
+    "price_cop": "$ 266.588",
+    "price_usd": "Consultar precio",
+    "unit": "Unidad",
+    "approx": true,
+    "source": "LISTA MARKETING CUBIERTAS UPVC",
+    "row_name": "CUBIERTA TERMOACUSTICA UPVC 2.0mm BLANCA O.A 11.80",
+    "row_price": 266588
+  },
+  "14081003": {
+    "price_cop": "$ 287.567",
+    "price_usd": "Consultar precio",
+    "unit": "Unidad",
+    "approx": true,
+    "source": "LISTA MARKETING CUBIERTAS UPVC",
+    "row_name": "CUBIERTA TERMOACUSTICA UPVC 2.0mm BLANCA O.B",
+    "row_price": 287567
+  },
   "14081101": {
     "price_cop": "$ 374.671",
     "price_usd": "Consultar precio",
@@ -182,6 +178,15 @@
     "source": "LISTA MARKETING CUBIERTAS UPVC",
     "row_name": "CUBIERTA TRASLUCIDA ONDA ALTA OPAL",
     "row_price": 561918
+  },
+  "14081601": {
+    "price_cop": "$ 325.000",
+    "price_usd": "Consultar precio",
+    "unit": "Unidad",
+    "approx": true,
+    "source": "LISTA MARKETING CUBIERTAS UPVC",
+    "row_name": "CUBIERTA ACANALADA UPVC 10mm BLANCA 11.80",
+    "row_price": 325000
   },
   "14082001": {
     "price_cop": "$ 23.092",
@@ -218,6 +223,24 @@
     "source": "LISTA MARKETING CUBIERTAS UPVC",
     "row_name": "CABALLETE UPVC COLONIAL CORTO-LIMATESA 2.5MM",
     "row_price": 31059
+  },
+  "14082103": {
+    "price_cop": "$ 34.562",
+    "price_usd": "Consultar precio",
+    "unit": "Unidad",
+    "approx": true,
+    "source": "LISTA MARKETING CUBIERTAS UPVC",
+    "row_name": "CABALLETE Y TRES AGUAS UPVC COLONIAL 2.5mm",
+    "row_price": 34562
+  },
+  "14082104": {
+    "price_cop": "$ 37.022",
+    "price_usd": "Consultar precio",
+    "unit": "Unidad",
+    "approx": true,
+    "source": "LISTA MARKETING CUBIERTAS UPVC",
+    "row_name": "CABALLETE T TRES AGUAS UPVC COLONIAL 2.5mm",
+    "row_price": 37022
   },
   "14082105": {
     "price_cop": "$ 45.372",
@@ -297,7 +320,7 @@
     "unit": "Unidad",
     "approx": true,
     "source": "LISTA MARKETING FACHADAS",
-    "row_name": "POLIFACHADA",
+    "row_name": "POLIFACHADA UNITEC BLANCO TEX 3.80*36CM",
     "row_price": 78000
   },
   "14091002": {
@@ -306,7 +329,7 @@
     "unit": "Unidad",
     "approx": true,
     "source": "LISTA MARKETING FACHADAS",
-    "row_name": "POLIFACHADA",
+    "row_name": "POLIFACHADA UNITEC PIEDRA TEX 3.80*37 CM",
     "row_price": 78000
   },
   "14091005": {
@@ -315,7 +338,7 @@
     "unit": "Unidad",
     "approx": true,
     "source": "LISTA MARKETING FACHADAS",
-    "row_name": "POLIFACHADA",
+    "row_name": "POLIFACHADA UNITEC CEDRO 380*36CM",
     "row_price": 78000
   },
   "14091006": {
@@ -324,7 +347,7 @@
     "unit": "Unidad",
     "approx": true,
     "source": "LISTA MARKETING FACHADAS",
-    "row_name": "POLIFACHADA",
+    "row_name": "POLIFACHADA TRAPEZOIDAL NEGRO BW008",
     "row_price": 78000
   },
   "14091007": {
@@ -333,7 +356,7 @@
     "unit": "Unidad",
     "approx": true,
     "source": "LISTA MARKETING FACHADAS",
-    "row_name": "POLIFACHADA",
+    "row_name": "POLIFACHADA TRAPEZOIDAL PLATEADO BW009",
     "row_price": 78000
   },
   "14091008": {
@@ -342,7 +365,7 @@
     "unit": "Unidad",
     "approx": true,
     "source": "LISTA MARKETING FACHADAS",
-    "row_name": "POLIFACHADA",
+    "row_name": "POLIFACHADA UNITEC LADRILLO GRIS BW007",
     "row_price": 78000
   },
   "14091009": {
@@ -351,7 +374,7 @@
     "unit": "Unidad",
     "approx": true,
     "source": "LISTA MARKETING FACHADAS",
-    "row_name": "POLIFACHADA",
+    "row_name": "POLIFACHADA UNITEC ARENA BW004",
     "row_price": 78000
   },
   "14091010": {
@@ -360,7 +383,7 @@
     "unit": "Unidad",
     "approx": true,
     "source": "LISTA MARKETING FACHADAS",
-    "row_name": "POLIFACHADA",
+    "row_name": "POLIFACHADA UNITEC LADRILLO GRIS LISO BW005",
     "row_price": 78000
   },
   "14091011": {
@@ -369,7 +392,7 @@
     "unit": "Unidad",
     "approx": true,
     "source": "LISTA MARKETING FACHADAS",
-    "row_name": "POLIFACHADA",
+    "row_name": "POLIFACHADA UNITEC CARBONO BW010",
     "row_price": 78000
   },
   "14091012": {
@@ -378,7 +401,7 @@
     "unit": "Unidad",
     "approx": true,
     "source": "LISTA MARKETING FACHADAS",
-    "row_name": "POLIFACHADA",
+    "row_name": "POLIFACHADA UNITEC LADRILLO RUSTICO BW011",
     "row_price": 78000
   },
   "14091101": {
@@ -387,7 +410,7 @@
     "unit": "Unidad",
     "approx": true,
     "source": "LISTA MARKETING FACHADAS",
-    "row_name": "FACHADA DECK",
+    "row_name": "FACHADA DECK ROBLE",
     "row_price": 45500
   },
   "14091102": {
@@ -396,7 +419,7 @@
     "unit": "Unidad",
     "approx": true,
     "source": "LISTA MARKETING FACHADAS",
-    "row_name": "FACHADA DECK",
+    "row_name": "FACHADA DECK NOGAL",
     "row_price": 45500
   },
   "14091103": {
@@ -405,7 +428,7 @@
     "unit": "Unidad",
     "approx": true,
     "source": "LISTA MARKETING FACHADAS",
-    "row_name": "FACHADA DECK",
+    "row_name": "FACHADA DECK MARRON",
     "row_price": 45500
   },
   "14091104": {
@@ -414,7 +437,7 @@
     "unit": "Unidad",
     "approx": true,
     "source": "LISTA MARKETING FACHADAS",
-    "row_name": "FACHADA DECK",
+    "row_name": "FACHADA DECK EBANO",
     "row_price": 45500
   },
   "14091105": {
@@ -423,7 +446,7 @@
     "unit": "Unidad",
     "approx": true,
     "source": "LISTA MARKETING FACHADAS",
-    "row_name": "FACHADA DECK",
+    "row_name": "FACHADA DECK CEDRO",
     "row_price": 45500
   },
   "14091107": {
@@ -432,7 +455,7 @@
     "unit": "Unidad",
     "approx": true,
     "source": "LISTA MARKETING FACHADAS",
-    "row_name": "FACHADA DECK",
+    "row_name": "FACHADA DECK GRAFITO",
     "row_price": 45500
   },
   "14101101": {
@@ -453,13 +476,22 @@
     "row_name": "VIGUETA",
     "row_price": 3480
   },
+  "14112010": {
+    "price_cop": "$ 12.000",
+    "price_usd": "Consultar precio",
+    "unit": "Unidad",
+    "approx": true,
+    "source": "LISTA MARKETING PISO SPC",
+    "row_name": "PISO SPC ROBLE CLARO IXPE (4mm-122*18.3cm)",
+    "row_price": 12000
+  },
   "14112011": {
     "price_cop": "$ 12.000",
     "price_usd": "Consultar precio",
     "unit": "Unidad",
     "approx": true,
     "source": "LISTA MARKETING PISO SPC",
-    "row_name": "PISO SPC  (4mm-122*18.3cm)",
+    "row_name": "PISO SPC GRIS CENIZO IXPE (4mm-122*18.3cm)",
     "row_price": 12000
   },
   "14112012": {
@@ -468,7 +500,16 @@
     "unit": "Unidad",
     "approx": true,
     "source": "LISTA MARKETING PISO SPC",
-    "row_name": "PISO SPC  (4mm-122*18.3cm)",
+    "row_name": "PISO SPC MADERA TEKA IXPE (4MM 122 18.3CM)",
+    "row_price": 12000
+  },
+  "14112013": {
+    "price_cop": "$ 12.000",
+    "price_usd": "Consultar precio",
+    "unit": "Unidad",
+    "approx": true,
+    "source": "LISTA MARKETING PISO SPC",
+    "row_name": "PISO SPC AVELLANA IXPE (4mm-122x18.3cm)",
     "row_price": 12000
   },
   "14112210": {
@@ -477,7 +518,7 @@
     "unit": "Unidad",
     "approx": true,
     "source": "LISTA MARKETING PISO SPC",
-    "row_name": "PISO SPC (4.5mm-122*22.8cm)",
+    "row_name": "PISO SPC ROBLE CLARO IXPE (4.5mm-122*22.8cm)",
     "row_price": 19500
   },
   "14112211": {
@@ -486,7 +527,7 @@
     "unit": "Unidad",
     "approx": true,
     "source": "LISTA MARKETING PISO SPC",
-    "row_name": "PISO SPC (4.5mm-122*22.8cm)",
+    "row_name": "PISO SPC GRIS CENIZO IXPE (4.5mm-122*22.8cm)",
     "row_price": 19500
   },
   "14112212": {
@@ -495,7 +536,16 @@
     "unit": "Unidad",
     "approx": true,
     "source": "LISTA MARKETING PISO SPC",
-    "row_name": "PISO SPC (4.5mm-122*22.8cm)",
+    "row_name": "PISO SPC MADERA TEKA IXPE (4.5mm-122*22.8cm)",
+    "row_price": 19500
+  },
+  "14112312": {
+    "price_cop": "$ 19.500",
+    "price_usd": "Consultar precio",
+    "unit": "Unidad",
+    "approx": true,
+    "source": "LISTA MARKETING PISO SPC",
+    "row_name": "PISO SPC NOGAL  IXPE (5.5mm-152*23cm)",
     "row_price": 19500
   },
   "14112410": {
@@ -507,6 +557,33 @@
     "row_name": "ZOCALO SPC ROBLE CLARO IXPE S010",
     "row_price": 20000
   },
+  "14112411": {
+    "price_cop": "$ 20.000",
+    "price_usd": "Consultar precio",
+    "unit": "Unidad",
+    "approx": true,
+    "source": "LISTA MARKETING PISO SPC",
+    "row_name": "ZOCALO SPC GRIS CENIZO IXPE S011",
+    "row_price": 20000
+  },
+  "14112412": {
+    "price_cop": "$ 20.000",
+    "price_usd": "Consultar precio",
+    "unit": "Unidad",
+    "approx": true,
+    "source": "LISTA MARKETING PISO SPC",
+    "row_name": "ZOCALO SPC MADERA TEKA IXPE S012",
+    "row_price": 20000
+  },
+  "14112413": {
+    "price_cop": "$ 20.000",
+    "price_usd": "Consultar precio",
+    "unit": "Unidad",
+    "approx": true,
+    "source": "LISTA MARKETING PISO SPC",
+    "row_name": "ZOCALO SPC AVELLANA IXPE  S013",
+    "row_price": 20000
+  },
   "14112510": {
     "price_cop": "$ 20.000",
     "price_usd": "Consultar precio",
@@ -516,13 +593,40 @@
     "row_name": "ZOCALO SPC ROBLE CLARO IXPE S010",
     "row_price": 20000
   },
+  "14112511": {
+    "price_cop": "$ 20.000",
+    "price_usd": "Consultar precio",
+    "unit": "Unidad",
+    "approx": true,
+    "source": "LISTA MARKETING PISO SPC",
+    "row_name": "ZOCALO SPC GRIS CENIZO IXPE S011",
+    "row_price": 20000
+  },
+  "14112512": {
+    "price_cop": "$ 20.000",
+    "price_usd": "Consultar precio",
+    "unit": "Unidad",
+    "approx": true,
+    "source": "LISTA MARKETING PISO SPC",
+    "row_name": "ZOCALO SPC MADERA TEKA IXPE S012",
+    "row_price": 20000
+  },
+  "14112513": {
+    "price_cop": "$ 20.000",
+    "price_usd": "Consultar precio",
+    "unit": "Unidad",
+    "approx": true,
+    "source": "LISTA MARKETING PISO SPC",
+    "row_name": "ZOCALO SPC AVELLANA IXPE  S013",
+    "row_price": 20000
+  },
   "14113001": {
     "price_cop": "$ 78.000",
     "price_usd": "Consultar precio",
     "unit": "Unidad",
     "approx": true,
     "source": "LISTA MARKETING PISO DECK",
-    "row_name": "PISO DECK EXTERIOR",
+    "row_name": "PISO DECK EXTERIOR CEDRO",
     "row_price": 78000
   },
   "14113002": {
@@ -531,7 +635,7 @@
     "unit": "Unidad",
     "approx": true,
     "source": "LISTA MARKETING PISO DECK",
-    "row_name": "PISO DECK EXTERIOR",
+    "row_name": "PISO DECK EXTERIOR GRAFITO",
     "row_price": 78000
   },
   "14113003": {
@@ -540,16 +644,7 @@
     "unit": "Unidad",
     "approx": true,
     "source": "LISTA MARKETING PISO DECK",
-    "row_name": "PISO DECK EXTERIOR",
-    "row_price": 78000
-  },
-  "14113004": {
-    "price_cop": "$ 78.000",
-    "price_usd": "Consultar precio",
-    "unit": "Unidad",
-    "approx": true,
-    "source": "LISTA MARKETING PISO DECK",
-    "row_name": "PISO DECK EXTERIOR",
+    "row_name": "PISO DECK EXTERIOR NOGAL",
     "row_price": 78000
   },
   "14113008": {
@@ -558,7 +653,7 @@
     "unit": "Unidad",
     "approx": true,
     "source": "LISTA MARKETING PISO DECK",
-    "row_name": "PISO DECK EXTERIOR",
+    "row_name": "PISO DECK EXTERIOR MAPLE",
     "row_price": 78000
   },
   "14113009": {
@@ -567,80 +662,53 @@
     "unit": "Unidad",
     "approx": true,
     "source": "LISTA MARKETING PISO DECK",
-    "row_name": "PISO DECK EXTERIOR",
+    "row_name": "PISO DECK EXTERIOR OAK",
     "row_price": 78000
   },
-  "14113101": {
-    "price_cop": "$ 29.500",
-    "price_usd": "Consultar precio",
-    "unit": "Unidad",
-    "approx": true,
-    "source": "LISTA MARKETING PISO DECK",
-    "row_name": "ANGULO TERMINACION PISO DECK",
-    "row_price": 29500
-  },
-  "14113102": {
-    "price_cop": "$ 29.500",
-    "price_usd": "Consultar precio",
-    "unit": "Unidad",
-    "approx": true,
-    "source": "LISTA MARKETING PISO DECK",
-    "row_name": "ANGULO TERMINACION PISO DECK",
-    "row_price": 29500
-  },
-  "14113103": {
-    "price_cop": "$ 29.500",
-    "price_usd": "Consultar precio",
-    "unit": "Unidad",
-    "approx": true,
-    "source": "LISTA MARKETING PISO DECK",
-    "row_name": "ANGULO TERMINACION PISO DECK",
-    "row_price": 29500
-  },
-  "14113104": {
-    "price_cop": "$ 29.500",
-    "price_usd": "Consultar precio",
-    "unit": "Unidad",
-    "approx": true,
-    "source": "LISTA MARKETING PISO DECK",
-    "row_name": "ANGULO TERMINACION PISO DECK",
-    "row_price": 29500
-  },
   "14113108": {
-    "price_cop": "$ 29.500",
+    "price_cop": "$ 37.799",
     "price_usd": "Consultar precio",
     "unit": "Unidad",
     "approx": true,
-    "source": "LISTA MARKETING PISO DECK",
-    "row_name": "ANGULO TERMINACION PISO DECK",
-    "row_price": 29500
+    "source": "LISTA MARKETING ANGULOS",
+    "row_name": "ANGULO TERMINACION PISO DECK EXTE MAPLE",
+    "row_price": 37799
   },
   "14113109": {
-    "price_cop": "$ 29.500",
+    "price_cop": "$ 37.799",
+    "price_usd": "Consultar precio",
+    "unit": "Unidad",
+    "approx": true,
+    "source": "LISTA MARKETING ANGULOS",
+    "row_name": "ANGULO TERMINACION PISO DECK EXTE OAK",
+    "row_price": 37799
+  },
+  "14113201": {
+    "price_cop": "$ 17.000",
+    "price_usd": "Consultar precio",
+    "unit": "Unidad",
+    "approx": true,
+    "source": "LISTA MARKETING PARED MARMOL",
+    "row_name": "ANGULO EN L 10mm *2.5m DORADO",
+    "row_price": 17000
+  },
+  "14113202": {
+    "price_cop": "$ 17.000",
+    "price_usd": "Consultar precio",
+    "unit": "Unidad",
+    "approx": true,
+    "source": "LISTA MARKETING PARED MARMOL",
+    "row_name": "ANGULO EN L 10mm *2.5mm PLATA",
+    "row_price": 17000
+  },
+  "14113901": {
+    "price_cop": "$ 500",
     "price_usd": "Consultar precio",
     "unit": "Unidad",
     "approx": true,
     "source": "LISTA MARKETING PISO DECK",
-    "row_name": "ANGULO TERMINACION PISO DECK",
-    "row_price": 29500
-  },
-  "14113201": {
-    "price_cop": "$ 2.321",
-    "price_usd": "Consultar precio",
-    "unit": "Unidad",
-    "approx": true,
-    "source": "LISTA MARKETING PERFILERIA",
-    "row_name": "ANGULO",
-    "row_price": 2321
-  },
-  "14113202": {
-    "price_cop": "$ 2.321",
-    "price_usd": "Consultar precio",
-    "unit": "Unidad",
-    "approx": true,
-    "source": "LISTA MARKETING PERFILERIA",
-    "row_name": "ANGULO",
-    "row_price": 2321
+    "row_name": "CLIP Y TORNILLO EN ACERO INOXIDABLE",
+    "row_price": 500
   },
   "14121201": {
     "price_cop": "$ 105.000",
@@ -648,16 +716,7 @@
     "unit": "Unidad",
     "approx": true,
     "source": "LISTA MARKETING PARED MARMOL",
-    "row_name": "LAMINA MARMOL   2.44",
-    "row_price": 105000
-  },
-  "14121202": {
-    "price_cop": "$ 105.000",
-    "price_usd": "Consultar precio",
-    "unit": "Unidad",
-    "approx": true,
-    "source": "LISTA MARKETING PARED MARMOL",
-    "row_name": "LAMINA MARMOL   2.44",
+    "row_name": "LAMINA MARMOL BLANCO M-01-2.44",
     "row_price": 105000
   },
   "14121203": {
@@ -666,16 +725,7 @@
     "unit": "Unidad",
     "approx": true,
     "source": "LISTA MARKETING PARED MARMOL",
-    "row_name": "LAMINA MARMOL   2.44",
-    "row_price": 105000
-  },
-  "14121204": {
-    "price_cop": "$ 105.000",
-    "price_usd": "Consultar precio",
-    "unit": "Unidad",
-    "approx": true,
-    "source": "LISTA MARKETING PARED MARMOL",
-    "row_name": "LAMINA MARMOL   2.44",
+    "row_name": "LAMINA MARMOL NEGRO M-03-2.44",
     "row_price": 105000
   },
   "14121205": {
@@ -684,7 +734,7 @@
     "unit": "Unidad",
     "approx": true,
     "source": "LISTA MARKETING PARED MARMOL",
-    "row_name": "LAMINA MARMOL   2.44",
+    "row_name": "LAMINA MARMOL GRANITO M-05-2.44",
     "row_price": 105000
   },
   "14121206": {
@@ -693,7 +743,7 @@
     "unit": "Unidad",
     "approx": true,
     "source": "LISTA MARKETING PARED MARMOL",
-    "row_name": "LAMINA MARMOL   2.44",
+    "row_name": "LAMINA MARMOL LUNA M-06-2.44",
     "row_price": 105000
   },
   "14121207": {
@@ -702,16 +752,7 @@
     "unit": "Unidad",
     "approx": true,
     "source": "LISTA MARKETING PARED MARMOL",
-    "row_name": "LAMINA MARMOL   2.44",
-    "row_price": 105000
-  },
-  "14121208": {
-    "price_cop": "$ 105.000",
-    "price_usd": "Consultar precio",
-    "unit": "Unidad",
-    "approx": true,
-    "source": "LISTA MARKETING PARED MARMOL",
-    "row_name": "LAMINA MARMOL   2.44",
+    "row_name": "LAMINA MARMOL FUSION M-07-2.44",
     "row_price": 105000
   },
   "14121209": {
@@ -720,7 +761,7 @@
     "unit": "Unidad",
     "approx": true,
     "source": "LISTA MARKETING PARED MARMOL",
-    "row_name": "LAMINA MARMOL   2.44",
+    "row_name": "LAMINA MARMOL IBIZA M-09-2.44",
     "row_price": 105000
   },
   "14121210": {
@@ -729,7 +770,7 @@
     "unit": "Unidad",
     "approx": true,
     "source": "LISTA MARKETING PARED MARMOL",
-    "row_name": "LAMINA MARMOL   2.44",
+    "row_name": "LAMINA MARMOL SAHARA M-10-2.44",
     "row_price": 105000
   },
   "14121211": {
@@ -738,7 +779,7 @@
     "unit": "Unidad",
     "approx": true,
     "source": "LISTA MARKETING PARED MARMOL",
-    "row_name": "LAMINA MARMOL   2.44",
+    "row_name": "LAMINA MARMOL ECLIPSE M-11-2.44",
     "row_price": 105000
   },
   "14121214": {
@@ -747,7 +788,7 @@
     "unit": "Unidad",
     "approx": true,
     "source": "LISTA MARKETING PARED MARMOL",
-    "row_name": "LAMINA MARMOL   2.44",
+    "row_name": "LAMINA MARMOL MATE PIGMENTO M-14-2.44",
     "row_price": 105000
   },
   "14121215": {
@@ -756,7 +797,7 @@
     "unit": "Unidad",
     "approx": true,
     "source": "LISTA MARKETING PARED MARMOL",
-    "row_name": "LAMINA MARMOL   2.44",
+    "row_name": "LAMINA MARMOL MATE GRECIA M-15-2.44",
     "row_price": 105000
   },
   "14121216": {
@@ -765,7 +806,7 @@
     "unit": "Unidad",
     "approx": true,
     "source": "LISTA MARKETING PARED MARMOL",
-    "row_name": "LAMINA MARMOL   2.44",
+    "row_name": "LAMINA MARMOL MATE PIEDRA ANGULAR M-16-2.44",
     "row_price": 105000
   },
   "14121217": {
@@ -774,16 +815,7 @@
     "unit": "Unidad",
     "approx": true,
     "source": "LISTA MARKETING PARED MARMOL",
-    "row_name": "LAMINA MARMOL   2.44",
-    "row_price": 105000
-  },
-  "14121218": {
-    "price_cop": "$ 105.000",
-    "price_usd": "Consultar precio",
-    "unit": "Unidad",
-    "approx": true,
-    "source": "LISTA MARKETING PARED MARMOL",
-    "row_name": "LAMINA MARMOL   2.44",
+    "row_name": "LAMINA MARMOL BEIGE ACUARELA M-17-2-2,44",
     "row_price": 105000
   },
   "14121219": {
@@ -792,7 +824,7 @@
     "unit": "Unidad",
     "approx": true,
     "source": "LISTA MARKETING PARED MARMOL",
-    "row_name": "LAMINA MARMOL   2.44",
+    "row_name": "LAMINA MARMOL VIZCAYA M-19-2.44",
     "row_price": 105000
   },
   "14121220": {
@@ -801,7 +833,7 @@
     "unit": "Unidad",
     "approx": true,
     "source": "LISTA MARKETING PARED MARMOL",
-    "row_name": "LAMINA MARMOL   2.44",
+    "row_name": "LAMINA MARMOL GUATAPURI M-20-2.44",
     "row_price": 105000
   },
   "14121221": {
@@ -810,7 +842,7 @@
     "unit": "Unidad",
     "approx": true,
     "source": "LISTA MARKETING PARED MARMOL",
-    "row_name": "LAMINA MARMOL   2.44",
+    "row_name": "LAMINA MARMOL VENECIA M-21-2.44",
     "row_price": 105000
   },
   "14121222": {
@@ -819,7 +851,7 @@
     "unit": "Unidad",
     "approx": true,
     "source": "LISTA MARKETING PARED MARMOL",
-    "row_name": "LAMINA MARMOL   2.44",
+    "row_name": "LAMINA MARMOL MEDITERRANEO M-22-2.44",
     "row_price": 105000
   },
   "14121223": {
@@ -828,7 +860,7 @@
     "unit": "Unidad",
     "approx": true,
     "source": "LISTA MARKETING PARED MARMOL",
-    "row_name": "LAMINA MARMOL   2.44",
+    "row_name": "LAMINA MARMOL OASIS M-23-2.44",
     "row_price": 105000
   },
   "14121229": {
@@ -837,7 +869,7 @@
     "unit": "Unidad",
     "approx": true,
     "source": "LISTA MARKETING PARED MARMOL",
-    "row_name": "LAMINA MARMOL   2.44",
+    "row_name": "LAMINA MARMOL VERONA M-29-2.44",
     "row_price": 105000
   },
   "14121230": {
@@ -846,7 +878,7 @@
     "unit": "Unidad",
     "approx": true,
     "source": "LISTA MARKETING PARED MARMOL",
-    "row_name": "LAMINA MARMOL   2.44",
+    "row_name": "LAMINA MARMOL ISLANDIA M-30-2.44",
     "row_price": 105000
   },
   "14121231": {
@@ -855,7 +887,7 @@
     "unit": "Unidad",
     "approx": true,
     "source": "LISTA MARKETING PARED MARMOL",
-    "row_name": "LAMINA MARMOL   2.44",
+    "row_name": "LAMINA MARMOL NEW YORK M-31-2.44",
     "row_price": 105000
   },
   "14121232": {
@@ -864,7 +896,7 @@
     "unit": "Unidad",
     "approx": true,
     "source": "LISTA MARKETING PARED MARMOL",
-    "row_name": "LAMINA MARMOL   2.44",
+    "row_name": "LAMINA MARMOL SANTORINI MIX M-32-2.44",
     "row_price": 105000
   },
   "14121233": {
@@ -873,44 +905,107 @@
     "unit": "Unidad",
     "approx": true,
     "source": "LISTA MARKETING PARED MARMOL",
-    "row_name": "LAMINA MARMOL   2.44",
+    "row_name": "LAMINA MARMOL SINGAPUR GRIS M-33-2.44",
     "row_price": 105000
   },
   "14121234": {
-    "price_cop": "$ 105.000",
+    "price_cop": "$ 110.000",
     "price_usd": "Consultar precio",
     "unit": "Unidad",
     "approx": true,
     "source": "LISTA MARKETING PARED MARMOL",
-    "row_name": "LAMINA MARMOL   2.44",
-    "row_price": 105000
+    "row_name": "LAMINA MARMOL MONACO ONIX M-34-2.44",
+    "row_price": 110000
   },
   "14121235": {
-    "price_cop": "$ 105.000",
+    "price_cop": "$ 110.000",
     "price_usd": "Consultar precio",
     "unit": "Unidad",
     "approx": true,
     "source": "LISTA MARKETING PARED MARMOL",
-    "row_name": "LAMINA MARMOL   2.44",
-    "row_price": 105000
+    "row_name": "LAMINA MARMOL DUBAI NEGRO M-35-2.44",
+    "row_price": 110000
+  },
+  "14121301": {
+    "price_cop": "$ 37.098",
+    "price_usd": "Consultar precio",
+    "unit": "Unidad",
+    "approx": true,
+    "source": "LISTA MARKETING PARED ROLLO",
+    "row_name": "ROLLO ADHESIVO PARED MARMOL GRIS (6210-1)",
+    "row_price": 37098
+  },
+  "14121302": {
+    "price_cop": "$ 37.098",
+    "price_usd": "Consultar precio",
+    "unit": "Unidad",
+    "approx": true,
+    "source": "LISTA MARKETING PARED ROLLO",
+    "row_name": "ROLLO ADHESIVO PARED MARMOL NEGRO (1735)",
+    "row_price": 37098
+  },
+  "14121303": {
+    "price_cop": "$ 37.098",
+    "price_usd": "Consultar precio",
+    "unit": "Unidad",
+    "approx": true,
+    "source": "LISTA MARKETING PARED ROLLO",
+    "row_name": "ROLLO ADHESIVO PARED MARMOL T9 (056801)",
+    "row_price": 37098
+  },
+  "14121304": {
+    "price_cop": "$ 37.098",
+    "price_usd": "Consultar precio",
+    "unit": "Unidad",
+    "approx": true,
+    "source": "LISTA MARKETING PARED ROLLO",
+    "row_name": "ROLLO ADHESIVO PARED MARMOL BLANCO (6223)",
+    "row_price": 37098
   },
   "14121401": {
-    "price_cop": "$ 14.755",
+    "price_cop": "$ 180.000",
     "price_usd": "Consultar precio",
     "unit": "Unidad",
     "approx": true,
     "source": "LISTA MARKETING PARED MARMOL",
-    "row_name": "ACCESORIO MARMOL",
-    "row_price": 14755
+    "row_name": "PANEL ACRILICO MARMOL VENENCIANO (ZS-3D065 Y)",
+    "row_price": 180000
   },
   "14121402": {
-    "price_cop": "$ 14.755",
+    "price_cop": "$ 180.000",
     "price_usd": "Consultar precio",
     "unit": "Unidad",
     "approx": true,
     "source": "LISTA MARKETING PARED MARMOL",
-    "row_name": "ACCESORIO MARMOL",
-    "row_price": 14755
+    "row_name": "PANEL ACRILICO MARMOL ONYX ROYAL (ZS-3D045 J)",
+    "row_price": 180000
+  },
+  "14121404": {
+    "price_cop": "$ 180.000",
+    "price_usd": "Consultar precio",
+    "unit": "Unidad",
+    "approx": true,
+    "source": "LISTA MARKETING PARED MARMOL",
+    "row_name": "PANEL ACRILICO MARMOL LEGACY (ZS-3D029 J)",
+    "row_price": 180000
+  },
+  "14121407": {
+    "price_cop": "$ 180.000",
+    "price_usd": "Consultar precio",
+    "unit": "Unidad",
+    "approx": true,
+    "source": "LISTA MARKETING PARED MARMOL",
+    "row_name": "PANEL ACRILICO MARMOL SILVER (ZS-3D038 Y)",
+    "row_price": 180000
+  },
+  "14121408": {
+    "price_cop": "$ 180.000",
+    "price_usd": "Consultar precio",
+    "unit": "Unidad",
+    "approx": true,
+    "source": "LISTA MARKETING PARED MARMOL",
+    "row_name": "PANEL ACRILICO MARMOL AUREA (ZS-3D030 Y)",
+    "row_price": 180000
   },
   "14121501": {
     "price_cop": "$ 230.000",
@@ -935,8 +1030,8 @@
     "price_usd": "Consultar precio",
     "unit": "Unidad",
     "approx": true,
-    "source": "LISTA MARKETING PANEL WPC",
-    "row_name": "PANEL WPC PLANO",
+    "source": "LISTA MARKETING PANEL WPC  PLANO",
+    "row_name": "PANEL WPC PLANO MADERA NATURAL (30-147)",
     "row_price": 25000
   },
   "14121504": {
@@ -944,8 +1039,8 @@
     "price_usd": "Consultar precio",
     "unit": "Unidad",
     "approx": true,
-    "source": "LISTA MARKETING PANEL WPC",
-    "row_name": "PANEL WPC PLANO",
+    "source": "LISTA MARKETING PANEL WPC  PLANO",
+    "row_name": "PANEL WPC PLANO NOGAL OSCURO (30-247)",
     "row_price": 25000
   },
   "14121505": {
@@ -953,27 +1048,216 @@
     "price_usd": "Consultar precio",
     "unit": "Unidad",
     "approx": true,
-    "source": "LISTA MARKETING PANEL WPC",
-    "row_name": "PANEL WPC PLANO",
+    "source": "LISTA MARKETING PANEL WPC  PLANO",
+    "row_name": "PANEL WPC PLANO ROBLE GRIS (30-237)",
     "row_price": 25000
   },
-  "14121509": {
-    "price_cop": "$ 25.000",
+  "14122001": {
+    "price_cop": "$ 23.000",
     "price_usd": "Consultar precio",
     "unit": "Unidad",
     "approx": true,
     "source": "LISTA MARKETING PANEL WPC",
-    "row_name": "PANEL WPC PLANO",
-    "row_price": 25000
+    "row_name": "PANEL WPC STONE GRIS (01)",
+    "row_price": 23000
   },
-  "14121532": {
-    "price_cop": "$ 25.000",
+  "14122002": {
+    "price_cop": "$ 23.000",
     "price_usd": "Consultar precio",
     "unit": "Unidad",
     "approx": true,
     "source": "LISTA MARKETING PANEL WPC",
-    "row_name": "PANEL WPC PLANO",
-    "row_price": 25000
+    "row_name": "PANEL WPC CARRARA BLANCO (02)",
+    "row_price": 23000
+  },
+  "14122003": {
+    "price_cop": "$ 23.000",
+    "price_usd": "Consultar precio",
+    "unit": "Unidad",
+    "approx": true,
+    "source": "LISTA MARKETING PANEL WPC",
+    "row_name": "PANEL WPC POLAR BLANCO (03)",
+    "row_price": 23000
+  },
+  "14122004": {
+    "price_cop": "$ 23.000",
+    "price_usd": "Consultar precio",
+    "unit": "Unidad",
+    "approx": true,
+    "source": "LISTA MARKETING PANEL WPC",
+    "row_name": "PANEL WPC WENGUE (04)",
+    "row_price": 23000
+  },
+  "14122005": {
+    "price_cop": "$ 23.000",
+    "price_usd": "Consultar precio",
+    "unit": "Unidad",
+    "approx": true,
+    "source": "LISTA MARKETING PANEL WPC",
+    "row_name": "PANEL WPC ROBLE CLARO (05)",
+    "row_price": 23000
+  },
+  "14122006": {
+    "price_cop": "$ 23.000",
+    "price_usd": "Consultar precio",
+    "unit": "Unidad",
+    "approx": true,
+    "source": "LISTA MARKETING PANEL WPC",
+    "row_name": "PANEL WPC TRAVERTINO (06)",
+    "row_price": 23000
+  },
+  "14122007": {
+    "price_cop": "$ 23.000",
+    "price_usd": "Consultar precio",
+    "unit": "Unidad",
+    "approx": true,
+    "source": "LISTA MARKETING PANEL WPC",
+    "row_name": "PANEL WPC CHERRY (07)",
+    "row_price": 23000
+  },
+  "14122010": {
+    "price_cop": "$ 23.000",
+    "price_usd": "Consultar precio",
+    "unit": "Unidad",
+    "approx": true,
+    "source": "LISTA MARKETING PANEL WPC",
+    "row_name": "PANEL WPC MADERA TEKA (10)",
+    "row_price": 23000
+  },
+  "14122012": {
+    "price_cop": "$ 23.000",
+    "price_usd": "Consultar precio",
+    "unit": "Unidad",
+    "approx": true,
+    "source": "LISTA MARKETING PANEL WPC",
+    "row_name": "PANEL WPC CEDRO (12)",
+    "row_price": 23000
+  },
+  "14122013": {
+    "price_cop": "$ 23.000",
+    "price_usd": "Consultar precio",
+    "unit": "Unidad",
+    "approx": true,
+    "source": "LISTA MARKETING PANEL WPC",
+    "row_name": "PANEL WPC EBANO NEGRO (13)",
+    "row_price": 23000
+  },
+  "14122014": {
+    "price_cop": "$ 23.000",
+    "price_usd": "Consultar precio",
+    "unit": "Unidad",
+    "approx": true,
+    "source": "LISTA MARKETING PANEL WPC",
+    "row_name": "PANEL WPC CARRARA NEGRO (14)",
+    "row_price": 23000
+  },
+  "14122016": {
+    "price_cop": "$ 23.000",
+    "price_usd": "Consultar precio",
+    "unit": "Unidad",
+    "approx": true,
+    "source": "LISTA MARKETING PANEL WPC",
+    "row_name": "PANEL WPC MARFIL (16)",
+    "row_price": 23000
+  },
+  "14122019": {
+    "price_cop": "$ 23.000",
+    "price_usd": "Consultar precio",
+    "unit": "Unidad",
+    "approx": true,
+    "source": "LISTA MARKETING PANEL WPC",
+    "row_name": "PANEL WPC CHOCO MIX (19)",
+    "row_price": 23000
+  },
+  "14122020": {
+    "price_cop": "$ 23.000",
+    "price_usd": "Consultar precio",
+    "unit": "Unidad",
+    "approx": true,
+    "source": "LISTA MARKETING PANEL WPC",
+    "row_name": "PANEL WPC OLIVO MIX (20)",
+    "row_price": 23000
+  },
+  "14122021": {
+    "price_cop": "$ 23.000",
+    "price_usd": "Consultar precio",
+    "unit": "Unidad",
+    "approx": true,
+    "source": "LISTA MARKETING PANEL WPC",
+    "row_name": "PANEL WPC MAPLE MIX (21)",
+    "row_price": 23000
+  },
+  "14122022": {
+    "price_cop": "$ 23.000",
+    "price_usd": "Consultar precio",
+    "unit": "Unidad",
+    "approx": true,
+    "source": "LISTA MARKETING PANEL WPC",
+    "row_name": "PANEL WPC GRECIA MIX (22)",
+    "row_price": 23000
+  },
+  "14122023": {
+    "price_cop": "$ 23.000",
+    "price_usd": "Consultar precio",
+    "unit": "Unidad",
+    "approx": true,
+    "source": "LISTA MARKETING PANEL WPC",
+    "row_name": "PANEL WPC NEGRO MATE (23)",
+    "row_price": 23000
+  },
+  "14122024": {
+    "price_cop": "$ 23.000",
+    "price_usd": "Consultar precio",
+    "unit": "Unidad",
+    "approx": true,
+    "source": "LISTA MARKETING PANEL WPC",
+    "row_name": "PANEL WPC CREMA SELECTA NEW (24)",
+    "row_price": 23000
+  },
+  "14122025": {
+    "price_cop": "$ 23.000",
+    "price_usd": "Consultar precio",
+    "unit": "Unidad",
+    "approx": true,
+    "source": "LISTA MARKETING PANEL WPC",
+    "row_name": "PANEL WPC AZUL CELESTE NEW (25)",
+    "row_price": 23000
+  },
+  "14122026": {
+    "price_cop": "$ 23.000",
+    "price_usd": "Consultar precio",
+    "unit": "Unidad",
+    "approx": true,
+    "source": "LISTA MARKETING PANEL WPC",
+    "row_name": "PANEL WPC VERDE MENTA NEW (26)",
+    "row_price": 23000
+  },
+  "14122027": {
+    "price_cop": "$ 23.000",
+    "price_usd": "Consultar precio",
+    "unit": "Unidad",
+    "approx": true,
+    "source": "LISTA MARKETING PANEL WPC",
+    "row_name": "PANEL WPC BLANCO IMPERIAL (27)",
+    "row_price": 23000
+  },
+  "14122028": {
+    "price_cop": "$ 23.000",
+    "price_usd": "Consultar precio",
+    "unit": "Unidad",
+    "approx": true,
+    "source": "LISTA MARKETING PANEL WPC",
+    "row_name": "PANEL WPC MANDARINA NEW (28)",
+    "row_price": 23000
+  },
+  "14122029": {
+    "price_cop": "$ 23.000",
+    "price_usd": "Consultar precio",
+    "unit": "Unidad",
+    "approx": true,
+    "source": "LISTA MARKETING PANEL WPC",
+    "row_name": "PANEL WPC NEGRO IMPERIAL (29)",
+    "row_price": 23000
   },
   "14122101": {
     "price_cop": "$ 15.100",
@@ -981,7 +1265,7 @@
     "unit": "Unidad",
     "approx": true,
     "source": "LISTA MARKETING PANEL WPC",
-    "row_name": "ANGULO WPC",
+    "row_name": "ANGULO WPC STONE GRIS (01)",
     "row_price": 15100
   },
   "14122102": {
@@ -990,7 +1274,7 @@
     "unit": "Unidad",
     "approx": true,
     "source": "LISTA MARKETING PANEL WPC",
-    "row_name": "ANGULO WPC",
+    "row_name": "ANGULO WPC CARRARA BLANCO (02)",
     "row_price": 15100
   },
   "14122103": {
@@ -999,7 +1283,7 @@
     "unit": "Unidad",
     "approx": true,
     "source": "LISTA MARKETING PANEL WPC",
-    "row_name": "ANGULO WPC",
+    "row_name": "ANGULO WPC POLAR BLANCO (03)",
     "row_price": 15100
   },
   "14122104": {
@@ -1008,7 +1292,7 @@
     "unit": "Unidad",
     "approx": true,
     "source": "LISTA MARKETING PANEL WPC",
-    "row_name": "ANGULO WPC",
+    "row_name": "ANGULO WPC WENGUE (04)",
     "row_price": 15100
   },
   "14122105": {
@@ -1017,7 +1301,7 @@
     "unit": "Unidad",
     "approx": true,
     "source": "LISTA MARKETING PANEL WPC",
-    "row_name": "ANGULO WPC",
+    "row_name": "ANGULO WPC ROBLE CLARO (05)",
     "row_price": 15100
   },
   "14122106": {
@@ -1026,7 +1310,7 @@
     "unit": "Unidad",
     "approx": true,
     "source": "LISTA MARKETING PANEL WPC",
-    "row_name": "ANGULO WPC",
+    "row_name": "ANGULO WPC TRAVERTINO (06)",
     "row_price": 15100
   },
   "14122107": {
@@ -1035,7 +1319,7 @@
     "unit": "Unidad",
     "approx": true,
     "source": "LISTA MARKETING PANEL WPC",
-    "row_name": "ANGULO WPC",
+    "row_name": "ANGULO WPC CHERRY (07)",
     "row_price": 15100
   },
   "14122108": {
@@ -1044,7 +1328,7 @@
     "unit": "Unidad",
     "approx": true,
     "source": "LISTA MARKETING PANEL WPC",
-    "row_name": "ANGULO WPC",
+    "row_name": "ANGULO WPC GOLDEN BRILLO (08)",
     "row_price": 15100
   },
   "14122109": {
@@ -1053,7 +1337,7 @@
     "unit": "Unidad",
     "approx": true,
     "source": "LISTA MARKETING PANEL WPC",
-    "row_name": "ANGULO WPC",
+    "row_name": "ANGULO WPC ANOLOC BRILLO (09)",
     "row_price": 15100
   },
   "14122110": {
@@ -1062,7 +1346,7 @@
     "unit": "Unidad",
     "approx": true,
     "source": "LISTA MARKETING PANEL WPC",
-    "row_name": "ANGULO WPC",
+    "row_name": "ANGULO WPC MADERA TEKA (10)",
     "row_price": 15100
   },
   "14122111": {
@@ -1071,17 +1355,17 @@
     "unit": "Unidad",
     "approx": true,
     "source": "LISTA MARKETING PANEL WPC",
-    "row_name": "ANGULO WPC",
+    "row_name": "ANGULO WPC VIENA GRIS (11)",
     "row_price": 15100
   },
   "14122112": {
-    "price_cop": "$ 15.100",
+    "price_cop": "$ 2.321",
     "price_usd": "Consultar precio",
     "unit": "Unidad",
     "approx": true,
-    "source": "LISTA MARKETING PANEL WPC",
-    "row_name": "ANGULO WPC",
-    "row_price": 15100
+    "source": "LISTA MARKETING PERFILERIA",
+    "row_name": "ANGULO",
+    "row_price": 2321
   },
   "14122113": {
     "price_cop": "$ 15.100",
@@ -1089,89 +1373,89 @@
     "unit": "Unidad",
     "approx": true,
     "source": "LISTA MARKETING PANEL WPC",
-    "row_name": "ANGULO WPC",
+    "row_name": "ANGULO WPC EBANO MADERA (13)",
     "row_price": 15100
   },
   "14122114": {
-    "price_cop": "$ 15.100",
+    "price_cop": "$ 12.700",
     "price_usd": "Consultar precio",
     "unit": "Unidad",
     "approx": true,
     "source": "LISTA MARKETING PANEL WPC",
-    "row_name": "ANGULO WPC",
-    "row_price": 15100
+    "row_name": "ANGULO WPC CARRARA NEGRO (14)",
+    "row_price": 12700
   },
   "14122115": {
-    "price_cop": "$ 15.100",
+    "price_cop": "$ 12.700",
     "price_usd": "Consultar precio",
     "unit": "Unidad",
     "approx": true,
     "source": "LISTA MARKETING PANEL WPC",
-    "row_name": "ANGULO WPC",
-    "row_price": 15100
+    "row_name": "ANGULO WPC PINO GRIS (15)",
+    "row_price": 12700
   },
   "14122116": {
-    "price_cop": "$ 15.100",
+    "price_cop": "$ 12.700",
     "price_usd": "Consultar precio",
     "unit": "Unidad",
     "approx": true,
     "source": "LISTA MARKETING PANEL WPC",
-    "row_name": "ANGULO WPC",
-    "row_price": 15100
+    "row_name": "ANGULO WPC MARFIL (16)",
+    "row_price": 12700
   },
   "14122117": {
-    "price_cop": "$ 15.100",
+    "price_cop": "$ 12.700",
     "price_usd": "Consultar precio",
     "unit": "Unidad",
     "approx": true,
     "source": "LISTA MARKETING PANEL WPC",
-    "row_name": "ANGULO WPC",
-    "row_price": 15100
+    "row_name": "ANGULO WPC CALIZA GRIS (17)",
+    "row_price": 12700
   },
   "14122119": {
-    "price_cop": "$ 15.100",
+    "price_cop": "$ 12.700",
     "price_usd": "Consultar precio",
     "unit": "Unidad",
     "approx": true,
     "source": "LISTA MARKETING PANEL WPC",
-    "row_name": "ANGULO WPC",
-    "row_price": 15100
+    "row_name": "ANGULO WPC CHOCO MIX (19)",
+    "row_price": 12700
   },
   "14122120": {
-    "price_cop": "$ 15.100",
+    "price_cop": "$ 12.700",
     "price_usd": "Consultar precio",
     "unit": "Unidad",
     "approx": true,
     "source": "LISTA MARKETING PANEL WPC",
-    "row_name": "ANGULO WPC",
-    "row_price": 15100
+    "row_name": "ANGULO WPC OLIVO MIX (20)",
+    "row_price": 12700
   },
   "14122121": {
-    "price_cop": "$ 15.100",
+    "price_cop": "$ 12.700",
     "price_usd": "Consultar precio",
     "unit": "Unidad",
     "approx": true,
     "source": "LISTA MARKETING PANEL WPC",
-    "row_name": "ANGULO WPC",
-    "row_price": 15100
+    "row_name": "ANGULO WPC MAPLE MIX (21)",
+    "row_price": 12700
   },
   "14122122": {
-    "price_cop": "$ 15.100",
+    "price_cop": "$ 12.700",
     "price_usd": "Consultar precio",
     "unit": "Unidad",
     "approx": true,
     "source": "LISTA MARKETING PANEL WPC",
-    "row_name": "ANGULO WPC",
-    "row_price": 15100
+    "row_name": "ANGULO WPC GRECIA MIX (22)",
+    "row_price": 12700
   },
   "14122123": {
-    "price_cop": "$ 15.100",
+    "price_cop": "$ 12.700",
     "price_usd": "Consultar precio",
     "unit": "Unidad",
     "approx": true,
     "source": "LISTA MARKETING PANEL WPC",
-    "row_name": "ANGULO WPC",
-    "row_price": 15100
+    "row_name": "ANGULO WPC NEGRO MATE (23)",
+    "row_price": 12700
   },
   "14122201": {
     "price_cop": "$ 70.000",
@@ -1179,7 +1463,7 @@
     "unit": "Unidad",
     "approx": true,
     "source": "LISTA MARKETING PARED WPC EXT",
-    "row_name": "PANEL WPC EXT",
+    "row_name": "PANEL WPC EXT ROBLE (01)",
     "row_price": 70000
   },
   "14122202": {
@@ -1188,7 +1472,7 @@
     "unit": "Unidad",
     "approx": true,
     "source": "LISTA MARKETING PARED WPC EXT",
-    "row_name": "PANEL WPC EXT",
+    "row_name": "PANEL WPC EXT NOGAL (02)",
     "row_price": 70000
   },
   "14122203": {
@@ -1197,7 +1481,7 @@
     "unit": "Unidad",
     "approx": true,
     "source": "LISTA MARKETING PARED WPC EXT",
-    "row_name": "PANEL WPC EXT",
+    "row_name": "PANEL WPC EXT MARRON (03)",
     "row_price": 70000
   },
   "14122204": {
@@ -1206,7 +1490,7 @@
     "unit": "Unidad",
     "approx": true,
     "source": "LISTA MARKETING PARED WPC EXT",
-    "row_name": "PANEL WPC EXT",
+    "row_name": "PANEL WPC EXT EBANO (04)",
     "row_price": 70000
   },
   "14122205": {
@@ -1215,7 +1499,7 @@
     "unit": "Unidad",
     "approx": true,
     "source": "LISTA MARKETING PARED WPC EXT",
-    "row_name": "PANEL WPC EXT",
+    "row_name": "PANEL WPC EXT CEDRO (05)",
     "row_price": 70000
   },
   "14122206": {
@@ -1224,7 +1508,7 @@
     "unit": "Unidad",
     "approx": true,
     "source": "LISTA MARKETING PARED WPC EXT",
-    "row_name": "PANEL WPC EXT",
+    "row_name": "PANEL WPC EXT WENGUE (06)",
     "row_price": 70000
   },
   "14122207": {
@@ -1233,7 +1517,7 @@
     "unit": "Unidad",
     "approx": true,
     "source": "LISTA MARKETING PARED WPC EXT",
-    "row_name": "PANEL WPC EXT",
+    "row_name": "PANEL WPC EXT GRAFITO (07)",
     "row_price": 70000
   },
   "14122208": {
@@ -1242,53 +1526,53 @@
     "unit": "Unidad",
     "approx": true,
     "source": "LISTA MARKETING PARED WPC EXT",
-    "row_name": "PANEL WPC EXT",
+    "row_name": "PANEL WPC EXT AVELLANA MIX COE (08)",
     "row_price": 70000
   },
   "14122301": {
-    "price_cop": "$ 21.834",
+    "price_cop": "$ 20.255",
     "price_usd": "Consultar precio",
     "unit": "Unidad",
     "approx": true,
     "source": "LISTA MARKETING PARED WPC EXT",
-    "row_name": "ANGULO WPC EXT",
-    "row_price": 21834
+    "row_name": "ANGULO WPC EXT ROBLE (01)",
+    "row_price": 20255
   },
   "14122302": {
-    "price_cop": "$ 21.834",
+    "price_cop": "$ 20.255",
     "price_usd": "Consultar precio",
     "unit": "Unidad",
     "approx": true,
     "source": "LISTA MARKETING PARED WPC EXT",
-    "row_name": "ANGULO WPC EXT",
-    "row_price": 21834
+    "row_name": "ANGULO WPC EXT NOGAL (02)",
+    "row_price": 20255
   },
   "14122303": {
-    "price_cop": "$ 21.834",
+    "price_cop": "$ 20.255",
     "price_usd": "Consultar precio",
     "unit": "Unidad",
     "approx": true,
     "source": "LISTA MARKETING PARED WPC EXT",
-    "row_name": "ANGULO WPC EXT",
-    "row_price": 21834
+    "row_name": "ANGULO WPC EXT MARRON (03)",
+    "row_price": 20255
   },
   "14122304": {
-    "price_cop": "$ 21.834",
+    "price_cop": "$ 20.255",
     "price_usd": "Consultar precio",
     "unit": "Unidad",
     "approx": true,
     "source": "LISTA MARKETING PARED WPC EXT",
-    "row_name": "ANGULO WPC EXT",
-    "row_price": 21834
+    "row_name": "ANGULO WPC EXT EBANO (04)",
+    "row_price": 20255
   },
   "14122305": {
-    "price_cop": "$ 21.834",
+    "price_cop": "$ 20.255",
     "price_usd": "Consultar precio",
     "unit": "Unidad",
     "approx": true,
     "source": "LISTA MARKETING PARED WPC EXT",
-    "row_name": "ANGULO WPC EXT",
-    "row_price": 21834
+    "row_name": "ANGULO WPC EXT CEDRO (05)",
+    "row_price": 20255
   },
   "14122306": {
     "price_cop": "$ 21.834",
@@ -1296,7 +1580,7 @@
     "unit": "Unidad",
     "approx": true,
     "source": "LISTA MARKETING PARED WPC EXT",
-    "row_name": "ANGULO WPC EXT",
+    "row_name": "ANGULO WPC EXT WENGUE (06)",
     "row_price": 21834
   },
   "14122307": {
@@ -1305,7 +1589,7 @@
     "unit": "Unidad",
     "approx": true,
     "source": "LISTA MARKETING PARED WPC EXT",
-    "row_name": "ANGULO WPC EXT",
+    "row_name": "ANGULO WPC EXT GRAFITO (07)",
     "row_price": 21834
   },
   "14122308": {
@@ -1314,17 +1598,8 @@
     "unit": "Unidad",
     "approx": true,
     "source": "LISTA MARKETING PARED WPC EXT",
-    "row_name": "ANGULO WPC EXT",
+    "row_name": "ANGULO WPC EXT AVELLANA MIX COE (08)",
     "row_price": 21834
-  },
-  "14122501": {
-    "price_cop": "$ 28.500",
-    "price_usd": "Consultar precio",
-    "unit": "Unidad",
-    "approx": true,
-    "source": "LISTA MARKETING PARED PS",
-    "row_name": "PANEL PS",
-    "row_price": 28500
   },
   "14122503": {
     "price_cop": "$ 28.500",
@@ -1332,7 +1607,7 @@
     "unit": "Unidad",
     "approx": true,
     "source": "LISTA MARKETING PARED PS",
-    "row_name": "PANEL PS",
+    "row_name": "PANEL PS LUXURY ARENA HH24104",
     "row_price": 28500
   },
   "14122504": {
@@ -1341,7 +1616,7 @@
     "unit": "Unidad",
     "approx": true,
     "source": "LISTA MARKETING PARED PS",
-    "row_name": "PANEL PS",
+    "row_name": "PANEL PS LUXURY NEGRO HH24105",
     "row_price": 28500
   },
   "14122506": {
@@ -1350,7 +1625,7 @@
     "unit": "Unidad",
     "approx": true,
     "source": "LISTA MARKETING PARED PS",
-    "row_name": "PANEL PS",
+    "row_name": "PANEL PS LUXURY PLATEADO HH24108",
     "row_price": 28500
   },
   "14122507": {
@@ -1359,17 +1634,8 @@
     "unit": "Unidad",
     "approx": true,
     "source": "LISTA MARKETING PARED PS",
-    "row_name": "PANEL PS",
+    "row_name": "PANEL PS ESTUARIO CREAM HH24111",
     "row_price": 28500
-  },
-  "14122508": {
-    "price_cop": "$ 37.000",
-    "price_usd": "Consultar precio",
-    "unit": "Unidad",
-    "approx": true,
-    "source": "LISTA MARKETING PARED PS",
-    "row_name": "PANEL PS MURALLA",
-    "row_price": 37000
   },
   "14122509": {
     "price_cop": "$ 37.000",
@@ -1377,7 +1643,7 @@
     "unit": "Unidad",
     "approx": true,
     "source": "LISTA MARKETING PARED PS",
-    "row_name": "PANEL PS MURALLA",
+    "row_name": "PANEL PS MURALLA CAFÉ  HH24115",
     "row_price": 37000
   },
   "14122510": {
@@ -1386,7 +1652,7 @@
     "unit": "Unidad",
     "approx": true,
     "source": "LISTA MARKETING PARED PS",
-    "row_name": "PANEL PS MURALLA",
+    "row_name": "PANEL PS MURALLA TEKA HH24116",
     "row_price": 37000
   },
   "14122511": {
@@ -1404,7 +1670,7 @@
     "unit": "Unidad",
     "approx": true,
     "source": "LISTA MARKETING PARED PS",
-    "row_name": "PANEL PS BISELADO",
+    "row_name": "PANEL PS BISELADO MADERA TEKA HH24103",
     "row_price": 54700
   },
   "14122513": {
@@ -1413,7 +1679,7 @@
     "unit": "Unidad",
     "approx": true,
     "source": "LISTA MARKETING PARED PS",
-    "row_name": "PANEL PS",
+    "row_name": "PANEL PS ESTUARIO NEGRO HH24109",
     "row_price": 28500
   },
   "14122514": {
@@ -1422,7 +1688,7 @@
     "unit": "Unidad",
     "approx": true,
     "source": "LISTA MARKETING PARED PS",
-    "row_name": "PANEL PS",
+    "row_name": "PANEL PS ESTUARIO GRIS HH24110",
     "row_price": 28500
   },
   "14122515": {
@@ -1431,7 +1697,7 @@
     "unit": "Unidad",
     "approx": true,
     "source": "LISTA MARKETING PARED PS",
-    "row_name": "PANEL PS",
+    "row_name": "PANEL PS ESTUARIO CAFÉ FUSIÓN HH24112",
     "row_price": 28500
   },
   "14122516": {
@@ -1440,7 +1706,7 @@
     "unit": "Unidad",
     "approx": true,
     "source": "LISTA MARKETING PARED PS",
-    "row_name": "PANEL PS",
+    "row_name": "PANEL PS CHOCO MIX HH24117",
     "row_price": 28500
   },
   "14122517": {
@@ -1449,7 +1715,7 @@
     "unit": "Unidad",
     "approx": true,
     "source": "LISTA MARKETING PARED PS",
-    "row_name": "PANEL PS",
+    "row_name": "PANEL PS LUXURY ROBLE HH24107",
     "row_price": 28500
   },
   "14122518": {
@@ -1458,8 +1724,26 @@
     "unit": "Unidad",
     "approx": true,
     "source": "LISTA MARKETING PARED PS",
-    "row_name": "PANEL PS BISELADO",
+    "row_name": "PANEL PS BISELADO MADERA MIEL  HH24102",
     "row_price": 54700
+  },
+  "14122609": {
+    "price_cop": "$ 23.000",
+    "price_usd": "Consultar precio",
+    "unit": "Unidad",
+    "approx": true,
+    "source": "LISTA MARKETING PANEL WPC",
+    "row_name": "PANEL WPC FRESNO (JUDY 05)",
+    "row_price": 23000
+  },
+  "14122611": {
+    "price_cop": "$ 23.000",
+    "price_usd": "Consultar precio",
+    "unit": "Unidad",
+    "approx": true,
+    "source": "LISTA MARKETING PANEL WPC",
+    "row_name": "PANEL WPC NOGAL (JUDY 10)",
+    "row_price": 23000
   },
   "14122705": {
     "price_cop": "$ 40.000",
@@ -1467,7 +1751,7 @@
     "unit": "Unidad",
     "approx": true,
     "source": "LISTA MARKETING LISTON PVC",
-    "row_name": "LISTON PVC CIELO  9CM",
+    "row_name": "LISTON PVC CIELO RASO CEDRO CLARO 9CM",
     "row_price": 40000
   },
   "14122710": {
@@ -1476,7 +1760,7 @@
     "unit": "Unidad",
     "approx": true,
     "source": "LISTA MARKETING LISTON PVC",
-    "row_name": "LISTON PVC CIELO  9CM",
+    "row_name": "LISTON PVC CIELO RASO MADERA TEKA 9CM",
     "row_price": 40000
   },
   "14122713": {
@@ -1485,8 +1769,26 @@
     "unit": "Unidad",
     "approx": true,
     "source": "LISTA MARKETING LISTON PVC",
-    "row_name": "LISTON PVC CIELO  9CM",
+    "row_name": "LISTON PVC CIELO RASO EBANO MADERA 9CM",
     "row_price": 40000
+  },
+  "14122805": {
+    "price_cop": "$ 55.000",
+    "price_usd": "Consultar precio",
+    "unit": "Unidad",
+    "approx": true,
+    "source": "LISTA MARKETING LISTON PVC",
+    "row_name": "LISTON PVC ESTRUCTURAL CEDRO CLARO 10CM",
+    "row_price": 55000
+  },
+  "14122810": {
+    "price_cop": "$ 55.000",
+    "price_usd": "Consultar precio",
+    "unit": "Unidad",
+    "approx": true,
+    "source": "LISTA MARKETING LISTON PVC",
+    "row_name": "LISTON PVC ESTRUCTURAL MADERA TEKA 10CM",
+    "row_price": 55000
   },
   "14122901": {
     "price_cop": "$ 500",
@@ -1524,13 +1826,49 @@
     "row_name": "PERFIL BASE METALICO NEGRO LISTON CIELO RASO",
     "row_price": 18000
   },
+  "14123002": {
+    "price_cop": "$ 74.000",
+    "price_usd": "Consultar precio",
+    "unit": "Unidad",
+    "approx": true,
+    "source": "LISTA MARKETING LISTON WPC",
+    "row_name": "LISTON WPC ESTRUCTURAL ROBLE 01  6*4cm (TUBE)",
+    "row_price": 74000
+  },
+  "14123004": {
+    "price_cop": "$ 74.000",
+    "price_usd": "Consultar precio",
+    "unit": "Unidad",
+    "approx": true,
+    "source": "LISTA MARKETING LISTON WPC",
+    "row_name": "LISTON WPC ESTRUCTURAL EBANO 04 6*4cm (TUBE)",
+    "row_price": 74000
+  },
+  "14123005": {
+    "price_cop": "$ 74.000",
+    "price_usd": "Consultar precio",
+    "unit": "Unidad",
+    "approx": true,
+    "source": "LISTA MARKETING LISTON WPC",
+    "row_name": "LISTON WPC ESTRUCTURAL CEDRO 05 6*4cm (TUBE)",
+    "row_price": 74000
+  },
+  "14123115": {
+    "price_cop": "$ 23.000",
+    "price_usd": "Consultar precio",
+    "unit": "Unidad",
+    "approx": true,
+    "source": "LISTA MARKETING PANEL WPC",
+    "row_name": "PANEL WPC CASTAÑO OXIDO PH15-N",
+    "row_price": 23000
+  },
   "14123201": {
     "price_cop": "$ 65.000",
     "price_usd": "Consultar precio",
     "unit": "Unidad",
     "approx": true,
     "source": "LISTA MARKETING PARED UNIFLEX",
-    "row_name": "PARED UNIFLEX",
+    "row_name": "PARED UNIFLEX CITRINO 120x60x0,2CM",
     "row_price": 65000
   },
   "14123206": {
@@ -1539,7 +1877,7 @@
     "unit": "Unidad",
     "approx": true,
     "source": "LISTA MARKETING PARED UNIFLEX",
-    "row_name": "PARED UNIFLEX",
+    "row_name": "PARED UNIFLEX GRIS CENIZO 120x60x0,2CM",
     "row_price": 65000
   },
   "14123209": {
@@ -1548,7 +1886,7 @@
     "unit": "Unidad",
     "approx": true,
     "source": "LISTA MARKETING PARED UNIFLEX",
-    "row_name": "PARED UNIFLEX",
+    "row_name": "PARED UNIFLEX OXIDO TERRACOTA 120X60X0,2CM",
     "row_price": 65000
   },
   "14123210": {
@@ -1557,7 +1895,7 @@
     "unit": "Unidad",
     "approx": true,
     "source": "LISTA MARKETING PARED UNIFLEX",
-    "row_name": "PARED UNIFLEX",
+    "row_name": "PARED UNIFLEX MEDIA NOCHE 120X60X0,02CM",
     "row_price": 65000
   },
   "14123215": {
@@ -1566,7 +1904,7 @@
     "unit": "Unidad",
     "approx": true,
     "source": "LISTA MARKETING PARED UNIFLEX",
-    "row_name": "PARED UNIFLEX",
+    "row_name": "PARED UNIFLEX LATTE BEIGE 120X60X0,02CM",
     "row_price": 65000
   },
   "14123301": {
@@ -1575,7 +1913,7 @@
     "unit": "Unidad",
     "approx": true,
     "source": "LISTA MARKETING PARED UNIFLEX",
-    "row_name": "PARED UNIFLEX",
+    "row_name": "PARED UNIFLEX GRIS CENIZO 120X60X0,2CM",
     "row_price": 65000
   },
   "14123302": {
@@ -1584,7 +1922,7 @@
     "unit": "Unidad",
     "approx": true,
     "source": "LISTA MARKETING PARED UNIFLEX",
-    "row_name": "PARED UNIFLEX",
+    "row_name": "PARED UNIFLEX ANTRANCITA 120X60X0,2CM",
     "row_price": 65000
   },
   "14123303": {
@@ -1593,7 +1931,25 @@
     "unit": "Unidad",
     "approx": true,
     "source": "LISTA MARKETING PARED UNIFLEX",
-    "row_name": "PARED UNIFLEX",
+    "row_name": "PARED UNIFLEX NIEVE 120X60X0,2CM",
+    "row_price": 65000
+  },
+  "14123402": {
+    "price_cop": "$ 65.000",
+    "price_usd": "Consultar precio",
+    "unit": "Unidad",
+    "approx": true,
+    "source": "LISTA MARKETING PARED ARQNITEC",
+    "row_name": "PARED ARQUNITEC BLANCO MARFIL (02)",
+    "row_price": 65000
+  },
+  "14123403": {
+    "price_cop": "$ 65.000",
+    "price_usd": "Consultar precio",
+    "unit": "Unidad",
+    "approx": true,
+    "source": "LISTA MARKETING PARED ARQNITEC",
+    "row_name": "PARED ARQUNITEC GRIS CENIZA (03)",
     "row_price": 65000
   },
   "14123404": {
@@ -1602,7 +1958,16 @@
     "unit": "Unidad",
     "approx": true,
     "source": "LISTA MARKETING PARED ARQNITEC",
-    "row_name": "PARED ARQNITEC",
+    "row_name": "PARED ARQNITEC GRIS TERRA (04)",
+    "row_price": 65000
+  },
+  "14123406": {
+    "price_cop": "$ 65.000",
+    "price_usd": "Consultar precio",
+    "unit": "Unidad",
+    "approx": true,
+    "source": "LISTA MARKETING PARED ARQNITEC",
+    "row_name": "PARED ARQUNITEC ANTRACITA NEGRO (06)",
     "row_price": 65000
   },
   "14123502": {
@@ -1611,7 +1976,7 @@
     "unit": "Unidad",
     "approx": true,
     "source": "LISTA MARKETING PARED ARQNITEC",
-    "row_name": "PARED ARQUNITEC RECUADROS",
+    "row_name": "PARED ARQUNITEC RECUADROS MARFIL 2-CREAM",
     "row_price": 65000
   },
   "14123503": {
@@ -1620,7 +1985,7 @@
     "unit": "Unidad",
     "approx": true,
     "source": "LISTA MARKETING PARED ARQNITEC",
-    "row_name": "PARED ARQUNITEC RECUADROS",
+    "row_name": "PARED ARQUNITEC RECUADROS GRIS BASALTO 3A",
     "row_price": 65000
   },
   "14123506": {
@@ -1629,7 +1994,7 @@
     "unit": "Unidad",
     "approx": true,
     "source": "LISTA MARKETING PARED ARQNITEC",
-    "row_name": "PARED ARQUNITEC RECUADROS",
+    "row_name": "PARED ARQUNITEC RECUADROS NEGROS 6-BLACK",
     "row_price": 65000
   },
   "14123512": {
@@ -1638,7 +2003,7 @@
     "unit": "Unidad",
     "approx": true,
     "source": "LISTA MARKETING PARED ARQNITEC",
-    "row_name": "PARED ARQUNITEC RECUADROS",
+    "row_name": "PARED ARQUNITEC RECUADROS COLONIAL 12-BRICK RED",
     "row_price": 65000
   },
   "14123601": {
@@ -1677,13 +2042,31 @@
     "row_name": "FACHADA ARENISCA BEIGE (B4)",
     "row_price": 125345
   },
+  "14123701": {
+    "price_cop": "$ 317.500",
+    "price_usd": "Consultar precio",
+    "unit": "Unidad",
+    "approx": true,
+    "source": "LISTA MARKETING PARED ARQNITEC",
+    "row_name": "PARED ARQUNITEC PIEDRA NATURAL",
+    "row_price": 317500
+  },
+  "14123702": {
+    "price_cop": "$ 97.815",
+    "price_usd": "Consultar precio",
+    "unit": "Unidad",
+    "approx": true,
+    "source": "LISTA MARKETING PARED ARQNITEC",
+    "row_name": "PARED ARQUNITEC TABLON ENVEJECIDO (SW-508)",
+    "row_price": 97815
+  },
   "14124201": {
     "price_cop": "$ 30.000",
     "price_usd": "Consultar precio",
     "unit": "Unidad",
     "approx": true,
-    "source": "LISTA MARKETING PARED UNIFLEX",
-    "row_name": "JARDIN ARTIFICIAL 50X50CM",
+    "source": "LISTA MARKETING JARDIN ARTIFICIAL",
+    "row_name": "JARDIN ARTIFICIAL 50X50CM PRADERA (HH-A)",
     "row_price": 30000
   },
   "14124202": {
@@ -1691,8 +2074,8 @@
     "price_usd": "Consultar precio",
     "unit": "Unidad",
     "approx": true,
-    "source": "LISTA MARKETING PARED UNIFLEX",
-    "row_name": "JARDIN ARTIFICIAL 50X50CM",
+    "source": "LISTA MARKETING JARDIN ARTIFICIAL",
+    "row_name": "JARDIN ARTIFICIAL 50X50CM EDEN (HH-B)",
     "row_price": 30000
   },
   "14124203": {
@@ -1700,8 +2083,8 @@
     "price_usd": "Consultar precio",
     "unit": "Unidad",
     "approx": true,
-    "source": "LISTA MARKETING PARED UNIFLEX",
-    "row_name": "JARDIN ARTIFICIAL 50X50CM",
+    "source": "LISTA MARKETING JARDIN ARTIFICIAL",
+    "row_name": "JARDIN ARTIFICIAL 50X50CM PARAISO (HH-C)",
     "row_price": 30000
   },
   "14124204": {
@@ -1709,8 +2092,8 @@
     "price_usd": "Consultar precio",
     "unit": "Unidad",
     "approx": true,
-    "source": "LISTA MARKETING PARED UNIFLEX",
-    "row_name": "JARDIN ARTIFICIAL 50X50CM",
+    "source": "LISTA MARKETING JARDIN ARTIFICIAL",
+    "row_name": "JARDIN ARTIFICIAL 50X50CM PRIMAVERA (HH-D)",
     "row_price": 30000
   },
   "14124205": {
@@ -1718,8 +2101,8 @@
     "price_usd": "Consultar precio",
     "unit": "Unidad",
     "approx": true,
-    "source": "LISTA MARKETING PARED UNIFLEX",
-    "row_name": "JARDIN ARTIFICIAL 40X60CM",
+    "source": "LISTA MARKETING JARDIN ARTIFICIAL",
+    "row_name": "JARDIN ARTIFICIAL 40X60CM NATURAL (HH-E)",
     "row_price": 23000
   },
   "14124206": {
@@ -1727,8 +2110,8 @@
     "price_usd": "Consultar precio",
     "unit": "Unidad",
     "approx": true,
-    "source": "LISTA MARKETING PARED UNIFLEX",
-    "row_name": "JARDIN ARTIFICIAL 40X60CM",
+    "source": "LISTA MARKETING JARDIN ARTIFICIAL",
+    "row_name": "JARDIN ARTIFICIAL 40X60CM VENECIA (HH-F)",
     "row_price": 23000
   },
   "14124207": {
@@ -1736,8 +2119,8 @@
     "price_usd": "Consultar precio",
     "unit": "Unidad",
     "approx": true,
-    "source": "LISTA MARKETING PARED UNIFLEX",
-    "row_name": "JARDIN ARTIFICIAL 40X60CM",
+    "source": "LISTA MARKETING JARDIN ARTIFICIAL",
+    "row_name": "JARDIN ARTIFICIAL 40X60CM PARIS (HH-G)",
     "row_price": 23000
   },
   "14124301": {
@@ -1746,7 +2129,7 @@
     "unit": "Unidad",
     "approx": true,
     "source": "LISTA MARKETING PANEL ACUSTICO",
-    "row_name": "PANEL ACUSTICO TIPO 1",
+    "row_name": "PANEL ACUSTICO TIPO 1 BLANCO CEDRO (3728N)",
     "row_price": 163790
   },
   "14124302": {
@@ -1755,7 +2138,7 @@
     "unit": "Unidad",
     "approx": true,
     "source": "LISTA MARKETING PANEL ACUSTICO",
-    "row_name": "PANEL ACUSTICO TIPO 1",
+    "row_name": "PANEL ACUSTICO TIPO 1 CEDRO MADERA (8438S)",
     "row_price": 163790
   },
   "14124303": {
@@ -1764,16 +2147,7 @@
     "unit": "Unidad",
     "approx": true,
     "source": "LISTA MARKETING PANEL ACUSTICO",
-    "row_name": "PANEL ACUSTICO TIPO 1",
-    "row_price": 163790
-  },
-  "14124304": {
-    "price_cop": "$ 163.790",
-    "price_usd": "Consultar precio",
-    "unit": "Unidad",
-    "approx": true,
-    "source": "LISTA MARKETING PANEL ACUSTICO",
-    "row_name": "PANEL ACUSTICO TIPO 1",
+    "row_name": "PANEL ACUSTICO TIPO 1 EBANO (8210C)",
     "row_price": 163790
   },
   "14124401": {
@@ -1818,7 +2192,7 @@
     "unit": "Unidad",
     "approx": true,
     "source": "LISTA MARKETING PANEL ACUSTICO",
-    "row_name": "PANEL ACUSTICO TIPO 3",
+    "row_name": "PANEL ACUSTICO TIPO 3 BLANCO CEDRO (3728N)",
     "row_price": 99590
   },
   "14124502": {
@@ -1827,7 +2201,7 @@
     "unit": "Unidad",
     "approx": true,
     "source": "LISTA MARKETING PANEL ACUSTICO",
-    "row_name": "PANEL ACUSTICO TIPO 3",
+    "row_name": "PANEL ACUSTICO TIPO 3 CEDRO MADERA (8438S)",
     "row_price": 99590
   },
   "14124503": {
@@ -1836,7 +2210,7 @@
     "unit": "Unidad",
     "approx": true,
     "source": "LISTA MARKETING PANEL ACUSTICO",
-    "row_name": "PANEL ACUSTICO TIPO 3",
+    "row_name": "PANEL ACUSTICO TIPO 3 EBANO (8210C)",
     "row_price": 99590
   },
   "14124504": {
@@ -1845,7 +2219,7 @@
     "unit": "Unidad",
     "approx": true,
     "source": "LISTA MARKETING PANEL ACUSTICO",
-    "row_name": "PANEL ACUSTICO TIPO 3",
+    "row_name": "PANEL ACUSTICO TIPO 3 AVELLANA (8292C)",
     "row_price": 99590
   },
   "14124601": {
@@ -1854,7 +2228,7 @@
     "unit": "Unidad",
     "approx": true,
     "source": "LISTA MARKETING PANEL ACUSTICO",
-    "row_name": "PANEL ACUSTICO TIPO 4",
+    "row_name": "PANEL ACUSTICO TIPO 4 BLANCO CEDRO (3728N)",
     "row_price": 239999
   },
   "14124602": {
@@ -1863,7 +2237,7 @@
     "unit": "Unidad",
     "approx": true,
     "source": "LISTA MARKETING PANEL ACUSTICO",
-    "row_name": "PANEL ACUSTICO TIPO 4",
+    "row_name": "PANEL ACUSTICO TIPO 4 CEDRO MADERA (8438S)",
     "row_price": 239999
   },
   "14124603": {
@@ -1872,7 +2246,7 @@
     "unit": "Unidad",
     "approx": true,
     "source": "LISTA MARKETING PANEL ACUSTICO",
-    "row_name": "PANEL ACUSTICO TIPO 4",
+    "row_name": "PANEL ACUSTICO TIPO 4 EBANO (8210C)",
     "row_price": 239999
   },
   "14124604": {
@@ -1881,7 +2255,7 @@
     "unit": "Unidad",
     "approx": true,
     "source": "LISTA MARKETING PANEL ACUSTICO",
-    "row_name": "PANEL ACUSTICO TIPO 4",
+    "row_name": "PANEL ACUSTICO TIPO 4 AVELLANA (8292C)",
     "row_price": 239999
   },
   "14124701": {
@@ -1890,44 +2264,35 @@
     "unit": "Unidad",
     "approx": true,
     "source": "LISTA MARKETING PANEL ACUSTICO",
-    "row_name": "PANEL ACUSTICO TIPO 5",
+    "row_name": "PANEL ACUSTICO TIPO 5 BLANCO CEDRO (3728N)",
     "row_price": 132999
   },
   "14124702": {
-    "price_cop": "$ 132.999",
+    "price_cop": "$ 133.000",
     "price_usd": "Consultar precio",
     "unit": "Unidad",
     "approx": true,
     "source": "LISTA MARKETING PANEL ACUSTICO",
-    "row_name": "PANEL ACUSTICO TIPO 5",
-    "row_price": 132999
+    "row_name": "PANEL ACUSTICO TIPO 5 CEDRO MADERA (8438S)",
+    "row_price": 133000
   },
   "14124703": {
-    "price_cop": "$ 132.999",
+    "price_cop": "$ 133.001",
     "price_usd": "Consultar precio",
     "unit": "Unidad",
     "approx": true,
     "source": "LISTA MARKETING PANEL ACUSTICO",
-    "row_name": "PANEL ACUSTICO TIPO 5",
-    "row_price": 132999
+    "row_name": "PANEL ACUSTICO TIPO 5 EBANO (8210C)",
+    "row_price": 133001
   },
   "14124704": {
-    "price_cop": "$ 132.999",
+    "price_cop": "$ 133.002",
     "price_usd": "Consultar precio",
     "unit": "Unidad",
     "approx": true,
     "source": "LISTA MARKETING PANEL ACUSTICO",
-    "row_name": "PANEL ACUSTICO TIPO 5",
-    "row_price": 132999
-  },
-  "14124801": {
-    "price_cop": "$ 224.999",
-    "price_usd": "Consultar precio",
-    "unit": "Unidad",
-    "approx": true,
-    "source": "LISTA MARKETING PANEL ACUSTICO",
-    "row_name": "PANEL ACUSTICO TIPO 6",
-    "row_price": 224999
+    "row_name": "PANEL ACUSTICO TIPO 5 AVELLANA (8292C)",
+    "row_price": 133002
   },
   "14124802": {
     "price_cop": "$ 224.999",
@@ -1935,152 +2300,125 @@
     "unit": "Unidad",
     "approx": true,
     "source": "LISTA MARKETING PANEL ACUSTICO",
-    "row_name": "PANEL ACUSTICO TIPO 6",
-    "row_price": 224999
-  },
-  "14124803": {
-    "price_cop": "$ 224.999",
-    "price_usd": "Consultar precio",
-    "unit": "Unidad",
-    "approx": true,
-    "source": "LISTA MARKETING PANEL ACUSTICO",
-    "row_name": "PANEL ACUSTICO TIPO 6",
-    "row_price": 224999
-  },
-  "14124804": {
-    "price_cop": "$ 224.999",
-    "price_usd": "Consultar precio",
-    "unit": "Unidad",
-    "approx": true,
-    "source": "LISTA MARKETING PANEL ACUSTICO",
-    "row_name": "PANEL ACUSTICO TIPO 6",
+    "row_name": "PANEL ACUSTICO TIPO 6 CEDRO MADERA MIX AVELLANA",
     "row_price": 224999
   },
   "14124901": {
-    "price_cop": "$ 35.000",
+    "price_cop": "$ 23.000",
     "price_usd": "Consultar precio",
     "unit": "Unidad",
     "approx": true,
     "source": "LISTA MARKETING PANEL WPC",
-    "row_name": "PANEL WPC REDONDO",
-    "row_price": 35000
+    "row_name": "PANEL WPC STONE GRIS (01)",
+    "row_price": 23000
   },
   "14124902": {
-    "price_cop": "$ 35.000",
+    "price_cop": "$ 35.138",
     "price_usd": "Consultar precio",
     "unit": "Unidad",
     "approx": true,
-    "source": "LISTA MARKETING PANEL WPC",
-    "row_name": "PANEL WPC REDONDO",
-    "row_price": 35000
+    "source": "LISTA MARKETING PANEL WPC REDONDO",
+    "row_name": "PANEL WPC REDONDO CARRARA BLANCO (02)",
+    "row_price": 35138
   },
   "14124903": {
-    "price_cop": "$ 35.000",
+    "price_cop": "$ 35.138",
     "price_usd": "Consultar precio",
     "unit": "Unidad",
     "approx": true,
-    "source": "LISTA MARKETING PANEL WPC",
-    "row_name": "PANEL WPC REDONDO",
-    "row_price": 35000
+    "source": "LISTA MARKETING PANEL WPC REDONDO",
+    "row_name": "PANEL WPC REDONDO POLAR BLANCO (03)",
+    "row_price": 35138
   },
   "14124905": {
-    "price_cop": "$ 35.000",
+    "price_cop": "$ 35.138",
     "price_usd": "Consultar precio",
     "unit": "Unidad",
     "approx": true,
-    "source": "LISTA MARKETING PANEL WPC",
-    "row_name": "PANEL WPC REDONDO",
-    "row_price": 35000
+    "source": "LISTA MARKETING PANEL WPC REDONDO",
+    "row_name": "PANEL WPC REDONDO ROBLE CLARO (05)",
+    "row_price": 35138
   },
   "14124906": {
-    "price_cop": "$ 35.000",
+    "price_cop": "$ 35.138",
     "price_usd": "Consultar precio",
     "unit": "Unidad",
     "approx": true,
-    "source": "LISTA MARKETING PANEL WPC",
-    "row_name": "PANEL WPC REDONDO",
-    "row_price": 35000
+    "source": "LISTA MARKETING PANEL WPC REDONDO",
+    "row_name": "PANEL WPC REDONDO TRAVERTINO (06)",
+    "row_price": 35138
   },
   "14124910": {
-    "price_cop": "$ 35.000",
+    "price_cop": "$ 35.138",
     "price_usd": "Consultar precio",
     "unit": "Unidad",
     "approx": true,
-    "source": "LISTA MARKETING PANEL WPC",
-    "row_name": "PANEL WPC REDONDO",
-    "row_price": 35000
+    "source": "LISTA MARKETING PANEL WPC REDONDO",
+    "row_name": "PANEL WPC REDONDO MADERA TEKA (10)",
+    "row_price": 35138
   },
   "14124913": {
-    "price_cop": "$ 35.000",
+    "price_cop": "$ 35.138",
     "price_usd": "Consultar precio",
     "unit": "Unidad",
     "approx": true,
-    "source": "LISTA MARKETING PANEL WPC",
-    "row_name": "PANEL WPC REDONDO",
-    "row_price": 35000
+    "source": "LISTA MARKETING PANEL WPC REDONDO",
+    "row_name": "PANEL WPC REDONDO EBANO NEGRO (13)",
+    "row_price": 35138
   },
   "14124916": {
-    "price_cop": "$ 35.000",
+    "price_cop": "$ 35.138",
     "price_usd": "Consultar precio",
     "unit": "Unidad",
     "approx": true,
-    "source": "LISTA MARKETING PANEL WPC",
-    "row_name": "PANEL WPC REDONDO",
-    "row_price": 35000
+    "source": "LISTA MARKETING PANEL WPC REDONDO",
+    "row_name": "PANEL WPC REDONDO MARFIL (16)",
+    "row_price": 35138
   },
   "14124923": {
-    "price_cop": "$ 35.000",
+    "price_cop": "$ 35.138",
     "price_usd": "Consultar precio",
     "unit": "Unidad",
     "approx": true,
-    "source": "LISTA MARKETING PANEL WPC",
-    "row_name": "PANEL WPC REDONDO",
-    "row_price": 35000
+    "source": "LISTA MARKETING PANEL WPC REDONDO",
+    "row_name": "PANEL WPC REDONDO NEGRO MATE (23)",
+    "row_price": 35138
   },
   "14124924": {
-    "price_cop": "$ 35.000",
+    "price_cop": "$ 35.138",
     "price_usd": "Consultar precio",
     "unit": "Unidad",
     "approx": true,
-    "source": "LISTA MARKETING PANEL WPC",
-    "row_name": "PANEL WPC REDONDO",
-    "row_price": 35000
+    "source": "LISTA MARKETING PANEL WPC REDONDO",
+    "row_name": "PANEL WPC REDONDO CREMA SELECTA NEW (24)",
+    "row_price": 35138
   },
   "14124925": {
-    "price_cop": "$ 35.000",
+    "price_cop": "$ 35.138",
     "price_usd": "Consultar precio",
     "unit": "Unidad",
     "approx": true,
-    "source": "LISTA MARKETING PANEL WPC",
-    "row_name": "PANEL WPC REDONDO",
-    "row_price": 35000
+    "source": "LISTA MARKETING PANEL WPC REDONDO",
+    "row_name": "PANEL WPC REDONDO AZUL CELESTE NEW (25)",
+    "row_price": 35138
   },
   "14124926": {
-    "price_cop": "$ 35.000",
+    "price_cop": "$ 35.138",
     "price_usd": "Consultar precio",
     "unit": "Unidad",
     "approx": true,
-    "source": "LISTA MARKETING PANEL WPC",
-    "row_name": "PANEL WPC REDONDO",
-    "row_price": 35000
+    "source": "LISTA MARKETING PANEL WPC REDONDO",
+    "row_name": "PANEL WPC REDONDO VERDE MENTA NEW (26)",
+    "row_price": 35138
   },
   "14124930": {
-    "price_cop": "$ 35.000",
+    "price_cop": "$ 35.138",
     "price_usd": "Consultar precio",
     "unit": "Unidad",
     "approx": true,
-    "source": "LISTA MARKETING PANEL WPC",
-    "row_name": "PANEL WPC REDONDO",
-    "row_price": 35000
-  },
-  "14124932": {
-    "price_cop": "$ 35.000",
-    "price_usd": "Consultar precio",
-    "unit": "Unidad",
-    "approx": true,
-    "source": "LISTA MARKETING PANEL WPC",
-    "row_name": "PANEL WPC REDONDO",
-    "row_price": 35000
+    "source": "LISTA MARKETING PANEL WPC REDONDO",
+    "row_name": "PANEL WPC REDONDO ROSADO (30)",
+    "row_price": 35138
   },
   "14125210": {
     "price_cop": "$ 16.480",
@@ -2115,7 +2453,7 @@
     "unit": "Unidad",
     "approx": true,
     "source": "LISTA MARKETING PARED ACOLCHADA",
-    "row_name": "PARED ACOLCHADA PALMA",
+    "row_name": "PARED ACOLCHADA PALMA DIAMANTE NEGRO (017)",
     "row_price": 221500
   },
   "14126002": {
@@ -2124,7 +2462,7 @@
     "unit": "Unidad",
     "approx": true,
     "source": "LISTA MARKETING PARED ACOLCHADA",
-    "row_name": "PARED ACOLCHADA PALMA",
+    "row_name": "PARED ACOLCHADA PALMA GRIS LUMINOSO (041)",
     "row_price": 221500
   },
   "14126006": {
@@ -2133,7 +2471,7 @@
     "unit": "Unidad",
     "approx": true,
     "source": "LISTA MARKETING PARED ACOLCHADA",
-    "row_name": "PARED ACOLCHADA PALMA",
+    "row_name": "PARED ACOLCHADA PALMA VAINILLA (820)",
     "row_price": 221500
   },
   "14126008": {
@@ -2142,8 +2480,62 @@
     "unit": "Unidad",
     "approx": true,
     "source": "LISTA MARKETING PARED ACOLCHADA",
-    "row_name": "PARED ACOLCHADA PALMA",
+    "row_name": "PARED ACOLCHADA PALMA SENDERO (854)",
     "row_price": 221500
+  },
+  "14126021": {
+    "price_cop": "$ 10.000",
+    "price_usd": "Consultar precio",
+    "unit": "Unidad",
+    "approx": true,
+    "source": "LISTA MARKETING PARED MUROFLEX",
+    "row_name": "PARED MUROFLEX STONE GRIS (WPC-01)",
+    "row_price": 10000
+  },
+  "14126022": {
+    "price_cop": "$ 10.000",
+    "price_usd": "Consultar precio",
+    "unit": "Unidad",
+    "approx": true,
+    "source": "LISTA MARKETING PARED MUROFLEX",
+    "row_name": "PARED MUROFLEX ROBLE CLARO (WPC-05)",
+    "row_price": 10000
+  },
+  "14126023": {
+    "price_cop": "$ 10.000",
+    "price_usd": "Consultar precio",
+    "unit": "Unidad",
+    "approx": true,
+    "source": "LISTA MARKETING PARED MUROFLEX",
+    "row_name": "PARED MUROFLEX MADERA TEKA (WPC-10)",
+    "row_price": 10000
+  },
+  "14126024": {
+    "price_cop": "$ 10.000",
+    "price_usd": "Consultar precio",
+    "unit": "Unidad",
+    "approx": true,
+    "source": "LISTA MARKETING PARED MUROFLEX",
+    "row_name": "PARED MUROFLEX CARRARA NEGRO (WPC-14)",
+    "row_price": 10000
+  },
+  "14126025": {
+    "price_cop": "$ 10.000",
+    "price_usd": "Consultar precio",
+    "unit": "Unidad",
+    "approx": true,
+    "source": "LISTA MARKETING PARED MUROFLEX",
+    "row_name": "PARED MUROFLEX METALUM (SILVERMETAL)",
+    "row_price": 10000
+  },
+  "14126026": {
+    "price_cop": "$ 10.000",
+    "price_usd": "Consultar precio",
+    "unit": "Unidad",
+    "approx": true,
+    "source": "LISTA MARKETING PARED MUROFLEX",
+    "row_name": "PARED MUROFLEX CARRARA BLANCO (WPC-02)",
+    "row_price": 10000
   },
   "14126101": {
     "price_cop": "$ 221.500",
@@ -2151,7 +2543,7 @@
     "unit": "Unidad",
     "approx": true,
     "source": "LISTA MARKETING PARED ACOLCHADA",
-    "row_name": "PARED ACOLCHADA TRIGO",
+    "row_name": "PARED ACOLCHADA TRIGO DIAMANTE NEGRO (017)",
     "row_price": 221500
   },
   "14126102": {
@@ -2160,7 +2552,7 @@
     "unit": "Unidad",
     "approx": true,
     "source": "LISTA MARKETING PARED ACOLCHADA",
-    "row_name": "PARED ACOLCHADA TRIGO",
+    "row_name": "PARED ACOLCHADA TRIGO GRIS LUMINOSO (041)",
     "row_price": 221500
   },
   "14126106": {
@@ -2169,7 +2561,7 @@
     "unit": "Unidad",
     "approx": true,
     "source": "LISTA MARKETING PARED ACOLCHADA",
-    "row_name": "PARED ACOLCHADA TRIGO",
+    "row_name": "PARED ACOLCHADA TRIGO VAINILLA (HARVEST 820)",
     "row_price": 221500
   },
   "14126107": {
@@ -2178,7 +2570,7 @@
     "unit": "Unidad",
     "approx": true,
     "source": "LISTA MARKETING PARED ACOLCHADA",
-    "row_name": "PARED ACOLCHADA TRIGO",
+    "row_name": "PARED ACOLCHADA TRIGO BRILLO PLATA (823)",
     "row_price": 221500
   },
   "14126201": {
@@ -2187,7 +2579,7 @@
     "unit": "Unidad",
     "approx": true,
     "source": "LISTA MARKETING PARED ACOLCHADA",
-    "row_name": "PARED ACOLCHADA AURORA",
+    "row_name": "PARED ACOLCHADA AURORA DIAMANTE NEGRO (017)",
     "row_price": 357000
   },
   "14126203": {
@@ -2196,7 +2588,7 @@
     "unit": "Unidad",
     "approx": true,
     "source": "LISTA MARKETING PARED ACOLCHADA",
-    "row_name": "PARED ACOLCHADA AURORA",
+    "row_name": "PARED ACOLCHADA AURORA ROCIO FLORAL (802)",
     "row_price": 357000
   },
   "14126205": {
@@ -2205,16 +2597,7 @@
     "unit": "Unidad",
     "approx": true,
     "source": "LISTA MARKETING PARED ACOLCHADA",
-    "row_name": "PARED ACOLCHADA AURORA",
-    "row_price": 357000
-  },
-  "14126206": {
-    "price_cop": "$ 357.000",
-    "price_usd": "Consultar precio",
-    "unit": "Unidad",
-    "approx": true,
-    "source": "LISTA MARKETING PARED ACOLCHADA",
-    "row_name": "PARED ACOLCHADA AURORA",
+    "row_name": "PARED ACOLCHADA AURORA SIENA CAOBA (816)",
     "row_price": 357000
   },
   "14126207": {
@@ -2223,7 +2606,7 @@
     "unit": "Unidad",
     "approx": true,
     "source": "LISTA MARKETING PARED ACOLCHADA",
-    "row_name": "PARED ACOLCHADA AURORA",
+    "row_name": "PARED ACOLCHADA AURORA BRILLO PLATA (823)",
     "row_price": 357000
   },
   "14126302": {
@@ -2232,62 +2615,8 @@
     "unit": "Unidad",
     "approx": true,
     "source": "LISTA MARKETING PARED ACOLCHADA",
-    "row_name": "PANEL ACOLCHADO DUOBIG",
+    "row_name": "PANEL ACOLCHADO DUOBIG GRIS LUMINOSO (041)",
     "row_price": 155900
-  },
-  "14126304": {
-    "price_cop": "$ 155.900",
-    "price_usd": "Consultar precio",
-    "unit": "Unidad",
-    "approx": true,
-    "source": "LISTA MARKETING PARED ACOLCHADA",
-    "row_name": "PANEL ACOLCHADO DUOBIG",
-    "row_price": 155900
-  },
-  "14126306": {
-    "price_cop": "$ 155.900",
-    "price_usd": "Consultar precio",
-    "unit": "Unidad",
-    "approx": true,
-    "source": "LISTA MARKETING PARED ACOLCHADA",
-    "row_name": "PANEL ACOLCHADO DUOBIG",
-    "row_price": 155900
-  },
-  "14126307": {
-    "price_cop": "$ 155.900",
-    "price_usd": "Consultar precio",
-    "unit": "Unidad",
-    "approx": true,
-    "source": "LISTA MARKETING PARED ACOLCHADA",
-    "row_name": "PANEL ACOLCHADO DUOBIG",
-    "row_price": 155900
-  },
-  "14126402": {
-    "price_cop": "$ 70.350",
-    "price_usd": "Consultar precio",
-    "unit": "Unidad",
-    "approx": true,
-    "source": "LISTA MARKETING PARED ACOLCHADA",
-    "row_name": "PANEL ACOLCHADO DUOSMALL",
-    "row_price": 70350
-  },
-  "14126404": {
-    "price_cop": "$ 70.350",
-    "price_usd": "Consultar precio",
-    "unit": "Unidad",
-    "approx": true,
-    "source": "LISTA MARKETING PARED ACOLCHADA",
-    "row_name": "PANEL ACOLCHADO DUOSMALL",
-    "row_price": 70350
-  },
-  "14126406": {
-    "price_cop": "$ 70.350",
-    "price_usd": "Consultar precio",
-    "unit": "Unidad",
-    "approx": true,
-    "source": "LISTA MARKETING PARED ACOLCHADA",
-    "row_name": "PANEL ACOLCHADO DUOSMALL",
-    "row_price": 70350
   },
   "14126407": {
     "price_cop": "$ 70.350",
@@ -2295,7 +2624,7 @@
     "unit": "Unidad",
     "approx": true,
     "source": "LISTA MARKETING PARED ACOLCHADA",
-    "row_name": "PANEL ACOLCHADO DUOSMALL",
+    "row_name": "PANEL ACOLCHADO DUOSMALL BRILLO PLATA (823)",
     "row_price": 70350
   },
   "14141001": {
@@ -2304,7 +2633,7 @@
     "unit": "Unidad",
     "approx": true,
     "source": "LISTA MARKETING POLICARBONATO",
-    "row_name": "LAMINA ALVEOLAR POLICARBONATO",
+    "row_name": "LAMINA ALVEOLAR POLICARBONATO 6MM BLANCA",
     "row_price": 402834
   },
   "14141002": {
@@ -2313,7 +2642,7 @@
     "unit": "Unidad",
     "approx": true,
     "source": "LISTA MARKETING POLICARBONATO",
-    "row_name": "LAMINA ALVEOLAR POLICARBONATO",
+    "row_name": "LAMINA ALVEOLAR POLICARBONATO 6MM BRONCE",
     "row_price": 402834
   },
   "14141003": {
@@ -2322,7 +2651,7 @@
     "unit": "Unidad",
     "approx": true,
     "source": "LISTA MARKETING POLICARBONATO",
-    "row_name": "LAMINA ALVEOLAR POLICARBONATO",
+    "row_name": "LAMINA ALVEOLAR POLICARBONATO 6MM TRANSPARENTE",
     "row_price": 402834
   },
   "14181003": {
@@ -2379,40 +2708,22 @@
     "row_name": "PVC BOARD 18MM D/0.5 2.44CM X 122CM",
     "row_price": 210135
   },
-  "14181101": {
-    "price_cop": "$ 60.000",
-    "price_usd": "Consultar precio",
-    "unit": "Unidad",
-    "approx": true,
-    "source": "LISTA MARKETING PARED UNIFLEX",
-    "row_name": "FOAM  BOARD",
-    "row_price": 60000
-  },
-  "14181103": {
-    "price_cop": "$ 60.000",
-    "price_usd": "Consultar precio",
-    "unit": "Unidad",
-    "approx": true,
-    "source": "LISTA MARKETING PARED UNIFLEX",
-    "row_name": "FOAM  BOARD",
-    "row_price": 60000
-  },
   "14181104": {
-    "price_cop": "$ 60.000",
+    "price_cop": "$ 95.000",
     "price_usd": "Consultar precio",
     "unit": "Unidad",
     "approx": true,
-    "source": "LISTA MARKETING PARED UNIFLEX",
-    "row_name": "FOAM  BOARD",
-    "row_price": 60000
+    "source": "LISTA MARKETING FOAM BOARD",
+    "row_name": "FOAM BOARD BURDEO",
+    "row_price": 95000
   },
   "14181105": {
     "price_cop": "$ 60.000",
     "price_usd": "Consultar precio",
     "unit": "Unidad",
     "approx": true,
-    "source": "LISTA MARKETING PARED UNIFLEX",
-    "row_name": "FOAM  BOARD",
+    "source": "LISTA MARKETING FOAM BOARD",
+    "row_name": "FOAM BOARD CORTEZA",
     "row_price": 60000
   },
   "14181106": {
@@ -2420,8 +2731,8 @@
     "price_usd": "Consultar precio",
     "unit": "Unidad",
     "approx": true,
-    "source": "LISTA MARKETING PARED UNIFLEX",
-    "row_name": "FOAM  BOARD",
+    "source": "LISTA MARKETING FOAM BOARD",
+    "row_name": "FOAM BOARD GRIS NATURAL",
     "row_price": 60000
   },
   "14181107": {
@@ -2429,26 +2740,26 @@
     "price_usd": "Consultar precio",
     "unit": "Unidad",
     "approx": true,
-    "source": "LISTA MARKETING PARED UNIFLEX",
-    "row_name": "FOAM BOARD GOTAS DE AGUA",
+    "source": "LISTA MARKETING FOAM BOARD",
+    "row_name": "FOAM BOARD GOTAS DE AGUA NEGRO",
     "row_price": 150000
   },
   "14181108": {
-    "price_cop": "$ 150.000",
+    "price_cop": "$ 90.000",
     "price_usd": "Consultar precio",
     "unit": "Unidad",
     "approx": true,
-    "source": "LISTA MARKETING PARED UNIFLEX",
-    "row_name": "FOAM BOARD GOTAS DE AGUA",
-    "row_price": 150000
+    "source": "LISTA MARKETING FOAM BOARD",
+    "row_name": "FOAM BOARD GOTAS DE AGUA PLATEADO",
+    "row_price": 90000
   },
   "14181109": {
     "price_cop": "$ 60.000",
     "price_usd": "Consultar precio",
     "unit": "Unidad",
     "approx": true,
-    "source": "LISTA MARKETING PARED UNIFLEX",
-    "row_name": "FOAM  BOARD",
+    "source": "LISTA MARKETING FOAM BOARD",
+    "row_name": "FOAM BOARD BLANCO MARFIL",
     "row_price": 60000
   },
   "14181110": {
@@ -2456,8 +2767,8 @@
     "price_usd": "Consultar precio",
     "unit": "Unidad",
     "approx": true,
-    "source": "LISTA MARKETING PARED UNIFLEX",
-    "row_name": "FOAM  BOARD",
+    "source": "LISTA MARKETING FOAM BOARD",
+    "row_name": "FOAM BOARD GRIS TRAVERTINO",
     "row_price": 60000
   },
   "14181114": {
@@ -2465,17 +2776,8 @@
     "price_usd": "Consultar precio",
     "unit": "Unidad",
     "approx": true,
-    "source": "LISTA MARKETING PARED UNIFLEX",
-    "row_name": "FOAM BOARD GOTAS DE AGUA",
-    "row_price": 150000
-  },
-  "14181201": {
-    "price_cop": "$ 150.000",
-    "price_usd": "Consultar precio",
-    "unit": "Unidad",
-    "approx": true,
-    "source": "LISTA MARKETING PARED UNIFLEX",
-    "row_name": "FOAM BOARD ESPEJO",
+    "source": "LISTA MARKETING FOAM BOARD",
+    "row_name": "FOAM BOARD METALUM",
     "row_price": 150000
   },
   "14181202": {
@@ -2483,8 +2785,8 @@
     "price_usd": "Consultar precio",
     "unit": "Unidad",
     "approx": true,
-    "source": "LISTA MARKETING PARED UNIFLEX",
-    "row_name": "FOAM BOARD ESPEJO",
+    "source": "LISTA MARKETING FOAM BOARD",
+    "row_name": "FOAM BOARD ESPEJO BLANCO",
     "row_price": 150000
   },
   "14181203": {
@@ -2492,8 +2794,8 @@
     "price_usd": "Consultar precio",
     "unit": "Unidad",
     "approx": true,
-    "source": "LISTA MARKETING PARED UNIFLEX",
-    "row_name": "FOAM BOARD ESPEJO",
+    "source": "LISTA MARKETING FOAM BOARD",
+    "row_name": "FOAM BOARD ESPEJO NEGRO",
     "row_price": 150000
   },
   "14181204": {
@@ -2501,8 +2803,8 @@
     "price_usd": "Consultar precio",
     "unit": "Unidad",
     "approx": true,
-    "source": "LISTA MARKETING PARED UNIFLEX",
-    "row_name": "FOAM BOARD ESPEJO",
+    "source": "LISTA MARKETING FOAM BOARD",
+    "row_name": "FOAM BOARD ESPEJO DORADO",
     "row_price": 150000
   },
   "14181205": {
@@ -2510,8 +2812,8 @@
     "price_usd": "Consultar precio",
     "unit": "Unidad",
     "approx": true,
-    "source": "LISTA MARKETING PARED UNIFLEX",
-    "row_name": "FOAM BOARD ESPEJO",
+    "source": "LISTA MARKETING FOAM BOARD",
+    "row_name": "FOAM BOARD ESPEJO PALO DE ROSA",
     "row_price": 150000
   },
   "14181301": {
@@ -2519,7 +2821,7 @@
     "price_usd": "Consultar precio",
     "unit": "Unidad",
     "approx": true,
-    "source": "LISTA MARKETING PARED UNIFLEX",
+    "source": "LISTA MARKETING FOAM BOARD",
     "row_name": "FOAM BOARD ARENISCA PLATA (JS4176-189)",
     "row_price": 180500
   },
@@ -2528,7 +2830,7 @@
     "price_usd": "Consultar precio",
     "unit": "Unidad",
     "approx": true,
-    "source": "LISTA MARKETING PARED UNIFLEX",
+    "source": "LISTA MARKETING FOAM BOARD",
     "row_name": "FOAM BOARD ARENISCA NEGRO (M JS4166-116)",
     "row_price": 90000
   },
@@ -2537,7 +2839,7 @@
     "price_usd": "Consultar precio",
     "unit": "Unidad",
     "approx": true,
-    "source": "LISTA MARKETING PARED UNIFLEX",
+    "source": "LISTA MARKETING FOAM BOARD",
     "row_name": "FOAM BOARD COBRE TERRA (JS4156-169)",
     "row_price": 180500
   },
@@ -2546,7 +2848,7 @@
     "price_usd": "Consultar precio",
     "unit": "Unidad",
     "approx": true,
-    "source": "LISTA MARKETING PARED UNIFLEX",
+    "source": "LISTA MARKETING FOAM BOARD",
     "row_name": "FOAM BOARD TABACO RUSTICO (JS4154-116)",
     "row_price": 90000
   },
@@ -2555,8 +2857,8 @@
     "price_usd": "Consultar precio",
     "unit": "Unidad",
     "approx": true,
-    "source": "LISTA MARKETING PARED UNIFLEX",
-    "row_name": "FOAM  BOARD",
+    "source": "LISTA MARKETING FOAM BOARD",
+    "row_name": "FOAM BOARD IVORY LATTE (MF-01)",
     "row_price": 60000
   },
   "14181402": {
@@ -2564,8 +2866,8 @@
     "price_usd": "Consultar precio",
     "unit": "Unidad",
     "approx": true,
-    "source": "LISTA MARKETING PARED UNIFLEX",
-    "row_name": "FOAM  BOARD",
+    "source": "LISTA MARKETING FOAM BOARD",
+    "row_name": "FOAM BOARD BLANCO ESTUARIO (MF-02)",
     "row_price": 60000
   },
   "14181403": {
@@ -2573,8 +2875,8 @@
     "price_usd": "Consultar precio",
     "unit": "Unidad",
     "approx": true,
-    "source": "LISTA MARKETING PARED UNIFLEX",
-    "row_name": "FOAM  BOARD",
+    "source": "LISTA MARKETING FOAM BOARD",
+    "row_name": "FOAM  BOARD GRIS ACERO (MF-03)",
     "row_price": 60000
   },
   "14181404": {
@@ -2582,8 +2884,8 @@
     "price_usd": "Consultar precio",
     "unit": "Unidad",
     "approx": true,
-    "source": "LISTA MARKETING PARED UNIFLEX",
-    "row_name": "FOAM  BOARD",
+    "source": "LISTA MARKETING FOAM BOARD",
+    "row_name": "FOAM BOARD EVERES CREMA (MF-04)",
     "row_price": 60000
   },
   "14181405": {
@@ -2591,8 +2893,8 @@
     "price_usd": "Consultar precio",
     "unit": "Unidad",
     "approx": true,
-    "source": "LISTA MARKETING PARED UNIFLEX",
-    "row_name": "FOAM  BOARD",
+    "source": "LISTA MARKETING FOAM BOARD",
+    "row_name": "FOAM  BOARD  MANDARINA PASTEL (MF-05)",
     "row_price": 60000
   },
   "14181406": {
@@ -2600,8 +2902,8 @@
     "price_usd": "Consultar precio",
     "unit": "Unidad",
     "approx": true,
-    "source": "LISTA MARKETING PARED UNIFLEX",
-    "row_name": "FOAM  BOARD",
+    "source": "LISTA MARKETING FOAM BOARD",
+    "row_name": "FOAM BOARD TIFFANY AZUL PASTEL (MF-06)",
     "row_price": 60000
   },
   "14181407": {
@@ -2609,8 +2911,8 @@
     "price_usd": "Consultar precio",
     "unit": "Unidad",
     "approx": true,
-    "source": "LISTA MARKETING PARED UNIFLEX",
-    "row_name": "FOAM  BOARD",
+    "source": "LISTA MARKETING FOAM BOARD",
+    "row_name": "FOAM BOARD GRIS TITANIO (MF-07)",
     "row_price": 60000
   },
   "14181408": {
@@ -2618,8 +2920,8 @@
     "price_usd": "Consultar precio",
     "unit": "Unidad",
     "approx": true,
-    "source": "LISTA MARKETING PARED UNIFLEX",
-    "row_name": "FOAM  BOARD",
+    "source": "LISTA MARKETING FOAM BOARD",
+    "row_name": "FOAM BOARD GRIS BASALTO (MF-08)",
     "row_price": 60000
   },
   "14181409": {
@@ -2627,8 +2929,8 @@
     "price_usd": "Consultar precio",
     "unit": "Unidad",
     "approx": true,
-    "source": "LISTA MARKETING PARED UNIFLEX",
-    "row_name": "FOAM  BOARD",
+    "source": "LISTA MARKETING FOAM BOARD",
+    "row_name": "FOAM BOARD VERDE  PETROLEO (MF-09)",
     "row_price": 60000
   },
   "14181410": {
@@ -2636,8 +2938,8 @@
     "price_usd": "Consultar precio",
     "unit": "Unidad",
     "approx": true,
-    "source": "LISTA MARKETING PARED UNIFLEX",
-    "row_name": "FOAM  BOARD",
+    "source": "LISTA MARKETING FOAM BOARD",
+    "row_name": "FOAM BOARD BRONCE NATURAL (MF-10)",
     "row_price": 60000
   },
   "14181411": {
@@ -2645,8 +2947,8 @@
     "price_usd": "Consultar precio",
     "unit": "Unidad",
     "approx": true,
-    "source": "LISTA MARKETING PARED UNIFLEX",
-    "row_name": "FOAM BOARD COBRE",
+    "source": "LISTA MARKETING FOAM BOARD",
+    "row_name": "FOAM BOARD COBRE (MF-11)",
     "row_price": 105000
   },
   "14181412": {
@@ -2654,9 +2956,63 @@
     "price_usd": "Consultar precio",
     "unit": "Unidad",
     "approx": true,
-    "source": "LISTA MARKETING PARED UNIFLEX",
+    "source": "LISTA MARKETING FOAM BOARD",
     "row_name": "FOAM BOARD OCRE OSCURO (MF-12)",
     "row_price": 95000
+  },
+  "14181601": {
+    "price_cop": "$ 270.455",
+    "price_usd": "Consultar precio",
+    "unit": "Unidad",
+    "approx": true,
+    "source": "LISTA MARKETING PVC BOARD COLOR",
+    "row_name": "PVC BOARD 15MM ROSA (M912-88F)",
+    "row_price": 270455
+  },
+  "14181602": {
+    "price_cop": "$ 270.455",
+    "price_usd": "Consultar precio",
+    "unit": "Unidad",
+    "approx": true,
+    "source": "LISTA MARKETING PVC BOARD COLOR",
+    "row_name": "PVC BOARD 15MM MADERA MEDIANA (MS84306-131)",
+    "row_price": 270455
+  },
+  "14181603": {
+    "price_cop": "$ 270.455",
+    "price_usd": "Consultar precio",
+    "unit": "Unidad",
+    "approx": true,
+    "source": "LISTA MARKETING PVC BOARD COLOR",
+    "row_name": "PVC BOARD 15MM BLANCO BRILLANTE",
+    "row_price": 270455
+  },
+  "14181604": {
+    "price_cop": "$ 270.455",
+    "price_usd": "Consultar precio",
+    "unit": "Unidad",
+    "approx": true,
+    "source": "LISTA MARKETING PVC BOARD COLOR",
+    "row_name": "PVC BOARD 15MM NEGRO BRILLANTE",
+    "row_price": 270455
+  },
+  "14181605": {
+    "price_cop": "$ 270.455",
+    "price_usd": "Consultar precio",
+    "unit": "Unidad",
+    "approx": true,
+    "source": "LISTA MARKETING PVC BOARD COLOR",
+    "row_name": "PVC BOARD 15MM PURPURA (FAN-698)",
+    "row_price": 270455
+  },
+  "14181607": {
+    "price_cop": "$ 270.455",
+    "price_usd": "Consultar precio",
+    "unit": "Unidad",
+    "approx": true,
+    "source": "LISTA MARKETING PVC BOARD COLOR",
+    "row_name": "PVC BOARD 15MM MADERA OSCURO (MS86101-152)",
+    "row_price": 270455
   },
   "14201001": {
     "price_cop": "$ 16.000",
@@ -2664,7 +3020,7 @@
     "unit": "Unidad",
     "approx": true,
     "source": "LISTA MARKETING CINTAS",
-    "row_name": "CINTA ADHESIVA",
+    "row_name": "CINTA ADHESIVA DORADA",
     "row_price": 16000
   },
   "14201002": {
@@ -2673,43 +3029,7 @@
     "unit": "Unidad",
     "approx": true,
     "source": "LISTA MARKETING CINTAS",
-    "row_name": "CINTA ADHESIVA",
-    "row_price": 16000
-  },
-  "14201201": {
-    "price_cop": "$ 16.000",
-    "price_usd": "Consultar precio",
-    "unit": "Unidad",
-    "approx": true,
-    "source": "LISTA MARKETING CINTAS",
-    "row_name": "CINTA ADHESIVA",
-    "row_price": 16000
-  },
-  "14201202": {
-    "price_cop": "$ 16.000",
-    "price_usd": "Consultar precio",
-    "unit": "Unidad",
-    "approx": true,
-    "source": "LISTA MARKETING CINTAS",
-    "row_name": "CINTA ADHESIVA",
-    "row_price": 16000
-  },
-  "14201203": {
-    "price_cop": "$ 16.000",
-    "price_usd": "Consultar precio",
-    "unit": "Unidad",
-    "approx": true,
-    "source": "LISTA MARKETING CINTAS",
-    "row_name": "CINTA ADHESIVA",
-    "row_price": 16000
-  },
-  "14201204": {
-    "price_cop": "$ 16.000",
-    "price_usd": "Consultar precio",
-    "unit": "Unidad",
-    "approx": true,
-    "source": "LISTA MARKETING CINTAS",
-    "row_name": "CINTA ADHESIVA",
+    "row_name": "CINTA  ADHESIVA PLATEADA",
     "row_price": 16000
   },
   "14212102": {
@@ -2718,7 +3038,7 @@
     "unit": "Unidad",
     "approx": true,
     "source": "LISTA MARKETING PEGA",
-    "row_name": "ADHESIVO MIXTO MULTIPROPOSITO PEGATEC",
+    "row_name": "ADHESIVO MIXTO MULTIPROPOSITO PEGATEC BLANCO",
     "row_price": 17000
   },
   "14212103": {
@@ -2727,7 +3047,7 @@
     "unit": "Unidad",
     "approx": true,
     "source": "LISTA MARKETING PEGA",
-    "row_name": "ADHESIVO MIXTO MULTIPROPOSITO PEGATEC",
+    "row_name": "ADHESIVO MIXTO MULTIPROPOSITO PEGATEC TRANSPARENTE",
     "row_price": 17000
   }
 }

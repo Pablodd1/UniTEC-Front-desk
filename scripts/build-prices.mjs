@@ -32,26 +32,65 @@ const sig = (s) => norm(s).split(' ')
   .map(fold);
 const fmtCop = (n) => '$ ' + Math.round(n).toLocaleString('es-CO');
 
-// ── 1. read the sheet ────────────────────────────────────────────────────────
+// ── 1. read the sheet (auto-detect layout) ───────────────────────────────────
+// NUEVO (oct 2026): col1=CODIGO col2=DESCRIPCION col3=LISTA MARKETING (precio).
+// VIEJO: col1=descripcion col2=precio. Se detecta solo: col3 numérica ⇒ nuevo.
 const wb = new ExcelJS.Workbook();
 await wb.xlsx.readFile(SHEET_PATH);
 const ws = wb.worksheets[0];
+const num = (v) => {
+  const n = typeof v === 'number' ? v : (v && typeof v === 'object' && typeof v.result === 'number' ? v.result : NaN);
+  return Number.isFinite(n) ? n : NaN;
+};
+let layout = 'old';
+{
+  let c2n = 0, c3n = 0, seen = 0;
+  ws.eachRow((row, idx) => {
+    if (idx <= 3 || seen >= 15) return;
+    if (Number.isFinite(num(row.getCell(2).value))) c2n++;
+    if (Number.isFinite(num(row.getCell(3).value))) c3n++;
+    seen++;
+  });
+  layout = c3n > c2n ? 'new' : 'old';
+}
 const sections = [];
 let current = { name: 'GENERAL', items: [] };
 ws.eachRow((row, idx) => {
-  if (idx <= 2) return; // title + header
-  const desc = String(row.getCell(1).value ?? '').trim();
-  const rawB = row.getCell(2).value;
-  const price = typeof rawB === 'number' ? rawB
-    : (rawB && typeof rawB === 'object' && typeof rawB.result === 'number' ? rawB.result : NaN);
-  if (desc && !Number.isFinite(price)) { current = { name: desc, items: [] }; sections.push(current); return; }
-  if (!Number.isFinite(price)) return;
-  current.items.push({ name: desc || current.name, price: Math.round(price) });
+  if (idx <= 2) return; // titulo + vigencia
+  const c1 = String(row.getCell(1).value ?? '').trim();
+  const c2 = String(row.getCell(2).value ?? '').trim();
+  if (layout === 'old') {
+    const price = num(row.getCell(2).value);
+    if (c1 && !Number.isFinite(price)) { current = { name: c1, items: [] }; sections.push(current); return; }
+    if (!Number.isFinite(price)) return;
+    current.items.push({ name: c1 || current.name, price: Math.round(price) });
+    return;
+  }
+  if (c1 === 'CODIGO' && c2.toUpperCase().startsWith('DESCRIPC')) return; // fila de encabezado
+  const price = num(row.getCell(3).value);
+  if (!Number.isFinite(price)) {
+    const sec = c1 || c2;
+    if (sec) { current = { name: sec, items: [] }; sections.push(current); return; }
+    return;
+  }
+  if (!c1 && !c2) return; // fila basura con precio suelto (sobras tipo "100")
+  current.items.push({ code: c1, name: c2 || current.name, price: Math.round(price) });
 });
 const rows = sections.flatMap((s) => s.items.map((i) => ({ ...i, section: s.name, toks: sig(i.name) })));
+console.log(`layout: ${layout} · sections=${sections.length} · priced rows=${rows.length} · con codigo=${rows.filter((r) => r.code).length}`);
 if (!rows.length) throw new Error('no priced rows parsed — check the sheet layout');
 
-const month = (path.basename(SHEET_PATH).match(/(ENERO|FEBRERO|MARZO|ABRIL|MAYO|JUNIO|JULIO|AGOSTO|SEPTIEMBRE|OCTUBRE|NOVIEMBRE|DICIEMBRE)/i) || [, 'ACTUAL'])[1].toUpperCase();
+const month = (path.basename(SHEET_PATH).match(/(ENERO|FEBRERO|MARZO|ABRIL|MAYO|JUNIO|JULIO|AGOSTO|SEPTIEMBRE|OCTUBRE|NOVIEMBRE|DICIEMBRE)/i) || [, ''])[1]
+  || (() => { // si el nombre del archivo no trae mes, leer la fila VIGENCIA de la hoja
+    let m = '';
+    ws.eachRow((row) => {
+      if (m) return;
+      const c1 = String(row.getCell(1).value ?? '').toUpperCase();
+      const mm = c1.match(/(ENERO|FEBRERO|MARZO|ABRIL|MAYO|JUNIO|JULIO|AGOSTO|SEPTIEMBRE|OCTUBRE|NOVIEMBRE|DICIEMBRE)/);
+      if (c1.includes('VIGENCIA') && mm) m = mm[1];
+    });
+    return m || 'ACTUAL';
+  })();
 console.log(`sheet: ${path.basename(SHEET_PATH)} · sections=${sections.length} · priced rows=${rows.length} · month=${month}`);
 
 // duplicate row names with different prices = a real ambiguity in the client's sheet
@@ -65,6 +104,19 @@ const dupes = [...byName.entries()].filter(([, v]) => new Set(v.map((x) => x.pri
 if (dupes.length) {
   console.log('\n!! sheet rows sharing a name with DIFFERENT prices (need client confirmation):');
   dupes.forEach(([k, v]) => console.log(`   ${k}: ${v.map((x) => `${x.price} @"${x.section}"`).join('  |  ')}`));
+}
+
+// contradicciones por CODIGO (mismo código con precios distintos) — son del cliente, NO se adivina
+const byCode = new Map();
+for (const r of rows) {
+  if (!r.code) continue;
+  if (!byCode.has(r.code)) byCode.set(r.code, []);
+  byCode.get(r.code).push(r);
+}
+const codeDupes = [...byCode.entries()].filter(([, v]) => new Set(v.map((x) => x.price)).size > 1);
+if (codeDupes.length) {
+  console.log('\n!! mismos CODIGOS con precios DISTINTOS en la hoja (se dejan "Consultar precio" y se reportan):');
+  codeDupes.forEach(([k, v]) => console.log(`   ${k}: ${v.map((x) => `${x.price} @"${x.name}" (${x.section})`).join('  |  ')}`));
 }
 
 // ── 2. publish the snapshot ──────────────────────────────────────────────────
@@ -86,6 +138,14 @@ function inOrder(rowToks, productToks) { // every row token present in the produ
 }
 
 function priceFor(product) {
+  // 1) coincidencia EXACTA por código (la hoja de oct 2026 trae CODIGO = id del catálogo)
+  const codeHits = byCode.get(String(product.id || '')) || [];
+  if (codeHits.length) {
+    const prices = [...new Set(codeHits.map((r) => r.price))];
+    if (prices.length > 1) return { ambiguous: codeHits.map((r) => `'${r.name}'=${r.price}`).join(' vs ') };
+    return { row: codeHits[0] };
+  }
+  // 2) fallback por nombre (token-subsequence) para catálogo sin código en la hoja
   const pt = sig(product.name || '');
   if (!pt.length) return null;
   const hits = rows.filter((r) => r.toks.length && inOrder(r.toks, pt));

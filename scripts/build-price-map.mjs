@@ -21,24 +21,59 @@ const sig = (s) => norm(s).split(' ')
   .map(fold);
 const fmtCop = (n) => '$ ' + Math.round(n).toLocaleString('es-CO');
 
-// ── 1. read the sheet ────────────────────────────────────────────────────────
+// ── 1. read the sheet (auto-detect layout: NUEVO = CODIGO|DESCRIPCION|PRECIO) ──
 const wb = new ExcelJS.Workbook();
 await wb.xlsx.readFile(SHEET_PATH);
 const ws = wb.worksheets[0];
+const num = (v) => {
+  const n = typeof v === 'number' ? v : (v && typeof v === 'object' && typeof v.result === 'number' ? v.result : NaN);
+  return Number.isFinite(n) ? n : NaN;
+};
+let layout = 'old';
+{
+  let c2n = 0, c3n = 0, seen = 0;
+  ws.eachRow((row, idx) => {
+    if (idx <= 3 || seen >= 15) return;
+    if (Number.isFinite(num(row.getCell(2).value))) c2n++;
+    if (Number.isFinite(num(row.getCell(3).value))) c3n++;
+    seen++;
+  });
+  layout = c3n > c2n ? 'new' : 'old';
+}
 const sections = [];
 let current = { name: 'GENERAL', items: [] };
 ws.eachRow((row, idx) => {
   if (idx <= 2) return;
-  const desc = String(row.getCell(1).value ?? '').trim();
-  const rawB = row.getCell(2).value;
-  const price = typeof rawB === 'number' ? rawB
-    : (rawB && typeof rawB === 'object' && typeof rawB.result === 'number' ? rawB.result : NaN);
-  if (desc && !Number.isFinite(price)) { current = { name: desc, items: [] }; sections.push(current); return; }
-  if (!Number.isFinite(price)) return;
-  current.items.push({ name: desc || current.name, price: Math.round(price) });
+  const c1 = String(row.getCell(1).value ?? '').trim();
+  const c2 = String(row.getCell(2).value ?? '').trim();
+  if (layout === 'old') {
+    const price = num(row.getCell(2).value);
+    if (c1 && !Number.isFinite(price)) { current = { name: c1, items: [] }; sections.push(current); return; }
+    if (!Number.isFinite(price)) return;
+    current.items.push({ name: c1 || current.name, price: Math.round(price) });
+    return;
+  }
+  if (c1 === 'CODIGO' && c2.toUpperCase().startsWith('DESCRIPC')) return;
+  const price = num(row.getCell(3).value);
+  if (!Number.isFinite(price)) {
+    const sec = c1 || c2;
+    if (sec) { current = { name: sec, items: [] }; sections.push(current); return; }
+    return;
+  }
+  if (!c1 && !c2) return;
+  current.items.push({ code: c1, name: c2 || current.name, price: Math.round(price) });
 });
 const rows = sections.flatMap((s) => s.items.map((i) => ({ ...i, section: s.name, toks: sig(i.name) })));
 if (!rows.length) throw new Error('no priced rows parsed');
+console.log(`layout: ${layout} · sections=${sections.length} · priced rows=${rows.length} · con codigo=${rows.filter((r) => r.code).length}`);
+
+// índice por código: la hoja oct 2026 trae CODIGO == id del catálogo → matching EXACTO
+const byCode = new Map();
+for (const r of rows) {
+  if (!r.code) continue;
+  if (!byCode.has(r.code)) byCode.set(r.code, []);
+  byCode.get(r.code).push(r);
+}
 
 // ── 2. read existing products.json for exact ID matching ─────────────────────
 const productsPath = path.join(ROOT, 'products.json');
@@ -53,18 +88,27 @@ function inOrder(rowToks, productToks) {
 
 const priceMap = {};
 const unmatchedProducts = [];
+const ambiguousIds = [];
 const matchedRows = new Set();
 
 for (const prod of products) {
-  const pt = sig(prod.name || '');
-  if (!pt.length) { unmatchedProducts.push(prod.id); continue; }
-  const hits = rows.filter((r) => r.toks.length && inOrder(r.toks, pt));
-  if (!hits.length) { unmatchedProducts.push(prod.id); continue; }
-  const best = Math.max(...hits.map((h) => h.toks.length));
-  const top = hits.filter((h) => h.toks.length === best);
-  const prices = [...new Set(top.map((t) => t.price))];
-  if (prices.length > 1) { unmatchedProducts.push(prod.id); continue; }
-  const row = top[0];
+  let row = null;
+  const codeHits = byCode.get(String(prod.id || '')) || [];
+  if (codeHits.length) {
+    const prices = [...new Set(codeHits.map((r) => r.price))];
+    if (prices.length > 1) { ambiguousIds.push(`${prod.id} (${prod.name}): ${codeHits.map((r) => `${r.price}@"${r.name}"`).join(' vs ')}`); continue; }
+    row = codeHits[0];
+  } else {
+    const pt = sig(prod.name || '');
+    if (!pt.length) { unmatchedProducts.push(prod.id); continue; }
+    const hits = rows.filter((r) => r.toks.length && inOrder(r.toks, pt));
+    if (!hits.length) { unmatchedProducts.push(prod.id); continue; }
+    const best = Math.max(...hits.map((h) => h.toks.length));
+    const top = hits.filter((h) => h.toks.length === best);
+    const prices = [...new Set(top.map((t) => t.price))];
+    if (prices.length > 1) { unmatchedProducts.push(prod.id); continue; }
+    row = top[0];
+  }
   priceMap[prod.id] = {
     price_cop: fmtCop(row.price),
     price_usd: prod.price_usd || 'Consultar precio',
@@ -124,6 +168,9 @@ console.log(`price-catalog.json: ${Object.keys(catalog).length} entries`);
 
 console.log(`\nUnmatched product IDs (${unmatchedProducts.length}):`);
 unmatchedProducts.slice(0, 20).forEach((id) => console.log('  ', id));
+
+console.log(`\nAMBIGUOUS por codigo duplicado con precios distintos (${ambiguousIds.length}) — confirmar con el cliente:`);
+ambiguousIds.forEach((l) => console.log('  ', l));
 
 const unmatchedRows = rows.filter((r) => !matchedRows.has(r.name));
 console.log(`\nSheet rows not used (${unmatchedRows.length}):`);
