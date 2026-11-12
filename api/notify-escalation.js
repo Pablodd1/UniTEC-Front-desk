@@ -143,7 +143,7 @@ async function sendTwilioSMS(phones, text) {
       const formData = new URLSearchParams();
       formData.append('To', phone);
       formData.append('From', twilioNumber);
-      formData.append('Body', text);
+      formData.append('Body', `ALERTFROMCHATBOT · ${text}`);
 
       const r = await fetch(`https://api.twilio.com/2010-04-01/Accounts/${accountSid}/Messages.json`, {
         method: 'POST',
@@ -181,7 +181,7 @@ async function sendTwilioWhatsApp(phone, text) {
     const formData = new URLSearchParams();
     formData.append('To', `whatsapp:${p}`);
     formData.append('From', `whatsapp:${twilioNumber}`);
-    formData.append('Body', text);
+    formData.append('Body', `ALERTFROMCHATBOT · ${text}`);
 
     const r = await fetch(`https://api.twilio.com/2010-04-01/Accounts/${accountSid}/Messages.json`, {
       method: 'POST',
@@ -214,6 +214,7 @@ function buildTelegramMessage(d) {
   // DETALLE COMPLETO SIEMPRE: el cliente pidió que la alerta llegue con todos los datos, no con
   // líneas que desaparecen cuando el campo viene vacío. Cada dato tiene su "no indicado".
   const lines = [
+    `<b>ALERTFROMCHATBOT</b>`,
     `<b>${icon} ALERTA DE ESCALAMIENTO</b>`,
     ``,
     `<b>Tipo:</b> ${typeLabel}`,
@@ -480,7 +481,7 @@ export default async function handler(req, res) {
   const [telegramR, emailR, smsR] = await Promise.allSettled([
     sendTelegram(buildTelegramMessage(d)),
     sendEmail(
-      `[${d.priority.toUpperCase()}] ${d.type === 'quote' ? 'Solicitud de cotización' : d.type === 'staff' ? 'Cliente pidió un asesor' : d.type === 'sla' ? 'CLIENTE SIN RESPUESTA (SLA)' : d.type === 'abandon' ? 'CLIENTE ABANDONÓ LA CONVERSACIÓN' : d.type === 'contact' ? 'DATOS DE CONTACTO CAPTURADOS' : 'Escalamiento'} — ${customerName || 'Cliente'}`,
+      `ALERTFROMCHATBOT — [${d.priority.toUpperCase()}] ${d.type === 'quote' ? 'Solicitud de cotización' : d.type === 'staff' ? 'Cliente pidió un asesor' : d.type === 'sla' ? 'CLIENTE SIN RESPUESTA (SLA)' : d.type === 'abandon' ? 'CLIENTE ABANDONÓ LA CONVERSACIÓN' : d.type === 'contact' ? 'DATOS DE CONTACTO CAPTURADOS' : 'Escalamiento'} — ${customerName || 'Cliente'}`,
       buildEmailHtml(d)
     ),
     // UN SOLO RAÍL DE TELÉFONO: Twilio SMS. Sin Sent.dm no hay primario muerto que esconda el fallo.

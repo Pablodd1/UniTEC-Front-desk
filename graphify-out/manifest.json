@@ -1,0 +1,1387 @@
+{
+  "/home/jasme/UniTEC-Front-desk/products_knowledge.json": {
+    "mtime": 1781178739.135726,
+    "ast_hash": "8c06bc91de2f552daab964b63c24cc47",
+    "semantic_hash": "8c06bc91de2f552daab964b63c24cc47"
+  },
+  "/home/jasme/UniTEC-Front-desk/firestore.indexes.json": {
+    "mtime": 1785261809.9671714,
+    "ast_hash": "5bc012c855d1e1cf629c4e5ac8d3da57",
+    "semantic_hash": "5bc012c855d1e1cf629c4e5ac8d3da57"
+  },
+  "/home/jasme/UniTEC-Front-desk/tailwind.config.js": {
+    "mtime": 1785261809.9713058,
+    "ast_hash": "38a903e5dccec5bc967487000e2bb6c2",
+    "semantic_hash": "38a903e5dccec5bc967487000e2bb6c2"
+  },
+  "/home/jasme/UniTEC-Front-desk/package.json": {
+    "mtime": 1790891005.5450215,
+    "ast_hash": "e1a21d21f2e29179cfbe15479a32500b",
+    "semantic_hash": "e1a21d21f2e29179cfbe15479a32500b"
+  },
+  "/home/jasme/UniTEC-Front-desk/App.tsx": {
+    "mtime": 1791567100.8688488,
+    "ast_hash": "53b3a5f4bca90db1ec384e57e2b3006c",
+    "semantic_hash": "53b3a5f4bca90db1ec384e57e2b3006c"
+  },
+  "/home/jasme/UniTEC-Front-desk/tsconfig.node.json": {
+    "mtime": 1777514541.6062708,
+    "ast_hash": "1c139bab5d1a90787cbb951073a5abde",
+    "semantic_hash": "1c139bab5d1a90787cbb951073a5abde"
+  },
+  "/home/jasme/UniTEC-Front-desk/firebase-applet-config.json": {
+    "mtime": 1785261809.9671714,
+    "ast_hash": "eb7a6a41d206eb59c177402035641b7d",
+    "semantic_hash": "eb7a6a41d206eb59c177402035641b7d"
+  },
+  "/home/jasme/UniTEC-Front-desk/postcss.config.js": {
+    "mtime": 1785261809.9671714,
+    "ast_hash": "ef3ba2a81ba19f8ea5ddf625521e96f0",
+    "semantic_hash": "ef3ba2a81ba19f8ea5ddf625521e96f0"
+  },
+  "/home/jasme/UniTEC-Front-desk/vite.config.ts": {
+    "mtime": 1785261809.97544,
+    "ast_hash": "e11d453227c38adfeb74eb49182e9167",
+    "semantic_hash": "e11d453227c38adfeb74eb49182e9167"
+  },
+  "/home/jasme/UniTEC-Front-desk/backup_and_migrate.js": {
+    "mtime": 1785261809.9630373,
+    "ast_hash": "dfb34f0657567f8ba7f140db8d3c1480",
+    "semantic_hash": "dfb34f0657567f8ba7f140db8d3c1480"
+  },
+  "/home/jasme/UniTEC-Front-desk/skills-lock.json": {
+    "mtime": 1790890992.212949,
+    "ast_hash": "302c45db3d2018159bba2a46a51e42b2",
+    "semantic_hash": "302c45db3d2018159bba2a46a51e42b2"
+  },
+  "/home/jasme/UniTEC-Front-desk/tsconfig.json": {
+    "mtime": 1777514541.6062708,
+    "ast_hash": "e9daf0d9eec94930daf75b267ec71c4f",
+    "semantic_hash": "e9daf0d9eec94930daf75b267ec71c4f"
+  },
+  "/home/jasme/UniTEC-Front-desk/firebase-blueprint.json": {
+    "mtime": 1777514541.5980737,
+    "ast_hash": "3e400b4256d1efbe3f4dbdbd832ff3ee",
+    "semantic_hash": "3e400b4256d1efbe3f4dbdbd832ff3ee"
+  },
+  "/home/jasme/UniTEC-Front-desk/index.tsx": {
+    "mtime": 1785261809.9671714,
+    "ast_hash": "c2d97c098749b2772502732bba91343a",
+    "semantic_hash": "c2d97c098749b2772502732bba91343a"
+  },
+  "/home/jasme/UniTEC-Front-desk/firebase.json": {
+    "mtime": 1785261809.9671714,
+    "ast_hash": "6400e1a3ba135be0104d962135df4f25",
+    "semantic_hash": "6400e1a3ba135be0104d962135df4f25"
+  },
+  "/home/jasme/UniTEC-Front-desk/firebase.ts": {
+    "mtime": 1785261809.9671714,
+    "ast_hash": "ac7256806be49f2a4062802b500fde30",
+    "semantic_hash": "ac7256806be49f2a4062802b500fde30"
+  },
+  "/home/jasme/UniTEC-Front-desk/types.ts": {
+    "mtime": 1791903759.2880118,
+    "ast_hash": "271fb718a98dfda7fb3aeaf6afdceb43",
+    "semantic_hash": "271fb718a98dfda7fb3aeaf6afdceb43"
+  },
+  "/home/jasme/UniTEC-Front-desk/embed-script.js": {
+    "mtime": 1785261809.9671714,
+    "ast_hash": "8d32a50ce62c2fd09aef2ecb9fbc6a4e",
+    "semantic_hash": "8d32a50ce62c2fd09aef2ecb9fbc6a4e"
+  },
+  "/home/jasme/UniTEC-Front-desk/constants.ts": {
+    "mtime": 1792072875.0261948,
+    "ast_hash": "19f94c1213e83757b08d9652607f03c0",
+    "semantic_hash": "19f94c1213e83757b08d9652607f03c0"
+  },
+  "/home/jasme/UniTEC-Front-desk/unitec-chatbot.js": {
+    "mtime": 1785261809.97544,
+    "ast_hash": "696f8e13745f7dbaa386e2b5f2f520ec",
+    "semantic_hash": "696f8e13745f7dbaa386e2b5f2f520ec"
+  },
+  "/home/jasme/UniTEC-Front-desk/products.json": {
+    "mtime": 1791903341.2612035,
+    "ast_hash": "660a9da8086efcb0272b6f96c4f79475",
+    "semantic_hash": "660a9da8086efcb0272b6f96c4f79475"
+  },
+  "/home/jasme/UniTEC-Front-desk/metadata.json": {
+    "mtime": 1777514541.5980737,
+    "ast_hash": "af5de50ad86a72f3206e93341d9363d9",
+    "semantic_hash": "af5de50ad86a72f3206e93341d9363d9"
+  },
+  "/home/jasme/UniTEC-Front-desk/vercel.json": {
+    "mtime": 1792764605.6121683,
+    "ast_hash": "61bdf5f3f60dfa01a6147a9b3f30ad7a",
+    "semantic_hash": "61bdf5f3f60dfa01a6147a9b3f30ad7a"
+  },
+  "/home/jasme/UniTEC-Front-desk/building-chatbot.js": {
+    "mtime": 1785261809.9630373,
+    "ast_hash": "e7450ea775fa245610a70570163fe0b2",
+    "semantic_hash": "e7450ea775fa245610a70570163fe0b2"
+  },
+  "/home/jasme/UniTEC-Front-desk/.agents/skills/vercel-optimize/scripts/collect-signals.mjs": {
+    "mtime": 1790890979.1048799,
+    "ast_hash": "ecb3a1b378b91b05745ea8118cc92f7d",
+    "semantic_hash": "ecb3a1b378b91b05745ea8118cc92f7d"
+  },
+  "/home/jasme/UniTEC-Front-desk/.agents/skills/vercel-optimize/scripts/render-report.mjs": {
+    "mtime": 1790890979.10888,
+    "ast_hash": "24d42646872200cac6b05968a1b27e23",
+    "semantic_hash": "24d42646872200cac6b05968a1b27e23"
+  },
+  "/home/jasme/UniTEC-Front-desk/.agents/skills/vercel-optimize/scripts/collect-sub-agent-outputs.mjs": {
+    "mtime": 1790890979.1048799,
+    "ast_hash": "138160a89f9df94ac246fbd0812a482d",
+    "semantic_hash": "138160a89f9df94ac246fbd0812a482d"
+  },
+  "/home/jasme/UniTEC-Front-desk/.agents/skills/vercel-optimize/scripts/merge-signals.mjs": {
+    "mtime": 1790890979.1048799,
+    "ast_hash": "c93b4298464e923f843e88e0fb327415",
+    "semantic_hash": "c93b4298464e923f843e88e0fb327415"
+  },
+  "/home/jasme/UniTEC-Front-desk/.agents/skills/vercel-optimize/scripts/check-citations.mjs": {
+    "mtime": 1790890979.1048799,
+    "ast_hash": "aaeff7c5aa6f635cefd810d7b2aa2753",
+    "semantic_hash": "aaeff7c5aa6f635cefd810d7b2aa2753"
+  },
+  "/home/jasme/UniTEC-Front-desk/.agents/skills/vercel-optimize/scripts/check-docs-fresh.mjs": {
+    "mtime": 1790890979.1048799,
+    "ast_hash": "e86c603e49af933f0408357aef8844cd",
+    "semantic_hash": "e86c603e49af933f0408357aef8844cd"
+  },
+  "/home/jasme/UniTEC-Front-desk/.agents/skills/vercel-optimize/scripts/verify-and-regen.mjs": {
+    "mtime": 1790890979.10888,
+    "ast_hash": "d31c72c70524cc88d097f3c4be2336a1",
+    "semantic_hash": "d31c72c70524cc88d097f3c4be2336a1"
+  },
+  "/home/jasme/UniTEC-Front-desk/.agents/skills/vercel-optimize/scripts/reconcile-candidates.mjs": {
+    "mtime": 1790890979.10888,
+    "ast_hash": "bd6b7aa98e3c486b80d7b930f9e6fada",
+    "semantic_hash": "bd6b7aa98e3c486b80d7b930f9e6fada"
+  },
+  "/home/jasme/UniTEC-Front-desk/.agents/skills/vercel-optimize/scripts/verify-finding.mjs": {
+    "mtime": 1790890979.10888,
+    "ast_hash": "50ef4240d5ed73d139843f240729030a",
+    "semantic_hash": "50ef4240d5ed73d139843f240729030a"
+  },
+  "/home/jasme/UniTEC-Front-desk/.agents/skills/vercel-optimize/scripts/gate-investigations.mjs": {
+    "mtime": 1790890979.1048799,
+    "ast_hash": "51d1d6f03ed6fffc9887a4ae527ba134",
+    "semantic_hash": "51d1d6f03ed6fffc9887a4ae527ba134"
+  },
+  "/home/jasme/UniTEC-Front-desk/.agents/skills/vercel-optimize/scripts/build-docs.mjs": {
+    "mtime": 1790890979.1048799,
+    "ast_hash": "19f6462b607c6c93accdd1fdd22098f7",
+    "semantic_hash": "19f6462b607c6c93accdd1fdd22098f7"
+  },
+  "/home/jasme/UniTEC-Front-desk/.agents/skills/vercel-optimize/scripts/deep-dive.mjs": {
+    "mtime": 1790890979.1048799,
+    "ast_hash": "1baf1a582ae27e0fdcc7be05ac26278e",
+    "semantic_hash": "1baf1a582ae27e0fdcc7be05ac26278e"
+  },
+  "/home/jasme/UniTEC-Front-desk/.agents/skills/vercel-optimize/scripts/prepare-investigation-brief.mjs": {
+    "mtime": 1790890979.1048799,
+    "ast_hash": "879505a13d8bebfbd52377cd1af73d50",
+    "semantic_hash": "879505a13d8bebfbd52377cd1af73d50"
+  },
+  "/home/jasme/UniTEC-Front-desk/.agents/skills/vercel-optimize/scripts/scan-codebase.mjs": {
+    "mtime": 1790890979.10888,
+    "ast_hash": "db9a0362514377710c4c0595a4650aa8",
+    "semantic_hash": "db9a0362514377710c4c0595a4650aa8"
+  },
+  "/home/jasme/UniTEC-Front-desk/.agents/skills/vercel-optimize/scripts/budget-summary.mjs": {
+    "mtime": 1790890979.1048799,
+    "ast_hash": "0e76296fa235c31e4fbf1d58299a2bfe",
+    "semantic_hash": "0e76296fa235c31e4fbf1d58299a2bfe"
+  },
+  "/home/jasme/UniTEC-Front-desk/.agents/skills/vercel-optimize/references/docs-library.json": {
+    "mtime": 1790890979.1048799,
+    "ast_hash": "289afe73523f5d9b44b7f873b909b050",
+    "semantic_hash": "289afe73523f5d9b44b7f873b909b050"
+  },
+  "/home/jasme/UniTEC-Front-desk/.agents/skills/vercel-optimize/lib/auth-route.mjs": {
+    "mtime": 1790890979.0928798,
+    "ast_hash": "78cdbc7a226b9da274748ace45b23bc6",
+    "semantic_hash": "78cdbc7a226b9da274748ace45b23bc6"
+  },
+  "/home/jasme/UniTEC-Front-desk/.agents/skills/vercel-optimize/lib/extract-claims.mjs": {
+    "mtime": 1790890979.09688,
+    "ast_hash": "d3eac12d03968493e63e71b00e966599",
+    "semantic_hash": "d3eac12d03968493e63e71b00e966599"
+  },
+  "/home/jasme/UniTEC-Front-desk/.agents/skills/vercel-optimize/lib/verify-claim.mjs": {
+    "mtime": 1790890979.09688,
+    "ast_hash": "14bfa477526dcf0ba14c78b06622413e",
+    "semantic_hash": "14bfa477526dcf0ba14c78b06622413e"
+  },
+  "/home/jasme/UniTEC-Front-desk/.agents/skills/vercel-optimize/lib/render-report.mjs": {
+    "mtime": 1790890979.09688,
+    "ast_hash": "5c12e95ac489d2f905f38867b56598d2",
+    "semantic_hash": "5c12e95ac489d2f905f38867b56598d2"
+  },
+  "/home/jasme/UniTEC-Front-desk/.agents/skills/vercel-optimize/lib/vercel.mjs": {
+    "mtime": 1790890979.09688,
+    "ast_hash": "366ce02c49803242703d467b29815575",
+    "semantic_hash": "366ce02c49803242703d467b29815575"
+  },
+  "/home/jasme/UniTEC-Front-desk/.agents/skills/vercel-optimize/lib/observation-safety.mjs": {
+    "mtime": 1790890979.09688,
+    "ast_hash": "f76b563b7914a849dc978e95fea4286c",
+    "semantic_hash": "f76b563b7914a849dc978e95fea4286c"
+  },
+  "/home/jasme/UniTEC-Front-desk/.agents/skills/vercel-optimize/lib/display-labels.mjs": {
+    "mtime": 1790890979.09688,
+    "ast_hash": "54b65a0880979c5e1dfe0737a74a21bb",
+    "semantic_hash": "54b65a0880979c5e1dfe0737a74a21bb"
+  },
+  "/home/jasme/UniTEC-Front-desk/.agents/skills/vercel-optimize/lib/citations.mjs": {
+    "mtime": 1790890979.0928798,
+    "ast_hash": "7edbdf850ac19ad8b0b569b5e3fd03d9",
+    "semantic_hash": "7edbdf850ac19ad8b0b569b5e3fd03d9"
+  },
+  "/home/jasme/UniTEC-Front-desk/.agents/skills/vercel-optimize/lib/project-facts.mjs": {
+    "mtime": 1790890979.09688,
+    "ast_hash": "02791b20eeae4b1951af06def8d306ec",
+    "semantic_hash": "02791b20eeae4b1951af06def8d306ec"
+  },
+  "/home/jasme/UniTEC-Front-desk/.agents/skills/vercel-optimize/lib/queries.mjs": {
+    "mtime": 1790890979.09688,
+    "ast_hash": "39d4ad0f5805707d81427bee74969328",
+    "semantic_hash": "39d4ad0f5805707d81427bee74969328"
+  },
+  "/home/jasme/UniTEC-Front-desk/.agents/skills/vercel-optimize/lib/throttle.mjs": {
+    "mtime": 1790890979.09688,
+    "ast_hash": "25b47cfb7aa5b0ad869712b5c75adac4",
+    "semantic_hash": "25b47cfb7aa5b0ad869712b5c75adac4"
+  },
+  "/home/jasme/UniTEC-Front-desk/.agents/skills/vercel-optimize/lib/support-topics.mjs": {
+    "mtime": 1790890979.09688,
+    "ast_hash": "3d78376e165ff6f46c97bff4d14df02b",
+    "semantic_hash": "3d78376e165ff6f46c97bff4d14df02b"
+  },
+  "/home/jasme/UniTEC-Front-desk/.agents/skills/vercel-optimize/lib/impact-label.mjs": {
+    "mtime": 1790890979.09688,
+    "ast_hash": "90c7d906346221e3b6a88497888f27d9",
+    "semantic_hash": "90c7d906346221e3b6a88497888f27d9"
+  },
+  "/home/jasme/UniTEC-Front-desk/.agents/skills/vercel-optimize/lib/framework-support.mjs": {
+    "mtime": 1790890979.09688,
+    "ast_hash": "104f9d1f3efe7a04ad45043abf2db5d6",
+    "semantic_hash": "104f9d1f3efe7a04ad45043abf2db5d6"
+  },
+  "/home/jasme/UniTEC-Front-desk/.agents/skills/vercel-optimize/lib/impact-magnitude.mjs": {
+    "mtime": 1790890979.09688,
+    "ast_hash": "721ba1c4fdd66046463f44648dba77d0",
+    "semantic_hash": "721ba1c4fdd66046463f44648dba77d0"
+  },
+  "/home/jasme/UniTEC-Front-desk/.agents/skills/vercel-optimize/lib/repo-root.mjs": {
+    "mtime": 1790890979.09688,
+    "ast_hash": "60c8b364dfc2fec7ad34ba29ad491564",
+    "semantic_hash": "60c8b364dfc2fec7ad34ba29ad491564"
+  },
+  "/home/jasme/UniTEC-Front-desk/.agents/skills/vercel-optimize/lib/reconcile-candidates.mjs": {
+    "mtime": 1790890979.09688,
+    "ast_hash": "b671c1352680e5014f4cb53926dcbe11",
+    "semantic_hash": "b671c1352680e5014f4cb53926dcbe11"
+  },
+  "/home/jasme/UniTEC-Front-desk/.agents/skills/vercel-optimize/lib/route-normalize.mjs": {
+    "mtime": 1790890979.09688,
+    "ast_hash": "ea3d1fba63bc3e383b5764df8a3fbe95",
+    "semantic_hash": "ea3d1fba63bc3e383b5764df8a3fbe95"
+  },
+  "/home/jasme/UniTEC-Front-desk/.agents/skills/vercel-optimize/lib/dedup-recs.mjs": {
+    "mtime": 1790890979.0928798,
+    "ast_hash": "77ff166f2686617f66cfad313b389c67",
+    "semantic_hash": "77ff166f2686617f66cfad313b389c67"
+  },
+  "/home/jasme/UniTEC-Front-desk/.agents/skills/vercel-optimize/lib/deep-dive.mjs": {
+    "mtime": 1790890979.0928798,
+    "ast_hash": "9cc73392e21340df7c41a630317e927e",
+    "semantic_hash": "9cc73392e21340df7c41a630317e927e"
+  },
+  "/home/jasme/UniTEC-Front-desk/.agents/skills/vercel-optimize/lib/workspace-resolver.mjs": {
+    "mtime": 1790890979.09688,
+    "ast_hash": "03cf55034b85c6c60e21ab2a17cf6788",
+    "semantic_hash": "03cf55034b85c6c60e21ab2a17cf6788"
+  },
+  "/home/jasme/UniTEC-Front-desk/.agents/skills/vercel-optimize/lib/util.mjs": {
+    "mtime": 1790890979.09688,
+    "ast_hash": "c3f274e07a2dfda1b1ad8a7881a4b36f",
+    "semantic_hash": "c3f274e07a2dfda1b1ad8a7881a4b36f"
+  },
+  "/home/jasme/UniTEC-Front-desk/.agents/skills/vercel-optimize/lib/grade-recommendation.mjs": {
+    "mtime": 1790890979.09688,
+    "ast_hash": "81b336c79af1be8b8f420aa4c6b3f3c0",
+    "semantic_hash": "81b336c79af1be8b8f420aa4c6b3f3c0"
+  },
+  "/home/jasme/UniTEC-Front-desk/.agents/skills/vercel-optimize/lib/cost-coverage.mjs": {
+    "mtime": 1790890979.0928798,
+    "ast_hash": "9ed214ea7982f9587a61331f0ac88327",
+    "semantic_hash": "9ed214ea7982f9587a61331f0ac88327"
+  },
+  "/home/jasme/UniTEC-Front-desk/.agents/skills/vercel-optimize/lib/budget-summary.mjs": {
+    "mtime": 1790890979.0928798,
+    "ast_hash": "2a2842a9ff6376c473511c6c3763adc0",
+    "semantic_hash": "2a2842a9ff6376c473511c6c3763adc0"
+  },
+  "/home/jasme/UniTEC-Front-desk/.agents/skills/vercel-optimize/lib/investigation-brief.mjs": {
+    "mtime": 1790890979.09688,
+    "ast_hash": "c041803b1f962926166f4c8b130a67f5",
+    "semantic_hash": "c041803b1f962926166f4c8b130a67f5"
+  },
+  "/home/jasme/UniTEC-Front-desk/.agents/skills/vercel-optimize/lib/scanners/force-dynamic.mjs": {
+    "mtime": 1790890979.11288,
+    "ast_hash": "2cd6beda0d49786f601e2458a8a5c5b4",
+    "semantic_hash": "2cd6beda0d49786f601e2458a8a5c5b4"
+  },
+  "/home/jasme/UniTEC-Front-desk/.agents/skills/vercel-optimize/lib/scanners/cache-components-suspense-dedupe.mjs": {
+    "mtime": 1790890979.11288,
+    "ast_hash": "15f95c3594740dcf476a6510fc53d22c",
+    "semantic_hash": "15f95c3594740dcf476a6510fc53d22c"
+  },
+  "/home/jasme/UniTEC-Front-desk/.agents/skills/vercel-optimize/lib/scanners/max-age-without-s-maxage.mjs": {
+    "mtime": 1790890979.11288,
+    "ast_hash": "9c1e0394512e914cc3a4403fdfd11b5d",
+    "semantic_hash": "9c1e0394512e914cc3a4403fdfd11b5d"
+  },
+  "/home/jasme/UniTEC-Front-desk/.agents/skills/vercel-optimize/lib/scanners/prisma-include-tree.mjs": {
+    "mtime": 1790890979.11288,
+    "ast_hash": "a8665d784f7e6272b064a9c4429803a0",
+    "semantic_hash": "a8665d784f7e6272b064a9c4429803a0"
+  },
+  "/home/jasme/UniTEC-Front-desk/.agents/skills/vercel-optimize/lib/scanners/middleware-broad-matcher.mjs": {
+    "mtime": 1790890979.11288,
+    "ast_hash": "7e2c8ef92840dc2836da837dad68e3c0",
+    "semantic_hash": "7e2c8ef92840dc2836da837dad68e3c0"
+  },
+  "/home/jasme/UniTEC-Front-desk/.agents/skills/vercel-optimize/lib/scanners/missing-cache-headers.mjs": {
+    "mtime": 1790890979.11288,
+    "ast_hash": "39d7132d2386e47ef76ec8b09d1fc1b3",
+    "semantic_hash": "39d7132d2386e47ef76ec8b09d1fc1b3"
+  },
+  "/home/jasme/UniTEC-Front-desk/.agents/skills/vercel-optimize/lib/scanners/large-static-asset.mjs": {
+    "mtime": 1790890979.11288,
+    "ast_hash": "617d7ac9be8b697f117afea4c77945fe",
+    "semantic_hash": "617d7ac9be8b697f117afea4c77945fe"
+  },
+  "/home/jasme/UniTEC-Front-desk/.agents/skills/vercel-optimize/lib/scanners/turbo-force-bypass.mjs": {
+    "mtime": 1790890979.11288,
+    "ast_hash": "c6c40516726ccb8cc698a487cd6b8a42",
+    "semantic_hash": "c6c40516726ccb8cc698a487cd6b8a42"
+  },
+  "/home/jasme/UniTEC-Front-desk/.agents/skills/vercel-optimize/lib/scanners/sveltekit-prerender-missing.mjs": {
+    "mtime": 1790890979.11288,
+    "ast_hash": "1cb3a6759bf30fa07b3bb4bac648838f",
+    "semantic_hash": "1cb3a6759bf30fa07b3bb4bac648838f"
+  },
+  "/home/jasme/UniTEC-Front-desk/.agents/skills/vercel-optimize/lib/scanners/headers-in-page.mjs": {
+    "mtime": 1790890979.11288,
+    "ast_hash": "300828055cc429057cb18aa344f7fc3d",
+    "semantic_hash": "300828055cc429057cb18aa344f7fc3d"
+  },
+  "/home/jasme/UniTEC-Front-desk/.agents/skills/vercel-optimize/lib/scanners/use-cache-date-stamp.mjs": {
+    "mtime": 1790890979.11288,
+    "ast_hash": "343197740e83344ba6001ed45c9fda87",
+    "semantic_hash": "343197740e83344ba6001ed45c9fda87"
+  },
+  "/home/jasme/UniTEC-Front-desk/.agents/skills/vercel-optimize/lib/scanners/region-pin-in-config.mjs": {
+    "mtime": 1790890979.11288,
+    "ast_hash": "7560feeed1f82e6690c6a689b9571b67",
+    "semantic_hash": "7560feeed1f82e6690c6a689b9571b67"
+  },
+  "/home/jasme/UniTEC-Front-desk/.agents/skills/vercel-optimize/lib/scanners/source-maps-production.mjs": {
+    "mtime": 1790890979.11288,
+    "ast_hash": "7d4439ca5c03c20e0ecca42e3abef718",
+    "semantic_hash": "7d4439ca5c03c20e0ecca42e3abef718"
+  },
+  "/home/jasme/UniTEC-Front-desk/.agents/skills/vercel-optimize/lib/scanners/unoptimized-image.mjs": {
+    "mtime": 1790890979.11288,
+    "ast_hash": "676516e0724bc2da16216f92349663b2",
+    "semantic_hash": "676516e0724bc2da16216f92349663b2"
+  },
+  "/home/jasme/UniTEC-Front-desk/.agents/skills/vercel-optimize/lib/scanners/edge-heavy-import.mjs": {
+    "mtime": 1790890979.11288,
+    "ast_hash": "633620834149e6a63ff8e16ab172c780",
+    "semantic_hash": "633620834149e6a63ff8e16ab172c780"
+  },
+  "/home/jasme/UniTEC-Front-desk/.agents/skills/vercel-optimize/lib/scanners/index.mjs": {
+    "mtime": 1790890979.11288,
+    "ast_hash": "9284e4ff9aed9cf623b1aee0be316bdc",
+    "semantic_hash": "9284e4ff9aed9cf623b1aee0be316bdc"
+  },
+  "/home/jasme/UniTEC-Front-desk/.agents/skills/vercel-optimize/lib/gates/usage-spike-triage.mjs": {
+    "mtime": 1790890979.11288,
+    "ast_hash": "0a1dfe71ecd613775b0a86d2c8020215",
+    "semantic_hash": "0a1dfe71ecd613775b0a86d2c8020215"
+  },
+  "/home/jasme/UniTEC-Front-desk/.agents/skills/vercel-optimize/lib/gates/cold-start.mjs": {
+    "mtime": 1790890979.11288,
+    "ast_hash": "88e2425e26d6fd567d073b1099d0a8ba",
+    "semantic_hash": "88e2425e26d6fd567d073b1099d0a8ba"
+  },
+  "/home/jasme/UniTEC-Front-desk/.agents/skills/vercel-optimize/lib/gates/select-candidates.mjs": {
+    "mtime": 1790890979.11288,
+    "ast_hash": "078a5c17c4dfe1da1381f619c15f8ad7",
+    "semantic_hash": "078a5c17c4dfe1da1381f619c15f8ad7"
+  },
+  "/home/jasme/UniTEC-Front-desk/.agents/skills/vercel-optimize/lib/gates/isr-overrevalidation.mjs": {
+    "mtime": 1790890979.11288,
+    "ast_hash": "3a002a49db769a30af36c8526cc90b74",
+    "semantic_hash": "3a002a49db769a30af36c8526cc90b74"
+  },
+  "/home/jasme/UniTEC-Front-desk/.agents/skills/vercel-optimize/lib/gates/hard-gates.mjs": {
+    "mtime": 1790890979.11288,
+    "ast_hash": "1b2791d58914849515fe90eafe1e13c8",
+    "semantic_hash": "1b2791d58914849515fe90eafe1e13c8"
+  },
+  "/home/jasme/UniTEC-Front-desk/.agents/skills/vercel-optimize/lib/gates/contract.mjs": {
+    "mtime": 1790890979.11288,
+    "ast_hash": "d86f2b288e5ae732706def4c862ed432",
+    "semantic_hash": "d86f2b288e5ae732706def4c862ed432"
+  },
+  "/home/jasme/UniTEC-Front-desk/.agents/skills/vercel-optimize/lib/gates/platform-bot-protection.mjs": {
+    "mtime": 1790890979.11288,
+    "ast_hash": "07011b1bd7e16367e152c60e135ca7fd",
+    "semantic_hash": "07011b1bd7e16367e152c60e135ca7fd"
+  },
+  "/home/jasme/UniTEC-Front-desk/.agents/skills/vercel-optimize/lib/gates/external-api-slow.mjs": {
+    "mtime": 1790890979.11288,
+    "ast_hash": "0a148d6b9aa296b13a21fa466ad55996",
+    "semantic_hash": "0a148d6b9aa296b13a21fa466ad55996"
+  },
+  "/home/jasme/UniTEC-Front-desk/.agents/skills/vercel-optimize/lib/gates/build-minutes-fanout.mjs": {
+    "mtime": 1790890979.11288,
+    "ast_hash": "16a3fdbf56f9cdd4f6dcc6046d8c253b",
+    "semantic_hash": "16a3fdbf56f9cdd4f6dcc6046d8c253b"
+  },
+  "/home/jasme/UniTEC-Front-desk/.agents/skills/vercel-optimize/lib/gates/types.d.ts": {
+    "mtime": 1790890979.11288,
+    "ast_hash": "3675d0b23e038ad038d2dd118d040f49",
+    "semantic_hash": "3675d0b23e038ad038d2dd118d040f49"
+  },
+  "/home/jasme/UniTEC-Front-desk/.agents/skills/vercel-optimize/lib/gates/scanner-driven.mjs": {
+    "mtime": 1790890979.11288,
+    "ast_hash": "5b1043a88db5e853e3c004735823a508",
+    "semantic_hash": "5b1043a88db5e853e3c004735823a508"
+  },
+  "/home/jasme/UniTEC-Front-desk/.agents/skills/vercel-optimize/lib/gates/region-misconfig.mjs": {
+    "mtime": 1790890979.11288,
+    "ast_hash": "0c318e6274284c1c7b982595632862b2",
+    "semantic_hash": "0c318e6274284c1c7b982595632862b2"
+  },
+  "/home/jasme/UniTEC-Front-desk/.agents/skills/vercel-optimize/lib/gates/route-errors.mjs": {
+    "mtime": 1790890979.11288,
+    "ast_hash": "f137c9122cc9a3b04b0d42fbb0c12641",
+    "semantic_hash": "f137c9122cc9a3b04b0d42fbb0c12641"
+  },
+  "/home/jasme/UniTEC-Front-desk/.agents/skills/vercel-optimize/lib/gates/uncached-route.mjs": {
+    "mtime": 1790890979.11288,
+    "ast_hash": "06bf4d3038400e117eff496830c4be0c",
+    "semantic_hash": "06bf4d3038400e117eff496830c4be0c"
+  },
+  "/home/jasme/UniTEC-Front-desk/.agents/skills/vercel-optimize/lib/gates/platform-fluid-compute.mjs": {
+    "mtime": 1790890979.11288,
+    "ast_hash": "0de35c4dc12390edc0df8ebf65ee9f37",
+    "semantic_hash": "0de35c4dc12390edc0df8ebf65ee9f37"
+  },
+  "/home/jasme/UniTEC-Front-desk/.agents/skills/vercel-optimize/lib/gates/cwv-poor.mjs": {
+    "mtime": 1790890979.11288,
+    "ast_hash": "613d31a09490a155b20e3f252c73bdbf",
+    "semantic_hash": "613d31a09490a155b20e3f252c73bdbf"
+  },
+  "/home/jasme/UniTEC-Front-desk/.agents/skills/vercel-optimize/lib/gates/observability-events-attribution.mjs": {
+    "mtime": 1790890979.11288,
+    "ast_hash": "3605e97d9e4ea6978ab808ea5af245f5",
+    "semantic_hash": "3605e97d9e4ea6978ab808ea5af245f5"
+  },
+  "/home/jasme/UniTEC-Front-desk/.agents/skills/vercel-optimize/lib/gates/slow-route.mjs": {
+    "mtime": 1790890979.11288,
+    "ast_hash": "2c33f62a826f9ef6f609c489fd492655",
+    "semantic_hash": "2c33f62a826f9ef6f609c489fd492655"
+  },
+  "/home/jasme/UniTEC-Front-desk/.agents/skills/vercel-optimize/lib/gates/index.mjs": {
+    "mtime": 1790890979.11288,
+    "ast_hash": "533b96a998b36cbee99f86f2709299fa",
+    "semantic_hash": "533b96a998b36cbee99f86f2709299fa"
+  },
+  "/home/jasme/UniTEC-Front-desk/.agents/skills/vercel-optimize/lib/gates/middleware-heavy.mjs": {
+    "mtime": 1790890979.11288,
+    "ast_hash": "3d9486e794b113a8b7926411503559b2",
+    "semantic_hash": "3d9486e794b113a8b7926411503559b2"
+  },
+  "/home/jasme/UniTEC-Front-desk/.agents/skills/vercel-optimize/lib/sanitizers/pre-release.mjs": {
+    "mtime": 1790890979.11288,
+    "ast_hash": "546d43b449ceefafbdf9773d2531a0ec",
+    "semantic_hash": "546d43b449ceefafbdf9773d2531a0ec"
+  },
+  "/home/jasme/UniTEC-Front-desk/.agents/skills/vercel-optimize/lib/sanitizers/bot-protection-certainty.mjs": {
+    "mtime": 1790890979.11288,
+    "ast_hash": "394bd5042e31472b9443841f071d1329",
+    "semantic_hash": "394bd5042e31472b9443841f071d1329"
+  },
+  "/home/jasme/UniTEC-Front-desk/.agents/skills/vercel-optimize/lib/sanitizers/middleware-conflict.mjs": {
+    "mtime": 1790890979.11288,
+    "ast_hash": "1530758ddb12b7b9f71a371fa2b8ff36",
+    "semantic_hash": "1530758ddb12b7b9f71a371fa2b8ff36"
+  },
+  "/home/jasme/UniTEC-Front-desk/.agents/skills/vercel-optimize/lib/sanitizers/cache-tag-invalidation-certainty.mjs": {
+    "mtime": 1790890979.11288,
+    "ast_hash": "dfb82ddae8e417a1624a95340cd04f96",
+    "semantic_hash": "dfb82ddae8e417a1624a95340cd04f96"
+  },
+  "/home/jasme/UniTEC-Front-desk/.agents/skills/vercel-optimize/lib/sanitizers/vercel-directive-strip.mjs": {
+    "mtime": 1790890979.11288,
+    "ast_hash": "c1b0e8a613c0e79b4c8f4f07bba88267",
+    "semantic_hash": "c1b0e8a613c0e79b4c8f4f07bba88267"
+  },
+  "/home/jasme/UniTEC-Front-desk/.agents/skills/vercel-optimize/lib/sanitizers/rate-limit.mjs": {
+    "mtime": 1790890979.11288,
+    "ast_hash": "10da5507e8e847f62c07f411de55b127",
+    "semantic_hash": "10da5507e8e847f62c07f411de55b127"
+  },
+  "/home/jasme/UniTEC-Front-desk/.agents/skills/vercel-optimize/lib/sanitizers/missing-citation.mjs": {
+    "mtime": 1790890979.11288,
+    "ast_hash": "3e8d685a5ee62f125d8a1d71cb3c060b",
+    "semantic_hash": "3e8d685a5ee62f125d8a1d71cb3c060b"
+  },
+  "/home/jasme/UniTEC-Front-desk/.agents/skills/vercel-optimize/lib/sanitizers/window-units.mjs": {
+    "mtime": 1790890979.11288,
+    "ast_hash": "f8fa0ff330864f2ae44158ab60beb3a2",
+    "semantic_hash": "f8fa0ff330864f2ae44158ab60beb3a2"
+  },
+  "/home/jasme/UniTEC-Front-desk/.agents/skills/vercel-optimize/lib/sanitizers/count-correct.mjs": {
+    "mtime": 1790890979.11288,
+    "ast_hash": "38243897ba6b475f4e08ad1a7dcdfb90",
+    "semantic_hash": "38243897ba6b475f4e08ad1a7dcdfb90"
+  },
+  "/home/jasme/UniTEC-Front-desk/.agents/skills/vercel-optimize/lib/sanitizers/undeclared-dep.mjs": {
+    "mtime": 1790890979.11288,
+    "ast_hash": "2b128a19e8e3483c647edc9829655767",
+    "semantic_hash": "2b128a19e8e3483c647edc9829655767"
+  },
+  "/home/jasme/UniTEC-Front-desk/.agents/skills/vercel-optimize/lib/sanitizers/rendering-mode-mislabel.mjs": {
+    "mtime": 1790890979.11288,
+    "ast_hash": "0249a788a556251284e30adc45e0c501",
+    "semantic_hash": "0249a788a556251284e30adc45e0c501"
+  },
+  "/home/jasme/UniTEC-Front-desk/.agents/skills/vercel-optimize/lib/sanitizers/function-duration-invocations.mjs": {
+    "mtime": 1790890979.11288,
+    "ast_hash": "3dd8526ef8dc313cab7ceb9542bda1c0",
+    "semantic_hash": "3dd8526ef8dc313cab7ceb9542bda1c0"
+  },
+  "/home/jasme/UniTEC-Front-desk/.agents/skills/vercel-optimize/lib/sanitizers/index.mjs": {
+    "mtime": 1790890979.11288,
+    "ast_hash": "a11776f94f283a4ef1d86a7f30633aeb",
+    "semantic_hash": "a11776f94f283a4ef1d86a7f30633aeb"
+  },
+  "/home/jasme/UniTEC-Front-desk/.agents/skills/deploy-to-vercel/resources/deploy.sh": {
+    "mtime": 1790890975.1288574,
+    "ast_hash": "c20b8a4b9e0ff5d191662848d6f46781",
+    "semantic_hash": "c20b8a4b9e0ff5d191662848d6f46781"
+  },
+  "/home/jasme/UniTEC-Front-desk/.agents/skills/deploy-to-vercel/resources/deploy-codex.sh": {
+    "mtime": 1790890975.1288574,
+    "ast_hash": "b048868554d8c8966860dec24b10e519",
+    "semantic_hash": "b048868554d8c8966860dec24b10e519"
+  },
+  "/home/jasme/UniTEC-Front-desk/.agents/skills/web-quality-audit/scripts/analyze.sh": {
+    "mtime": 1790890986.7089224,
+    "ast_hash": "e623269499a0f256146f7725eb578f77",
+    "semantic_hash": "e623269499a0f256146f7725eb578f77"
+  },
+  "/home/jasme/UniTEC-Front-desk/utils/audioUtils.ts": {
+    "mtime": 1777514541.6062708,
+    "ast_hash": "246f7ad07c3627bfa5277ef893157092",
+    "semantic_hash": "246f7ad07c3627bfa5277ef893157092"
+  },
+  "/home/jasme/UniTEC-Front-desk/.hermes/plans/price-match-report.json": {
+    "mtime": 1790971987.1767516,
+    "ast_hash": "16e77075baa305f28fd413c42b054fb2",
+    "semantic_hash": "16e77075baa305f28fd413c42b054fb2"
+  },
+  "/home/jasme/UniTEC-Front-desk/.hermes/probes/verify_reports_deploy.py": {
+    "mtime": 1791842627.0053573,
+    "ast_hash": "85b14e3fef30fec4d07fa0a021b099d8",
+    "semantic_hash": "85b14e3fef30fec4d07fa0a021b099d8"
+  },
+  "/home/jasme/UniTEC-Front-desk/.hermes/probes/handoff_policy_probe.py": {
+    "mtime": 1792073145.6689565,
+    "ast_hash": "51c0c583220007410ea044d7fa1243a5",
+    "semantic_hash": "51c0c583220007410ea044d7fa1243a5"
+  },
+  "/home/jasme/UniTEC-Front-desk/.hermes/probes/apply_cornisa_products.py": {
+    "mtime": 1791903330.332356,
+    "ast_hash": "bc35d91f2f0302af4aa19ab837cf718c",
+    "semantic_hash": "bc35d91f2f0302af4aa19ab837cf718c"
+  },
+  "/home/jasme/UniTEC-Front-desk/.hermes/probes/store_text_search.py": {
+    "mtime": 1792071572.697323,
+    "ast_hash": "390f2beec80085349a470f83d7d0dc3f",
+    "semantic_hash": "390f2beec80085349a470f83d7d0dc3f"
+  },
+  "/home/jasme/UniTEC-Front-desk/.hermes/probes/status_probe3_20261005.py": {
+    "mtime": 1791213536.3388362,
+    "ast_hash": "8e8de153c00c8045c5ad292a300d5f70",
+    "semantic_hash": "8e8de153c00c8045c5ad292a300d5f70"
+  },
+  "/home/jasme/UniTEC-Front-desk/.hermes/probes/status_probe2_20261005.py": {
+    "mtime": 1791213516.5846028,
+    "ast_hash": "f844286a1f1e22e0c18ac31ff4d34271",
+    "semantic_hash": "f844286a1f1e22e0c18ac31ff4d34271"
+  },
+  "/home/jasme/UniTEC-Front-desk/.hermes/probes/takeover_teardown.py": {
+    "mtime": 1791568691.986569,
+    "ast_hash": "2fcfc309f51111435eface96c857f769",
+    "semantic_hash": "2fcfc309f51111435eface96c857f769"
+  },
+  "/home/jasme/UniTEC-Front-desk/.hermes/probes/takeover_setup2.py": {
+    "mtime": 1791568664.7696192,
+    "ast_hash": "256d053e41f46e2b46dca30ed092b2d1",
+    "semantic_hash": "256d053e41f46e2b46dca30ed092b2d1"
+  },
+  "/home/jasme/UniTEC-Front-desk/.hermes/probes/raw_dump.py": {
+    "mtime": 1791217338.622578,
+    "ast_hash": "1452a92309445818c54e4994468cd550",
+    "semantic_hash": "1452a92309445818c54e4994468cd550"
+  },
+  "/home/jasme/UniTEC-Front-desk/.hermes/probes/telegram_delivery_probe.py": {
+    "mtime": 1791732819.3331158,
+    "ast_hash": "a94b1d2e0f9489d3f37d8fb5ccbd181c",
+    "semantic_hash": "a94b1d2e0f9489d3f37d8fb5ccbd181c"
+  },
+  "/home/jasme/UniTEC-Front-desk/.hermes/probes/smoke_crosscheck.py": {
+    "mtime": 1791731076.133725,
+    "ast_hash": "721aebfcd579332d3a05d852d4709489",
+    "semantic_hash": "721aebfcd579332d3a05d852d4709489"
+  },
+  "/home/jasme/UniTEC-Front-desk/.hermes/probes/status_probe_20261005.py": {
+    "mtime": 1791213473.1854749,
+    "ast_hash": "16586aa1927916aa70838d75fd9b8837",
+    "semantic_hash": "16586aa1927916aa70838d75fd9b8837"
+  },
+  "/home/jasme/UniTEC-Front-desk/.hermes/probes/config_main_probe.py": {
+    "mtime": 1791732784.005272,
+    "ast_hash": "0d660074d06b58892121bff34fd5b178",
+    "semantic_hash": "0d660074d06b58892121bff34fd5b178"
+  },
+  "/home/jasme/UniTEC-Front-desk/.hermes/probes/sla_path_test.mjs": {
+    "mtime": 1791731541.3437452,
+    "ast_hash": "69335b2a65802c715f866727c933bc0e",
+    "semantic_hash": "69335b2a65802c715f866727c933bc0e"
+  },
+  "/home/jasme/UniTEC-Front-desk/.hermes/probes/staff_link_test.mjs": {
+    "mtime": 1791566989.2181997,
+    "ast_hash": "832946abe4211b8e812d77c4d6088936",
+    "semantic_hash": "832946abe4211b8e812d77c4d6088936"
+  },
+  "/home/jasme/UniTEC-Front-desk/.hermes/probes/archives_check_20261005.py": {
+    "mtime": 1791214902.7354562,
+    "ast_hash": "bb2da5c989dbac0ef2253eef9ccc8340",
+    "semantic_hash": "bb2da5c989dbac0ef2253eef9ccc8340"
+  },
+  "/home/jasme/UniTEC-Front-desk/.hermes/probes/escalation_ack_audit.json": {
+    "mtime": 1792071909.593485,
+    "ast_hash": "a2ea42830c8f248cc22e5f822c8fe72e",
+    "semantic_hash": "a2ea42830c8f248cc22e5f822c8fe72e"
+  },
+  "/home/jasme/UniTEC-Front-desk/.hermes/probes/review_current.py": {
+    "mtime": 1791292265.647268,
+    "ast_hash": "1de028598cd2e19a0ec666ea969e93a2",
+    "semantic_hash": "1de028598cd2e19a0ec666ea969e93a2"
+  },
+  "/home/jasme/UniTEC-Front-desk/.hermes/probes/audit_firestore_20261011.py": {
+    "mtime": 1791731109.4849844,
+    "ast_hash": "ee68bf35600851f5589c83dc13aa245a",
+    "semantic_hash": "ee68bf35600851f5589c83dc13aa245a"
+  },
+  "/home/jasme/UniTEC-Front-desk/.hermes/probes/lat_check.py": {
+    "mtime": 1791292560.17831,
+    "ast_hash": "a25d7eef19db3e688e4ed270b7a9d24f",
+    "semantic_hash": "a25d7eef19db3e688e4ed270b7a9d24f"
+  },
+  "/home/jasme/UniTEC-Front-desk/.hermes/probes/abandon_alert_verify.py": {
+    "mtime": 1791566323.9287627,
+    "ast_hash": "5db9de30e5741db72998f57d4aee5a7f",
+    "semantic_hash": "5db9de30e5741db72998f57d4aee5a7f"
+  },
+  "/home/jasme/UniTEC-Front-desk/.hermes/probes/verify_sla_and_prefix.py": {
+    "mtime": 1791731376.4799123,
+    "ast_hash": "ecc2f1e434b81b18403b1c5c9bcdde38",
+    "semantic_hash": "ecc2f1e434b81b18403b1c5c9bcdde38"
+  },
+  "/home/jasme/UniTEC-Front-desk/.hermes/probes/recent_check.py": {
+    "mtime": 1791217299.310701,
+    "ast_hash": "95f6685ee4d3663908119879c9467089",
+    "semantic_hash": "95f6685ee4d3663908119879c9467089"
+  },
+  "/home/jasme/UniTEC-Front-desk/.hermes/probes/esc_dump.py": {
+    "mtime": 1791292454.5417557,
+    "ast_hash": "4e7a4a49f5819ec465968d9038c7c010",
+    "semantic_hash": "4e7a4a49f5819ec465968d9038c7c010"
+  },
+  "/home/jasme/UniTEC-Front-desk/.hermes/probes/dump_sheet_rows.mjs": {
+    "mtime": 1791903223.7588017,
+    "ast_hash": "1d7b361a8d9b856ab71b661f46b60e93",
+    "semantic_hash": "1d7b361a8d9b856ab71b661f46b60e93"
+  },
+  "/home/jasme/UniTEC-Front-desk/.hermes/probes/cleanup_tests.py": {
+    "mtime": 1791217717.819588,
+    "ast_hash": "b10e8317d9ac322c883cccac5d1b595a",
+    "semantic_hash": "b10e8317d9ac322c883cccac5d1b595a"
+  },
+  "/home/jasme/UniTEC-Front-desk/.hermes/probes/find_loop_session.py": {
+    "mtime": 1791567890.2035267,
+    "ast_hash": "cc8b1f82b31a133f9fe46eaed0f1f1b9",
+    "semantic_hash": "cc8b1f82b31a133f9fe46eaed0f1f1b9"
+  },
+  "/home/jasme/UniTEC-Front-desk/.hermes/probes/verify_server_deploy.py": {
+    "mtime": 1791734672.7057657,
+    "ast_hash": "7afb44ac8b177767601bed708e7c5d01",
+    "semantic_hash": "7afb44ac8b177767601bed708e7c5d01"
+  },
+  "/home/jasme/UniTEC-Front-desk/.hermes/probes/reset_758954.py": {
+    "mtime": 1791217577.109689,
+    "ast_hash": "129d3a13fa87ca3ee5f5faf8a369a5eb",
+    "semantic_hash": "129d3a13fa87ca3ee5f5faf8a369a5eb"
+  },
+  "/home/jasme/UniTEC-Front-desk/.hermes/probes/smoke_http_surface.py": {
+    "mtime": 1791731091.7741199,
+    "ast_hash": "f6a18152b9df5fcfdb67804468bd1b7f",
+    "semantic_hash": "f6a18152b9df5fcfdb67804468bd1b7f"
+  },
+  "/home/jasme/UniTEC-Front-desk/.hermes/probes/dump_maria_session.py": {
+    "mtime": 1791567908.8249657,
+    "ast_hash": "1ac2857321d1c0a1bea81817c421ff14",
+    "semantic_hash": "1ac2857321d1c0a1bea81817c421ff14"
+  },
+  "/home/jasme/UniTEC-Front-desk/.hermes/probes/check_758954.py": {
+    "mtime": 1791217551.4678893,
+    "ast_hash": "23b468b6dfc4010ded11baa758d16a6f",
+    "semantic_hash": "23b468b6dfc4010ded11baa758d16a6f"
+  },
+  "/home/jasme/UniTEC-Front-desk/.hermes/probes/rules_probe_20261005.py": {
+    "mtime": 1791214444.2212064,
+    "ast_hash": "b4e8ba8f5f7134a00366a6342650249f",
+    "semantic_hash": "b4e8ba8f5f7134a00366a6342650249f"
+  },
+  "/home/jasme/UniTEC-Front-desk/.hermes/probes/conversation_gap_audit.py": {
+    "mtime": 1791243681.1258323,
+    "ast_hash": "18086deea487c5de2a81410c3b91a19d",
+    "semantic_hash": "18086deea487c5de2a81410c3b91a19d"
+  },
+  "/home/jasme/UniTEC-Front-desk/.hermes/probes/audit_cornisa_binding.py": {
+    "mtime": 1791903245.475012,
+    "ast_hash": "2bf379895e90c3f7e5bc40e78e1ccf1d",
+    "semantic_hash": "2bf379895e90c3f7e5bc40e78e1ccf1d"
+  },
+  "/home/jasme/UniTEC-Front-desk/.hermes/probes/session_reset.py": {
+    "mtime": 1791217537.1332588,
+    "ast_hash": "28e6a66899063d11818fbf38a552ae29",
+    "semantic_hash": "28e6a66899063d11818fbf38a552ae29"
+  },
+  "/home/jasme/UniTEC-Front-desk/.hermes/probes/store_scan_threaded.py": {
+    "mtime": 1792071694.8758304,
+    "ast_hash": "4f5d1be41dd3a04e7e6033560d33617a",
+    "semantic_hash": "4f5d1be41dd3a04e7e6033560d33617a"
+  },
+  "/home/jasme/UniTEC-Front-desk/.hermes/probes/audit_verify_session.py": {
+    "mtime": 1791731140.0850883,
+    "ast_hash": "a9153e04084e1cdf9280b14dd38132d4",
+    "semantic_hash": "a9153e04084e1cdf9280b14dd38132d4"
+  },
+  "/home/jasme/UniTEC-Front-desk/.hermes/probes/audit_real_convs.py": {
+    "mtime": 1791731183.712937,
+    "ast_hash": "97af8728a5552abddd21185069bd99a5",
+    "semantic_hash": "97af8728a5552abddd21185069bd99a5"
+  },
+  "/home/jasme/UniTEC-Front-desk/.hermes/probes/report_stamp_test.mjs": {
+    "mtime": 1791842600.0461533,
+    "ast_hash": "4a0014e1a52f49bc044b72251b6c3ff3",
+    "semantic_hash": "4a0014e1a52f49bc044b72251b6c3ff3"
+  },
+  "/home/jasme/UniTEC-Front-desk/.hermes/probes/sla_ladder_and_count_check.py": {
+    "mtime": 1791842537.318295,
+    "ast_hash": "6b4385a3283fdf8852fcd1e62173aac9",
+    "semantic_hash": "6b4385a3283fdf8852fcd1e62173aac9"
+  },
+  "/home/jasme/UniTEC-Front-desk/.hermes/probes/verify_bundle.py": {
+    "mtime": 1791567078.8658922,
+    "ast_hash": "b9b815838add60ed6bd609818abf2f2f",
+    "semantic_hash": "b9b815838add60ed6bd609818abf2f2f"
+  },
+  "/home/jasme/UniTEC-Front-desk/.hermes/probes/verify_price_map_diff.py": {
+    "mtime": 1791903347.2651048,
+    "ast_hash": "a6032b9757f7e61beb78ebca008cf214",
+    "semantic_hash": "a6032b9757f7e61beb78ebca008cf214"
+  },
+  "/home/jasme/UniTEC-Front-desk/.hermes/probes/scan_threaded_out.json": {
+    "mtime": 1792071736.3725588,
+    "ast_hash": "cbcc4dc13a7a23fcbf1c442d3f8e15b0",
+    "semantic_hash": "cbcc4dc13a7a23fcbf1c442d3f8e15b0"
+  },
+  "/home/jasme/UniTEC-Front-desk/.hermes/probes/verify_takeover_result.py": {
+    "mtime": 1791568439.7143183,
+    "ast_hash": "ce795cac0e192145728bdcf5e0745fbb",
+    "semantic_hash": "ce795cac0e192145728bdcf5e0745fbb"
+  },
+  "/home/jasme/UniTEC-Front-desk/.hermes/probes/diff_price_maps.py": {
+    "mtime": 1791216434.4407418,
+    "ast_hash": "84a485f12473b96ff0a6f71471f34bfb",
+    "semantic_hash": "84a485f12473b96ff0a6f71471f34bfb"
+  },
+  "/home/jasme/UniTEC-Front-desk/.hermes/probes/e2e_resolved_flow.mjs": {
+    "mtime": 1791904001.861647,
+    "ast_hash": "b3c1e6a79a0c01b52e0597f58b73cc86",
+    "semantic_hash": "b3c1e6a79a0c01b52e0597f58b73cc86"
+  },
+  "/home/jasme/UniTEC-Front-desk/.hermes/probes/audit_alert_pipeline.py": {
+    "mtime": 1791731161.7225916,
+    "ast_hash": "fa9d6743213a1cbf1695822ebaba0839",
+    "semantic_hash": "fa9d6743213a1cbf1695822ebaba0839"
+  },
+  "/home/jasme/UniTEC-Front-desk/.hermes/probes/verify_deploy.py": {
+    "mtime": 1791731586.509924,
+    "ast_hash": "94c3059fc55917048bb6c76228f44173",
+    "semantic_hash": "94c3059fc55917048bb6c76228f44173"
+  },
+  "/home/jasme/UniTEC-Front-desk/.hermes/probes/twilio_rail_test.mjs": {
+    "mtime": 1791734625.4706624,
+    "ast_hash": "0a3577f85bd9ac3d373ee29337a79de2",
+    "semantic_hash": "0a3577f85bd9ac3d373ee29337a79de2"
+  },
+  "/home/jasme/UniTEC-Front-desk/.hermes/probes/price-map.before.json": {
+    "mtime": 1791216429.2135532,
+    "ast_hash": "04b9a90832e770e810073120974a5938",
+    "semantic_hash": "04b9a90832e770e810073120974a5938"
+  },
+  "/home/jasme/UniTEC-Front-desk/.hermes/probes/miami_hits.json": {
+    "mtime": 1792072285.2370145,
+    "ast_hash": "e805e6a04801f72ff02c9eb9738eb081",
+    "semantic_hash": "e805e6a04801f72ff02c9eb9738eb081"
+  },
+  "/home/jasme/UniTEC-Front-desk/.hermes/probes/find_miami_session.py": {
+    "mtime": 1792071587.8659403,
+    "ast_hash": "df6399b09aec9eacf948d1418b0b9814",
+    "semantic_hash": "df6399b09aec9eacf948d1418b0b9814"
+  },
+  "/home/jasme/UniTEC-Front-desk/.hermes/probes/takeover_setup.py": {
+    "mtime": 1791568388.7896552,
+    "ast_hash": "dd4adfd2e0985569b0a40956ba47b149",
+    "semantic_hash": "dd4adfd2e0985569b0a40956ba47b149"
+  },
+  "/home/jasme/UniTEC-Front-desk/.hermes/probes/coverage_check.py": {
+    "mtime": 1791216446.3820438,
+    "ast_hash": "3ecf9f7b446c9a4972aad83b3d83adaa",
+    "semantic_hash": "3ecf9f7b446c9a4972aad83b3d83adaa"
+  },
+  "/home/jasme/UniTEC-Front-desk/.hermes/probes/e2e_takeover.py": {
+    "mtime": 1791217690.951315,
+    "ast_hash": "f6c848c82ad139309cf0069464519bf0",
+    "semantic_hash": "f6c848c82ad139309cf0069464519bf0"
+  },
+  "/home/jasme/UniTEC-Front-desk/.hermes/probes/sla_review.py": {
+    "mtime": 1791292407.3484015,
+    "ast_hash": "97900252b9be6120a83eeaf2e96a8f9b",
+    "semantic_hash": "97900252b9be6120a83eeaf2e96a8f9b"
+  },
+  "/home/jasme/UniTEC-Front-desk/.hermes/probes/verify_price_fix.py": {
+    "mtime": 1791216479.64167,
+    "ast_hash": "a93c89094a5da337f2bf7f5466457913",
+    "semantic_hash": "a93c89094a5da337f2bf7f5466457913"
+  },
+  "/home/jasme/UniTEC-Front-desk/.hermes/probes/check_new_cornisa_refs.py": {
+    "mtime": 1791903195.8424103,
+    "ast_hash": "071583ecb840b0a2fe7bb24551677f71",
+    "semantic_hash": "071583ecb840b0a2fe7bb24551677f71"
+  },
+  "/home/jasme/UniTEC-Front-desk/.hermes/probes/final_pass.py": {
+    "mtime": 1791292536.6995993,
+    "ast_hash": "045b1551b07328f6399852f488b5b3cc",
+    "semantic_hash": "045b1551b07328f6399852f488b5b3cc"
+  },
+  "/home/jasme/UniTEC-Front-desk/.hermes/probes/outage_triage_1005.py": {
+    "mtime": 1791217037.4231122,
+    "ast_hash": "ec107da1f7e3f03c2a03e73bfffc04b4",
+    "semantic_hash": "ec107da1f7e3f03c2a03e73bfffc04b4"
+  },
+  "/home/jasme/UniTEC-Front-desk/.hermes/probes/price-catalog.before.json": {
+    "mtime": 1791216429.217621,
+    "ast_hash": "ab1369f68d2dcc7cce87f4e7a3bf7924",
+    "semantic_hash": "ab1369f68d2dcc7cce87f4e7a3bf7924"
+  },
+  "/home/jasme/UniTEC-Front-desk/.hermes/probes/health_sweep_20261005.py": {
+    "mtime": 1791216357.2949245,
+    "ast_hash": "87acc7c7c0a7c54ffb78742581771e17",
+    "semantic_hash": "87acc7c7c0a7c54ffb78742581771e17"
+  },
+  "/home/jasme/UniTEC-Front-desk/.hermes/probes/escalation_audit.py": {
+    "mtime": 1792071868.3578913,
+    "ast_hash": "3224cbb959adc3adbabf70a4f6237d53",
+    "semantic_hash": "3224cbb959adc3adbabf70a4f6237d53"
+  },
+  "/home/jasme/UniTEC-Front-desk/services/grokVoiceService.ts": {
+    "mtime": 1792699496.4489908,
+    "ast_hash": "8950308f50f700a3a086849aa201e391",
+    "semantic_hash": "8950308f50f700a3a086849aa201e391"
+  },
+  "/home/jasme/UniTEC-Front-desk/services/twilioService.ts": {
+    "mtime": 1781178739.1397493,
+    "ast_hash": "cba6e8910ac0aa267e9f86de10e01ba3",
+    "semantic_hash": "cba6e8910ac0aa267e9f86de10e01ba3"
+  },
+  "/home/jasme/UniTEC-Front-desk/services/firestoreService.ts": {
+    "mtime": 1786742639.4505832,
+    "ast_hash": "e344261cc7c0ba5c4dcb54913fadc9b8",
+    "semantic_hash": "e344261cc7c0ba5c4dcb54913fadc9b8"
+  },
+  "/home/jasme/UniTEC-Front-desk/services/imageService.ts": {
+    "mtime": 1781178739.1397493,
+    "ast_hash": "b53ad36dfdf8043c1078753c63d3dd2e",
+    "semantic_hash": "b53ad36dfdf8043c1078753c63d3dd2e"
+  },
+  "/home/jasme/UniTEC-Front-desk/services/geminiService.ts": {
+    "mtime": 1793195284.8756802,
+    "ast_hash": "9307ce9e4452a8897b057339ed8b75f1",
+    "semantic_hash": "9307ce9e4452a8897b057339ed8b75f1"
+  },
+  "/home/jasme/UniTEC-Front-desk/services/healthService.ts": {
+    "mtime": 1788364758.0802805,
+    "ast_hash": "66fb87fab24b3734a4464dec28519201",
+    "semantic_hash": "66fb87fab24b3734a4464dec28519201"
+  },
+  "/home/jasme/UniTEC-Front-desk/services/escalaService.ts": {
+    "mtime": 1785431342.388021,
+    "ast_hash": "7ffeda3c8d7c6575921a7b116dbdb08b",
+    "semantic_hash": "7ffeda3c8d7c6575921a7b116dbdb08b"
+  },
+  "/home/jasme/UniTEC-Front-desk/services/retentionService.ts": {
+    "mtime": 1791209146.2590344,
+    "ast_hash": "2c8dc72b1b23884afc52a59ed1808fc2",
+    "semantic_hash": "2c8dc72b1b23884afc52a59ed1808fc2"
+  },
+  "/home/jasme/UniTEC-Front-desk/services/usageService.ts": {
+    "mtime": 1781178739.1397493,
+    "ast_hash": "5f816abc6f73eb4de57a085a6d49d317",
+    "semantic_hash": "5f816abc6f73eb4de57a085a6d49d317"
+  },
+  "/home/jasme/UniTEC-Front-desk/services/deepgramService.ts": {
+    "mtime": 1792330521.09247,
+    "ast_hash": "41163bd8b7be720899dae003a37957fb",
+    "semantic_hash": "41163bd8b7be720899dae003a37957fb"
+  },
+  "/home/jasme/UniTEC-Front-desk/services/conversationService.ts": {
+    "mtime": 1793198587.2056181,
+    "ast_hash": "9436bb29629678625a4d6f45e29983c8",
+    "semantic_hash": "9436bb29629678625a4d6f45e29983c8"
+  },
+  "/home/jasme/UniTEC-Front-desk/services/notificationService.ts": {
+    "mtime": 1791566850.1288128,
+    "ast_hash": "5ac18a3503ebb1b5f7a9bc67a4db5de4",
+    "semantic_hash": "5ac18a3503ebb1b5f7a9bc67a4db5de4"
+  },
+  "/home/jasme/UniTEC-Front-desk/services/soundService.ts": {
+    "mtime": 1781178739.1397493,
+    "ast_hash": "925ce1868e25bc78892382f7ca97517f",
+    "semantic_hash": "925ce1868e25bc78892382f7ca97517f"
+  },
+  "/home/jasme/UniTEC-Front-desk/src/vite-env.d.ts": {
+    "mtime": 1781178739.1397493,
+    "ast_hash": "0c1eb9ea0bcf0ab7152a4b0d59d90cf0",
+    "semantic_hash": "0c1eb9ea0bcf0ab7152a4b0d59d90cf0"
+  },
+  "/home/jasme/UniTEC-Front-desk/components/ServicesTab.tsx": {
+    "mtime": 1785261809.9671714,
+    "ast_hash": "c84265eb0124a8d6807b5424224622bb",
+    "semantic_hash": "c84265eb0124a8d6807b5424224622bb"
+  },
+  "/home/jasme/UniTEC-Front-desk/components/AdminDashboard.tsx": {
+    "mtime": 1793215243.8435905,
+    "ast_hash": "ffed9b53a66c4521472864832331f443",
+    "semantic_hash": "ffed9b53a66c4521472864832331f443"
+  },
+  "/home/jasme/UniTEC-Front-desk/components/AnalyticsDashboard.tsx": {
+    "mtime": 1789748375.2810996,
+    "ast_hash": "ca141e4963c3ff29390419643c85ae19",
+    "semantic_hash": "ca141e4963c3ff29390419643c85ae19"
+  },
+  "/home/jasme/UniTEC-Front-desk/components/ProductDetail.tsx": {
+    "mtime": 1785261809.9630373,
+    "ast_hash": "6f1d9a85b481df145cfd207b2e4cc138",
+    "semantic_hash": "6f1d9a85b481df145cfd207b2e4cc138"
+  },
+  "/home/jasme/UniTEC-Front-desk/components/CartSidebar.tsx": {
+    "mtime": 1785261809.9630373,
+    "ast_hash": "91a2be245dfcbbc406943f7ec7cf6aba",
+    "semantic_hash": "91a2be245dfcbbc406943f7ec7cf6aba"
+  },
+  "/home/jasme/UniTEC-Front-desk/components/ConversationMonitor.tsx": {
+    "mtime": 1792698246.6606438,
+    "ast_hash": "c91ff0c0adaf17bde910f7ec0351783d",
+    "semantic_hash": "c91ff0c0adaf17bde910f7ec0351783d"
+  },
+  "/home/jasme/UniTEC-Front-desk/components/RetrainingAnalytics.tsx": {
+    "mtime": 1785261809.9671714,
+    "ast_hash": "28f18e05b77f16efe8e9069544cbb17e",
+    "semantic_hash": "28f18e05b77f16efe8e9069544cbb17e"
+  },
+  "/home/jasme/UniTEC-Front-desk/components/ChatTab.tsx": {
+    "mtime": 1792073486.9783185,
+    "ast_hash": "6bf877330453935f9558d462301c9339",
+    "semantic_hash": "6bf877330453935f9558d462301c9339"
+  },
+  "/home/jasme/UniTEC-Front-desk/components/InfoTab.tsx": {
+    "mtime": 1777514541.593975,
+    "ast_hash": "9c20a97d05d343ca3eb3a7f83195757a",
+    "semantic_hash": "9c20a97d05d343ca3eb3a7f83195757a"
+  },
+  "/home/jasme/UniTEC-Front-desk/components/ApiHealthMonitor.tsx": {
+    "mtime": 1786633341.5465708,
+    "ast_hash": "4babf1a2b5ddc2250001edb7e056848d",
+    "semantic_hash": "4babf1a2b5ddc2250001edb7e056848d"
+  },
+  "/home/jasme/UniTEC-Front-desk/components/StaffIntervention.tsx": {
+    "mtime": 1793215243.839556,
+    "ast_hash": "1a5fb1682e4e5d29360d881a1b6edb2d",
+    "semantic_hash": "1a5fb1682e4e5d29360d881a1b6edb2d"
+  },
+  "/home/jasme/UniTEC-Front-desk/components/PrivacyTab.tsx": {
+    "mtime": 1785261809.9630373,
+    "ast_hash": "3911e31be733d359341bd1726b741e65",
+    "semantic_hash": "3911e31be733d359341bd1726b741e65"
+  },
+  "/home/jasme/UniTEC-Front-desk/components/WebsiteLayout.tsx": {
+    "mtime": 1785261809.9671714,
+    "ast_hash": "39ac941c2d28d67ea7d6367e7bebaa6f",
+    "semantic_hash": "39ac941c2d28d67ea7d6367e7bebaa6f"
+  },
+  "/home/jasme/UniTEC-Front-desk/components/LoginScreen.tsx": {
+    "mtime": 1791211119.92719,
+    "ast_hash": "67026e66f9cbe556a2ebacd6d5d2985e",
+    "semantic_hash": "67026e66f9cbe556a2ebacd6d5d2985e"
+  },
+  "/home/jasme/UniTEC-Front-desk/components/CalendarTab.tsx": {
+    "mtime": 1777514541.593975,
+    "ast_hash": "953f80f273c8425d54039b4a373abdb5",
+    "semantic_hash": "953f80f273c8425d54039b4a373abdb5"
+  },
+  "/home/jasme/UniTEC-Front-desk/components/Layout.tsx": {
+    "mtime": 1785261809.9630373,
+    "ast_hash": "901a7137f41cd944c10db3a1a1a29abf",
+    "semantic_hash": "901a7137f41cd944c10db3a1a1a29abf"
+  },
+  "/home/jasme/UniTEC-Front-desk/components/StaffReply.tsx": {
+    "mtime": 1791903792.6152923,
+    "ast_hash": "47bd682a30e50dbeb24137c197278dc6",
+    "semantic_hash": "47bd682a30e50dbeb24137c197278dc6"
+  },
+  "/home/jasme/UniTEC-Front-desk/components/CallTab.tsx": {
+    "mtime": 1792334794.0281422,
+    "ast_hash": "92ba4b31c91e5680dfde89f258d7b2b7",
+    "semantic_hash": "92ba4b31c91e5680dfde89f258d7b2b7"
+  },
+  "/home/jasme/UniTEC-Front-desk/scripts/jev-audit.mjs": {
+    "mtime": 1790891224.6301613,
+    "ast_hash": "7e0513f04d300bcbfd513d79e069e9d1",
+    "semantic_hash": "7e0513f04d300bcbfd513d79e069e9d1"
+  },
+  "/home/jasme/UniTEC-Front-desk/scripts/price-overrides.json": {
+    "mtime": 1791903330.194427,
+    "ast_hash": "6369aeab9adbef0732bea18bed82aa0a",
+    "semantic_hash": "6369aeab9adbef0732bea18bed82aa0a"
+  },
+  "/home/jasme/UniTEC-Front-desk/scripts/build-prices.mjs": {
+    "mtime": 1790971979.063031,
+    "ast_hash": "833809ab0e2b0ff9596e02f452b81ac7",
+    "semantic_hash": "833809ab0e2b0ff9596e02f452b81ac7"
+  },
+  "/home/jasme/UniTEC-Front-desk/scripts/build-catalog-specs.mjs": {
+    "mtime": 1791149285.2699609,
+    "ast_hash": "7ad366d5997dcde14856f45f44d335cc",
+    "semantic_hash": "7ad366d5997dcde14856f45f44d335cc"
+  },
+  "/home/jasme/UniTEC-Front-desk/scripts/build-price-map.mjs": {
+    "mtime": 1791903330.6609511,
+    "ast_hash": "4cff94b8b29ef702c7e0c62751572e4c",
+    "semantic_hash": "4cff94b8b29ef702c7e0c62751572e4c"
+  },
+  "/home/jasme/UniTEC-Front-desk/tests/rateLimiting.test.ts": {
+    "mtime": 1785261809.97544,
+    "ast_hash": "248f439d7b9aa92b48f3e5e1b17ca7a2",
+    "semantic_hash": "248f439d7b9aa92b48f3e5e1b17ca7a2"
+  },
+  "/home/jasme/UniTEC-Front-desk/tests/constants.test.ts": {
+    "mtime": 1787319834.0056922,
+    "ast_hash": "91531a8dbacf7bba794190b3f664b381",
+    "semantic_hash": "91531a8dbacf7bba794190b3f664b381"
+  },
+  "/home/jasme/UniTEC-Front-desk/public/precios-2026.json": {
+    "mtime": 1790971987.1454794,
+    "ast_hash": "7f7c5ff985f168858898df2147732b57",
+    "semantic_hash": "7f7c5ff985f168858898df2147732b57"
+  },
+  "/home/jasme/UniTEC-Front-desk/public/price-map.json": {
+    "mtime": 1791903341.5654593,
+    "ast_hash": "bbb320c1b735f9ed0a41d877da4325b3",
+    "semantic_hash": "bbb320c1b735f9ed0a41d877da4325b3"
+  },
+  "/home/jasme/UniTEC-Front-desk/public/catalog-specs.json": {
+    "mtime": 1791149437.9568238,
+    "ast_hash": "dc32d8ed1fa7cca5f02bbb59c89aace4",
+    "semantic_hash": "dc32d8ed1fa7cca5f02bbb59c89aace4"
+  },
+  "/home/jasme/UniTEC-Front-desk/public/unitec-chatbot.js": {
+    "mtime": 1785261809.9713058,
+    "ast_hash": "be33fc0afd5d8cf9fc0bd004e1b09c5c",
+    "semantic_hash": "be33fc0afd5d8cf9fc0bd004e1b09c5c"
+  },
+  "/home/jasme/UniTEC-Front-desk/public/products.json": {
+    "mtime": 1791903341.2733736,
+    "ast_hash": "660a9da8086efcb0272b6f96c4f79475",
+    "semantic_hash": "660a9da8086efcb0272b6f96c4f79475"
+  },
+  "/home/jasme/UniTEC-Front-desk/public/price-catalog.json": {
+    "mtime": 1791903341.5695162,
+    "ast_hash": "43aa8e5e85284902addabfa58cb712fd",
+    "semantic_hash": "43aa8e5e85284902addabfa58cb712fd"
+  },
+  "/home/jasme/UniTEC-Front-desk/public/building-chatbot.js": {
+    "mtime": 1785261809.9671714,
+    "ast_hash": "8d3bca3a7c1ca75d35683f9dfa4be287",
+    "semantic_hash": "8d3bca3a7c1ca75d35683f9dfa4be287"
+  },
+  "/home/jasme/UniTEC-Front-desk/api/abandon-sweep.js": {
+    "mtime": 1793230330.4590096,
+    "ast_hash": "ec927bae9df0b7c3d304020b64b22331",
+    "semantic_hash": "ec927bae9df0b7c3d304020b64b22331"
+  },
+  "/home/jasme/UniTEC-Front-desk/api/_record-chat-turn.js": {
+    "mtime": 1793303048.5618036,
+    "ast_hash": "691dfc670fb7c6c29f85ee65e8410dca",
+    "semantic_hash": "691dfc670fb7c6c29f85ee65e8410dca"
+  },
+  "/home/jasme/UniTEC-Front-desk/api/chatbot-watch.js": {
+    "mtime": 1793230330.4590096,
+    "ast_hash": "1b83f2e1aa267dbfb246743c4342a2fd",
+    "semantic_hash": "1b83f2e1aa267dbfb246743c4342a2fd"
+  },
+  "/home/jasme/UniTEC-Front-desk/api/lifecycle-sweep.js": {
+    "mtime": 1793230330.4590096,
+    "ast_hash": "fcadf088f81620124d2afa92f352ef38",
+    "semantic_hash": "fcadf088f81620124d2afa92f352ef38"
+  },
+  "/home/jasme/UniTEC-Front-desk/api/notify-email.js": {
+    "mtime": 1793284084.6654441,
+    "ast_hash": "12c29ded786bbe20e3c17657f18dc8e9",
+    "semantic_hash": "12c29ded786bbe20e3c17657f18dc8e9"
+  },
+  "/home/jasme/UniTEC-Front-desk/api/ga-visits.js": {
+    "mtime": 1793230330.4590096,
+    "ast_hash": "f532f008347c277eda74d7cc8889a9d5",
+    "semantic_hash": "f532f008347c277eda74d7cc8889a9d5"
+  },
+  "/home/jasme/UniTEC-Front-desk/api/mission-control-export.js": {
+    "mtime": 1792715682.257835,
+    "ast_hash": "eca93f71272492733eaf022d36ca8fea",
+    "semantic_hash": "eca93f71272492733eaf022d36ca8fea"
+  },
+  "/home/jasme/UniTEC-Front-desk/api/record-turn.js": {
+    "mtime": 1789480206.4549356,
+    "ast_hash": "0bb2df5acac3c3804d6b3fee0ab87fe2",
+    "semantic_hash": "0bb2df5acac3c3804d6b3fee0ab87fe2"
+  },
+  "/home/jasme/UniTEC-Front-desk/api/create-payment-link.js": {
+    "mtime": 1785261809.9630373,
+    "ast_hash": "e81472a7da2c48dd58a01fd08d3d2862",
+    "semantic_hash": "e81472a7da2c48dd58a01fd08d3d2862"
+  },
+  "/home/jasme/UniTEC-Front-desk/api/training.js": {
+    "mtime": 1790972400.8632724,
+    "ast_hash": "93b50e07c394ee752e59dc47fecbacfe",
+    "semantic_hash": "93b50e07c394ee752e59dc47fecbacfe"
+  },
+  "/home/jasme/UniTEC-Front-desk/api/daily-analytics.js": {
+    "mtime": 1793230330.455343,
+    "ast_hash": "6e8c9a2ae9cf65bc89d1ae0e92dd6385",
+    "semantic_hash": "6e8c9a2ae9cf65bc89d1ae0e92dd6385"
+  },
+  "/home/jasme/UniTEC-Front-desk/api/telegram-send.js": {
+    "mtime": 1792703165.857227,
+    "ast_hash": "412642b1e47e091138e1f45a3882087e",
+    "semantic_hash": "412642b1e47e091138e1f45a3882087e"
+  },
+  "/home/jasme/UniTEC-Front-desk/api/_cron-guard.js": {
+    "mtime": 1793230309.2059453,
+    "ast_hash": "c97113d95f252370692c68f34e229746",
+    "semantic_hash": "c97113d95f252370692c68f34e229746"
+  },
+  "/home/jasme/UniTEC-Front-desk/api/_firestore-rest.js": {
+    "mtime": 1791243968.225759,
+    "ast_hash": "810ca2ba76089a92eb276b310535a061",
+    "semantic_hash": "810ca2ba76089a92eb276b310535a061"
+  },
+  "/home/jasme/UniTEC-Front-desk/api/chat.js": {
+    "mtime": 1792072974.4234216,
+    "ast_hash": "91b7c36509e9b515514b5a66540dcae3",
+    "semantic_hash": "91b7c36509e9b515514b5a66540dcae3"
+  },
+  "/home/jasme/UniTEC-Front-desk/api/gemini-key.js": {
+    "mtime": 1788364661.2218082,
+    "ast_hash": "b54627ffa5a62596060fbd3a0cdff422",
+    "semantic_hash": "b54627ffa5a62596060fbd3a0cdff422"
+  },
+  "/home/jasme/UniTEC-Front-desk/api/warm.js": {
+    "mtime": 1793230330.4590096,
+    "ast_hash": "2e67dcce6a2756fb39a7eefa18ee048e",
+    "semantic_hash": "2e67dcce6a2756fb39a7eefa18ee048e"
+  },
+  "/home/jasme/UniTEC-Front-desk/api/system-health.js": {
+    "mtime": 1788364736.9309995,
+    "ast_hash": "e7146c2245a11f64a9db5faf55cefee1",
+    "semantic_hash": "e7146c2245a11f64a9db5faf55cefee1"
+  },
+  "/home/jasme/UniTEC-Front-desk/api/health.js": {
+    "mtime": 1792715709.753981,
+    "ast_hash": "03d3cbb57854cd3e2b9cfa714640066e",
+    "semantic_hash": "03d3cbb57854cd3e2b9cfa714640066e"
+  },
+  "/home/jasme/UniTEC-Front-desk/api/shared-training.js": {
+    "mtime": 1790972345.7967546,
+    "ast_hash": "86272e542ce9fafedd88d416198c80c7",
+    "semantic_hash": "86272e542ce9fafedd88d416198c80c7"
+  },
+  "/home/jasme/UniTEC-Front-desk/api/staff-enter.js": {
+    "mtime": 1791903725.3265698,
+    "ast_hash": "660955b9ff94c0c7682d2548d09033ae",
+    "semantic_hash": "660955b9ff94c0c7682d2548d09033ae"
+  },
+  "/home/jasme/UniTEC-Front-desk/api/notify-telegram.js": {
+    "mtime": 1785261809.9630373,
+    "ast_hash": "fa1a7df861d04cb9a66b93c4c70a5f75",
+    "semantic_hash": "fa1a7df861d04cb9a66b93c4c70a5f75"
+  },
+  "/home/jasme/UniTEC-Front-desk/api/fish-tts.js": {
+    "mtime": 1785336739.748497,
+    "ast_hash": "4ef9ca499737a5addd5dddaaf27abdf3",
+    "semantic_hash": "4ef9ca499737a5addd5dddaaf27abdf3"
+  },
+  "/home/jasme/UniTEC-Front-desk/api/analytics.js": {
+    "mtime": 1792713629.128563,
+    "ast_hash": "535e706bd288e6ec6d838495dbeba19f",
+    "semantic_hash": "535e706bd288e6ec6d838495dbeba19f"
+  },
+  "/home/jasme/UniTEC-Front-desk/api/_alert.js": {
+    "mtime": 1793027836.6196227,
+    "ast_hash": "36a38d0d973bb86449561ade6f2634ba",
+    "semantic_hash": "36a38d0d973bb86449561ade6f2634ba"
+  },
+  "/home/jasme/UniTEC-Front-desk/api/anomaly-alert.js": {
+    "mtime": 1790865217.3765771,
+    "ast_hash": "cc95f9923ca09caa44b0b3c7006b4ee4",
+    "semantic_hash": "cc95f9923ca09caa44b0b3c7006b4ee4"
+  },
+  "/home/jasme/UniTEC-Front-desk/api/anomalies.js": {
+    "mtime": 1790865217.3765771,
+    "ast_hash": "413fe4a06e67fdc2be96be03a6218f09",
+    "semantic_hash": "413fe4a06e67fdc2be96be03a6218f09"
+  },
+  "/home/jasme/UniTEC-Front-desk/api/_monitor-core.js": {
+    "mtime": 1793233923.9511282,
+    "ast_hash": "4ea6a60d7072bf869d6ae3da5a6d9bdb",
+    "semantic_hash": "4ea6a60d7072bf869d6ae3da5a6d9bdb"
+  },
+  "/home/jasme/UniTEC-Front-desk/api/_telegram.js": {
+    "mtime": 1791903720.468916,
+    "ast_hash": "c657131c2180cec25913d4900ac2d205",
+    "semantic_hash": "c657131c2180cec25913d4900ac2d205"
+  },
+  "/home/jasme/UniTEC-Front-desk/api/deepgram-stt.js": {
+    "mtime": 1792330306.0702379,
+    "ast_hash": "1c13182a8afef67c77db6271ec79d29e",
+    "semantic_hash": "1c13182a8afef67c77db6271ec79d29e"
+  },
+  "/home/jasme/UniTEC-Front-desk/api/calculate-shipping.js": {
+    "mtime": 1785261809.9630373,
+    "ast_hash": "c587c2d6c98444defdf4a18c3ef58a4e",
+    "semantic_hash": "c587c2d6c98444defdf4a18c3ef58a4e"
+  },
+  "/home/jasme/UniTEC-Front-desk/api/turn-text.js": {
+    "mtime": 1792072753.730777,
+    "ast_hash": "71c64952f0a78d2fad4d234f6998d699",
+    "semantic_hash": "71c64952f0a78d2fad4d234f6998d699"
+  },
+  "/home/jasme/UniTEC-Front-desk/api/weekly-analytics.js": {
+    "mtime": 1785261809.9630373,
+    "ast_hash": "b0b37e5f1f27f9603bdd08686f151e8a",
+    "semantic_hash": "b0b37e5f1f27f9603bdd08686f151e8a"
+  },
+  "/home/jasme/UniTEC-Front-desk/api/staff-sla-sweep.js": {
+    "mtime": 1793629936.595571,
+    "ast_hash": "06ae92aa00610f78eb1b706a23fdfe17",
+    "semantic_hash": "06ae92aa00610f78eb1b706a23fdfe17"
+  },
+  "/home/jasme/UniTEC-Front-desk/api/widget-status.js": {
+    "mtime": 1790865217.38058,
+    "ast_hash": "559e429566e113e0b7e75c1e1a724882",
+    "semantic_hash": "559e429566e113e0b7e75c1e1a724882"
+  },
+  "/home/jasme/UniTEC-Front-desk/api/session-exit.js": {
+    "mtime": 1791566814.8297951,
+    "ast_hash": "8847f53bca20e575e491ea83de7abd70",
+    "semantic_hash": "8847f53bca20e575e491ea83de7abd70"
+  },
+  "/home/jasme/UniTEC-Front-desk/api/_email.js": {
+    "mtime": 1793286093.9863195,
+    "ast_hash": "edc1211df74063799cbd6ac190d5454a",
+    "semantic_hash": "edc1211df74063799cbd6ac190d5454a"
+  },
+  "/home/jasme/UniTEC-Front-desk/api/deepgram-tts.js": {
+    "mtime": 1785262695.8278434,
+    "ast_hash": "6e30b2f93fd1b7fd222830048aa79b8c",
+    "semantic_hash": "6e30b2f93fd1b7fd222830048aa79b8c"
+  },
+  "/home/jasme/UniTEC-Front-desk/api/_analytics-core.js": {
+    "mtime": 1792713691.687944,
+    "ast_hash": "38e729ebb2847985fc8e4bc76b367ae1",
+    "semantic_hash": "38e729ebb2847985fc8e4bc76b367ae1"
+  },
+  "/home/jasme/UniTEC-Front-desk/api/notify-escalation.js": {
+    "mtime": 1793629965.9060664,
+    "ast_hash": "e105a6ed4378bee629758a728a00186f",
+    "semantic_hash": "e105a6ed4378bee629758a728a00186f"
+  },
+  "/home/jasme/UniTEC-Front-desk/api/session-resolve.js": {
+    "mtime": 1792072943.5827975,
+    "ast_hash": "d1bfb88e5d9cb7f9f4378201ae5a11c6",
+    "semantic_hash": "d1bfb88e5d9cb7f9f4378201ae5a11c6"
+  },
+  "/home/jasme/UniTEC-Front-desk/media-voice/unitec-frontdesk-reference.wav": {
+    "mtime": 1792623878.1532655,
+    "ast_hash": "a20f5a93d1392e057a10307bae89482c",
+    "semantic_hash": "a20f5a93d1392e057a10307bae89482c"
+  },
+  "/home/jasme/UniTEC-Front-desk/.hermes/reports/call_eve.wav": {
+    "mtime": 1792335086.0685596,
+    "ast_hash": "4f305865dcbd570ba5da2b21b61cb439",
+    "semantic_hash": "4f305865dcbd570ba5da2b21b61cb439"
+  },
+  "/home/jasme/UniTEC-Front-desk/.hermes/reports/voice/call_carina.wav": {
+    "mtime": 1792335148.4760258,
+    "ast_hash": "538eddff747fc0dee6b9adb5cfd2ffca",
+    "semantic_hash": "538eddff747fc0dee6b9adb5cfd2ffca"
+  },
+  "/home/jasme/UniTEC-Front-desk/.hermes/reports/voice/call_celeste.wav": {
+    "mtime": 1792335123.5693624,
+    "ast_hash": "e1af14d4fad08eb9de8372464961537f",
+    "semantic_hash": "e1af14d4fad08eb9de8372464961537f"
+  },
+  "/home/jasme/UniTEC-Front-desk/.hermes/reports/voice/call_eve.wav": {
+    "mtime": 1792335234.343159,
+    "ast_hash": "4f305865dcbd570ba5da2b21b61cb439",
+    "semantic_hash": "4f305865dcbd570ba5da2b21b61cb439"
+  },
+  "/home/jasme/UniTEC-Front-desk/.hermes/reports/voice/call_iris.wav": {
+    "mtime": 1792335134.1610708,
+    "ast_hash": "d5d0748a8525215ae641b589baf2b8cd",
+    "semantic_hash": "d5d0748a8525215ae641b589baf2b8cd"
+  }
+}

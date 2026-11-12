@@ -24,6 +24,10 @@
       "schedule": "*/15 * * * *"
     },
     {
+      "path": "/api/memory-backfill?limit=40",
+      "schedule": "*/15 * * * *"
+    },
+    {
       "path": "/api/abandon-sweep",
       "schedule": "*/5 * * * *"
     },

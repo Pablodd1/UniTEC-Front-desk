@@ -1,0 +1,1 @@
+{"nodes": [{"id": "client_event_listeners_rule", "label": "Deduplicate Global Event Listeners", "file_type": "document", "source_file": ".agents/skills/vercel-react-best-practices/rules/client-event-listeners.md", "source_location": null, "source_url": null, "captured_at": null, "author": null, "contributor": null}], "edges": [], "hyperedges": []}

@@ -32,6 +32,7 @@ async function firestoreConfig() {
 }
 
 export async function sendTelegramAlert(message) {
+  if (!String(message).startsWith('ALERTFROMCHATBOT')) message = `ALERTFROMCHATBOT · ${message}`;
   let botToken = process.env.TELEGRAM_BOT_TOKEN || '';
   let chatId = process.env.TELEGRAM_CHAT_ID || '';
 

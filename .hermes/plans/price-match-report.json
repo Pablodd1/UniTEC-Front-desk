@@ -1,0 +1,2500 @@
+{
+  "month": "OCTUBRE",
+  "generated": "2026-11-04T15:57:37.326Z",
+  "sheet": "Productos Actualizados.xlsx",
+  "matched": [
+    {
+      "product": "LAMINA PVC BLANCO BRILLANTE H-01-I",
+      "row": "LAMINA PVC BLANCO BRILLANTE 30CM H-01-I",
+      "section": "CIELO RASO (PVC)",
+      "price": 27000,
+      "was": "$ 27.000"
+    },
+    {
+      "product": "LAMINA PVC BLANCO MADERA BRILLANTE H-02-I",
+      "row": "LAMINA PVC BLANCO MADERA BRILLANTE 30CM H-02-I",
+      "section": "CIELO RASO (PVC)",
+      "price": 27000,
+      "was": "$ 27.000"
+    },
+    {
+      "product": "LAMINA PVC BLANCO MATE H-05-I",
+      "row": "LAMINA PVC BLANCO MATE 30CM H-05-I",
+      "section": "CIELO RASO (PVC)",
+      "price": 27000,
+      "was": "$ 27.000"
+    },
+    {
+      "product": "LAMINA PVC JASPEADO BRILLANTE H-12-I",
+      "row": "LAMINA PVC JASPEADO BRILLANTE 30CM H-12-I",
+      "section": "CIELO RASO (PVC)",
+      "price": 27000,
+      "was": "$ 27.000"
+    },
+    {
+      "product": "LAMINA PVC CEDRO 30CM H-28-I",
+      "row": "LAMINA PVC CEDRO 30CM H-28-I",
+      "section": "CIELO RASO (PVC)",
+      "price": 27000,
+      "was": "$ 27.000"
+    },
+    {
+      "product": "CORNISA PVC BLANCA BRILLANTE AM1001",
+      "row": "CORNISA PVC BLANCA BRILLANTE AM1001",
+      "section": "CIELO RASO (PVC)",
+      "price": 9500,
+      "was": "$ 9.500"
+    },
+    {
+      "product": "CINTA ADHESIVA DE PAPEL DORADA",
+      "row": "CINTA ADHESIVA DORADA",
+      "section": "CINTAS",
+      "price": 16000,
+      "was": "$ 16.000"
+    },
+    {
+      "product": "CUBIERTA ACANALADA UPVC BLANCA 11.80",
+      "row": "CUBIERTA ACANALADA UPVC 10mm BLANCA 11.80",
+      "section": "CUBIERTAS UPVC",
+      "price": 325000,
+      "was": "$ 325.000"
+    },
+    {
+      "product": "FACHADA DECK ROBLE",
+      "row": "FACHADA DECK ROBLE",
+      "section": "FACHADAS",
+      "price": 45500,
+      "was": "$ 45.500"
+    },
+    {
+      "product": "PANEL ACOLCHADO DUOBIG GRIS LUMINOSO (041)",
+      "row": "PANEL ACOLCHADO DUOBIG GRIS LUMINOSO (041)",
+      "section": "PARED ACOLCHADA",
+      "price": 155900,
+      "was": "$ 155.900"
+    },
+    {
+      "product": "PANEL WPC EXT ROBLE (01)",
+      "row": "PANEL WPC EXT ROBLE (01)",
+      "section": "PARED WPC EXT",
+      "price": 70000,
+      "was": "$ 70.000"
+    },
+    {
+      "product": "PANEL WPC STONE GRIS (01)",
+      "row": "PANEL WPC STONE GRIS (01)",
+      "section": "PANEL WPC",
+      "price": 23000,
+      "was": "$ 23.000"
+    },
+    {
+      "product": "PANEL WPC REDONDO CARRARA BLANCO (02)",
+      "row": "PANEL WPC REDONDO CARRARA BLANCO (02)",
+      "section": "PANEL WPC REDONDO",
+      "price": 35138,
+      "was": "$ 35.138"
+    },
+    {
+      "product": "PISO DECK EXTERIOR CEDRO",
+      "row": "PISO DECK EXTERIOR CEDRO",
+      "section": "PISO DECK",
+      "price": 78000,
+      "was": "$ 78.000"
+    },
+    {
+      "product": "PISO SPC ROBLE CLARO IXPE",
+      "row": "PISO SPC ROBLE CLARO IXPE (4mm-122*18.3cm)",
+      "section": "PISO SPC",
+      "price": 12000,
+      "was": "$ 12.000"
+    },
+    {
+      "product": "ZOCALO SPC ROBLE CLARO IXPE S010",
+      "row": "ZOCALO SPC ROBLE CLARO IXPE S010",
+      "section": "PISO SPC",
+      "price": 20000,
+      "was": "$ 20.000"
+    },
+    {
+      "product": "PARED ARQUNITEC BLANCO MARFIL (02)",
+      "row": "PARED ARQUNITEC BLANCO MARFIL (02)",
+      "section": "PARED ARQNITEC",
+      "price": 65000,
+      "was": "$ 65.000"
+    },
+    {
+      "product": "CORNISA PVC BLANCO EJECUTIVO AM1014",
+      "row": "CORNISA PVC BLANCO EJECUTIVO AM1014",
+      "section": "CIELO RASO (PVC)",
+      "price": 9500,
+      "was": "$ 9.500"
+    },
+    {
+      "product": "CORNISA PVC BLANCO MADERA BRILLANTE AM1002",
+      "row": "CORNISA PVC BLANCO MADERA BRILLANTE AM1002",
+      "section": "CIELO RASO (PVC)",
+      "price": 9500,
+      "was": "$ 9.500"
+    },
+    {
+      "product": "CORNISA PVC BEIGE BRILLANTE AM1004",
+      "row": "CORNISA PVC BEIGE BRILLANTE AM1004",
+      "section": "CIELO RASO (PVC)",
+      "price": 9500,
+      "was": "$ 9.500"
+    },
+    {
+      "product": "OMEGA",
+      "row": "OMEGA",
+      "section": "PERFILERIA",
+      "price": 3480,
+      "was": "$ 3.480"
+    },
+    {
+      "product": "VIGUETA",
+      "row": "VIGUETA",
+      "section": "PERFILERIA",
+      "price": 3480,
+      "was": "$ 3.480"
+    },
+    {
+      "product": "CUBIERTA ONDULADA ROMA",
+      "row": "CUBIERTA ONDULADA ROMA",
+      "section": "CUBIERTAS UPVC",
+      "price": 395626,
+      "was": "$ 395.626"
+    },
+    {
+      "product": "CABALLETE UPVC ROMA 2.5MM",
+      "row": "CABALLETE UPVC ROMA 2.5MM",
+      "section": "CUBIERTAS UPVC",
+      "price": 31059,
+      "was": "$ 31.059"
+    },
+    {
+      "product": "TERMINACION LIMATESA",
+      "row": "TERMINACION LIMATESA",
+      "section": "CUBIERTAS UPVC",
+      "price": 30000,
+      "was": "$ 30.000"
+    },
+    {
+      "product": "CUBIERTA TERMOACUSTICA UPVC 2.0mm BLANCA O.B",
+      "row": "CUBIERTA TERMOACUSTICA UPVC 2.0mm BLANCA O.B",
+      "section": "CUBIERTAS UPVC",
+      "price": 287567,
+      "was": "$ 287.567"
+    },
+    {
+      "product": "CABALLETE UPVC BLANCO 2.0mm O.B",
+      "row": "CABALLETE UPVC BLANCO 2.0mm O.B",
+      "section": "CUBIERTAS UPVC",
+      "price": 18989,
+      "was": "$ 18.989"
+    },
+    {
+      "product": "TORNILLO KIT PARA UPVC 2.0mm BLANCO",
+      "row": "TORNILLO KIT PARA UPVC 2.0mm BLANCO",
+      "section": "CUBIERTAS UPVC",
+      "price": 800,
+      "was": "$ 800"
+    },
+    {
+      "product": "CUBIERTA TERMOACUSTICA UPVC 2.5mm BLANCA O.A 11.80",
+      "row": "CUBIERTA TERMOACUSTICA UPVC 2.5mm BLANCA O.A",
+      "section": "CUBIERTAS UPVC",
+      "price": 361109,
+      "was": "$ 361.109"
+    },
+    {
+      "product": "CUBIERTA TERMOACUSTICA UPVC 2.0mm BLANCA O.A 11.80",
+      "row": "CUBIERTA TERMOACUSTICA UPVC 2.0mm BLANCA O.A 11.80",
+      "section": "CUBIERTAS UPVC",
+      "price": 266588,
+      "was": "$ 266.588"
+    },
+    {
+      "product": "CABALLETE UPVC BLANCO 2.5mm O.A",
+      "row": "CABALLETE UPVC BLANCO 2.5mm O.A",
+      "section": "CUBIERTAS UPVC",
+      "price": 23092,
+      "was": "$ 23.092"
+    },
+    {
+      "product": "TORNILLO KIT PARA UPVC 2.5mm BLANCO",
+      "row": "TORNILLO KIT PARA UPVC 2.5mm BLANCO",
+      "section": "CUBIERTAS UPVC",
+      "price": 800,
+      "was": "$ 800"
+    },
+    {
+      "product": "CUBIERTA TRASLUCIDA ONDA ALTA OPAL 11.80",
+      "row": "CUBIERTA TRASLUCIDA ONDA ALTA OPAL",
+      "section": "CUBIERTAS UPVC",
+      "price": 561918,
+      "was": "$ 561.918"
+    },
+    {
+      "product": "TEJA PVC TERRACOTA COLONIAL 11,80*1.05 DE 2,5MM",
+      "row": "TEJA PVC TERRACOTA COLONIAL 11,80*1.05 DE 2,5MM",
+      "section": "CUBIERTAS UPVC",
+      "price": 374671,
+      "was": "$ 374.671"
+    },
+    {
+      "product": "TORNILLO KIT PARA UPVC COLONIAL",
+      "row": "TORNILLO KIT PARA UPVC COLONIAL",
+      "section": "CUBIERTAS UPVC",
+      "price": 900,
+      "was": "$ 900"
+    },
+    {
+      "product": "CABALLETE TERRACOTA COLONIAL",
+      "row": "CABALLETE TERRACOTA COLONIAL",
+      "section": "CUBIERTAS UPVC",
+      "price": 44940,
+      "was": "$ 44.940"
+    },
+    {
+      "product": "CABALLETE UPVC COLONIAL CORTO- LIMATESA 2.5mm",
+      "row": "CABALLETE UPVC COLONIAL CORTO-LIMATESA 2.5MM",
+      "section": "CUBIERTAS UPVC",
+      "price": 31059,
+      "was": "$ 31.059"
+    },
+    {
+      "product": "CABALLETE Y TRES AGUAS UPVC COLONIAL 2.5mm",
+      "row": "CABALLETE Y TRES AGUAS UPVC COLONIAL 2.5mm",
+      "section": "CUBIERTAS UPVC",
+      "price": 34562,
+      "was": "$ 34.562"
+    },
+    {
+      "product": "CABALLETE T TRES AGUAS UPVC COLONIAL 2.5mm",
+      "row": "CABALLETE T TRES AGUAS UPVC COLONIAL 2.5mm",
+      "section": "CUBIERTAS UPVC",
+      "price": 37022,
+      "was": "$ 37.022"
+    },
+    {
+      "product": "CABALLETE CODO 90° UPVC COLONIAL 2.5mm",
+      "row": "CABALLETE CODO 90° UPVC COLONIAL 2.5mm",
+      "section": "CUBIERTAS UPVC",
+      "price": 45372,
+      "was": "$ 45.372"
+    },
+    {
+      "product": "CABALLETE TAPA FINAL COLONIAL 2.5mm",
+      "row": "CABALLETE TAPA FINAL COLONIAL 2.5mm",
+      "section": "CUBIERTAS UPVC",
+      "price": 13500,
+      "was": "$ 13.500"
+    },
+    {
+      "product": "ACCESORIO Cubierta Acanalada UPVC",
+      "row": "ACCESORIOS CUBIERTA ACANALADA UPVC",
+      "section": "CUBIERTAS UPVC",
+      "price": 6000,
+      "was": "$ 6.000"
+    },
+    {
+      "product": "LAMINA ALVEOLAR POLICARBONATO 6MM BLANCA",
+      "row": "LAMINA ALVEOLAR POLICARBONATO 6MM BLANCA",
+      "section": "POLICARBONATO",
+      "price": 402834,
+      "was": "$ 402.834"
+    },
+    {
+      "product": "LAMINA ALVEOLAR POLICARBONATO 6MM BRONCE",
+      "row": "LAMINA ALVEOLAR POLICARBONATO 6MM BRONCE",
+      "section": "POLICARBONATO",
+      "price": 402834,
+      "was": "$ 402.834"
+    },
+    {
+      "product": "LAMINA ALVEOLAR POLICARBONATO 6MM TRANSPARENTE",
+      "row": "LAMINA ALVEOLAR POLICARBONATO 6MM TRANSPARENTE",
+      "section": "POLICARBONATO",
+      "price": 402834,
+      "was": "$ 402.834"
+    },
+    {
+      "product": "PERFIL LED 120cm EMPOTRABLE O DE SUPERFICIE",
+      "row": "CINTA LED 1.2M",
+      "section": "CINTA LED",
+      "price": 25000,
+      "was": "$ 25.000"
+    },
+    {
+      "product": "PERFIL LED 70cm EMPOTRABLE O DE SUPERFICIE",
+      "row": "CINTA LED 0.7M",
+      "section": "CINTA LED",
+      "price": 17000,
+      "was": "$ 17.000"
+    },
+    {
+      "product": "PERFIL LED 50cm EMPOTRABLE O DE SUPERFICIE",
+      "row": "CINTA LED 0.5M",
+      "section": "CINTA LED",
+      "price": 14000,
+      "was": "$ 14.000"
+    },
+    {
+      "product": "TRANSFORMADOR CINTA LED",
+      "row": "TRANSFORMADOR CINTA LED",
+      "section": "CINTA LED",
+      "price": 60500,
+      "was": "$ 60.500"
+    },
+    {
+      "product": "CONTROL CINTA LED",
+      "row": "CONTROL CINTA LED",
+      "section": "CINTA LED",
+      "price": 33000,
+      "was": "$ 33.000"
+    },
+    {
+      "product": "JARDIN ARTIFICIAL EXTERIOR 50X50CM PRADERA (HH-A)",
+      "row": "JARDIN ARTIFICIAL 50X50CM PRADERA (HH-A)",
+      "section": "JARDIN ARTIFICIAL",
+      "price": 30000,
+      "was": "$ 30.000"
+    },
+    {
+      "product": "JARDIN ARTIFICIAL EXTERIOR 50X50CM EDEN (HH-B)",
+      "row": "JARDIN ARTIFICIAL 50X50CM EDEN (HH-B)",
+      "section": "JARDIN ARTIFICIAL",
+      "price": 30000,
+      "was": "$ 30.000"
+    },
+    {
+      "product": "JARDIN ARTIFICIAL EXTERIOR 50X50CM PARAISO (HH-C)",
+      "row": "JARDIN ARTIFICIAL 50X50CM PARAISO (HH-C)",
+      "section": "JARDIN ARTIFICIAL",
+      "price": 30000,
+      "was": "$ 30.000"
+    },
+    {
+      "product": "JARDIN ARTIFICIAL EXTERIOR 50X50CM PRIMAVERA (HH-D)",
+      "row": "JARDIN ARTIFICIAL 50X50CM PRIMAVERA (HH-D)",
+      "section": "JARDIN ARTIFICIAL",
+      "price": 30000,
+      "was": "$ 30.000"
+    },
+    {
+      "product": "JARDIN ARTIFICIAL INTERIOR 40X60CM NATURAL (HH-E)",
+      "row": "JARDIN ARTIFICIAL 40X60CM NATURAL (HH-E)",
+      "section": "JARDIN ARTIFICIAL",
+      "price": 23000,
+      "was": "$ 23.000"
+    },
+    {
+      "product": "JARDIN ARTIFICIAL INTERIOR 40X60CM VENECIA (HH-F)",
+      "row": "JARDIN ARTIFICIAL 40X60CM VENECIA (HH-F)",
+      "section": "JARDIN ARTIFICIAL",
+      "price": 23000,
+      "was": "$ 23.000"
+    },
+    {
+      "product": "JARDIN ARTIFICIAL INTERIOR 40X60CM PARIS (HH-G)",
+      "row": "JARDIN ARTIFICIAL 40X60CM PARIS (HH-G)",
+      "section": "JARDIN ARTIFICIAL",
+      "price": 23000,
+      "was": "$ 23.000"
+    },
+    {
+      "product": "FOAM BOARD BLANCO ESTUARIO (MF-02) - LINEA AURORA BOREAL",
+      "row": "FOAM BOARD BLANCO ESTUARIO (MF-02)",
+      "section": "FOAM BOARD",
+      "price": 60000,
+      "was": "$ 60.000"
+    },
+    {
+      "product": "FOAM BOARD GRIS TITANIO (MF-07) - LINEA AURORA BOREAL",
+      "row": "FOAM BOARD GRIS TITANIO (MF-07)",
+      "section": "FOAM BOARD",
+      "price": 60000,
+      "was": "$ 60.000"
+    },
+    {
+      "product": "FOAM BOARD GRIS BASALTO (MF-08) - LINEA AURORA BOREAL",
+      "row": "FOAM BOARD GRIS BASALTO (MF-08)",
+      "section": "FOAM BOARD",
+      "price": 60000,
+      "was": "$ 60.000"
+    },
+    {
+      "product": "FOAM BOARD VERDE  PETROLEO (MF-09) - LINEA AURORA BOREAL",
+      "row": "FOAM BOARD VERDE  PETROLEO (MF-09)",
+      "section": "FOAM BOARD",
+      "price": 60000,
+      "was": "$ 60.000"
+    },
+    {
+      "product": "FOAM BOARD BRONCE NATURAL (MF-10)  - LINEA AURORA BOREAL",
+      "row": "FOAM BOARD BRONCE NATURAL (MF-10)",
+      "section": "FOAM BOARD",
+      "price": 60000,
+      "was": "$ 60.000"
+    },
+    {
+      "product": "FOAM BOARD COBRE (MF-11) - LINEA AURORA BOREAL",
+      "row": "FOAM BOARD COBRE (MF-11)",
+      "section": "FOAM BOARD",
+      "price": 105000,
+      "was": "$ 105.000"
+    },
+    {
+      "product": "FOAM BOARD OCRE OSCURO (MF-12) - LINEA AURORA BOREAL",
+      "row": "FOAM BOARD OCRE OSCURO (MF-12)",
+      "section": "FOAM BOARD",
+      "price": 95000,
+      "was": "$ 95.000"
+    },
+    {
+      "product": "FOAM BOARD ARENISCA PLATA (JS4176-189) - LINEA AURORA BOREAL",
+      "row": "FOAM BOARD ARENISCA PLATA (JS4176-189)",
+      "section": "FOAM BOARD",
+      "price": 180500,
+      "was": "$ 180.500"
+    },
+    {
+      "product": "FOAM BOARD ARENISCA NEGRO (M JS4166-116) - LINEA AURORA BOREAL",
+      "row": "FOAM BOARD ARENISCA NEGRO (M JS4166-116)",
+      "section": "FOAM BOARD",
+      "price": 90000,
+      "was": "$ 90.000"
+    },
+    {
+      "product": "FOAM BOARD COBRE TERRA (JS4156-169)  - LINEA AURORA BOREAL",
+      "row": "FOAM BOARD COBRE TERRA (JS4156-169)",
+      "section": "FOAM BOARD",
+      "price": 180500,
+      "was": "$ 180.500"
+    },
+    {
+      "product": "FOAM BOARD TABACO RUSTICO (JS4154-116)  - LINEA AURORA BOREAL",
+      "row": "FOAM BOARD TABACO RUSTICO (JS4154-116)",
+      "section": "FOAM BOARD",
+      "price": 90000,
+      "was": "$ 90.000"
+    },
+    {
+      "product": "FOAM BOARD BURDEO - LINEA ZEN",
+      "row": "FOAM BOARD BURDEO",
+      "section": "FOAM BOARD",
+      "price": 95000,
+      "was": "$ 95.000"
+    },
+    {
+      "product": "FOAM BOARD CORTEZA - LINEA ZEN",
+      "row": "FOAM BOARD CORTEZA",
+      "section": "FOAM BOARD",
+      "price": 60000,
+      "was": "$ 60.000"
+    },
+    {
+      "product": "FOAM BOARD GRIS NATURAL - LINEA ZEN",
+      "row": "FOAM BOARD GRIS NATURAL",
+      "section": "FOAM BOARD",
+      "price": 60000,
+      "was": "$ 60.000"
+    },
+    {
+      "product": "FOAM BOARD BLANCO MARFIL  - LINEA ZEN",
+      "row": "FOAM BOARD BLANCO MARFIL",
+      "section": "FOAM BOARD",
+      "price": 60000,
+      "was": "$ 60.000"
+    },
+    {
+      "product": "FOAM BOARD GRIS TRAVERTINO  - LINEA ZEN",
+      "row": "FOAM BOARD GRIS TRAVERTINO",
+      "section": "FOAM BOARD",
+      "price": 60000,
+      "was": "$ 60.000"
+    },
+    {
+      "product": "FOAM BOARD ESPEJO BLANCO - LINEA ZEN",
+      "row": "FOAM BOARD ESPEJO BLANCO",
+      "section": "FOAM BOARD",
+      "price": 150000,
+      "was": "$ 150.000"
+    },
+    {
+      "product": "FOAM BOARD ESPEJO NEGRO - LINEA ZEN",
+      "row": "FOAM BOARD ESPEJO NEGRO",
+      "section": "FOAM BOARD",
+      "price": 150000,
+      "was": "$ 150.000"
+    },
+    {
+      "product": "FOAM BOARD ESPEJO DORADO - LINEA ZEN",
+      "row": "FOAM BOARD ESPEJO DORADO",
+      "section": "FOAM BOARD",
+      "price": 150000,
+      "was": "$ 150.000"
+    },
+    {
+      "product": "FOAM BOARD ESPEJO PALO DE ROSA - LINEA ZEN",
+      "row": "FOAM BOARD ESPEJO PALO DE ROSA",
+      "section": "FOAM BOARD",
+      "price": 150000,
+      "was": "$ 150.000"
+    },
+    {
+      "product": "FOAM BOARD GOTAS DE AGUA NEGRO - LINEA GOTAS DE AGUA",
+      "row": "FOAM BOARD GOTAS DE AGUA NEGRO",
+      "section": "FOAM BOARD",
+      "price": 150000,
+      "was": "$ 150.000"
+    },
+    {
+      "product": "FOAM BOARD GOTAS DE AGUA PLATEADO - LINEA GOTAS DE AGUA",
+      "row": "FOAM BOARD GOTAS DE AGUA PLATEADO",
+      "section": "FOAM BOARD",
+      "price": 90000,
+      "was": "$ 90.000"
+    },
+    {
+      "product": "FOAM BOARD METALUM  - LINEA GOTAS DE AGUA",
+      "row": "FOAM BOARD METALUM",
+      "section": "FOAM BOARD",
+      "price": 150000,
+      "was": "$ 150.000"
+    },
+    {
+      "product": "FOAM BOARD IVORY LATTE (MF-01) - LINEA PASTEL",
+      "row": "FOAM BOARD IVORY LATTE (MF-01)",
+      "section": "FOAM BOARD",
+      "price": 60000,
+      "was": "$ 60.000"
+    },
+    {
+      "product": "FOAM  BOARD GRIS ACERO (MF-03) - LINEA PASTEL",
+      "row": "FOAM  BOARD GRIS ACERO (MF-03)",
+      "section": "FOAM BOARD",
+      "price": 60000,
+      "was": "$ 60.000"
+    },
+    {
+      "product": "FOAM BOARD EVERES CREMA (MF-04) - LINEA PASTEL",
+      "row": "FOAM BOARD EVERES CREMA (MF-04)",
+      "section": "FOAM BOARD",
+      "price": 60000,
+      "was": "$ 60.000"
+    },
+    {
+      "product": "FOAM  BOARD  MANDARINA PASTEL (MF-05) - LINEA PASTEL",
+      "row": "FOAM  BOARD  MANDARINA PASTEL (MF-05)",
+      "section": "FOAM BOARD",
+      "price": 60000,
+      "was": "$ 60.000"
+    },
+    {
+      "product": "FOAM BOARD TIFFANY AZUL PASTEL (MF-06) - LINEA PASTEL",
+      "row": "FOAM BOARD TIFFANY AZUL PASTEL (MF-06)",
+      "section": "FOAM BOARD",
+      "price": 60000,
+      "was": "$ 60.000"
+    },
+    {
+      "product": "LAMINA MARMOL BLANCO M-01-2.44",
+      "row": "LAMINA MARMOL BLANCO M-01-2.44",
+      "section": "PARED MARMOL",
+      "price": 105000,
+      "was": "$ 105.000"
+    },
+    {
+      "product": "LAMINA MARMOL NEGRO M-03-2.44",
+      "row": "LAMINA MARMOL NEGRO M-03-2.44",
+      "section": "PARED MARMOL",
+      "price": 105000,
+      "was": "$ 105.000"
+    },
+    {
+      "product": "LAMINA MARMOL GRANITO M-05-2.44",
+      "row": "LAMINA MARMOL GRANITO M-05-2.44",
+      "section": "PARED MARMOL",
+      "price": 105000,
+      "was": "$ 105.000"
+    },
+    {
+      "product": "LAMINA MARMOL LUNA M-06-2.44",
+      "row": "LAMINA MARMOL LUNA M-06-2.44",
+      "section": "PARED MARMOL",
+      "price": 105000,
+      "was": "$ 105.000"
+    },
+    {
+      "product": "LAMINA MARMOL FUSION M-07-2.44",
+      "row": "LAMINA MARMOL FUSION M-07-2.44",
+      "section": "PARED MARMOL",
+      "price": 105000,
+      "was": "$ 105.000"
+    },
+    {
+      "product": "LAMINA MARMOL IBIZA M-09-2.44",
+      "row": "LAMINA MARMOL IBIZA M-09-2.44",
+      "section": "PARED MARMOL",
+      "price": 105000,
+      "was": "$ 105.000"
+    },
+    {
+      "product": "LAMINA MARMOL SAHARA M-10-2.44",
+      "row": "LAMINA MARMOL SAHARA M-10-2.44",
+      "section": "PARED MARMOL",
+      "price": 105000,
+      "was": "$ 105.000"
+    },
+    {
+      "product": "LAMINA MARMOL ECLIPSE M-11-2.44",
+      "row": "LAMINA MARMOL ECLIPSE M-11-2.44",
+      "section": "PARED MARMOL",
+      "price": 105000,
+      "was": "$ 105.000"
+    },
+    {
+      "product": "LAMINA MARMOL MATE PIGMENTO M-14-2.44",
+      "row": "LAMINA MARMOL MATE PIGMENTO M-14-2.44",
+      "section": "PARED MARMOL",
+      "price": 105000,
+      "was": "$ 105.000"
+    },
+    {
+      "product": "LAMINA MARMOL MATE GRECIA M-15-2.44",
+      "row": "LAMINA MARMOL MATE GRECIA M-15-2.44",
+      "section": "PARED MARMOL",
+      "price": 105000,
+      "was": "$ 105.000"
+    },
+    {
+      "product": "LAMINA MARMOL MATE PIEDRA ANGULAR M-16-2.44",
+      "row": "LAMINA MARMOL MATE PIEDRA ANGULAR M-16-2.44",
+      "section": "PARED MARMOL",
+      "price": 105000,
+      "was": "$ 105.000"
+    },
+    {
+      "product": "LAMINA MARMOL BEIGE ACUARELA M-17-2-2,44",
+      "row": "LAMINA MARMOL BEIGE ACUARELA M-17-2-2,44",
+      "section": "PARED MARMOL",
+      "price": 105000,
+      "was": "$ 105.000"
+    },
+    {
+      "product": "LAMINA MARMOL VIZCAYA M-19-2.44",
+      "row": "LAMINA MARMOL VIZCAYA M-19-2.44",
+      "section": "PARED MARMOL",
+      "price": 105000,
+      "was": "$ 105.000"
+    },
+    {
+      "product": "LAMINA MARMOL GUATAPURI M-20-2.44",
+      "row": "LAMINA MARMOL GUATAPURI M-20-2.44",
+      "section": "PARED MARMOL",
+      "price": 105000,
+      "was": "$ 105.000"
+    },
+    {
+      "product": "LAMINA MARMOL VENECIA M-21-2.44",
+      "row": "LAMINA MARMOL VENECIA M-21-2.44",
+      "section": "PARED MARMOL",
+      "price": 105000,
+      "was": "$ 105.000"
+    },
+    {
+      "product": "LAMINA MARMOL MEDITERRANEO M-22-2.44",
+      "row": "LAMINA MARMOL MEDITERRANEO M-22-2.44",
+      "section": "PARED MARMOL",
+      "price": 105000,
+      "was": "$ 105.000"
+    },
+    {
+      "product": "LAMINA MARMOL OASIS M-23-2.44",
+      "row": "LAMINA MARMOL OASIS M-23-2.44",
+      "section": "PARED MARMOL",
+      "price": 105000,
+      "was": "$ 105.000"
+    },
+    {
+      "product": "LAMINA MARMOL VERONA M-29-2.44",
+      "row": "LAMINA MARMOL VERONA M-29-2.44",
+      "section": "PARED MARMOL",
+      "price": 105000,
+      "was": "$ 105.000"
+    },
+    {
+      "product": "LAMINA MARMOL ISLANDIA M-30-2.44",
+      "row": "LAMINA MARMOL ISLANDIA M-30-2.44",
+      "section": "PARED MARMOL",
+      "price": 105000,
+      "was": "$ 105.000"
+    },
+    {
+      "product": "LAMINA MARMOL NEW YORK M-31-2.44",
+      "row": "LAMINA MARMOL NEW YORK M-31-2.44",
+      "section": "PARED MARMOL",
+      "price": 105000,
+      "was": "$ 105.000"
+    },
+    {
+      "product": "LAMINA MARMOL SANTORINI MIX M-32-2.44",
+      "row": "LAMINA MARMOL SANTORINI MIX M-32-2.44",
+      "section": "PARED MARMOL",
+      "price": 105000,
+      "was": "$ 105.000"
+    },
+    {
+      "product": "LAMINA MARMOL SINGAPUR GRIS M-33-2.44",
+      "row": "LAMINA MARMOL SINGAPUR GRIS M-33-2.44",
+      "section": "PARED MARMOL",
+      "price": 105000,
+      "was": "$ 105.000"
+    },
+    {
+      "product": "LAMINA MARMOL MONACO ONIX M-34-2.44",
+      "row": "LAMINA MARMOL MONACO ONIX M-34-2.44",
+      "section": "PARED MARMOL",
+      "price": 110000,
+      "was": "$ 110.000"
+    },
+    {
+      "product": "LAMINA MARMOL DUBAI NEGRO M-35-2.44",
+      "row": "LAMINA MARMOL DUBAI NEGRO M-35-2.44",
+      "section": "PARED MARMOL",
+      "price": 110000,
+      "was": "$ 110.000"
+    },
+    {
+      "product": "CINTA  ADHESIVA PLATEADA",
+      "row": "CINTA  ADHESIVA PLATEADA",
+      "section": "CINTAS",
+      "price": 16000,
+      "was": "$ 16.000"
+    },
+    {
+      "product": "ANGULO EN L 10mm *2.5m DORADO",
+      "row": "ANGULO EN L 10mm *2.5m DORADO",
+      "section": "PARED MARMOL",
+      "price": 17000,
+      "was": "$ 17.000"
+    },
+    {
+      "product": "ANGULO EN L 10mm *2.5mm PLATA",
+      "row": "ANGULO EN L 10mm *2.5mm PLATA",
+      "section": "PARED MARMOL",
+      "price": 17000,
+      "was": "$ 17.000"
+    },
+    {
+      "product": "ACCESORIO MARMOL T 0,8mm *3 m DORADO (ORO)",
+      "row": "PANEL ACRILICO MARMOL VENENCIANO (ZS-3D065 Y)",
+      "section": "PARED MARMOL",
+      "price": 180000,
+      "was": "$ 180.000"
+    },
+    {
+      "product": "ACCESORIO MARMOL T 0,8mm *3 m PLATA",
+      "row": "PANEL ACRILICO MARMOL ONYX ROYAL (ZS-3D045 J)",
+      "section": "PARED MARMOL",
+      "price": 180000,
+      "was": "$ 180.000"
+    },
+    {
+      "product": "ESQUINERO EXTERIOR DORADO",
+      "row": "ESQUINERO EXTERIOR DORADO",
+      "section": "PARED MARMOL",
+      "price": 16480,
+      "was": "$ 16.480"
+    },
+    {
+      "product": "ESQUINERO INTERIOR DORADO",
+      "row": "ESQUINERO INTERIOR DORADO",
+      "section": "PARED MARMOL",
+      "price": 16480,
+      "was": "$ 16.480"
+    },
+    {
+      "product": "ESQUINERO INTERIOR PLATEADO",
+      "row": "ESQUINERO INTERIOR PLATEADO",
+      "section": "PARED MARMOL",
+      "price": 16480,
+      "was": "$ 16.480"
+    },
+    {
+      "product": "PVC BOARD 12MM D/0.5 2.44CM X 122CM",
+      "row": "PVC BOARD 12MM D/0.5 2.44CM X 122CM",
+      "section": "PVC BOARD",
+      "price": 106800,
+      "was": "$ 106.800"
+    },
+    {
+      "product": "PVC BOARD 15MM D/0.5 2.44CM X 122CM",
+      "row": "PVC BOARD 15MM D/0.5 2.44CM X 122CM",
+      "section": "PVC BOARD",
+      "price": 135000,
+      "was": "$ 135.000"
+    },
+    {
+      "product": "PVC BOARD 18MM D/0.5 2.44CM X 122CM",
+      "row": "PVC BOARD 18MM D/0.5 2.44CM X 122CM",
+      "section": "PVC BOARD",
+      "price": 210135,
+      "was": "$ 210.135"
+    },
+    {
+      "product": "PVC BOARD 3MM D/0.55 2.44CM X 122CM",
+      "row": "PVC BOARD 3MM D/0.55 2.44CM X 122CM",
+      "section": "PVC BOARD",
+      "price": 35000,
+      "was": "$ 35.000"
+    },
+    {
+      "product": "PVC BOARD 5MM D/0.55 2.44CM X 122CM",
+      "row": "PVC BOARD 5MM D/0.55 2.44CM X 122CM",
+      "section": "PVC BOARD",
+      "price": 53500,
+      "was": "$ 53.500"
+    },
+    {
+      "product": "PVC BOARD 9MM D/0.5 2.44CM X 122CM",
+      "row": "PVC BOARD 9MM D/0.5 2.44CM X 122CM",
+      "section": "PVC BOARD",
+      "price": 82500,
+      "was": "$ 82.500"
+    },
+    {
+      "product": "PVC BOARD ROSA (M912-88F)",
+      "row": "PVC BOARD 15MM ROSA (M912-88F)",
+      "section": "PVC BOARD COLOR",
+      "price": 270455,
+      "was": "$ 270.455"
+    },
+    {
+      "product": "PVC BOARD MADERA MEDIANA (MS84306-131)",
+      "row": "PVC BOARD 15MM MADERA MEDIANA (MS84306-131)",
+      "section": "PVC BOARD COLOR",
+      "price": 270455,
+      "was": "$ 270.455"
+    },
+    {
+      "product": "PVC BOARD BLANCO BRILLANTE",
+      "row": "PVC BOARD 15MM BLANCO BRILLANTE",
+      "section": "PVC BOARD COLOR",
+      "price": 270455,
+      "was": "$ 270.455"
+    },
+    {
+      "product": "PVC BOARD NEGRO BRILLANTE",
+      "row": "PVC BOARD 15MM NEGRO BRILLANTE",
+      "section": "PVC BOARD COLOR",
+      "price": 270455,
+      "was": "$ 270.455"
+    },
+    {
+      "product": "PVC BOARD PURPURA (FAN-698)",
+      "row": "PVC BOARD 15MM PURPURA (FAN-698)",
+      "section": "PVC BOARD COLOR",
+      "price": 270455,
+      "was": "$ 270.455"
+    },
+    {
+      "product": "PVC BOARD MADERA OSCURO (MS86101-152)",
+      "row": "PVC BOARD 15MM MADERA OSCURO (MS86101-152)",
+      "section": "PVC BOARD COLOR",
+      "price": 270455,
+      "was": "$ 270.455"
+    },
+    {
+      "product": "LAMINA SINTETICA PIEDRA DEL SOL",
+      "row": "LAMINA SINTETICA PIEDRA DEL SOL",
+      "section": "PARED MARMOL",
+      "price": 230000,
+      "was": "$ 230.000"
+    },
+    {
+      "product": "LAMINA SINTETICA CREMA SELECTA",
+      "row": "LAMINA SINTETICA CREMA SELECTA",
+      "section": "PARED MARMOL",
+      "price": 454000,
+      "was": "$ 454.000"
+    },
+    {
+      "product": "LISTON PVC CIELO RASO CEDRO CLARO 9CM",
+      "row": "LISTON PVC CIELO RASO CEDRO CLARO 9CM",
+      "section": "LISTON PVC",
+      "price": 40000,
+      "was": "$ 40.000"
+    },
+    {
+      "product": "LISTON PVC CIELO RASO EBANO MADERA 9CM",
+      "row": "LISTON PVC CIELO RASO EBANO MADERA 9CM",
+      "section": "LISTON PVC",
+      "price": 40000,
+      "was": "$ 40.000"
+    },
+    {
+      "product": "LISTON PVC CIELO RASO MADERA TEKA 9CM",
+      "row": "LISTON PVC CIELO RASO MADERA TEKA 9CM",
+      "section": "LISTON PVC",
+      "price": 40000,
+      "was": "$ 40.000"
+    },
+    {
+      "product": "LISTON PVC INTERIOR ESTRUCTURAL  CEDRO CLARO  10CM",
+      "row": "LISTON PVC ESTRUCTURAL CEDRO CLARO 10CM",
+      "section": "LISTON PVC",
+      "price": 55000,
+      "was": "$ 55.000"
+    },
+    {
+      "product": "LISTON PVC INTERIOR ESTRUCTURAL MADERA TEKA 10CM",
+      "row": "LISTON PVC ESTRUCTURAL MADERA TEKA 10CM",
+      "section": "LISTON PVC",
+      "price": 55000,
+      "was": "$ 55.000"
+    },
+    {
+      "product": "LISTON WPC EXTERIOR NOGAL 02 6 4cm (TUBE)",
+      "row": "LISTON WPC ESTRUCTURAL ROBLE 01  6*4cm (TUBE)",
+      "section": "LISTON WPC",
+      "price": 74000,
+      "was": "$ 74.000"
+    },
+    {
+      "product": "LISTON WPC EXTERIOR EBANO 04 6*4cm (TUBE)",
+      "row": "LISTON WPC ESTRUCTURAL EBANO 04 6*4cm (TUBE)",
+      "section": "LISTON WPC",
+      "price": 74000,
+      "was": "$ 74.000"
+    },
+    {
+      "product": "LISTON WPC EXTERIOR CEDRO 05 6*4cm (TUBE)",
+      "row": "LISTON WPC ESTRUCTURAL CEDRO 05 6*4cm (TUBE)",
+      "section": "LISTON WPC",
+      "price": 74000,
+      "was": "$ 74.000"
+    },
+    {
+      "product": "PANEL WPC EXT NOGAL (02)",
+      "row": "PANEL WPC EXT NOGAL (02)",
+      "section": "PARED WPC EXT",
+      "price": 70000,
+      "was": "$ 70.000"
+    },
+    {
+      "product": "PANEL WPC EXT MARRON (03)",
+      "row": "PANEL WPC EXT MARRON (03)",
+      "section": "PARED WPC EXT",
+      "price": 70000,
+      "was": "$ 70.000"
+    },
+    {
+      "product": "PANEL WPC EXT EBANO (04)",
+      "row": "PANEL WPC EXT EBANO (04)",
+      "section": "PARED WPC EXT",
+      "price": 70000,
+      "was": "$ 70.000"
+    },
+    {
+      "product": "PANEL WPC EXT CEDRO (05)",
+      "row": "PANEL WPC EXT CEDRO (05)",
+      "section": "PARED WPC EXT",
+      "price": 70000,
+      "was": "$ 70.000"
+    },
+    {
+      "product": "PANEL WPC EXT WENGUE (06)",
+      "row": "PANEL WPC EXT WENGUE (06)",
+      "section": "PARED WPC EXT",
+      "price": 70000,
+      "was": "$ 70.000"
+    },
+    {
+      "product": "PANEL WPC EXT GRAFITO (07)",
+      "row": "PANEL WPC EXT GRAFITO (07)",
+      "section": "PARED WPC EXT",
+      "price": 70000,
+      "was": "$ 70.000"
+    },
+    {
+      "product": "PANEL WPC EXT AVELLANA MIX COE (08)",
+      "row": "PANEL WPC EXT AVELLANA MIX COE (08)",
+      "section": "PARED WPC EXT",
+      "price": 70000,
+      "was": "$ 70.000"
+    },
+    {
+      "product": "ANGULO WPC EXT ROBLE (01)",
+      "row": "ANGULO WPC EXT ROBLE (01)",
+      "section": "PARED WPC EXT",
+      "price": 20255,
+      "was": "$ 20.255"
+    },
+    {
+      "product": "ANGULO WPC EXT NOGAL (02)",
+      "row": "ANGULO WPC EXT NOGAL (02)",
+      "section": "PARED WPC EXT",
+      "price": 20255,
+      "was": "$ 20.255"
+    },
+    {
+      "product": "ANGULO WPC EXT MARRON (03)",
+      "row": "ANGULO WPC EXT MARRON (03)",
+      "section": "PARED WPC EXT",
+      "price": 20255,
+      "was": "$ 20.255"
+    },
+    {
+      "product": "ANGULO WPC EXT EBANO (04)",
+      "row": "ANGULO WPC EXT EBANO (04)",
+      "section": "PARED WPC EXT",
+      "price": 20255,
+      "was": "$ 20.255"
+    },
+    {
+      "product": "ANGULO WPC EXT CEDRO (05)",
+      "row": "ANGULO WPC EXT CEDRO (05)",
+      "section": "PARED WPC EXT",
+      "price": 20255,
+      "was": "$ 20.255"
+    },
+    {
+      "product": "ANGULO WPC EXT WENGUE (06)",
+      "row": "ANGULO WPC EXT WENGUE (06)",
+      "section": "PARED WPC EXT",
+      "price": 21834,
+      "was": "$ 21.834"
+    },
+    {
+      "product": "ANGULO WPC EXT GRAFITO (07)",
+      "row": "ANGULO WPC EXT GRAFITO (07)",
+      "section": "PARED WPC EXT",
+      "price": 21834,
+      "was": "$ 21.834"
+    },
+    {
+      "product": "ANGULO WPC EXT AVELLANA MIX COE (08)",
+      "row": "ANGULO WPC EXT AVELLANA MIX COE (08)",
+      "section": "PARED WPC EXT",
+      "price": 21834,
+      "was": "$ 21.834"
+    },
+    {
+      "product": "TORNILLO DE ACERO INOXIDABLE WPC EXTERIOR",
+      "row": "TORNILLO DE ACERO INOXIDABLE WPC EXTERIOR",
+      "section": "PARED WPC EXT",
+      "price": 500,
+      "was": "$ 500"
+    },
+    {
+      "product": "PANEL WPC CARRARA BLANCO (02)",
+      "row": "PANEL WPC CARRARA BLANCO (02)",
+      "section": "PANEL WPC",
+      "price": 23000,
+      "was": "$ 23.000"
+    },
+    {
+      "product": "PANEL WPC POLAR BLANCO (03)",
+      "row": "PANEL WPC POLAR BLANCO (03)",
+      "section": "PANEL WPC",
+      "price": 23000,
+      "was": "$ 23.000"
+    },
+    {
+      "product": "PANEL WPC WENGUE (04)",
+      "row": "PANEL WPC WENGUE (04)",
+      "section": "PANEL WPC",
+      "price": 23000,
+      "was": "$ 23.000"
+    },
+    {
+      "product": "PANEL WPC ROBLE CLARO (05)",
+      "row": "PANEL WPC ROBLE CLARO (05)",
+      "section": "PANEL WPC",
+      "price": 23000,
+      "was": "$ 23.000"
+    },
+    {
+      "product": "PANEL WPC TRAVERTINO (06)",
+      "row": "PANEL WPC TRAVERTINO (06)",
+      "section": "PANEL WPC",
+      "price": 23000,
+      "was": "$ 23.000"
+    },
+    {
+      "product": "PANEL WPC CHERRY (07)",
+      "row": "PANEL WPC CHERRY (07)",
+      "section": "PANEL WPC",
+      "price": 23000,
+      "was": "$ 23.000"
+    },
+    {
+      "product": "PANEL WPC MADERA TEKA (10)",
+      "row": "PANEL WPC MADERA TEKA (10)",
+      "section": "PANEL WPC",
+      "price": 23000,
+      "was": "$ 23.000"
+    },
+    {
+      "product": "PANEL WPC CEDRO (12)",
+      "row": "PANEL WPC CEDRO (12)",
+      "section": "PANEL WPC",
+      "price": 23000,
+      "was": "$ 23.000"
+    },
+    {
+      "product": "PANEL WPC EBANO NEGRO (13)",
+      "row": "PANEL WPC EBANO NEGRO (13)",
+      "section": "PANEL WPC",
+      "price": 23000,
+      "was": "$ 23.000"
+    },
+    {
+      "product": "PANEL WPC CARRARA NEGRO (14)",
+      "row": "PANEL WPC CARRARA NEGRO (14)",
+      "section": "PANEL WPC",
+      "price": 23000,
+      "was": "$ 23.000"
+    },
+    {
+      "product": "PANEL WPC MARFIL (16)",
+      "row": "PANEL WPC MARFIL (16)",
+      "section": "PANEL WPC",
+      "price": 23000,
+      "was": "$ 23.000"
+    },
+    {
+      "product": "PANEL WPC CHOCO MIX (19)",
+      "row": "PANEL WPC CHOCO MIX (19)",
+      "section": "PANEL WPC",
+      "price": 23000,
+      "was": "$ 23.000"
+    },
+    {
+      "product": "PANEL WPC OLIVO MIX (20)",
+      "row": "PANEL WPC OLIVO MIX (20)",
+      "section": "PANEL WPC",
+      "price": 23000,
+      "was": "$ 23.000"
+    },
+    {
+      "product": "PANEL WPC MAPLE MIX (21)",
+      "row": "PANEL WPC MAPLE MIX (21)",
+      "section": "PANEL WPC",
+      "price": 23000,
+      "was": "$ 23.000"
+    },
+    {
+      "product": "PANEL WPC GRECIA MIX (22)",
+      "row": "PANEL WPC GRECIA MIX (22)",
+      "section": "PANEL WPC",
+      "price": 23000,
+      "was": "$ 23.000"
+    },
+    {
+      "product": "PANEL WPC NEGRO MATE (23)",
+      "row": "PANEL WPC NEGRO MATE (23)",
+      "section": "PANEL WPC",
+      "price": 23000,
+      "was": "$ 23.000"
+    },
+    {
+      "product": "PANEL WPC CREMA SELECTA NEW (24)",
+      "row": "PANEL WPC CREMA SELECTA NEW (24)",
+      "section": "PANEL WPC",
+      "price": 23000,
+      "was": "$ 23.000"
+    },
+    {
+      "product": "PANEL WPC AZUL CELESTE NEW (25)",
+      "row": "PANEL WPC AZUL CELESTE NEW (25)",
+      "section": "PANEL WPC",
+      "price": 23000,
+      "was": "$ 23.000"
+    },
+    {
+      "product": "PANEL WPC VERDE MENTA NEW (26)",
+      "row": "PANEL WPC VERDE MENTA NEW (26)",
+      "section": "PANEL WPC",
+      "price": 23000,
+      "was": "$ 23.000"
+    },
+    {
+      "product": "PANEL WPC BLANCO IMPERIAL (27)",
+      "row": "PANEL WPC BLANCO IMPERIAL (27)",
+      "section": "PANEL WPC",
+      "price": 23000,
+      "was": "$ 23.000"
+    },
+    {
+      "product": "PANEL WPC MANDARINA NEW (28)",
+      "row": "PANEL WPC MANDARINA NEW (28)",
+      "section": "PANEL WPC",
+      "price": 23000,
+      "was": "$ 23.000"
+    },
+    {
+      "product": "PANEL WPC NEGRO IMPERIAL (29)",
+      "row": "PANEL WPC NEGRO IMPERIAL (29)",
+      "section": "PANEL WPC",
+      "price": 23000,
+      "was": "$ 23.000"
+    },
+    {
+      "product": "PANEL WPC FRESNO (JUDY 05)",
+      "row": "PANEL WPC FRESNO (JUDY 05)",
+      "section": "PANEL WPC",
+      "price": 23000,
+      "was": "$ 23.000"
+    },
+    {
+      "product": "PANEL WPC NOGAL (JUDY 10)",
+      "row": "PANEL WPC NOGAL (JUDY 10)",
+      "section": "PANEL WPC",
+      "price": 23000,
+      "was": "$ 23.000"
+    },
+    {
+      "product": "PLATINAS METALICAS",
+      "row": "PLATINAS METALICAS",
+      "section": "PANEL WPC",
+      "price": 850,
+      "was": "$ 850"
+    },
+    {
+      "product": "ANGULO WPC STONE GRIS (01)",
+      "row": "ANGULO WPC STONE GRIS (01)",
+      "section": "PANEL WPC",
+      "price": 15100,
+      "was": "$ 15.100"
+    },
+    {
+      "product": "ANGULO WPC CARRARA BLANCO (02)",
+      "row": "ANGULO WPC CARRARA BLANCO (02)",
+      "section": "PANEL WPC",
+      "price": 15100,
+      "was": "$ 15.100"
+    },
+    {
+      "product": "ANGULO WPC POLAR BLANCO (03)",
+      "row": "ANGULO WPC POLAR BLANCO (03)",
+      "section": "PANEL WPC",
+      "price": 15100,
+      "was": "$ 15.100"
+    },
+    {
+      "product": "ANGULO WPC WENGUE (04)",
+      "row": "ANGULO WPC WENGUE (04)",
+      "section": "PANEL WPC",
+      "price": 15100,
+      "was": "$ 15.100"
+    },
+    {
+      "product": "ANGULO WPC ROBLE CLARO (05)",
+      "row": "ANGULO WPC ROBLE CLARO (05)",
+      "section": "PANEL WPC",
+      "price": 15100,
+      "was": "$ 15.100"
+    },
+    {
+      "product": "ANGULO WPC TRAVERTINO (06)",
+      "row": "ANGULO WPC TRAVERTINO (06)",
+      "section": "PANEL WPC",
+      "price": 15100,
+      "was": "$ 15.100"
+    },
+    {
+      "product": "ANGULO WPC CHERRY (07)",
+      "row": "ANGULO WPC CHERRY (07)",
+      "section": "PANEL WPC",
+      "price": 15100,
+      "was": "$ 15.100"
+    },
+    {
+      "product": "ANGULO WPC GOLDEN BRILLO (08)",
+      "row": "ANGULO WPC GOLDEN BRILLO (08)",
+      "section": "PANEL WPC",
+      "price": 15100,
+      "was": "$ 15.100"
+    },
+    {
+      "product": "ANGULO WPC ANOLOC BRILLO (09)",
+      "row": "ANGULO WPC ANOLOC BRILLO (09)",
+      "section": "PANEL WPC",
+      "price": 15100,
+      "was": "$ 15.100"
+    },
+    {
+      "product": "ANGULO WPC MADERA TEKA (10)",
+      "row": "ANGULO WPC MADERA TEKA (10)",
+      "section": "PANEL WPC",
+      "price": 15100,
+      "was": "$ 15.100"
+    },
+    {
+      "product": "ANGULO WPC VIENA GRIS (11)",
+      "row": "ANGULO WPC VIENA GRIS (11)",
+      "section": "PANEL WPC",
+      "price": 15100,
+      "was": "$ 15.100"
+    },
+    {
+      "product": "ANGULO WPC CEDRO (12)",
+      "row": "ANGULO",
+      "section": "PERFILERIA",
+      "price": 2321,
+      "was": "$ 2.321"
+    },
+    {
+      "product": "ANGULO WPC EBANO MADERA (13)",
+      "row": "ANGULO WPC EBANO MADERA (13)",
+      "section": "PANEL WPC",
+      "price": 15100,
+      "was": "$ 15.100"
+    },
+    {
+      "product": "ANGULO WPC CARRARA NEGRO (14)",
+      "row": "ANGULO WPC CARRARA NEGRO (14)",
+      "section": "PANEL WPC",
+      "price": 12700,
+      "was": "$ 12.700"
+    },
+    {
+      "product": "ANGULO WPC PINO GRIS (15)",
+      "row": "ANGULO WPC PINO GRIS (15)",
+      "section": "PANEL WPC",
+      "price": 12700,
+      "was": "$ 12.700"
+    },
+    {
+      "product": "ANGULO WPC MARFIL (16)",
+      "row": "ANGULO WPC MARFIL (16)",
+      "section": "PANEL WPC",
+      "price": 12700,
+      "was": "$ 12.700"
+    },
+    {
+      "product": "ANGULO WPC CALIZA GRIS (17)",
+      "row": "ANGULO WPC CALIZA GRIS (17)",
+      "section": "PANEL WPC",
+      "price": 12700,
+      "was": "$ 12.700"
+    },
+    {
+      "product": "ANGULO WPC CHOCO MIX (19)",
+      "row": "ANGULO WPC CHOCO MIX (19)",
+      "section": "PANEL WPC",
+      "price": 12700,
+      "was": "$ 12.700"
+    },
+    {
+      "product": "ANGULO WPC OLIVO MIX (20)",
+      "row": "ANGULO WPC OLIVO MIX (20)",
+      "section": "PANEL WPC",
+      "price": 12700,
+      "was": "$ 12.700"
+    },
+    {
+      "product": "ANGULO WPC MAPLE MIX (21)",
+      "row": "ANGULO WPC MAPLE MIX (21)",
+      "section": "PANEL WPC",
+      "price": 12700,
+      "was": "$ 12.700"
+    },
+    {
+      "product": "ANGULO WPC GRECIA MIX (22)",
+      "row": "ANGULO WPC GRECIA MIX (22)",
+      "section": "PANEL WPC",
+      "price": 12700,
+      "was": "$ 12.700"
+    },
+    {
+      "product": "ANGULO WPC NEGRO MATE (23)",
+      "row": "ANGULO WPC NEGRO MATE (23)",
+      "section": "PANEL WPC",
+      "price": 12700,
+      "was": "$ 12.700"
+    },
+    {
+      "product": "PANEL WPC REDONDO POLAR BLANCO (03)",
+      "row": "PANEL WPC REDONDO POLAR BLANCO (03)",
+      "section": "PANEL WPC REDONDO",
+      "price": 35138,
+      "was": "$ 35.138"
+    },
+    {
+      "product": "PANEL WPC REDONDO ROBLE CLARO (05)",
+      "row": "PANEL WPC REDONDO ROBLE CLARO (05)",
+      "section": "PANEL WPC REDONDO",
+      "price": 35138,
+      "was": "$ 35.138"
+    },
+    {
+      "product": "PANEL WPC REDONDO TRAVERTINO (06)",
+      "row": "PANEL WPC REDONDO TRAVERTINO (06)",
+      "section": "PANEL WPC REDONDO",
+      "price": 35138,
+      "was": "$ 35.138"
+    },
+    {
+      "product": "PANEL WPC REDONDO MADERA TEKA (10)",
+      "row": "PANEL WPC REDONDO MADERA TEKA (10)",
+      "section": "PANEL WPC REDONDO",
+      "price": 35138,
+      "was": "$ 35.138"
+    },
+    {
+      "product": "PANEL WPC REDONDO EBANO NEGRO (13)",
+      "row": "PANEL WPC REDONDO EBANO NEGRO (13)",
+      "section": "PANEL WPC REDONDO",
+      "price": 35138,
+      "was": "$ 35.138"
+    },
+    {
+      "product": "PANEL WPC REDONDO MARFIL (16)",
+      "row": "PANEL WPC REDONDO MARFIL (16)",
+      "section": "PANEL WPC REDONDO",
+      "price": 35138,
+      "was": "$ 35.138"
+    },
+    {
+      "product": "PANEL WPC REDONDO NEGRO MATE (23)",
+      "row": "PANEL WPC REDONDO NEGRO MATE (23)",
+      "section": "PANEL WPC REDONDO",
+      "price": 35138,
+      "was": "$ 35.138"
+    },
+    {
+      "product": "PANEL WPC REDONDO CREMA SELECTA NEW (24)",
+      "row": "PANEL WPC REDONDO CREMA SELECTA NEW (24)",
+      "section": "PANEL WPC REDONDO",
+      "price": 35138,
+      "was": "$ 35.138"
+    },
+    {
+      "product": "PANEL WPC REDONDO AZUL CELESTE NEW (25)",
+      "row": "PANEL WPC REDONDO AZUL CELESTE NEW (25)",
+      "section": "PANEL WPC REDONDO",
+      "price": 35138,
+      "was": "$ 35.138"
+    },
+    {
+      "product": "PANEL WPC REDONDO VERDE MENTA NEW(26)",
+      "row": "PANEL WPC REDONDO VERDE MENTA NEW (26)",
+      "section": "PANEL WPC REDONDO",
+      "price": 35138,
+      "was": "$ 35.138"
+    },
+    {
+      "product": "PANEL WPC REDONDO ROSADO (30)",
+      "row": "PANEL WPC REDONDO ROSADO (30)",
+      "section": "PANEL WPC REDONDO",
+      "price": 35138,
+      "was": "$ 35.138"
+    },
+    {
+      "product": "FACHADA DECK CEDRO",
+      "row": "FACHADA DECK CEDRO",
+      "section": "FACHADAS",
+      "price": 45500,
+      "was": "$ 45.500"
+    },
+    {
+      "product": "FACHADA DECK EBANO",
+      "row": "FACHADA DECK EBANO",
+      "section": "FACHADAS",
+      "price": 45500,
+      "was": "$ 45.500"
+    },
+    {
+      "product": "FACHADA DECK GRAFITO",
+      "row": "FACHADA DECK GRAFITO",
+      "section": "FACHADAS",
+      "price": 45500,
+      "was": "$ 45.500"
+    },
+    {
+      "product": "FACHADA DECK MARRON",
+      "row": "FACHADA DECK MARRON",
+      "section": "FACHADAS",
+      "price": 45500,
+      "was": "$ 45.500"
+    },
+    {
+      "product": "FACHADA DECK NOGAL",
+      "row": "FACHADA DECK NOGAL",
+      "section": "FACHADAS",
+      "price": 45500,
+      "was": "$ 45.500"
+    },
+    {
+      "product": "FACHADA ARENISCA BEIGE (B4)",
+      "row": "FACHADA ARENISCA BEIGE (B4)",
+      "section": "PARED ARQNITEC",
+      "price": 125345,
+      "was": "$ 125.345"
+    },
+    {
+      "product": "FACHADA CANTERA MIX (B2)",
+      "row": "FACHADA CANTERA MIX (B2)",
+      "section": "PARED ARQNITEC",
+      "price": 125345,
+      "was": "$ 125.345"
+    },
+    {
+      "product": "FACHADA OPALO BLANCO (B3)",
+      "row": "FACHADA OPALO BLANCO (B3)",
+      "section": "PARED ARQNITEC",
+      "price": 125345,
+      "was": "$ 125.345"
+    },
+    {
+      "product": "FACHADA PIZARRA MIX (B1)",
+      "row": "FACHADA PIZARRA MIX (B1)",
+      "section": "PARED ARQNITEC",
+      "price": 125345,
+      "was": "$ 125.345"
+    },
+    {
+      "product": "FACHADA PVC MURALLA GRIS",
+      "row": "PARED ARQUNITEC PIEDRA NATURAL",
+      "section": "PARED ARQNITEC",
+      "price": 317500,
+      "was": "$ 317.500"
+    },
+    {
+      "product": "FACHADA EN PVC AMBAR RUSTICO (SW508)",
+      "row": "PARED ARQUNITEC TABLON ENVEJECIDO (SW-508)",
+      "section": "PARED ARQNITEC",
+      "price": 97815,
+      "was": "$ 97.815"
+    },
+    {
+      "product": "PANEL ACRILICO MARMOL LEGACY (ZS3D029 J)",
+      "row": "PANEL ACRILICO MARMOL LEGACY (ZS-3D029 J)",
+      "section": "PARED MARMOL",
+      "price": 180000,
+      "was": "$ 180.000"
+    },
+    {
+      "product": "PANEL ACRILICO MARMOL SILVER (ZS3D038 Y)",
+      "row": "PANEL ACRILICO MARMOL SILVER (ZS-3D038 Y)",
+      "section": "PARED MARMOL",
+      "price": 180000,
+      "was": "$ 180.000"
+    },
+    {
+      "product": "PANEL ACRILICO MARMOL AUREA (ZS3D030 Y)",
+      "row": "PANEL ACRILICO MARMOL AUREA (ZS-3D030 Y)",
+      "section": "PARED MARMOL",
+      "price": 180000,
+      "was": "$ 180.000"
+    },
+    {
+      "product": "PARED ACOLCHADA PALMA DIAMANTE NEGRO (017)",
+      "row": "PARED ACOLCHADA PALMA DIAMANTE NEGRO (017)",
+      "section": "PARED ACOLCHADA",
+      "price": 221500,
+      "was": "$ 221.500"
+    },
+    {
+      "product": "PARED ACOLCHADA PALMA GRIS LUMINOSO (041)",
+      "row": "PARED ACOLCHADA PALMA GRIS LUMINOSO (041)",
+      "section": "PARED ACOLCHADA",
+      "price": 221500,
+      "was": "$ 221.500"
+    },
+    {
+      "product": "PARED ACOLCHADA PALMA VAINILLA (820)",
+      "row": "PARED ACOLCHADA PALMA VAINILLA (820)",
+      "section": "PARED ACOLCHADA",
+      "price": 221500,
+      "was": "$ 221.500"
+    },
+    {
+      "product": "PARED ACOLCHADA PALMA SENDERO (854)",
+      "row": "PARED ACOLCHADA PALMA SENDERO (854)",
+      "section": "PARED ACOLCHADA",
+      "price": 221500,
+      "was": "$ 221.500"
+    },
+    {
+      "product": "PARED ACOLCHADA TRIGO DIAMANTE NEGRO (017)",
+      "row": "PARED ACOLCHADA TRIGO DIAMANTE NEGRO (017)",
+      "section": "PARED ACOLCHADA",
+      "price": 221500,
+      "was": "$ 221.500"
+    },
+    {
+      "product": "PARED ACOLCHADA TRIGO GRIS LUMINOSO (041)",
+      "row": "PARED ACOLCHADA TRIGO GRIS LUMINOSO (041)",
+      "section": "PARED ACOLCHADA",
+      "price": 221500,
+      "was": "$ 221.500"
+    },
+    {
+      "product": "PARED ACOLCHADA TRIGO VAINILLA (HARVEST 820)",
+      "row": "PARED ACOLCHADA TRIGO VAINILLA (HARVEST 820)",
+      "section": "PARED ACOLCHADA",
+      "price": 221500,
+      "was": "$ 221.500"
+    },
+    {
+      "product": "PARED ACOLCHADA TRIGO BRILLO PLATA (823)",
+      "row": "PARED ACOLCHADA TRIGO BRILLO PLATA (823)",
+      "section": "PARED ACOLCHADA",
+      "price": 221500,
+      "was": "$ 221.500"
+    },
+    {
+      "product": "PARED ACOLCHADA AURORA DIAMANTE NEGRO (017)",
+      "row": "PARED ACOLCHADA AURORA DIAMANTE NEGRO (017)",
+      "section": "PARED ACOLCHADA",
+      "price": 357000,
+      "was": "$ 357.000"
+    },
+    {
+      "product": "PARED ACOLCHADA AURORA ROCIO FLORAL (802)",
+      "row": "PARED ACOLCHADA AURORA ROCIO FLORAL (802)",
+      "section": "PARED ACOLCHADA",
+      "price": 357000,
+      "was": "$ 357.000"
+    },
+    {
+      "product": "PARED ACOLCHADA AURORA SIENA CAOBA (816)",
+      "row": "PARED ACOLCHADA AURORA SIENA CAOBA (816)",
+      "section": "PARED ACOLCHADA",
+      "price": 357000,
+      "was": "$ 357.000"
+    },
+    {
+      "product": "PARED ACOLCHADA AURORA BRILLO PLATA (823)",
+      "row": "PARED ACOLCHADA AURORA BRILLO PLATA (823)",
+      "section": "PARED ACOLCHADA",
+      "price": 357000,
+      "was": "$ 357.000"
+    },
+    {
+      "product": "PANEL ACOLCHADO DUOSMALL BRILLO PLATA (823)",
+      "row": "PANEL ACOLCHADO DUOSMALL BRILLO PLATA (823)",
+      "section": "PARED ACOLCHADA",
+      "price": 70350,
+      "was": "$ 70.350"
+    },
+    {
+      "product": "PANEL ACUSTICO TIPO 1 WHITE OAK 3728N",
+      "row": "PANEL ACUSTICO TIPO 1 BLANCO CEDRO (3728N)",
+      "section": "PANEL ACUSTICO",
+      "price": 163790,
+      "was": "$ 163.790"
+    },
+    {
+      "product": "PANEL ACUSTICO TIPO 1 YELLOW OAK 8438S",
+      "row": "PANEL ACUSTICO TIPO 1 CEDRO MADERA (8438S)",
+      "section": "PANEL ACUSTICO",
+      "price": 163790,
+      "was": "$ 163.790"
+    },
+    {
+      "product": "PANEL ACUSTICO TIPO 1 BLACK OAK 8210C",
+      "row": "PANEL ACUSTICO TIPO 1 EBANO (8210C)",
+      "section": "PANEL ACUSTICO",
+      "price": 163790,
+      "was": "$ 163.790"
+    },
+    {
+      "product": "PANEL ACUSTICO TIPO 2 WHITE OAK 3728N",
+      "row": "PANEL ACUSTICO TIPO 2",
+      "section": "PANEL ACUSTICO",
+      "price": 56790,
+      "was": "$ 56.790"
+    },
+    {
+      "product": "PANEL ACUSTICO TIPO 2 YELLOW OAK 8438S",
+      "row": "PANEL ACUSTICO TIPO 2",
+      "section": "PANEL ACUSTICO",
+      "price": 56790,
+      "was": "$ 56.790"
+    },
+    {
+      "product": "PANEL ACUSTICO TIPO 2 BLACK OAK 8210C",
+      "row": "PANEL ACUSTICO TIPO 2",
+      "section": "PANEL ACUSTICO",
+      "price": 56790,
+      "was": "$ 56.790"
+    },
+    {
+      "product": "PANEL ACUSTICO TIPO 2 WALNUT 8292C",
+      "row": "PANEL ACUSTICO TIPO 2",
+      "section": "PANEL ACUSTICO",
+      "price": 56790,
+      "was": "$ 56.790"
+    },
+    {
+      "product": "PANEL ACUSTICO TIPO 3 WHITE OAK 3728N",
+      "row": "PANEL ACUSTICO TIPO 3 BLANCO CEDRO (3728N)",
+      "section": "PANEL ACUSTICO",
+      "price": 99590,
+      "was": "$ 99.590"
+    },
+    {
+      "product": "PANEL ACUSTICO TIPO 3 YELLOW OAK 8438S",
+      "row": "PANEL ACUSTICO TIPO 3 CEDRO MADERA (8438S)",
+      "section": "PANEL ACUSTICO",
+      "price": 99590,
+      "was": "$ 99.590"
+    },
+    {
+      "product": "PANEL ACUSTICO TIPO 3 BLACK OAK 8210C",
+      "row": "PANEL ACUSTICO TIPO 3 EBANO (8210C)",
+      "section": "PANEL ACUSTICO",
+      "price": 99590,
+      "was": "$ 99.590"
+    },
+    {
+      "product": "PANEL ACUSTICO TIPO 3 WALNUT 8292C",
+      "row": "PANEL ACUSTICO TIPO 3 AVELLANA (8292C)",
+      "section": "PANEL ACUSTICO",
+      "price": 99590,
+      "was": "$ 99.590"
+    },
+    {
+      "product": "PANEL ACUSTICO TIPO 4 WHITE OAK 3728N",
+      "row": "PANEL ACUSTICO TIPO 4 BLANCO CEDRO (3728N)",
+      "section": "PANEL ACUSTICO",
+      "price": 239999,
+      "was": "$ 239.999"
+    },
+    {
+      "product": "PANEL ACUSTICO TIPO 4 YELLOW OAK 8438S",
+      "row": "PANEL ACUSTICO TIPO 4 CEDRO MADERA (8438S)",
+      "section": "PANEL ACUSTICO",
+      "price": 239999,
+      "was": "$ 239.999"
+    },
+    {
+      "product": "PANEL ACUSTICO TIPO 4 BLACK OAK 8210C",
+      "row": "PANEL ACUSTICO TIPO 4 EBANO (8210C)",
+      "section": "PANEL ACUSTICO",
+      "price": 239999,
+      "was": "$ 239.999"
+    },
+    {
+      "product": "PANEL ACUSTICO TIPO 4 WALNUT 8292C",
+      "row": "PANEL ACUSTICO TIPO 4 AVELLANA (8292C)",
+      "section": "PANEL ACUSTICO",
+      "price": 239999,
+      "was": "$ 239.999"
+    },
+    {
+      "product": "PANEL ACUSTICO TIPO 5 WHITE OAK 3728N",
+      "row": "PANEL ACUSTICO TIPO 5 BLANCO CEDRO (3728N)",
+      "section": "PANEL ACUSTICO",
+      "price": 132999,
+      "was": "$ 132.999"
+    },
+    {
+      "product": "PANEL ACUSTICO TIPO 5 YELLOW OAK 8438S",
+      "row": "PANEL ACUSTICO TIPO 5 CEDRO MADERA (8438S)",
+      "section": "PANEL ACUSTICO",
+      "price": 133000,
+      "was": "$ 133.000"
+    },
+    {
+      "product": "PANEL ACUSTICO TIPO 5 BLACK OAK 8210C",
+      "row": "PANEL ACUSTICO TIPO 5 EBANO (8210C)",
+      "section": "PANEL ACUSTICO",
+      "price": 133001,
+      "was": "$ 133.001"
+    },
+    {
+      "product": "PANEL ACUSTICO TIPO 5 WALNUT 8292C",
+      "row": "PANEL ACUSTICO TIPO 5 AVELLANA (8292C)",
+      "section": "PANEL ACUSTICO",
+      "price": 133002,
+      "was": "$ 133.002"
+    },
+    {
+      "product": "PANEL ACUSTICO TIPO 6 YELLOW OAK + WALNUT",
+      "row": "PANEL ACUSTICO TIPO 6 CEDRO MADERA MIX AVELLANA",
+      "section": "PANEL ACUSTICO",
+      "price": 224999,
+      "was": "$ 224.999"
+    },
+    {
+      "product": "PANEL PS LUXURY ARENA HH24104",
+      "row": "PANEL PS LUXURY ARENA HH24104",
+      "section": "PARED PS",
+      "price": 28500,
+      "was": "$ 28.500"
+    },
+    {
+      "product": "PANEL PS LUXURY NEGRO HH24105",
+      "row": "PANEL PS LUXURY NEGRO HH24105",
+      "section": "PARED PS",
+      "price": 28500,
+      "was": "$ 28.500"
+    },
+    {
+      "product": "PANEL PS LUXURY PLATEADO HH24108",
+      "row": "PANEL PS LUXURY PLATEADO HH24108",
+      "section": "PARED PS",
+      "price": 28500,
+      "was": "$ 28.500"
+    },
+    {
+      "product": "PANEL PS ESTUARIO CREAM HH24111",
+      "row": "PANEL PS ESTUARIO CREAM HH24111",
+      "section": "PARED PS",
+      "price": 28500,
+      "was": "$ 28.500"
+    },
+    {
+      "product": "PANEL PS MURALLA CAFÉ  HH24115",
+      "row": "PANEL PS MURALLA CAFÉ  HH24115",
+      "section": "PARED PS",
+      "price": 37000,
+      "was": "$ 37.000"
+    },
+    {
+      "product": "PANEL PS MURALLA TEKA HH24116",
+      "row": "PANEL PS MURALLA TEKA HH24116",
+      "section": "PARED PS",
+      "price": 37000,
+      "was": "$ 37.000"
+    },
+    {
+      "product": "PANEL PS BISELADO MALAGA HH24114",
+      "row": "PANEL PS BISELADO MALAGA HH24114",
+      "section": "PARED PS",
+      "price": 28500,
+      "was": "$ 28.500"
+    },
+    {
+      "product": "PANEL PS BISELADO MADERA TEKA HH24103",
+      "row": "PANEL PS BISELADO MADERA TEKA HH24103",
+      "section": "PARED PS",
+      "price": 54700,
+      "was": "$ 54.700"
+    },
+    {
+      "product": "PANEL PS ESTUARIO NEGRO HH24109",
+      "row": "PANEL PS ESTUARIO NEGRO HH24109",
+      "section": "PARED PS",
+      "price": 28500,
+      "was": "$ 28.500"
+    },
+    {
+      "product": "PANEL PS ESTUARIO GRIS HH24110",
+      "row": "PANEL PS ESTUARIO GRIS HH24110",
+      "section": "PARED PS",
+      "price": 28500,
+      "was": "$ 28.500"
+    },
+    {
+      "product": "PANEL PS ESTUARIO CAFÉ FUSIÓN HH24112",
+      "row": "PANEL PS ESTUARIO CAFÉ FUSIÓN HH24112",
+      "section": "PARED PS",
+      "price": 28500,
+      "was": "$ 28.500"
+    },
+    {
+      "product": "PANEL PS CHOCO MIX HH24117",
+      "row": "PANEL PS CHOCO MIX HH24117",
+      "section": "PARED PS",
+      "price": 28500,
+      "was": "$ 28.500"
+    },
+    {
+      "product": "PANEL PS LUXURY ROBLE HH24107",
+      "row": "PANEL PS LUXURY ROBLE HH24107",
+      "section": "PARED PS",
+      "price": 28500,
+      "was": "$ 28.500"
+    },
+    {
+      "product": "PANEL PS BISELADO MADERA MIEL  HH24102",
+      "row": "PANEL PS BISELADO MADERA MIEL  HH24102",
+      "section": "PARED PS",
+      "price": 54700,
+      "was": "$ 54.700"
+    },
+    {
+      "product": "PARED MUROFLEX CARRARA BLANCO (WPC-02)",
+      "row": "PARED MUROFLEX CARRARA BLANCO (WPC-02)",
+      "section": "PARED MUROFLEX",
+      "price": 10000,
+      "was": "$ 10.000"
+    },
+    {
+      "product": "PARED MUROFLEX CARRARA NEGRO (WPC-14)",
+      "row": "PARED MUROFLEX CARRARA NEGRO (WPC-14)",
+      "section": "PARED MUROFLEX",
+      "price": 10000,
+      "was": "$ 10.000"
+    },
+    {
+      "product": "PARED MUROFLEX MADERA TEKA (WPC-10)",
+      "row": "PARED MUROFLEX MADERA TEKA (WPC-10)",
+      "section": "PARED MUROFLEX",
+      "price": 10000,
+      "was": "$ 10.000"
+    },
+    {
+      "product": "PARED MUROFLEX METALUM (SILVERMETAL)",
+      "row": "PARED MUROFLEX METALUM (SILVERMETAL)",
+      "section": "PARED MUROFLEX",
+      "price": 10000,
+      "was": "$ 10.000"
+    },
+    {
+      "product": "PARED MUROFLEX ROBLE CLARO (WPC-05)",
+      "row": "PARED MUROFLEX ROBLE CLARO (WPC-05)",
+      "section": "PARED MUROFLEX",
+      "price": 10000,
+      "was": "$ 10.000"
+    },
+    {
+      "product": "PARED MUROFLEX STONE GRIS (WPC-01)",
+      "row": "PARED MUROFLEX STONE GRIS (WPC-01)",
+      "section": "PARED MUROFLEX",
+      "price": 10000,
+      "was": "$ 10.000"
+    },
+    {
+      "product": "PARED ARQUNITEC GRIS CENIZA (03)",
+      "row": "PARED ARQUNITEC GRIS CENIZA (03)",
+      "section": "PARED ARQNITEC",
+      "price": 65000,
+      "was": "$ 65.000"
+    },
+    {
+      "product": "PARED ARQNITEC GRIS TERRA (04)",
+      "row": "PARED ARQNITEC GRIS TERRA (04)",
+      "section": "PARED ARQNITEC",
+      "price": 65000,
+      "was": "$ 65.000"
+    },
+    {
+      "product": "PARED ARQUNITEC ANTRACITA NEGRO (06)",
+      "row": "PARED ARQUNITEC ANTRACITA NEGRO (06)",
+      "section": "PARED ARQNITEC",
+      "price": 65000,
+      "was": "$ 65.000"
+    },
+    {
+      "product": "PARED ARQUNITEC RECUADROS MARFIL 2-CREAM",
+      "row": "PARED ARQUNITEC RECUADROS MARFIL 2-CREAM",
+      "section": "PARED ARQNITEC",
+      "price": 65000,
+      "was": "$ 65.000"
+    },
+    {
+      "product": "PARED ARQUNITEC RECUADROS GRIS BASALTO 3A",
+      "row": "PARED ARQUNITEC RECUADROS GRIS BASALTO 3A",
+      "section": "PARED ARQNITEC",
+      "price": 65000,
+      "was": "$ 65.000"
+    },
+    {
+      "product": "PARED ARQUNITEC RECUADROS NEGROS 6-BLACK",
+      "row": "PARED ARQUNITEC RECUADROS NEGROS 6-BLACK",
+      "section": "PARED ARQNITEC",
+      "price": 65000,
+      "was": "$ 65.000"
+    },
+    {
+      "product": "PARED ARQUNITEC RECUADROS COLONIAL 12-BRICK RED",
+      "row": "PARED ARQUNITEC RECUADROS COLONIAL 12-BRICK RED",
+      "section": "PARED ARQNITEC",
+      "price": 65000,
+      "was": "$ 65.000"
+    },
+    {
+      "product": "PARED UNIFLEX CITRINO 120x60x0,2CM",
+      "row": "PARED UNIFLEX CITRINO 120x60x0,2CM",
+      "section": "PARED UNIFLEX",
+      "price": 65000,
+      "was": "$ 65.000"
+    },
+    {
+      "product": "PARED UNIFLEX MACADAMIA 120x60x0,2CM",
+      "row": "PARED UNIFLEX GRIS CENIZO 120x60x0,2CM",
+      "section": "PARED UNIFLEX",
+      "price": 65000,
+      "was": "$ 65.000"
+    },
+    {
+      "product": "PARED UNIFLEX GRIS CENIZO 120X60X0,2CM",
+      "row": "PARED UNIFLEX GRIS CENIZO 120X60X0,2CM",
+      "section": "PARED UNIFLEX",
+      "price": 65000,
+      "was": "$ 65.000"
+    },
+    {
+      "product": "PARED UNIFLEX ANTRANCITA 120X60X0,2CM",
+      "row": "PARED UNIFLEX ANTRANCITA 120X60X0,2CM",
+      "section": "PARED UNIFLEX",
+      "price": 65000,
+      "was": "$ 65.000"
+    },
+    {
+      "product": "PARED UNIFLEX NIEVE 120X60X0,2CM",
+      "row": "PARED UNIFLEX NIEVE 120X60X0,2CM",
+      "section": "PARED UNIFLEX",
+      "price": 65000,
+      "was": "$ 65.000"
+    },
+    {
+      "product": "PARED UNIFLEX OXIDO TERRACOTA 120X60X0,2CM",
+      "row": "PARED UNIFLEX OXIDO TERRACOTA 120X60X0,2CM",
+      "section": "PARED UNIFLEX",
+      "price": 65000,
+      "was": "$ 65.000"
+    },
+    {
+      "product": "PARED UNIFLEX MEDIA NOCHE 120X60X0,02CM",
+      "row": "PARED UNIFLEX MEDIA NOCHE 120X60X0,02CM",
+      "section": "PARED UNIFLEX",
+      "price": 65000,
+      "was": "$ 65.000"
+    },
+    {
+      "product": "PARED UNIFLEX LATTE BEIGE 120X60X0,02CM",
+      "row": "PARED UNIFLEX LATTE BEIGE 120X60X0,02CM",
+      "section": "PARED UNIFLEX",
+      "price": 65000,
+      "was": "$ 65.000"
+    },
+    {
+      "product": "POLIFACHADA UNITEC BLANCO TEX 3.80*36CM",
+      "row": "POLIFACHADA UNITEC BLANCO TEX 3.80*36CM",
+      "section": "FACHADAS",
+      "price": 78000,
+      "was": "$ 78.000"
+    },
+    {
+      "product": "POLIFACHADA UNITEC PIEDRA TEX 3.80*37 CM",
+      "row": "POLIFACHADA UNITEC PIEDRA TEX 3.80*37 CM",
+      "section": "FACHADAS",
+      "price": 78000,
+      "was": "$ 78.000"
+    },
+    {
+      "product": "POLIFACHADA UNITEC CEDRO 380*36CM",
+      "row": "POLIFACHADA UNITEC CEDRO 380*36CM",
+      "section": "FACHADAS",
+      "price": 78000,
+      "was": "$ 78.000"
+    },
+    {
+      "product": "POLIFACHADA TRAPEZOIDAL NEGRO BW008",
+      "row": "POLIFACHADA TRAPEZOIDAL NEGRO BW008",
+      "section": "FACHADAS",
+      "price": 78000,
+      "was": "$ 78.000"
+    },
+    {
+      "product": "POLIFACHADA TRAPEZOIDAL PLATEADO BW009",
+      "row": "POLIFACHADA TRAPEZOIDAL PLATEADO BW009",
+      "section": "FACHADAS",
+      "price": 78000,
+      "was": "$ 78.000"
+    },
+    {
+      "product": "POLIFACHADA UNITEC LADRILLO GRIS BW007",
+      "row": "POLIFACHADA UNITEC LADRILLO GRIS BW007",
+      "section": "FACHADAS",
+      "price": 78000,
+      "was": "$ 78.000"
+    },
+    {
+      "product": "POLIFACHADA UNITEC ARENA BW004",
+      "row": "POLIFACHADA UNITEC ARENA BW004",
+      "section": "FACHADAS",
+      "price": 78000,
+      "was": "$ 78.000"
+    },
+    {
+      "product": "POLIFACHADA UNITEC LADRILLO GRIS LISO BW005",
+      "row": "POLIFACHADA UNITEC LADRILLO GRIS LISO BW005",
+      "section": "FACHADAS",
+      "price": 78000,
+      "was": "$ 78.000"
+    },
+    {
+      "product": "POLIFACHADA UNITEC CARBONO BW010",
+      "row": "POLIFACHADA UNITEC CARBONO BW010",
+      "section": "FACHADAS",
+      "price": 78000,
+      "was": "$ 78.000"
+    },
+    {
+      "product": "POLIFACHADA UNITEC LADRILLO RUSTICO BW011",
+      "row": "POLIFACHADA UNITEC LADRILLO RUSTICO BW011",
+      "section": "FACHADAS",
+      "price": 78000,
+      "was": "$ 78.000"
+    },
+    {
+      "product": "ADHESIVO DE PARED EN ROLLO GRIS (6210-1)",
+      "row": "ROLLO ADHESIVO PARED MARMOL GRIS (6210-1)",
+      "section": "PARED ROLLO",
+      "price": 37098,
+      "was": "$ 37.098"
+    },
+    {
+      "product": "ADHESIVO DE PARED EN ROLLO NEGRO (1735)",
+      "row": "ROLLO ADHESIVO PARED MARMOL NEGRO (1735)",
+      "section": "PARED ROLLO",
+      "price": 37098,
+      "was": "$ 37.098"
+    },
+    {
+      "product": "ADHESIVO DE PARED EN ROLLO MARMOL (T9 056801)",
+      "row": "ROLLO ADHESIVO PARED MARMOL T9 (056801)",
+      "section": "PARED ROLLO",
+      "price": 37098,
+      "was": "$ 37.098"
+    },
+    {
+      "product": "ADHESIVO DE PARED EN ROLLO MARMOL BLANCO (6223)",
+      "row": "ROLLO ADHESIVO PARED MARMOL BLANCO (6223)",
+      "section": "PARED ROLLO",
+      "price": 37098,
+      "was": "$ 37.098"
+    },
+    {
+      "product": "ADHESIVO MIXTO MULTIPROPOSITO PEGATEC BLANCO",
+      "row": "ADHESIVO MIXTO MULTIPROPOSITO PEGATEC BLANCO",
+      "section": "PEGA",
+      "price": 17000,
+      "was": "$ 17.000"
+    },
+    {
+      "product": "ADHESIVO MIXTO MULTIPROPOSITO PEGATEC TRANSPARENTE",
+      "row": "ADHESIVO MIXTO MULTIPROPOSITO PEGATEC TRANSPARENTE",
+      "section": "PEGA",
+      "price": 17000,
+      "was": "$ 17.000"
+    },
+    {
+      "product": "PISO DECK EXTERIOR GRAFITO",
+      "row": "PISO DECK EXTERIOR GRAFITO",
+      "section": "PISO DECK",
+      "price": 78000,
+      "was": "$ 78.000"
+    },
+    {
+      "product": "PISO DECK EXTERIOR NOGAL",
+      "row": "PISO DECK EXTERIOR NOGAL",
+      "section": "PISO DECK",
+      "price": 78000,
+      "was": "$ 78.000"
+    },
+    {
+      "product": "PISO DECK EXTERIOR MAPLE",
+      "row": "PISO DECK EXTERIOR MAPLE",
+      "section": "PISO DECK",
+      "price": 78000,
+      "was": "$ 78.000"
+    },
+    {
+      "product": "PISO DECK EXTERIOR OAK",
+      "row": "PISO DECK EXTERIOR OAK",
+      "section": "PISO DECK",
+      "price": 78000,
+      "was": "$ 78.000"
+    },
+    {
+      "product": "ANGULO TERMINACION PISO DECK EXTE MAPLE",
+      "row": "ANGULO TERMINACION PISO DECK EXTE MAPLE",
+      "section": "ANGULOS",
+      "price": 37799,
+      "was": "$ 37.799"
+    },
+    {
+      "product": "ANGULO TERMINACION PISO DECK EXTE OAK",
+      "row": "ANGULO TERMINACION PISO DECK EXTE OAK",
+      "section": "ANGULOS",
+      "price": 37799,
+      "was": "$ 37.799"
+    },
+    {
+      "product": "CLIP Y TORNILLO EN ACERO INOXIDABLE",
+      "row": "CLIP Y TORNILLO EN ACERO INOXIDABLE",
+      "section": "PISO DECK",
+      "price": 500,
+      "was": "$ 500"
+    },
+    {
+      "product": "PISO SPC GRIS CENIZO IXPE (4mm-122*18.3cm)",
+      "row": "PISO SPC GRIS CENIZO IXPE (4mm-122*18.3cm)",
+      "section": "PISO SPC",
+      "price": 12000,
+      "was": "$ 12.000"
+    },
+    {
+      "product": "PISO SPC MADERA TEKA IXPE (4MM 122 18.3CM)",
+      "row": "PISO SPC MADERA TEKA IXPE (4MM 122 18.3CM)",
+      "section": "PISO SPC",
+      "price": 12000,
+      "was": "$ 12.000"
+    },
+    {
+      "product": "PISO SPC AVELLANA IXPE (4mm-122x18.3cm)",
+      "row": "PISO SPC AVELLANA IXPE (4mm-122x18.3cm)",
+      "section": "PISO SPC",
+      "price": 12000,
+      "was": "$ 12.000"
+    },
+    {
+      "product": "PISO SPC ROBLE CLARO IXPE (4.5mm-122*22.8cm)",
+      "row": "PISO SPC ROBLE CLARO IXPE (4.5mm-122*22.8cm)",
+      "section": "PISO SPC",
+      "price": 19500,
+      "was": "$ 19.500"
+    },
+    {
+      "product": "PISO SPC GRIS CENIZO IXPE (4.5mm-122*22.8cm)",
+      "row": "PISO SPC GRIS CENIZO IXPE (4.5mm-122*22.8cm)",
+      "section": "PISO SPC",
+      "price": 19500,
+      "was": "$ 19.500"
+    },
+    {
+      "product": "PISO SPC MADERA TEKA IXPE (4.5mm-122*22.8cm)",
+      "row": "PISO SPC MADERA TEKA IXPE (4.5mm-122*22.8cm)",
+      "section": "PISO SPC",
+      "price": 19500,
+      "was": "$ 19.500"
+    },
+    {
+      "product": "PISO SPC NOGAL  IXPE (5.5mm-152*23cm)",
+      "row": "PISO SPC NOGAL  IXPE (5.5mm-152*23cm)",
+      "section": "PISO SPC",
+      "price": 19500,
+      "was": "$ 19.500"
+    },
+    {
+      "product": "ZOCALO SPC GRIS CENIZO IXPE S011",
+      "row": "ZOCALO SPC GRIS CENIZO IXPE S011",
+      "section": "PISO SPC",
+      "price": 20000,
+      "was": "$ 20.000"
+    },
+    {
+      "product": "ZOCALO SPC MADERA TEKA IXPE S012",
+      "row": "ZOCALO SPC MADERA TEKA IXPE S012",
+      "section": "PISO SPC",
+      "price": 20000,
+      "was": "$ 20.000"
+    },
+    {
+      "product": "ZOCALO SPC AVELLANA IXPE  S013",
+      "row": "ZOCALO SPC AVELLANA IXPE  S013",
+      "section": "PISO SPC",
+      "price": 20000,
+      "was": "$ 20.000"
+    },
+    {
+      "product": "ZOCALO SPC ROBLE CLARO IXPE S010 NEW",
+      "row": "ZOCALO SPC ROBLE CLARO IXPE S010",
+      "section": "PISO SPC",
+      "price": 20000,
+      "was": "$ 20.000"
+    },
+    {
+      "product": "ZOCALO SPC GRIS CENIZO IXPE S011 NEW",
+      "row": "ZOCALO SPC GRIS CENIZO IXPE S011",
+      "section": "PISO SPC",
+      "price": 20000,
+      "was": "$ 20.000"
+    },
+    {
+      "product": "ZOCALO SPC MADERA TEKA IXPE S012 NEW",
+      "row": "ZOCALO SPC MADERA TEKA IXPE S012",
+      "section": "PISO SPC",
+      "price": 20000,
+      "was": "$ 20.000"
+    },
+    {
+      "product": "ZOCALO SPC AVELLANA IXPE S013 NEW",
+      "row": "ZOCALO SPC AVELLANA IXPE  S013",
+      "section": "PISO SPC",
+      "price": 20000,
+      "was": "$ 20.000"
+    },
+    {
+      "product": "PANEL WPC PLANO (30-237) \nNOGAL OSCURO",
+      "row": "PANEL WPC PLANO NOGAL OSCURO (30-247)",
+      "section": "PANEL WPC  PLANO",
+      "price": 25000,
+      "was": "$ 25.000"
+    },
+    {
+      "product": "PANEL WPC PLANO (30-247) \nROBLE GRIS",
+      "row": "PANEL WPC PLANO ROBLE GRIS (30-237)",
+      "section": "PANEL WPC  PLANO",
+      "price": 25000,
+      "was": "$ 25.000"
+    },
+    {
+      "product": "PANEL WPC PLANO (30-147) \nMADERA NATURAL",
+      "row": "PANEL WPC PLANO MADERA NATURAL (30-147)",
+      "section": "PANEL WPC  PLANO",
+      "price": 25000,
+      "was": "$ 25.000"
+    },
+    {
+      "product": "KIT TAPONES LISTON PVC ESTRUCTURAL 10CM",
+      "row": "KIT TAPONES LISTON PVC ESTRUCTURAL 10CM",
+      "section": "LISTON PVC",
+      "price": 7000,
+      "was": "$ 7.000"
+    },
+    {
+      "product": "PERFIL BASE METÁLICO NEGRO LISTON CIELO RASO",
+      "row": "PERFIL BASE METALICO NEGRO LISTON CIELO RASO",
+      "section": "LISTON PVC",
+      "price": 18000,
+      "was": "$ 18.000"
+    },
+    {
+      "product": "PANEL WPC INTERIOR CASTAÑO OXIDO (PH15)",
+      "row": "PANEL WPC CASTAÑO OXIDO PH15-N",
+      "section": "PANEL WPC",
+      "price": 23000,
+      "was": "$ 23.000"
+    },
+    {
+      "product": "PANEL WPC REDONDO STONE GRIS (01)",
+      "row": "PANEL WPC STONE GRIS (01)",
+      "section": "PANEL WPC",
+      "price": 23000,
+      "was": "$ 23.000"
+    }
+  ],
+  "unmatched": [
+    "PANEL PS LUXURY BELICE GRIS OSCURO HH24100",
+    "CUBIERTA TRASLUCIDA ONDA BAJA OPAL 11.80",
+    "CUBIERTA TIPO ZINC UPVC AZUL",
+    "CUBIERTA TIPO ZINC UPVC VERDE",
+    "CUBIERTA TIPO ZINC UPVC BLANCA",
+    "JARDIN ARTIFICIAL MINI-MOSSY",
+    "JARDIN ARTIFICIAL MOSSY PINO CIPRES",
+    "FOAM BOARD PINO - LINEA ZEN",
+    "FOAM BOARD MAPLE - LINEA ZEN",
+    "FOAM BOARD ESPEJO PLATEADO  - LINEA ZEN",
+    "LAMINA MARMOL GRIS M-02-2.44",
+    "LAMINA MARMOL VETEADO M-04-2.44",
+    "LAMINA MARMOL LONDRES M-08-2.44",
+    "LAMINA MARMOL DESTELLOS DE ORO M-18-2.44",
+    "PVC BOARD MADERA CLARO (HD2431S-4)",
+    "LISTON WPC EXTERIOR ROBLE 01 6*4cm (TUBE)",
+    "PANEL WPC interior Golden Brillo (08)",
+    "PANEL WPC interior anoloc Brillo (09)",
+    "PANEL WPC VIENA GRIS (11)",
+    "PANEL WPC CALIZA GRIS (17)",
+    "PANEL WPC COCOA FUSION (18)",
+    "PANEL ACRILICO MARMOL IMPERIAL (ZS3D037 J)",
+    "PANEL ACRILICO MARMOL MAJESTIC (ZS3D040 J)",
+    "PANEL ACRILICO MARMOL GOLDEN (ZS3D038 J)",
+    "PANEL ACRILICO MARMOL MAGNA (ZS3D039 J)",
+    "PANEL ACRILICO MARMOL ARGENTEA",
+    "PARED ACOLCHADA AURORA VAINILLA (820)",
+    "PANEL ACOLCHADO DUOBIG AZUL FRACTAL (806)",
+    "PANEL ACOLCHADO DUOBIG VAINILLA (820)",
+    "PANEL ACOLCHADO DUOBIG BRILLO PLATA (823)",
+    "PANEL ACOLCHADO DUOSMALL GRIS LUMINOSO (041)",
+    "PANEL ACOLCHADO DUOSMALL AZUL  FRACTAL (806)",
+    "PANEL ACOLCHADO DUOSMALL VAINILLA (820)",
+    "PANEL ACUSTICO TIPO 1 WALNUT 8292C",
+    "PANEL ACUSTICO TIPO 6 WHITE OAK + WALNUT",
+    "PANEL ACUSTICO TIPO 6 WHITE OAK + BLACK OAK",
+    "PANEL ACUSTICO TIPO 6 YELLOW OAK + BLACK OAK",
+    "BELICE GRIS HH24101",
+    "LUXURY ORO HH24106",
+    "PANEL PS MURALLA GRIS HH24113",
+    "PARED ARQUNITEC GRIS MARENGO (05)",
+    "PARED ARQUNITEC SAHARA BEIGE",
+    "LAMINA PELICULA DE ATENUACIÓN INTELIGENTE ATENUACION 84%",
+    "LAMINA PELICULA DE ATENUACIÓN INTELIGENTE ATENUACION 88%",
+    "FUENTE DE ALIMENTACIÓN DE CONTROL 100W",
+    "FUENTE DE ALIMENTACION DE CONTROL: YG-927-200W-220V-60V",
+    "FUENTE DE ALIMENTACION DE CONTROL: HB50-220W-220V-60V",
+    "PASTA CONDUCTORA DE PLATA",
+    "BROCHA PARA PASTA CONDUCTORA",
+    "ALAMBRES DE COBRE",
+    "CINTA DE BARRA COLECTORA DE ALTA TEMPERATURA",
+    "MALLA DE COBRE",
+    "CABLE NEGRO ALTA TEMPERATURA (VDE, FCC)",
+    "CABLE ROJO ALTA TEMPERATURA (VDE, FCC)",
+    "PISTOLA DE SOLDAR Y ALAMBRE DE ESTAÑO",
+    "CORTADOR DE BARRAS",
+    "HOJA DE ELECTRODO",
+    "TIJERAS CORTADORAS DE PELICULA",
+    "PEGANTE SILICONA PARA CABLES EN VIDRIO",
+    "CABLES ALTA TEMPERATURA (VDE, FCC)",
+    "PISO DECK EXTERIOR MARRON",
+    "PISO DECK TEKA",
+    "PISO DECK MAHOGANY",
+    "PERFIL BASE DECK",
+    "LAMINA PVC BEIGE BRILLANTE",
+    "LAMINA PVC BLANCO EJECUTIVO",
+    "LAMINA PVC MARMOLIZADA",
+    "LAMINA PVC BLANCO MADERA PINO",
+    "PERIMETRAL U",
+    "PERIMETRAL F",
+    "LAMINA PVC BLANCO MADERA ACANALADA",
+    "UNIÓN H",
+    "ESQUINERO",
+    "CABALLETE LIMATESA UPVC 50/50",
+    "LAMINA MARMOL ALASKA",
+    "LAMINA MARMOL NERO GOLD",
+    "LAMINA MARMOL POLAR",
+    "LAMINA MARMOL CATALATTA ROYAL",
+    "MÁRMOL ESENCIA MARINA",
+    "LAMINA MARMOL TITAN",
+    "LAMINA MARMOL ARTIC",
+    "LAMINA MARMOL URBAN STONE",
+    "LAMINA MARMOL OCEANIC",
+    "LAMINA MARMOL NATURAL",
+    "LAMINA MARMOL TERRA",
+    "LAMINA MARMOL SILVER",
+    "PANEL WPC PLANO RANURADO MADERA TEKA",
+    "PANEL WPC PLANO RANURADO CEDRO",
+    "MÁRMOL NOBLEZA",
+    "MÁRMOL ORO LIQUIDO",
+    "MÁRMOL ESTELAR",
+    "MÁRMOL NEVADO DE ORO",
+    "MÁRMOL ZEUS",
+    "MÁRMOL GOLD PAONAZZO",
+    "MÁRMOL CALACATTA",
+    "MÁRMOL ELEGANCE GOLD",
+    "MÁRMOL LUNA",
+    "MÁRMOL STATUARIO",
+    "PANEL WPC INTERIOR ROBLE ARENA",
+    "PANEL WPC INTERIOR CAOBA PREMIUM",
+    "PANEL WPC INTERIOR NOGAL SELECTO",
+    "PANEL WPC INTERIOR TECA IMPERIAL",
+    "PANEL WPC REDONDO PLATEADO"
+  ],
+  "changed": [],
+  "ambiguous": [
+    "PARED MUROFLEX METALUM DORADO ← 'PARED MUROFLEX METALUM DORADO'=10000 vs 'PARED MUROFLEX METALUM DORADO (GOLDEN)'=22663",
+    "CINTA ADHESIVA METALICA 30*5M DORADA ← 'CINTA ADHESIVA METALICA 30*5M DORADA'=18300 vs 'CINTA ADHESIVA DORADA 3CM*5M'=18302",
+    "CINTA ADHESIVA METALICA 30*5M PLATEADA ← 'CINTA ADHESIVA METALICA 30*5M PLATEADA'=18300 vs 'CINTA ADHESIVA PLATEADA 3CM*5M'=18302",
+    "CINTA ADHESIVA METALICA 30*5M NEGRA ← 'CINTA ADHESIVA METALICA 30*5M NEGRA'=18300 vs 'CINTA ADHESIVA NEGRA 3CM*5M'=18302",
+    "CINTA ADHESIVA METALICA 30*5M PALO DE ROSA ← 'CINTA ADHESIVA METALICA 30*5M PALO DE ROSA'=18300 vs 'CINTA ADHESIVA PALO DE ROSA 3CM*5M'=18302",
+    "LISTON PVC INTERIOR ESTRUCTURAL EBANO MADERA 10CM ← 'LISTON PVC ESTRUCTURAL EBANO MADERA 10CM'=55000 vs 'LISTON PVC ESTRUCTURAL EBANO MADERA 10CM'=40000",
+    "PARED MUROFLEX METALUM BRONCE ← 'PARED MUROFLEX METALUM BRONCE'=10000 vs 'PARED MUROFLEX METALUM BRONCE (BRONZE)'=22663",
+    "ANGULO TERMINACION PISO DECK EXTE CEDRO ← 'ANGULO TERMINACION PISO DECK EXTE CEDRO'=29500 vs 'ANGULO TERMINACION PISO DECK EXTE CEDRO'=29157",
+    "ANGULO TERMINACION PISO DECK EXTE GRAFITO ← 'ANGULO TERMINACION PISO DECK EXTE GRAFITO'=29500 vs 'ANGULO TERMINACION PISO DECK EXTE GRAFITO'=29157",
+    "ANGULO TERMINACION PISO DECK EXTE NOGAL ← 'ANGULO TERMINACION PISO DECK EXTE NOGAL'=29500 vs 'ANGULO TERMINACION PISO DECK EXTE NOGAL'=29157",
+    "ANGULO TERMINACION PISO DECK EXTE MARRON ← 'ANGULO TERMINACION PISO DECK EXTE MARRON'=29500 vs 'ANGULO TERMINACION PISO DECK EXTE MARRON'=29157"
+  ],
+  "brokenNames": []
+}

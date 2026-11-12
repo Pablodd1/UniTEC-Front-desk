@@ -1,0 +1,259 @@
+{
+  "hits": [
+    {
+      "id": "session_1784206195362_66m6riv6i",
+      "msgs": [
+        {
+          "id": "welcome",
+          "role": "model",
+          "text": "Hola, 👋 Bienvenido a Unitec USA Design, tu aliado en soluciones y alternativas constructivas.\n\nMi nombre es Decky👷 y estaré por este medio acompañándote a recorrer nuestro portafolio de más de 500 productos y a escoger las mejores opciones constructivas alineadas a tu proyecto.\n\nAntes de continuar quisiera conocerte. Cuéntame, ¿cómo te llamas?",
+          "ts": "2026-07-16T12:49:55.367Z"
+        },
+        {
+          "id": "1784206227648",
+          "role": "user",
+          "text": "hola me llamo maria ",
+          "ts": "2026-07-16T12:50:27.648Z"
+        },
+        {
+          "id": "1784206227649",
+          "role": "model",
+          "text": "¡Un gusto conocerte, hola me llamo maria! Cuéntame, ¿cuál es tu número telefónico? (Escribe \"saltar\" si prefieres no compartirlo)",
+          "ts": "2026-07-16T12:50:27.649Z"
+        },
+        {
+          "id": "1784206242816",
+          "role": "user",
+          "text": "31857898691",
+          "ts": "2026-07-16T12:50:42.816Z"
+        },
+        {
+          "id": "1784206259520",
+          "role": "user",
+          "text": "Distribuidor ",
+          "ts": "2026-07-16T12:50:59.520Z"
+        },
+        {
+          "id": "1784206259521",
+          "role": "model",
+          "text": "Perfecto, ahora para mí es mucho más fácil ayudarte con todo lo que me indicas que se ajuste a tus necesidades. ¿En qué puedo ayudarte hoy?",
+          "ts": "2026-07-16T12:50:59.521Z"
+        },
+        {
+          "id": "1784206277080",
+          "role": "user",
+          "text": "que vale el metro cuadrado de piso Deck",
+          "ts": "2026-07-16T12:51:17.080Z"
+        },
+        {
+          "id": "1784206277082",
+          "role": "model",
+          "text": "El precio aproximado del Piso Deck Exterior es de $75,000 COP por estiba (pallet). Para proporcionarte una cotización más precisa, ¿puedes indicarme el área en metros cuadrados (m²) que necesitas?",
+          "ts": "2026-07-16T12:51:17.081Z"
+        },
+        {
+          "id": "1784206401425",
+          "role": "user",
+          "text": "70 metros",
+          "ts": "2026-07-16T12:53:21.425Z"
+        },
+        {
+          "id": "1784206401426",
+          "role": "model",
+          "text": "Para un área de 70 metros cuadrados (m²) de Piso Deck Exterior, el costo aproximado sería de:\n\n- **Precio por estiba:** $75,000 COP\n- **Total estimado:** $75,000 COP x 70 m² = $5,250,000 COP\n\nRecuerda que este es un valor aproximado y puede variar. Te recomiendo comunicarte con nuestro asesor comercial, [Camilo Andres Torres](https://wa.me/573104578337), para obtener información más detallada y confirmar la disponibilidad.\n\n¿Hay algo más en lo que pueda ayudarte?",
+          "ts": "2026-07-16T12:53:21.425Z"
+        },
+        {
+          "id": "1784206436185",
+          "role": "user",
+          "text": "porque puede varias ",
+          "ts": "2026-07-16T12:53:56.185Z"
+        },
+        {
+          "id": "1784206436186",
+          "role": "model",
+          "text": "El precio puede variar por varias razones, como:\n\n1. **Promociones**: Podrías acceder a descuentos especiales en ciertas temporadas o por compras en volumen.\n2. **Disponibilidad**: La disponibilidad del producto puede influir en el precio. Si la demanda es alta y el stock es limitado, el precio puede aumentar.\n3. **Variantes de producto**: Existen diferentes acabados o colores del Piso Deck, y sus precios pueden ser diferentes.\n4. **Costos de transporte**: Dependiendo de la ubicación de la entrega, los costos de transporte también pueden impactar el precio final.\n5. **Condiciones del mercado**: Fluuctuaciones en el costo de materiales y otros factores económicos pueden afectar el precio.\n\nPor eso es recomendable consultar con un asesor comercial para obtener un precio exacto y cualquier promoción o condición especial que pueda aplicar. ¿Te gustaría que te ayude con algo más?",
+          "ts": "2026-07-16T12:53:56.185Z"
+        },
+        {
+          "id": "1784206479577",
+          "role": "user",
+          "text": "el piso deck se instala solo?",
+          "ts": "2026-07-16T12:54:39.577Z"
+        },
+        {
+          "id": "1784206479578",
+          "role": "model",
+          "text": "El Piso Deck Exterior no se instala solo; requiere un proceso de instalación adecuado para garantizar un resultado óptimo. \n\nLa instalación se puede realizar de dos maneras:\n1. **Pegado**: Se recomienda usar nuestro adhesivo de montaje PEGATEC para fijar las piezas.\n2. **Sujeción mecánica**: Debe instalarse utilizando tornillos o algún tipo de fijación mecánica, especialmente en áreas exteriores donde la estabilidad es crucial.\n\nEs importante seguir las recomendaciones de instalación y asegurarse de que el área donde se va a colocar el piso esté limpia, seca y correcta para el uso.\n\nSi necesitas más información o asistencia, no dudes en preguntar. ¿Te gustaría que te conecte con un asesor para obtener más detalles sobre la instalación?",
+          "ts": "2026-07-16T12:54:39.577Z"
+        },
+        {
+          "id": "1784206502305",
+          "role": "user",
+          "text": "quiero cotización completa",
+          "ts": "2026-07-16T12:55:02.305Z"
+        },
+        {
+          "id": "1784206502306",
+          "role": "model",
+          "text": "Claro, para una cotización completa del Piso Deck Exterior para un área de 70 m², aquí tienes el desglose:\n\n- **Costo del Piso Deck Exterior**: Aproximadamente $5,250,000 COP\n- **Transporte**: El costo de transporte dependerá de la ubicación de entrega. Por favor, indícame la ciudad o dirección para poder estimar este costo.\n- **Instalación**: Si deseas que se incluya la instalación, podemos hablar sobre eso, y en este caso, sería necesario que un asesor te dé un precio específico.\n\nPor favor, compárteme la ciudad donde se realizará la entrega para que pueda incluir el costo de transporte en la cotización completa.",
+          "ts": "2026-07-16T12:55:02.305Z"
+        },
+        {
+          "id": "idle_abandon_1784206806284",
+          "role": "model",
+          "text": "Veo que en este momento no has podido responder. Por ahora cerraré la conversación y guardaré nuestro progreso para no saturarte  Cuando quieras retomar, solo escríbenos y con gusto continuamos desde donde quedamos  ¡Que tengas un excelente día!",
+          "ts": "2026-07-16T13:00:06.284Z"
+        },
+        {
+          "id": "1784210465892",
+          "role": "user",
+          "text": "cuanto necesito de pared uniflex para  para una fachada, tiene dos secciones:  1 de 15 de ancho x 180 de alto.  2 tiene 15 mts de ancho por 2.20 de alto y con que se pega ",
+          "ts": "2026-07-16T14:01:05.892Z"
+        },
+        {
+          "id": "1784210465893",
+          "role": "model",
+          "text": "Para calcular cuántas piezas de Pared Uniflex necesitas para tu fachada, primero calculamos el área de ambas secciones:\n\n1. **Primera Sección**:\n   - Ancho: 15 m\n   - Alto: 1.80 m\n   - Área: 15 m * 1.80 m = 27 m²\n\n2. **Segunda Sección**:\n   - Ancho: 15 m\n   - Alto: 2.20 m\n   - Área: 15 m * 2.20 m = 33 m²\n\nAhora sumamos ambas áreas:\n- Total: 27 m² + 33 m² = 60 m²\n\nPara la instalación de la Pared Uniflex, las piezas se pueden pegar utilizando nuestro adhesivo PEGATEC, que es recomendado para este tipo de productos.\n\n¿Necesitas que te ayude con la cotización para la Pared Uniflex correspondiente a los 60 m², o hay algo más que te gustaría saber?",
+          "ts": "2026-07-16T14:01:05.897Z"
+        },
+        {
+          "id": "1784210540780",
+          "role": "user",
+          "text": "cuanto me vale esas 60",
+          "ts": "2026-07-16T14:02:20.780Z"
+        },
+        {
+          "id": "1784210540781",
+          "role": "model",
+          "text": "El precio aproximado de la Pared Uniflex es de $78,000 COP por unidad, y cada unidad tiene un área de 1.44 m² (120 cm x 60 cm).\n\nPara calcular cuántas unidades necesitas para 60 m²:\n\n- **Cantidad de Unidades**: 60 m² / 1.44 m² = 41.67 unidades\n\nComo no puedes comprar una fracción de una unidad, necesitarías 42 unidades.\n\nAhora, calculamos el costo total:\n- **Precio total**: 42 unidades x $78,000 COP = $3,276,000 COP.\n\nEste es un costo aproximado y puede variar según la disponibilidad y otros factores. \n\nTe recomiendo que te pongas en contacto con nuestro asesor comercial, [Camilo Andres Torres](https://wa.me/573104578337), para confirmar la disponibilidad y obtener más información.\n\n¿Te gustaría saber algo más?",
+          "ts": "2026-07-16T14:02:20.780Z"
+        },
+        {
+          "id": "1784210622380",
+          "role": "user",
+          "text": "ycuantos tarros de pegatec necesito ",
+          "ts": "2026-07-16T14:03:42.380Z"
+        },
+        {
+          "id": "1784210622381",
+          "role": "model",
+          "text": "La cantidad de pegamento PEGATEC que necesitas dependerá de varios factores, como el área de aplicación y la técnica de instalación. Sin embargo, como guía general:\n\n1. **Área total a cubrir**: 60 m² (como calculamos anteriormente).\n2. **Cobertura promedio del adhesivo PEGATEC**: Cada tarro generalmente cubre aproximadamente 20 m² (esto puede variar según el tipo de superficie y la técnica de aplicación).\n\nPor lo tanto, para un área de 60 m²:\n- **Cantidad de tarros**: 60 m² / 20 m² por tarro = 3 tarros.\n\nTe recomendaría tener un tarro adicional como respaldo, así que podrías necesitar **4 tarros de PEGATEC** en total.\n\nSi necesitas más detalles o quieres realizar un pedido, no dudes en decírmelo. ¿Hay algo más en lo que pueda ayudarte?",
+          "ts": "2026-07-16T14:03:42.380Z"
+        },
+        {
+          "id": "1784210802947",
+          "role": "user",
+          "text": "gracias Feliz tarde",
+          "ts": "2026-07-16T14:06:42.947Z"
+        },
+        {
+          "id": "1784210802948",
+          "role": "model",
+          "text": "¡De nada, María! 😊 Si necesitas más ayuda en el futuro, no dudes en contactarnos. ¡Que tengas una excelente tarde! 👋",
+          "ts": "2026-07-16T14:06:42.947Z"
+        },
+        {
+          "id": "idle_abandon_1784211105284",
+          "role": "model",
+          "text": "Veo que en este momento no has podido responder. Por ahora cerraré la conversación y guardaré nuestro progreso para no saturarte  Cuando quieras retomar, solo escríbenos y con gusto continuamos desde donde quedamos  ¡Que tengas un excelente día!",
+          "ts": "2026-07-16T14:11:45.284Z"
+        },
+        {
+          "id": "escalation-ack-1792015368356",
+          "role": "model",
+          "text": "✅ Ya avisé a un asesor del equipo: te responderá por aquí en breve. Si es urgente, escríbenos por WhatsApp: https://wa.me/573142332147",
+          "ts": "2026-10-14T22:02:48.356Z"
+        },
+        {
+          "id": "srv_b_1792015371594",
+          "role": "model",
+          "text": "¡Hola! Bienvenido a UNITEC USA DESIGN. Gracias por contactarnos. Te cuento que Contamos con showroom en Miami. 📍6100 nw 74th av miami fl 33166, la atención allí es únicamente con cita previa debido a que nuestros grupo comercial se encuentra viajando a diferentes lugares, para brindarte asesoría personalizada puedes Agenda tu visita con nosotros,…",
+          "ts": "2026-10-14T22:02:51.594Z"
+        },
+        {
+          "id": "srv_u_1792015371594",
+          "role": "user",
+          "text": "tienen atencion en miami",
+          "ts": "2026-10-14T22:02:51.594Z"
+        },
+        {
+          "id": "O4OmjGpYVeeywZzZ4FBa",
+          "role": "model",
+          "text": "Sigo aquí con tu conversación y tu solicitud sigue con prioridad: un asesor del equipo está en camino y te escribe por aquí. Si prefieres no esperar, WhatsApp: https://wa.me/573142332147",
+          "ts": "2026-10-14T22:10:54.228Z"
+        },
+        {
+          "id": "4LipID9PrTXmPJ4IDBPj",
+          "role": "model",
+          "text": "Sigo pendiente de un asesor para tu caso. Si necesitas atención inmediata ahora, escríbenos por WhatsApp +57 314 233 2147 (https://wa.me/573142332147) y te atendemos sin esperar.",
+          "ts": "2026-10-14T22:25:40.909Z"
+        }
+      ],
+      "newest": "2026-10-14T22:25:40.909Z"
+    }
+  ],
+  "recent": [
+    {
+      "id": "session_1784206195362_66m6riv6i",
+      "newest": "2026-10-14T22:25:40.909Z",
+      "n": 31
+    },
+    {
+      "id": "session_1791852342565_6pe5jjax8",
+      "newest": "2026-10-13T00:45:59.716Z",
+      "n": 4
+    },
+    {
+      "id": "session_1791856097131_3gph5wduf",
+      "newest": "2026-10-13T14:24:18.913Z",
+      "n": 25
+    },
+    {
+      "id": "session_1791857340656_fb2q6mwtp",
+      "newest": "2026-10-13T02:10:01.748Z",
+      "n": 6
+    },
+    {
+      "id": "session_1791893803793_dsg4v7ya7",
+      "newest": "2026-10-13T12:23:19.328Z",
+      "n": 12
+    },
+    {
+      "id": "session_1791917956931_qp1r6kd1l",
+      "newest": "2026-10-13T19:41:51.245Z",
+      "n": 14
+    },
+    {
+      "id": "session_1791926375710_f7ak3zm04",
+      "newest": "2026-10-13T21:27:12.601Z",
+      "n": 21
+    },
+    {
+      "id": "session_1791936316791_vkxnaz4te",
+      "newest": "2026-10-14T01:15:41.600Z",
+      "n": 40
+    },
+    {
+      "id": "session_1791940164522_mxsm50vzk",
+      "newest": "2026-10-14T01:14:27.597Z",
+      "n": 16
+    },
+    {
+      "id": "session_1791952029755_0cynn2fgb",
+      "newest": "2026-10-14T12:49:35.182Z",
+      "n": 17
+    },
+    {
+      "id": "session_1791998858502_414rwxti0",
+      "newest": "2026-10-14T17:30:42.839Z",
+      "n": 4
+    },
+    {
+      "id": "session_1792005496985_xhaszadun",
+      "newest": "2026-10-14T19:27:15.039Z",
+      "n": 16
+    }
+  ],
+  "errors": 0
+}
