@@ -148,12 +148,20 @@ export default async function handler(req, res) {
     if (!token) return res.status(503).json({ error: 'auth_unavailable' });
 
     const sessions = await listAllSessions(token);
+    // Eligible = closed, OR simply stale (untouched for 24h). Most of the 5.1k backlog is still
+    // sitting in `active`/`human_assigned` because the close sweeps never reached it; those are
+    // not live chats anymore, so they must still enter memory.
+    const staleBefore = Date.now() - 24 * 3600 * 1000;
+    const isStale = (x) => {
+      const t = new Date(x.lastUpdated || x.createdAt || 0).getTime();
+      return Number.isFinite(t) && t > 0 && t < staleBefore;
+    };
     const candidates = sessions
       .filter((s) => s && s.id && !isTestSession(s.id))
       .filter((s) => s.isArchived !== true)
-      .filter((s) => DONE.test(String(s.status || '')))
+      .filter((s) => DONE.test(String(s.status || '')) || isStale(s))
       .sort((a, b) => String(b.lastUpdated || '').localeCompare(String(a.lastUpdated || '')))
-      .slice(0, limit * 3);
+      .slice(0, Math.max(limit * 12, 240));
 
     let archived = 0;
     let skipped = 0;
