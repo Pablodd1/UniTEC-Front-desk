@@ -63,7 +63,6 @@ export default async function handler(req, res) {
     process.env.GEMINI_API_KEY,
     process.env.GEMINI_BACKUP_KEY,
     process.env.GEMINI_BACKUP_KEY_2,
-    process.env.OPENROUTER_API_KEY,
     process.env.OPENAI_API_KEY,
     process.env.API_KEY,
     process.env.VITE_GEMINI_API_KEY,

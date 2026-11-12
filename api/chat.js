@@ -353,7 +353,6 @@ GOOD EXAMPLE: "¡Hola! ¿En qué producto te interesa?"`;
       process.env.XAI_API_KEY,
       process.env.GEMINI_BACKUP_KEY,
       process.env.GEMINI_BACKUP_KEY_2,
-      process.env.OPENROUTER_API_KEY,
       process.env.OPENAI_API_KEY,
       process.env.API_KEY,
       process.env.VITE_GEMINI_API_KEY,
@@ -369,9 +368,9 @@ GOOD EXAMPLE: "¡Hola! ¿En qué producto te interesa?"`;
 
     // Builds the Gemini-native payload (shared by the streaming and non-streaming paths).
     const GEMINI_GENCONFIGS = [
-      { temperature: 0.7, maxOutputTokens: 300, thinkingConfig: { thinkingBudget: 0 } },
-      { temperature: 0.7, maxOutputTokens: 300, thinkingConfig: { thinkingLevel: 'low' } },
-      { temperature: 0.7, maxOutputTokens: 300 },
+      { temperature: 0.7, maxOutputTokens: 400, thinkingConfig: { thinkingLevel: 'low' } },
+      { temperature: 0.7, maxOutputTokens: 400 },
+      { temperature: 0.7, maxOutputTokens: 400, thinkingConfig: { thinkingBudget: 0 } },
     ];
     const buildGeminiPayload = async (variant = 0) => {
       const contents = [
