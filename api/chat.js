@@ -368,9 +368,11 @@ GOOD EXAMPLE: "¡Hola! ¿En qué producto te interesa?"`;
 
     // Builds the Gemini-native payload (shared by the streaming and non-streaming paths).
     const GEMINI_GENCONFIGS = [
-      { temperature: 0.7, maxOutputTokens: 400, thinkingConfig: { thinkingLevel: 'low' } },
-      { temperature: 0.7, maxOutputTokens: 400 },
-      { temperature: 0.7, maxOutputTokens: 400, thinkingConfig: { thinkingBudget: 0 } },
+      // Budget must cover thinking + answer. At 300-400 the model spent it on reasoning and the
+      // visible reply was cut mid-sentence (~24-43 chars), which reached real customers.
+      { temperature: 0.7, maxOutputTokens: 1200, thinkingConfig: { thinkingLevel: 'low' } },
+      { temperature: 0.7, maxOutputTokens: 1200, thinkingConfig: { thinkingBudget: 0 } },
+      { temperature: 0.7, maxOutputTokens: 1200 },
     ];
     const buildGeminiPayload = async (variant = 0) => {
       const contents = [
