@@ -169,7 +169,8 @@ export default async function handler(req, res) {
       .filter((s) => s && s.id && !isTestSession(s.id))
       .filter((s) => s.isArchived !== true)
       .filter((s) => DONE.test(String(s.status || '')) || isStale(s))
-      .sort((a, b) => String(b.lastUpdated || '').localeCompare(String(a.lastUpdated || '')))
+      // Oldest first: the backlog the owner is missing is at the bottom of the list, not the top.
+      .sort((a, b) => String(a.lastUpdated || '').localeCompare(String(b.lastUpdated || '')))
       .slice(0, Math.max(limit * 12, 240));
 
     let archived = 0;
