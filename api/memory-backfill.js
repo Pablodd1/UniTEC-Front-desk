@@ -50,15 +50,61 @@ function fallbackSummary(session, messages) {
 }
 
 async function aiSummary(session, messages) {
-  const key = process.env.GEMINI_API_KEY;
-  if (!key || !messages.length) return null;
+  if (!messages.length) return null;
   const transcript = messages.slice(-30).map((m) => `${m.role === 'user' ? 'Cliente' : m.role === 'staff' ? 'Asesor' : 'Bot'}: ${String(m.text).slice(0, 400)}`).join('\n');
+  const prompt = `Resume esta conversación de atención al cliente en 2 frases y extrae hasta 5 pares pregunta/respuesta útiles para entrenar al bot. Devuelve SOLO JSON: {"summary":"...","qa":[{"q":"...","a":"..."}]}.\n\n${transcript}`;
+
+  const parse = (raw) => {
+    const parsed = JSON.parse(String(raw).replace(/```json|```/g, '').trim());
+    if (!parsed?.summary) return null;
+    const qa = Array.isArray(parsed.qa)
+      ? parsed.qa.filter((x) => x && x.q && x.a).slice(0, 5).map((x) => ({ question: String(x.q).slice(0, 220), answer: String(x.a).slice(0, 400) }))
+      : [];
+    return { summary: String(parsed.summary).slice(0, 600), qa };
+  };
+
+  // OpenAI-compatible providers first: the Gemini key on this project is not usable from the
+  // server, and the chat already runs on OpenRouter/OpenAI, so the same credentials summarize.
+  const compat = [
+    { url: 'https://openrouter.ai/api/v1/chat/completions', model: process.env.OPENROUTER_MODEL || 'google/gemini-2.5-flash', key: process.env.OPENROUTER_API_KEY },
+    { url: 'https://api.openai.com/v1/chat/completions', model: process.env.OPENAI_MODEL || 'gpt-4o-mini', key: process.env.OPENAI_API_KEY },
+    { url: 'https://api.deepseek.com/chat/completions', model: process.env.DEEPSEEK_MODEL || 'deepseek-chat', key: process.env.DEEPSEEK_API_KEY },
+  ];
+
+  for (const p of compat) {
+    if (!p.key) continue;
+    try {
+      const r = await fetch(p.url, {
+        method: 'POST',
+        headers: { Authorization: `Bearer ${p.key}`, 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          model: p.model,
+          messages: [
+            { role: 'system', content: 'Eres un analista de conversaciones. Respondes solo con JSON válido.' },
+            { role: 'user', content: prompt },
+          ],
+          temperature: 0.2,
+          max_tokens: 700,
+        }),
+        signal: AbortSignal.timeout(20000),
+      });
+      if (!r.ok) continue;
+      const j = await r.json();
+      const out = parse(j?.choices?.[0]?.message?.content || '');
+      if (out) return out;
+    } catch {
+      /* next provider */
+    }
+  }
+
+  const key = process.env.GEMINI_API_KEY;
+  if (!key) return null;
   try {
     const r = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${key}`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
-        contents: [{ parts: [{ text: `Resume esta conversación de atención al cliente en 2 frases y extrae hasta 5 pares pregunta/respuesta útiles para entrenar al bot. Devuelve SOLO JSON: {"summary":"...","qa":[{"q":"...","a":"..."}]}.\n\n${transcript}` }] }],
+        contents: [{ parts: [{ text: prompt }] }],
         generationConfig: { temperature: 0.2, maxOutputTokens: 700, responseMimeType: 'application/json' },
       }),
       signal: AbortSignal.timeout(15000),
@@ -66,10 +112,7 @@ async function aiSummary(session, messages) {
     if (!r.ok) return null;
     const j = await r.json();
     const raw = j?.candidates?.[0]?.content?.parts?.map((p) => p.text || '').join('') || '';
-    const parsed = JSON.parse(raw.replace(/```json|```/g, '').trim());
-    if (!parsed?.summary) return null;
-    const qa = Array.isArray(parsed.qa) ? parsed.qa.filter((x) => x && x.q && x.a).slice(0, 5).map((x) => ({ question: String(x.q).slice(0, 220), answer: String(x.a).slice(0, 400) })) : [];
-    return { summary: String(parsed.summary).slice(0, 600), qa };
+    return parse(raw);
   } catch {
     return null;
   }
