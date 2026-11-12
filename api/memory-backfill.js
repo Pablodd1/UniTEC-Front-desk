@@ -67,6 +67,7 @@ async function aiSummary(session, messages) {
   // OpenAI-compatible providers first: the Gemini key on this project is not usable from the
   // server, and the chat already runs on OpenRouter/OpenAI, so the same credentials summarize.
   const compat = [
+    { url: 'https://api.groq.com/openai/v1/chat/completions', model: process.env.GROQ_MODEL || 'llama-3.3-70b-versatile', key: process.env.GROQ_API_KEY },
     { url: 'https://openrouter.ai/api/v1/chat/completions', model: process.env.OPENROUTER_MODEL || 'google/gemini-2.5-flash', key: process.env.OPENROUTER_API_KEY },
     { url: 'https://api.openai.com/v1/chat/completions', model: process.env.OPENAI_MODEL || 'gpt-4o-mini', key: process.env.OPENAI_API_KEY },
     { url: 'https://api.deepseek.com/chat/completions', model: process.env.DEEPSEEK_MODEL || 'deepseek-chat', key: process.env.DEEPSEEK_API_KEY },
