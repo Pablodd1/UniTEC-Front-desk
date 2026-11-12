@@ -524,16 +524,17 @@ GOOD EXAMPLE: "¡Hola! ¿En qué producto te interesa?"`;
       for (const apiKey of keys) {
         if (anyText || capsHit()) break;
         const isXAI = apiKey.startsWith('xai-');
+        const isGroq = apiKey.startsWith('gsk_');
         const isOpenRouter = apiKey.startsWith('sk-or-') || apiKey.startsWith('sk-proj-');
         try {
-          if (isXAI || isOpenRouter) {
-            const sseUrl = isXAI ? 'https://api.x.ai/v1/chat/completions' : 'https://openrouter.ai/api/v1/chat/completions';
+          if (isXAI || isOpenRouter || isGroq) {
+            const sseUrl = isXAI ? 'https://api.x.ai/v1/chat/completions' : isGroq ? 'https://api.groq.com/openai/v1/chat/completions' : 'https://openrouter.ai/api/v1/chat/completions';
             const headers = isXAI
               ? { 'Authorization': `Bearer ${apiKey}`, 'Content-Type': 'application/json' }
               : { 'Authorization': `Bearer ${apiKey}`, 'Content-Type': 'application/json', 'HTTP-Referer': origin || CANONICAL_ORIGIN, 'X-Title': 'UniTEC AI Desk' };
-            const sseBody = { model: isXAI ? 'grok-latest' : 'google/gemini-3.6-flash', messages: formattedMessages, temperature: 0.7, stream: true };
+            const sseBody = { model: isXAI ? 'grok-latest' : isGroq ? 'llama-3.3-70b-versatile' : 'google/gemini-3.6-flash', messages: formattedMessages, temperature: 0.7, stream: true };
             const r = await fetch(sseUrl, { method: 'POST', headers, body: JSON.stringify(sseBody), signal: AbortSignal.timeout(25000) });
-            if (!r.ok || !r.body) { sawError = `${isXAI ? 'xAI' : 'OpenRouter'} ${r.status}: ${(await r.text().catch(() => '')).slice(0, 160)}`; continue; }
+            if (!r.ok || !r.body) { sawError = `${isXAI ? 'xAI' : isGroq ? 'Groq' : 'OpenRouter'} ${r.status}: ${(await r.text().catch(() => '')).slice(0, 160)}`; continue; }
             dbgStats = await readSseStream(r.body, (j) => j.choices?.[0]?.delta?.content || '', (d) => { forward(d); anyText = true; }, capsHit);
           } else {
             for (const modelName of candidateModels) {
@@ -604,6 +605,7 @@ GOOD EXAMPLE: "¡Hola! ¿En qué producto te interesa?"`;
       try {
         const isOpenRouter = apiKey.startsWith('sk-or-') || apiKey.startsWith('sk-proj-');
         const isXAI = apiKey.startsWith('xai-');
+        const isGroq = apiKey.startsWith('gsk_');
         let responseText = '';
 
         if (isXAI) {
@@ -639,7 +641,7 @@ GOOD EXAMPLE: "¡Hola! ¿En qué producto te interesa?"`;
 
           const data = await apiRes.json();
           responseText = data.choices?.[0]?.message?.content || '';
-        } else if (isOpenRouter) {
+        } else if (isOpenRouter || isGroq) {
           const formattedMessages = [
             { role: 'system', content: instructions || '' },
             ...(history || []).map(h => ({
@@ -649,7 +651,7 @@ GOOD EXAMPLE: "¡Hola! ¿En qué producto te interesa?"`;
             { role: 'user', content: message }
           ];
 
-          const apiRes = await fetch('https://openrouter.ai/api/v1/chat/completions', {
+          const apiRes = await fetch(isGroq ? 'https://api.groq.com/openai/v1/chat/completions' : 'https://openrouter.ai/api/v1/chat/completions', {
             method: 'POST',
             headers: {
               'Authorization': `Bearer ${apiKey}`,
@@ -658,7 +660,7 @@ GOOD EXAMPLE: "¡Hola! ¿En qué producto te interesa?"`;
               'X-Title': 'UniTEC AI Desk'
             },
             body: JSON.stringify({
-              model: 'google/gemini-3.6-flash',
+              model: isGroq ? 'llama-3.3-70b-versatile' : 'google/gemini-3.6-flash',
               messages: formattedMessages,
               temperature: 0.7,
             }),
