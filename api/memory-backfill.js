@@ -150,6 +150,7 @@ export default async function handler(req, res) {
     const sessions = await listAllSessions(token);
     const candidates = sessions
       .filter((s) => s && s.id && !isTestSession(s.id))
+      .filter((s) => s.isArchived !== true)
       .filter((s) => DONE.test(String(s.status || '')))
       .sort((a, b) => String(b.lastUpdated || '').localeCompare(String(a.lastUpdated || '')))
       .slice(0, limit * 3);
