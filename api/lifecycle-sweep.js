@@ -18,6 +18,9 @@ import { getFirestoreToken, listAllSessions, isTestSession, projectId } from './
 
 const IDLE_ABANDON_MIN = 15;
 const IDLE_COMPLETE_MIN = 30;
+// Sesiones que un humano tomó y nunca cerró. Se quedaban para siempre en human_assigned y el
+// tablero marcaba 0 activas / 0 en espera aunque hubiera tráfico. Tras 2 h sin actividad se cierran.
+const IDLE_RESOLVE_MIN = 120;
 const MAX_WRITES_PER_RUN = 400;
 const PROTECTED = /^(human_requested|human_assigned|completed|abandoned)/;
 
@@ -47,7 +50,15 @@ export default async function handler(req, res) {
     const plan = [];
     for (const s of sessions) {
       if (isTestSession(s.id)) continue;
-      if (PROTECTED.test(String(s.status || ''))) continue;
+      const st = String(s.status || '');
+      if (/^(human_requested|human_assigned)/.test(st)) {
+        const idleHuman = minutesSince(s.lastUpdated || s.createdAt);
+        if (idleHuman > IDLE_RESOLVE_MIN) {
+          plan.push({ id: s.id, status: 'resolved', idleMinutes: Math.round(idleHuman), userMessages: Number(s.analytics?.userMessageCount || 0), step: s.funnelStep || '(sin etapa)', from: st });
+        }
+        continue;
+      }
+      if (PROTECTED.test(st)) continue;
 
       const idle = minutesSince(s.lastUpdated || s.createdAt);
       const um = Number(s.analytics?.userMessageCount || 0);
