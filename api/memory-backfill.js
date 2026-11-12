@@ -12,6 +12,7 @@ import { getFirestoreToken, listAllSessions, isTestSession, projectId } from './
 
 const DOCS = `https://firestore.googleapis.com/v1/projects/${projectId}/databases/(default)/documents`;
 const DONE = /^(completed|resolved|abandoned)/;
+let LAST_AI_DEBUG = null;
 
 async function readMessages(token, sessionId) {
   const out = [];
@@ -88,10 +89,18 @@ async function aiSummary(session, messages) {
         }),
         signal: AbortSignal.timeout(20000),
       });
-      if (!r.ok) continue;
+      if (!r.ok) {
+        LAST_AI_DEBUG = { provider: p.url.split('/')[2], status: r.status, body: (await r.text()).slice(0, 300) };
+        continue;
+      }
       const j = await r.json();
-      const out = parse(j?.choices?.[0]?.message?.content || '');
-      if (out) return out;
+      const raw = j?.choices?.[0]?.message?.content || '';
+      const out = parse(raw);
+      if (out) {
+        LAST_AI_DEBUG = { provider: p.url.split('/')[2], ok: true, qa: out.qa.length, raw: String(raw).slice(0, 400) };
+        return out;
+      }
+      LAST_AI_DEBUG = { provider: p.url.split('/')[2], parse: 'failed', raw: String(raw).slice(0, 400) };
     } catch {
       /* next provider */
     }
@@ -249,6 +258,7 @@ export default async function handler(req, res) {
       failed,
       withQa,
       ms: Date.now() - started,
+      ...(String(req.query?.debug || '') === '1' ? { debug: LAST_AI_DEBUG } : {}),
     });
   } catch (e) {
     return res.status(500).json({ error: String(e?.message || e) });
