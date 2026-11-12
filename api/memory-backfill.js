@@ -109,23 +109,34 @@ async function aiSummary(session, messages) {
 
   const key = process.env.GEMINI_API_KEY;
   if (!key) return null;
-  try {
-    const r = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${key}`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        contents: [{ parts: [{ text: prompt }] }],
-        generationConfig: { temperature: 0.2, maxOutputTokens: 700, responseMimeType: 'application/json' },
-      }),
-      signal: AbortSignal.timeout(15000),
-    });
-    if (!r.ok) return null;
-    const j = await r.json();
-    const raw = j?.candidates?.[0]?.content?.parts?.map((p) => p.text || '').join('') || '';
-    return parse(raw);
-  } catch {
-    return null;
+  for (const model of ['gemini-3.6-flash', 'gemini-3.5-flash', 'gemini-2.5-flash', 'gemini-2.5-flash-lite']) {
+    try {
+      const r = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${key}`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          contents: [{ parts: [{ text: prompt }] }],
+          generationConfig: { temperature: 0.2, maxOutputTokens: 700, responseMimeType: 'application/json' },
+        }),
+        signal: AbortSignal.timeout(15000),
+      });
+      if (!r.ok) {
+        LAST_AI_DEBUG = { provider: `gemini:${model}`, status: r.status, body: (await r.text()).slice(0, 200) };
+        continue;
+      }
+      const j = await r.json();
+      const raw = j?.candidates?.[0]?.content?.parts?.map((p) => p.text || '').join('') || '';
+      const out = parse(raw);
+      if (out) {
+        LAST_AI_DEBUG = { provider: `gemini:${model}`, ok: true, qa: out.qa.length, raw: String(raw).slice(0, 400) };
+        return out;
+      }
+      LAST_AI_DEBUG = { provider: `gemini:${model}`, parse: 'failed', raw: String(raw).slice(0, 300) };
+    } catch (e) {
+      LAST_AI_DEBUG = { provider: `gemini:${model}`, error: String(e?.message || e).slice(0, 160) };
+    }
   }
+  return null;
 }
 
 async function patch(token, path, fields, masks) {
