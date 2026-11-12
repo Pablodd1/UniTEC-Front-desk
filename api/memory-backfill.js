@@ -156,8 +156,13 @@ export default async function handler(req, res) {
   if (req.method !== 'GET') return res.status(405).json({ error: 'method_not_allowed' });
 
   const sweepKey = process.env.SWEEP_KEY || '';
+  const cronSecret = process.env.CRON_SECRET || '';
   const ua = String(req.headers['user-agent'] || '');
-  const authorized = !sweepKey || req.headers['x-sweep-key'] === sweepKey || req.query?.key === sweepKey || /vercel-cron/i.test(ua);
+  const bearer = String(req.headers.authorization || '').replace(/^Bearer\s+/i, '');
+  const authorized =
+    /vercel-cron/i.test(ua) ||
+    (!!cronSecret && bearer === cronSecret) ||
+    (!!sweepKey && (req.headers['x-sweep-key'] === sweepKey || req.query?.key === sweepKey));
   if (!authorized) return res.status(401).json({ error: 'unauthorized' });
 
   const dryRun = String(req.query?.dryRun || '') === 'true';
