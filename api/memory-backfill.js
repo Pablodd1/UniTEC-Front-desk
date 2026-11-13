@@ -230,7 +230,10 @@ export default async function handler(req, res) {
           skipped++;
           continue;
         }
-        const ai = await aiSummary(s, messages);
+        // Greeting-only sessions have nothing to learn from; skipping the model call here is what
+        // keeps a run inside the 60 s function budget.
+        const userMsgs = messages.filter((m) => m.role === 'user').length;
+        const ai = userMsgs >= 2 ? await aiSummary(s, messages) : null;
         const summary = ai?.summary || fallbackSummary(s, messages);
         if (ai?.qa?.length) withQa++;
 
