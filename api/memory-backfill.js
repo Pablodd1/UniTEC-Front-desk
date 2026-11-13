@@ -36,6 +36,25 @@ async function readMessages(token, sessionId) {
   return out;
 }
 
+
+async function archivedIds(token) {
+  const done = new Set();
+  let pageToken = null;
+  for (let page = 0; page < 25; page++) {
+    const url = `${DOCS}/conversation_archives?pageSize=300&mask.fieldPaths=originalSessionId&mask.fieldPaths=id${pageToken ? `&pageToken=${pageToken}` : ''}`;
+    const r = await fetch(url, { headers: { Authorization: `Bearer ${token}` }, signal: AbortSignal.timeout(10000) });
+    if (!r.ok) break;
+    const j = await r.json();
+    for (const d of j.documents || []) {
+      const id = d.fields?.originalSessionId?.stringValue || String(d.name || '').split('/').pop().replace(/^archive_/, '');
+      if (id) done.add(id);
+    }
+    pageToken = j.nextPageToken;
+    if (!pageToken) break;
+  }
+  return done;
+}
+
 async function archiveExists(token, sessionId) {
   const r = await fetch(`${DOCS}/conversation_archives/archive_${sessionId}`, {
     headers: { Authorization: `Bearer ${token}` },
@@ -173,6 +192,7 @@ export default async function handler(req, res) {
     if (!token) return res.status(503).json({ error: 'auth_unavailable' });
 
     const sessions = await listAllSessions(token);
+    const alreadyArchived = await archivedIds(token);
     // Eligible = closed, OR simply stale (untouched for 24h). Most of the 5.1k backlog is still
     // sitting in `active`/`human_assigned` because the close sweeps never reached it; those are
     // not live chats anymore, so they must still enter memory.
@@ -183,7 +203,7 @@ export default async function handler(req, res) {
     };
     const candidates = sessions
       .filter((s) => s && s.id && !isTestSession(s.id))
-      .filter((s) => s.isArchived !== true)
+      .filter((s) => s.isArchived !== true && !alreadyArchived.has(s.id))
       .filter((s) => DONE.test(String(s.status || '')) || isStale(s))
       // Oldest first: the backlog the owner is missing is at the bottom of the list, not the top.
       .sort((a, b) => String(a.lastUpdated || '').localeCompare(String(b.lastUpdated || '')))
