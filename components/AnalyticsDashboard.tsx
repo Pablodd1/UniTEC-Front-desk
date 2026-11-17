@@ -126,7 +126,7 @@ const AnalyticsDashboard: React.FC<AnalyticsDashboardProps> = ({ sessions, googl
   // manual (3.188 por defecto en el código) que NO dependía del filtro de fechas. Ahora se pide a
   // /api/ga-visits con el MISMO rango que la tarjeta. Si GA4 no está conectado (falta
   // GA4_PROPERTY_ID / GA_SERVICE_ACCOUNT_JSON) se dice explícitamente y no se inventa ninguna cifra.
-  const [gaData, setGaData] = useState<{ configured: boolean; sessions?: number; totalUsers?: number; error?: string; missing?: string[] } | null>(null);
+  const [gaData, setGaData] = useState<{ configured: boolean; sessions?: number; totalUsers?: number; error?: string; missing?: string[]; empty?: boolean; propertyId?: string; serviceAccountEmail?: string } | null>(null);
   useEffect(() => {
     const bogotaDay = (offsetDays = 0) =>
       new Date(Date.now() - offsetDays * 86400000).toLocaleDateString('en-CA', { timeZone: 'America/Bogota' });
@@ -434,13 +434,22 @@ const AnalyticsDashboard: React.FC<AnalyticsDashboardProps> = ({ sessions, googl
               : (gaManual !== null ? gaManual.toLocaleString('es') : '—')}
           </p>
           {gaVisits !== null ? (
-            <p className="text-[10px] text-sky-600 font-bold mt-1">{gaConversionRate}% conv. del período (GA4)</p>
+            gaData?.empty ? (
+              <p className="text-[10px] text-amber-600 font-bold mt-1">
+                propiedad GA4 {gaData?.propertyId || ''} sin datos · dar acceso al sitio real
+              </p>
+            ) : (
+              <p className="text-[10px] text-sky-600 font-bold mt-1">{gaConversionRate}% conv. del período (GA4)</p>
+            )
           ) : gaManual !== null ? (
             <p className="text-[10px] text-amber-600 font-bold mt-1">acumulado manual · no responde al filtro (GA4 sin conectar)</p>
           ) : (
             <p className="text-[10px] text-amber-600 font-bold mt-1">
               {gaData?.error === 'sin_rango' ? 'Elige un período (Hoy / 7 días / 30 días / Mes)' : 'GA4 sin conectar'}
             </p>
+          )}
+          {gaVisits !== null && gaData?.empty && gaData?.serviceAccountEmail && (
+            <p className="text-[9px] text-slate-400 mt-1 break-all">Lector en GA4 para: {gaData.serviceAccountEmail}</p>
           )}
           {gaVisits === null && gaData?.error !== 'sin_rango' && (
             <p className="text-[9px] text-slate-400 mt-1">Para que cambie con el filtro: conectar GA4 (falta {(gaData?.missing && gaData.missing.length ? gaData.missing.join(' + ') : 'GA4_PROPERTY_ID')})</p>

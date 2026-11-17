@@ -122,7 +122,7 @@ export default async function handler(req, res) {
         }
       }
       if (wantsList) {
-        return res.status(200).json({ configured: false, properties, note: 'Copia el "property" (properties/XXXX) y ponlo en GA4_PROPERTY_ID.' });
+        return res.status(200).json({ configured: false, properties, serviceAccountEmail: sa.client_email, note: 'Agrega este email como Lector en GA4 → Admin → Acceso a la propiedad.' });
       }
       const preferred = properties.find((p) => /unitec/i.test(p.displayName))
         || (properties.length === 1 ? properties[0] : null);
@@ -131,6 +131,7 @@ export default async function handler(req, res) {
           configured: false,
           missing: propertyId ? [] : ['GA4_PROPERTY_ID'],
           properties,
+          serviceAccountEmail: sa.client_email,
           hint: properties.length
             ? 'La cuenta de servicio ve varias propiedades: elige una y ponla en GA4_PROPERTY_ID.'
             : 'La cuenta de servicio no tiene acceso a ninguna propiedad GA4 (falta agregarla en GA4 → Acceso a la propiedad).',
@@ -170,8 +171,12 @@ export default async function handler(req, res) {
     return res.status(200).json({
       configured: true,
       propertyId,
+      serviceAccountEmail: (() => { try { const j = saJson.trim().startsWith('{') ? saJson : Buffer.from(saJson, 'base64').toString('utf-8'); return JSON.parse(j).client_email || ''; } catch { return ''; } })(),
       range: { startDate, endDate },
       ...report,
+      // Una propiedad recién creada (o a la que no se le dio acceso al sitio real) devuelve 0 en
+      // todo el histórico. Se marca para que el panel no presente un 0 seco como si fuera tráfico real.
+      empty: report.sessions === 0 && report.totalUsers === 0 && report.pageViews === 0,
       savedToConfig: saved,
     });
   } catch (e) {
