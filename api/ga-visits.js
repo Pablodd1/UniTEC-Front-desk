@@ -91,10 +91,15 @@ export default async function handler(req, res) {
   let saJson = process.env.GA_SERVICE_ACCOUNT_JSON || '';
 
   if (!propertyId || !saJson) {
+    // Diagnóstico explícito: dice EXACTAMENTE qué variable falta, sin exponer valores.
+    const missing = [];
+    if (!propertyId) missing.push('GA4_PROPERTY_ID');
+    if (!saJson) missing.push('GA_SERVICE_ACCOUNT_JSON');
     return res.status(200).json({
       configured: false,
-      hint: 'Faltan GA4_PROPERTY_ID y/o GA_SERVICE_ACCOUNT_JSON en las variables de entorno de Vercel. '
-        + 'Mientras no existan, el panel muestra "sin dato" en lugar del número fijo 3.188.',
+      missing,
+      hint: 'Faltan ' + missing.join(' y ') + ' en las variables de entorno de Vercel. '
+        + 'Mientras no existan, el panel muestra "sin conectar" en lugar de un número fijo.',
     });
   }
 

@@ -126,7 +126,7 @@ const AnalyticsDashboard: React.FC<AnalyticsDashboardProps> = ({ sessions, googl
   // manual (3.188 por defecto en el código) que NO dependía del filtro de fechas. Ahora se pide a
   // /api/ga-visits con el MISMO rango que la tarjeta. Si GA4 no está conectado (falta
   // GA4_PROPERTY_ID / GA_SERVICE_ACCOUNT_JSON) se dice explícitamente y no se inventa ninguna cifra.
-  const [gaData, setGaData] = useState<{ configured: boolean; sessions?: number; totalUsers?: number; error?: string } | null>(null);
+  const [gaData, setGaData] = useState<{ configured: boolean; sessions?: number; totalUsers?: number; error?: string; missing?: string[] } | null>(null);
   useEffect(() => {
     const bogotaDay = (offsetDays = 0) =>
       new Date(Date.now() - offsetDays * 86400000).toLocaleDateString('en-CA', { timeZone: 'America/Bogota' });
@@ -428,16 +428,22 @@ const AnalyticsDashboard: React.FC<AnalyticsDashboardProps> = ({ sessions, googl
             <div className="p-2 bg-sky-50 rounded-lg"><Activity size={14} className="text-sky-600" /></div>
             <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Visitas Web (GA4)</span>
           </div>
-          <p className="text-2xl font-black text-slate-800">{gaVisits !== null ? gaVisits.toLocaleString('es') : '—'}</p>
+          <p className="text-2xl font-black text-slate-800">
+            {gaVisits !== null
+              ? gaVisits.toLocaleString('es')
+              : (gaManual !== null ? gaManual.toLocaleString('es') : '—')}
+          </p>
           {gaVisits !== null ? (
-            <p className="text-[10px] text-sky-600 font-bold mt-1">{gaConversionRate}% conv. del período</p>
+            <p className="text-[10px] text-sky-600 font-bold mt-1">{gaConversionRate}% conv. del período (GA4)</p>
+          ) : gaManual !== null ? (
+            <p className="text-[10px] text-amber-600 font-bold mt-1">acumulado manual · no responde al filtro (GA4 sin conectar)</p>
           ) : (
             <p className="text-[10px] text-amber-600 font-bold mt-1">
               {gaData?.error === 'sin_rango' ? 'Elige un período (Hoy / 7 días / 30 días / Mes)' : 'GA4 sin conectar'}
             </p>
           )}
-          {gaManual !== null && (
-            <p className="text-[9px] text-slate-400 mt-1">Manual acumulado: {gaManual.toLocaleString('es')} (no del período)</p>
+          {gaVisits === null && gaData?.error !== 'sin_rango' && (
+            <p className="text-[9px] text-slate-400 mt-1">Para que cambie con el filtro: conectar GA4 (falta {(gaData?.missing && gaData.missing.length ? gaData.missing.join(' + ') : 'GA4_PROPERTY_ID')})</p>
           )}
         </div>
         <div className="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm">
