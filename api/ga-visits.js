@@ -87,20 +87,65 @@ export default async function handler(req, res) {
   res.setHeader('Access-Control-Allow-Origin', '*');
   if (req.method === 'OPTIONS') return res.status(204).end();
 
-  const propertyId = process.env.GA4_PROPERTY_ID || '';
+  let propertyId = process.env.GA4_PROPERTY_ID || '';
   let saJson = process.env.GA_SERVICE_ACCOUNT_JSON || '';
 
-  if (!propertyId || !saJson) {
-    // Diagnóstico explícito: dice EXACTAMENTE qué variable falta, sin exponer valores.
-    const missing = [];
-    if (!propertyId) missing.push('GA4_PROPERTY_ID');
-    if (!saJson) missing.push('GA_SERVICE_ACCOUNT_JSON');
-    return res.status(200).json({
-      configured: false,
-      missing,
-      hint: 'Faltan ' + missing.join(' y ') + ' en las variables de entorno de Vercel. '
-        + 'Mientras no existan, el panel muestra "sin conectar" en lugar de un número fijo.',
-    });
+  // ¿Solo falta el ID de propiedad? Si la cuenta de servicio tiene acceso a la propiedad, se puede
+  // descubrir sola vía Admin API (accountSummaries). Así el KPI queda conectado sin pedirle al
+  // cliente un número que quizá no sepa encontrar. Nunca se exponen secretos.
+  const wantsList = String(req.query?.discover || '') === '1';
+
+  if (!propertyId || !saJson || wantsList) {
+    try {
+      let jwtJson = saJson;
+      if (jwtJson && !jwtJson.trim().startsWith('{')) jwtJson = Buffer.from(jwtJson, 'base64').toString('utf-8');
+      if (!jwtJson) {
+        const missing = propertyId ? [] : ['GA4_PROPERTY_ID'];
+        if (!saJson) missing.push('GA_SERVICE_ACCOUNT_JSON');
+        return res.status(200).json({
+          configured: false,
+          missing,
+          hint: 'Faltan ' + missing.join(' y ') + ' en las variables de entorno de Vercel.',
+        });
+      }
+      const sa = JSON.parse(jwtJson);
+      const accessToken = await getAccessToken(sa);
+      const listRes = await fetch('https://analyticsadmin.googleapis.com/v1beta/accountSummaries?pageSize=200', {
+        headers: { Authorization: `Bearer ${accessToken}` },
+      });
+      if (!listRes.ok) throw new Error(`accountSummaries ${listRes.status}: ${(await listRes.text()).slice(0, 160)}`);
+      const data = await listRes.json();
+      const properties = [];
+      for (const acc of data.accountSummaries || []) {
+        for (const p of acc.propertySummaries || []) {
+          properties.push({ property: p.property || '', displayName: p.displayName || '', account: acc.displayName || '' });
+        }
+      }
+      if (wantsList) {
+        return res.status(200).json({ configured: false, properties, note: 'Copia el "property" (properties/XXXX) y ponlo en GA4_PROPERTY_ID.' });
+      }
+      const preferred = properties.find((p) => /unitec/i.test(p.displayName))
+        || (properties.length === 1 ? properties[0] : null);
+      if (!preferred) {
+        return res.status(200).json({
+          configured: false,
+          missing: propertyId ? [] : ['GA4_PROPERTY_ID'],
+          properties,
+          hint: properties.length
+            ? 'La cuenta de servicio ve varias propiedades: elige una y ponla en GA4_PROPERTY_ID.'
+            : 'La cuenta de servicio no tiene acceso a ninguna propiedad GA4 (falta agregarla en GA4 → Acceso a la propiedad).',
+        });
+      }
+      propertyId = String(preferred.property).replace('properties/', '');
+      if (!propertyId) throw new Error('property id vacío');
+    } catch (e) {
+      return res.status(200).json({
+        configured: false,
+        missing: propertyId ? [] : ['GA4_PROPERTY_ID'],
+        error: String(e?.message || e),
+        hint: 'No se pudo descubrir la propiedad GA4; configura GA4_PROPERTY_ID manualmente.',
+      });
+    }
   }
 
   try {
