@@ -117,6 +117,35 @@ const AnalyticsDashboard: React.FC<AnalyticsDashboardProps> = ({ sessions, googl
 
   const [selectedMonth, setSelectedMonth] = useState<string>('all');
   const [selectedDay, setSelectedDay] = useState<string>('all');
+  // El registro pintaba ~4.700 filas de golpe (la pestaña se congelaba y no se podía hacer clic).
+  // Se pagina de 300 en 300 y cada fila abre su conversación.
+  const [rowLimit, setRowLimit] = useState<number>(300);
+
+  // ── Visitas Web (GA4) ─────────────────────────────────────────────────────
+  // POR QUÉ ESTABA CONGELADO: la tarjeta leía `config/main.googleAnalyticsVisits`, un único número
+  // manual (3.188 por defecto en el código) que NO dependía del filtro de fechas. Ahora se pide a
+  // /api/ga-visits con el MISMO rango que la tarjeta. Si GA4 no está conectado (falta
+  // GA4_PROPERTY_ID / GA_SERVICE_ACCOUNT_JSON) se dice explícitamente y no se inventa ninguna cifra.
+  const [gaData, setGaData] = useState<{ configured: boolean; sessions?: number; totalUsers?: number; error?: string } | null>(null);
+  useEffect(() => {
+    const bogotaDay = (offsetDays = 0) =>
+      new Date(Date.now() - offsetDays * 86400000).toLocaleDateString('en-CA', { timeZone: 'America/Bogota' });
+    const toDay = bogotaDay(0);
+    let from = '';
+    if (selectedMonth !== 'all') {
+      const m = String(parseInt(selectedMonth, 10) + 1).padStart(2, '0');
+      from = `${new Date().getFullYear()}-${m}-01`;
+    } else if (timeFilter === 'today') from = toDay;
+    else if (timeFilter === 'week') from = bogotaDay(6);
+    else if (timeFilter === 'month') from = bogotaDay(29);
+    if (!from) { setGaData({ configured: false, error: 'sin_rango' }); return; }
+    let alive = true;
+    fetch(`/api/ga-visits?from=${from}&to=${toDay}`)
+      .then((r) => r.json())
+      .then((d) => { if (alive) setGaData(d); })
+      .catch((e) => { if (alive) setGaData({ configured: false, error: String(e?.message || e) }); });
+    return () => { alive = false; };
+  }, [timeFilter, selectedMonth]);
 
   const MONTHS_SPANISH = [
     'Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio',
@@ -149,35 +178,28 @@ const AnalyticsDashboard: React.FC<AnalyticsDashboardProps> = ({ sessions, googl
     ? ((startedChatSessions / totalSessions) * 100).toFixed(1)
     : '0.0';
 
-  // Visitas reales de GA4: `config/main.googleAnalyticsVisits` lo escribe /api/ga-visits.
-  // Sin dato NO se muestra un número fijo (antes: 3.188 hardcodeado, que nadie actualizaba).
-  const gaVisitsParsed = parseInt(String(googleAnalyticsVisits || ''), 10);
-  const gaVisits = Number.isFinite(gaVisitsParsed) && gaVisitsParsed > 0 ? gaVisitsParsed : null;
-  const gaConversionRate = gaVisits
-    ? ((startedChatSessions / gaVisits) * 100).toFixed(2)
-    : '—';
+  // Visitas reales de GA4 para el PERÍODO seleccionado (sí responde al filtro).
+  // `googleAnalyticsVisits` (config/main) es un acumulado manual: se muestra solo como referencia
+  // y NUNCA se usa como denominador de la conversión del período.
+  const gaConfigured = !!gaData?.configured && Number.isFinite(Number(gaData?.sessions));
+  const gaVisits = gaConfigured ? Number(gaData?.sessions) : null;
+  const gaManual = (() => {
+    const p = parseInt(String(googleAnalyticsVisits || ''), 10);
+    return Number.isFinite(p) && p > 0 ? p : null;
+  })();
 
-  // Average Handling Time (AHT) calculation
-  const sessionsWithDuration = filteredSessions.filter(s => s.duration && s.duration > 0);
-  const avgAhtSeconds = sessionsWithDuration.length > 0
-    ? Math.round(sessionsWithDuration.reduce((sum, s) => sum + (s.duration || 0), 0) / sessionsWithDuration.length)
-    : 0;
-  const ahtFormatted = avgAhtSeconds > 0
-    ? `${Math.floor(avgAhtSeconds / 60)}m ${avgAhtSeconds % 60}s`
-    : 'N/A';
-  
-  // AHT percentage compared to 3-minute standard (180s = 100%)
-  const ahtPercentage = avgAhtSeconds > 0
-    ? ((avgAhtSeconds / 180) * 100).toFixed(1)
-    : '0.0';
+  // Average Handling Time (AHT) — el cálculo anterior dividía `duration` (que en estas sesiones
+  // viene en unidades inconsistentes) y pintaba "384m 32s / 12817.8% del estándar", un número sin
+  // significado. Se retiró del panel; el KPI que lo reemplaza (Conversación real) sale del embudo.
 
   // Sales Contact & Quotation quantification
+  // Antes esto contaba `status === 'completed'` (201 sesiones archivadas) como "contacto", así que
+  // la tarjeta decía 194 mientras el servidor reportaba 34 teléfonos capturados. Ahora la tabla y
+  // la tarjeta usan la MISMA evidencia: dato de contacto real o cotización pedida.
   const salesContactSessions = filteredSessions.filter(s =>
-    s.status === 'completed' ||
+    Boolean(s.customerPhone || s.extractedData?.phone || s.customerEmail || s.extractedData?.email) ||
     s.intentCategory === 'cotizacion' ||
-    s.topics?.includes('cotizacion') ||
-    s.extractedData?.phone ||
-    (s.analytics as any)?.salesContactShared
+    s.topics?.includes('cotizacion')
   );
   const salesContactCount = salesContactSessions.length;
 
@@ -227,6 +249,27 @@ const AnalyticsDashboard: React.FC<AnalyticsDashboardProps> = ({ sessions, googl
     acc[intent] = (acc[intent] || 0) + 1;
     return acc;
   }, {} as Record<string, number>);
+
+  // ── KPIs del servidor: MISMA fuente que el embudo y el informe diario ──
+  // Antes estas tarjetas se recalculaban en el navegador con otra definición (y otra lista de
+  // sesiones de prueba), así que en la MISMA pantalla convivían 4,6% vs 4,94%, 194 contactos vs
+  // 34 y 5.157 vs 4.741 sesiones. Ahora panel = informe = embudo.
+  const kpi = funnelData?.kpis || null;
+  const kpiNum = (k: string, fallback: number) => {
+    const v = kpi ? Number(kpi[k]) : NaN;
+    return Number.isFinite(v) ? v : fallback;
+  };
+  const kpiTotal = kpiNum('total', totalSessions);
+  const kpiRealInteractions = kpiNum('realInteractions', startedChatSessions);
+  const kpiInteractionRate = kpi ? Number(kpi.realInteractionRate || 0) : Number(conversionRate);
+  const kpiContacts = kpiNum('contactsCaptured', salesContactCount);
+  const kpiHuman = kpiNum('humanAssisted', humanRequested + humanAssigned);
+  const kpiNoMessage = kpiNum('noMessage', noChatSessions);
+  const kpiGreetingOnly = kpiNum('greetingOnly', greetingOnlySessions);
+  const kpiRealConversations = kpi ? Number(funnelData?.funnel?.realConversations || 0) : 0;
+  const kpiTestsExcluded = kpi ? Number(kpi.testsExcluded || 0) : 0;
+  // Conversión del período = chats reales del período / visitas GA4 del MISMO período.
+  const gaConversionRate = gaVisits ? ((kpiRealInteractions / gaVisits) * 100).toFixed(2) : '—';
 
   return (
     <div className="space-y-6 pb-20">
@@ -383,65 +426,78 @@ const AnalyticsDashboard: React.FC<AnalyticsDashboardProps> = ({ sessions, googl
         <div className="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm">
           <div className="flex items-center gap-2 mb-2">
             <div className="p-2 bg-sky-50 rounded-lg"><Activity size={14} className="text-sky-600" /></div>
-            <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Visitas Web (GA)</span>
+            <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Visitas Web (GA4)</span>
           </div>
-          <p className="text-2xl font-black text-slate-800">{gaVisits ? gaVisits.toLocaleString('es') : '—'}</p>
-          <p className="text-[10px] text-sky-600 font-bold mt-1">{gaVisits ? `${gaConversionRate}% conv. real` : 'sin conectar (GA4)'}</p>
+          <p className="text-2xl font-black text-slate-800">{gaVisits !== null ? gaVisits.toLocaleString('es') : '—'}</p>
+          {gaVisits !== null ? (
+            <p className="text-[10px] text-sky-600 font-bold mt-1">{gaConversionRate}% conv. del período</p>
+          ) : (
+            <p className="text-[10px] text-amber-600 font-bold mt-1">
+              {gaData?.error === 'sin_rango' ? 'Elige un período (Hoy / 7 días / 30 días / Mes)' : 'GA4 sin conectar'}
+            </p>
+          )}
+          {gaManual !== null && (
+            <p className="text-[9px] text-slate-400 mt-1">Manual acumulado: {gaManual.toLocaleString('es')} (no del período)</p>
+          )}
         </div>
         <div className="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm">
           <div className="flex items-center gap-2 mb-2">
             <div className="p-2 bg-brand-50 rounded-lg"><Users size={14} className="text-brand-600" /></div>
             <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Total Sesiones</span>
           </div>
-          <p className="text-2xl font-black text-slate-800">{totalSessions}</p>
+          <p className="text-2xl font-black text-slate-800">{kpiTotal.toLocaleString('es')}</p>
+          <p className="text-[10px] text-slate-500 font-bold mt-1">Sin pruebas · {kpiTestsExcluded} excluidas</p>
         </div>
         <div className="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm">
           <div className="flex items-center gap-2 mb-2">
             <div className="p-2 bg-emerald-50 rounded-lg"><BarChart3 size={14} className="text-emerald-600" /></div>
             <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Interacción Real</span>
           </div>
-          <p className="text-2xl font-black text-slate-800">{conversionRate}%</p>
-          <p className="text-[10px] text-emerald-600 font-bold mt-1">Usuarios que escribieron</p>
+          <p className="text-2xl font-black text-slate-800">{kpiInteractionRate}%</p>
+          <p className="text-[10px] text-emerald-600 font-bold mt-1">{kpiRealInteractions} usuarios escribieron</p>
         </div>
         <div className="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm">
           <div className="flex items-center gap-2 mb-2">
             <div className="p-2 bg-purple-50 rounded-lg"><Zap size={14} className="text-purple-600" /></div>
-            <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">AHT Promedio</span>
+            <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Conversación Real</span>
           </div>
-          <p className="text-2xl font-black text-slate-800">{ahtFormatted}</p>
-          <p className="text-[10px] text-purple-600 font-bold mt-1">{ahtPercentage}% respecto a estándar</p>
+          <p className="text-2xl font-black text-slate-800">{kpiRealConversations}</p>
+          <p className="text-[10px] text-purple-600 font-bold mt-1">Preguntaron y recibieron respuesta</p>
         </div>
         <div className="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm">
           <div className="flex items-center gap-2 mb-2">
             <div className="p-2 bg-blue-50 rounded-lg"><MessageSquare size={14} className="text-blue-600" /></div>
             <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Contactos Capturados</span>
           </div>
-          <p className="text-2xl font-black text-slate-800">{salesContactCount}</p>
-          <p className="text-[10px] text-blue-600 font-bold mt-1">Teléfonos/cotizaciones pedidas · no son ventas cerradas</p>
+          <p className="text-2xl font-black text-slate-800">{kpiContacts}</p>
+          <p className="text-[10px] text-blue-600 font-bold mt-1">Dejaron teléfono · no son ventas cerradas</p>
         </div>
         <div className="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm">
           <div className="flex items-center gap-2 mb-2">
             <div className="p-2 bg-orange-50 rounded-lg"><Phone size={14} className="text-orange-600" /></div>
             <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Asistencia Humana</span>
           </div>
-          <p className="text-2xl font-black text-slate-800">{humanRequested + humanAssigned}</p>
+          <p className="text-2xl font-black text-slate-800">{kpiHuman}</p>
         </div>
         <div className="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm">
           <div className="flex items-center gap-2 mb-2">
             <div className="p-2 bg-red-50 rounded-lg"><XCircle size={14} className="text-red-500" /></div>
             <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Sin Interacción</span>
           </div>
-          <p className="text-2xl font-black text-slate-800">{noChatSessions}</p>
+          <p className="text-2xl font-black text-slate-800">{kpiNoMessage}</p>
         </div>
         <div className="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm">
           <div className="flex items-center gap-2 mb-2">
             <div className="p-2 bg-slate-100 rounded-lg"><MessageSquare size={14} className="text-slate-500" /></div>
             <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Solo Saludo (bot)</span>
           </div>
-          <p className="text-2xl font-black text-slate-800">{greetingOnlySessions}</p>
+          <p className="text-2xl font-black text-slate-800">{kpiGreetingOnly}</p>
           <p className="text-[10px] text-slate-500 font-bold mt-1">Abrieron y no escribieron</p>
         </div>
       </div>
+      <p className="text-[10px] text-slate-400 -mt-3">
+        Cifras del mismo motor que el embudo y el informe diario (<code>/api/analytics</code>) · {kpi ? 'servidor' : 'cargando…'}
+      </p>
 
       {/* ── Embudo real: mismas cifras que el informe diario (api/_analytics-core.js) ── */}
       {funnelData?.funnel?.steps && (
@@ -537,8 +593,8 @@ const AnalyticsDashboard: React.FC<AnalyticsDashboardProps> = ({ sessions, googl
               <PieChart>
                 <Pie
                   data={[
-                    { name: 'Iniciaron Chat', value: startedChatSessions },
-                    { name: 'Sin Chatear', value: noChatSessions },
+                    { name: 'Iniciaron Chat', value: kpiRealInteractions },
+                    { name: 'Sin Chatear', value: kpiNoMessage },
                   ]}
                   cx="50%" cy="50%" innerRadius={50} outerRadius={70} paddingAngle={5} dataKey="value"
                 >
@@ -550,8 +606,8 @@ const AnalyticsDashboard: React.FC<AnalyticsDashboardProps> = ({ sessions, googl
             </ResponsiveContainer>
           </div>
           <div className="flex justify-center gap-4 mt-1">
-            <div className="flex items-center gap-2"><div className="w-3 h-3 rounded-full bg-[#3b82f6]" /><span className="text-xs text-slate-600">Chat ({startedChatSessions})</span></div>
-            <div className="flex items-center gap-2"><div className="w-3 h-3 rounded-full bg-[#64748b]" /><span className="text-xs text-slate-600">Sin Chatear ({noChatSessions})</span></div>
+            <div className="flex items-center gap-2"><div className="w-3 h-3 rounded-full bg-[#3b82f6]" /><span className="text-xs text-slate-600">Chat ({kpiRealInteractions})</span></div>
+            <div className="flex items-center gap-2"><div className="w-3 h-3 rounded-full bg-[#64748b]" /><span className="text-xs text-slate-600">Sin Chatear ({kpiNoMessage})</span></div>
           </div>
         </div>
       </div>
@@ -704,7 +760,12 @@ const AnalyticsDashboard: React.FC<AnalyticsDashboardProps> = ({ sessions, googl
 
       {/* Transaction Log */}
       <div className="bg-white p-6 rounded-2xl border border-slate-200">
-        <h3 className="font-bold text-slate-800 mb-4">Registro de Sesiones</h3>
+        <div className="flex flex-wrap items-center justify-between gap-2 mb-4">
+          <h3 className="font-bold text-slate-800">Registro de Sesiones</h3>
+          <span className="text-[10px] text-slate-400">
+            Mostrando {Math.min(rowLimit, filteredSessions.length)} de {filteredSessions.length} · clic en la fila para abrir el chat
+          </span>
+        </div>
         <div className="overflow-x-auto">
           <table className="w-full text-sm text-left">
             <thead className="text-xs text-slate-500 uppercase bg-slate-50">
@@ -715,11 +776,17 @@ const AnalyticsDashboard: React.FC<AnalyticsDashboardProps> = ({ sessions, googl
                 <th className="px-4 py-3">Marca</th>
                 <th className="px-4 py-3">Fuente</th>
                 <th className="px-4 py-3">Mensajes</th>
+                <th className="px-4 py-3 text-right">Abrir</th>
               </tr>
             </thead>
             <tbody>
-              {filteredSessions.map((s) => (
-                <tr key={s.id} className="border-b border-slate-100 hover:bg-slate-50">
+              {filteredSessions.slice(0, rowLimit).map((s) => (
+                <tr
+                  key={s.id}
+                  onClick={() => onOpenConversation && onOpenConversation(s)}
+                  className="border-b border-slate-100 hover:bg-brand-50/50 cursor-pointer transition-colors"
+                  title="Abrir esta conversación"
+                >
                   <td className="px-4 py-3 text-xs">{new Date(s.createdAt).toLocaleString('es')}</td>
                   <td className="px-4 py-3 text-brand-600 font-medium text-xs">{s.id ? s.id.slice(-10) : '—'}</td>
                   <td className="px-4 py-3">
@@ -736,11 +803,30 @@ const AnalyticsDashboard: React.FC<AnalyticsDashboardProps> = ({ sessions, googl
                   <td className="px-4 py-3 text-xs">{s.brandId}</td>
                   <td className="px-4 py-3 text-xs">{s.source}</td>
                   <td className="px-4 py-3 text-xs font-bold">{s.analytics?.messageCount || s.messages?.length || 0}</td>
+                  <td className="px-4 py-3 text-right">
+                    <button
+                      type="button"
+                      onClick={(e) => { e.stopPropagation(); onOpenConversation && onOpenConversation(s); }}
+                      className="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg text-[10px] font-bold text-brand-600 bg-brand-50 hover:bg-brand-100 transition-all"
+                    >
+                      💬 Ver
+                    </button>
+                  </td>
                 </tr>
               ))}
             </tbody>
           </table>
         </div>
+        {filteredSessions.length > rowLimit && (
+          <div className="pt-3 text-center">
+            <button
+              onClick={() => setRowLimit((n) => n + 300)}
+              className="px-3 py-1.5 rounded-lg bg-slate-100 text-slate-600 text-[10px] font-bold uppercase hover:bg-slate-200"
+            >
+              Mostrar 300 más ({filteredSessions.length - rowLimit} restantes)
+            </button>
+          </div>
+        )}
       </div>
     </div>
   );

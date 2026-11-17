@@ -181,16 +181,17 @@ const StaffIntervention: React.FC<StaffInterventionProps> = ({ sessions, onCallC
                     )}
                   </div>
 
-                  {/* Entrada real al chat: "tomé la conversación y no me salía nada" — la BANDEJA no
-                      mostraba el historial ni dejaba responder. Este enlace abre la sesión en MONITOR. */}
-                  <a
-                    href={`${typeof window !== 'undefined' ? window.location.origin : ''}/?admin=true&session=${encodeURIComponent(intervention.sessionId)}`}
-                    target="_blank"
-                    rel="noreferrer"
+                  {/* Entrada real al chat: \"tomé la conversación y no me salía nada\" — la BANDEJA no
+                      mostraba el historial ni dejaba responder. Abre la sesión en MONITOR dentro del
+                      panel (antes abría una pestaña nueva con /?admin=true&session=, que en el móvil
+                      del equipo caía otra vez en el muro de contraseña: \"no puedo entrar al usuario\"). */}
+                  <button
+                    type="button"
+                    onClick={() => onOpenConversation?.(intervention.sessionId)}
                     className="flex items-center justify-center gap-1 w-full mb-3 px-3 py-2 rounded-lg border border-slate-200 text-slate-600 text-sm font-medium hover:bg-slate-50"
                   >
                     <Eye size={14} /> Abrir conversación
-                  </a>
+                  </button>
 
                   <div className="flex items-center justify-between text-xs text-slate-400 mb-3">
                     <span className="flex items-center gap-1">

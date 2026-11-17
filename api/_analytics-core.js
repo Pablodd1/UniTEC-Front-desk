@@ -13,8 +13,10 @@ const firebaseConfig = require_('../firebase-applet-config.json');
 /** Proyecto de Firestore en uso (exportado para evitar repetir el require en cada endpoint). */
 export const projectId = firebaseConfig.projectId;
 
-/** Sesiones de diagnóstico/prueba creadas en desarrollo o en auditorías — se excluyen SIEMPRE. */
-export const TEST_ID_RE = /^(diag|lat-test|analytics-verify|post-fix|warm-check|secret-verify|verify-|test-|review-|plan-|probe[-_])/i;
+/** Sesiones de diagnóstico/prueba creadas en desarrollo o en auditorías — se excluyen SIEMPRE.
+ *  Debe ser IDÉNTICO a TEST_SESSION_RE en `services/conversationService.ts`: si las dos listas
+ *  divergen, el panel y el informe cuentan sesiones distintas (pasó: panel 4.725 / informe 4.741). */
+export const TEST_ID_RE = /^(diag|lat-test|analytics-verify|post-fix|warm-check|secret-verify|verify|test[-_]|review-|plan-|probe[-_]|sweep|abandon-test|staff-test|rules-probe|monitor)/i;
 export const isTestSession = (id) => TEST_ID_RE.test(String(id || ''));
 
 /** Orden del embudo. Cada sesión se contabiliza en la etapa MÁS ALTA que alcanzó. */

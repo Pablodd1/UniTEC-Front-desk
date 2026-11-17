@@ -13,6 +13,7 @@ import { doc, writeBatch } from 'firebase/firestore';
 import { subscribeToConversations, subscribeToInterventions, updateSessionStatus, addMessage, subscribeToMessages } from '../services/conversationService';
 import ConversationMonitor from './ConversationMonitor';
 import StaffIntervention from './StaffIntervention';
+import RecentAlerts from './RecentAlerts';
 import AnalyticsDashboard from './AnalyticsDashboard';
 import RetrainingAnalytics from './RetrainingAnalytics';
 import ApiHealthMonitor from './ApiHealthMonitor';
@@ -93,7 +94,7 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({
   const [telegramBotToken, setTelegramBotToken] = useState('');
   const [telegramChatId, setTelegramChatId] = useState('');
   const [telegramReportTime, setTelegramReportTime] = useState('09:00');
-  const [googleAnalyticsVisits, setGoogleAnalyticsVisits] = useState('3188');
+  const [googleAnalyticsVisits, setGoogleAnalyticsVisits] = useState('');
   const [analyticsPreferences, setAnalyticsPreferences] = useState({
     includeTraffic: true,
     includeSentiment: true,
@@ -2090,7 +2091,17 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({
         // ===== NEW: Staff Intervention Center =====
         case 'interventions':
             return (
-                <div className="h-[calc(100vh-200px)] animate-in slide-in-from-bottom-2 duration-500">
+                <div className="h-[calc(100vh-200px)] animate-in slide-in-from-bottom-2 duration-500 overflow-y-auto">
+                    {/* Avisos realmente enviados (escalations): abandono/SLA/cotización no
+                        generaban doc en `interventions`, así que no había dónde hacer clic. */}
+                    <RecentAlerts
+                        sessions={conversations}
+                        onOpenSession={(sessionId) => {
+                            const s = conversations.find((x) => x.id === sessionId);
+                            if (s) _setSelectedConversation(s);
+                            setActiveSubTab('conversations');
+                        }}
+                    />
                     <StaffIntervention 
                         sessions={conversations}
                         onCallCustomer={(phone) => {
@@ -2113,17 +2124,13 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({
                         sessions={conversations} 
                         googleAnalyticsVisits={googleAnalyticsVisits}
                         onOpenConversation={async (session) => {
-                            // Deep-link: set the session to open, then switch to the monitor view
+                            // Abrir para LEER no es tomar la conversación: antes esto marcaba
+                            // human_assigned automáticamente y (a) inflaba el KPI "Asistencia
+                            // Humana" con cada clic del operador y (b) callaba al bot para ese
+                            // cliente sin que nadie le escribiera. La toma se hace en Alertas
+                            // ("Take Over Conversation"), que es un acto explícito.
                             _setSelectedConversation(session);
                             setActiveSubTab('conversations');
-                            // Activate: mark it as an active staff intervention (human takeover)
-                            if (session && session.id && session.status !== 'human_assigned') {
-                                try {
-                                    await updateSessionStatus(session.id, 'human_assigned', 'staff_001');
-                                } catch (e) {
-                                    console.error('Failed to take over session from analytics link', e);
-                                }
-                            }
                         }}
                     />
                 </div>
@@ -2161,10 +2168,21 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({
                 </div>
                 <div className="flex gap-2 shrink-0">
                   <button
-                    onClick={() => { setActiveSubTab('interventions'); setDismissedAlertIds(prev => { const next = new Set(prev); next.add(alert.id); return next; }); }}
+                    onClick={() => {
+                      // Abrir ESA conversación (antes solo cambiaba de pestaña y el usuario
+                      // alertado no aparecía en ninguna lista donde hacer clic).
+                      const target = conversations.find((c) => c.id === alert.sessionId);
+                      setDismissedAlertIds(prev => { const next = new Set(prev); next.add(alert.id); return next; });
+                      if (target) {
+                        _setSelectedConversation(target);
+                        setActiveSubTab('conversations');
+                      } else {
+                        setActiveSubTab('interventions');
+                      }
+                    }}
                     className="px-3 py-1.5 bg-white text-red-600 rounded-lg text-[10px] font-black uppercase hover:bg-red-50 transition-colors"
                   >
-                    Atender ?
+                    Atender →
                   </button>
                   <button
                     onClick={() => setDismissedAlertIds(prev => { const next = new Set(prev); next.add(alert.id); return next; })}

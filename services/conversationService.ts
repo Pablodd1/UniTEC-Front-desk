@@ -555,7 +555,9 @@ if (typeof window !== 'undefined') {
 }
 
 // Sesiones de prueba/sondas del monitor: nunca deben aparecer en el panel ni en sus contadores.
-const TEST_SESSION_RE = /^(diag|lat-test|verify|warm-check|secret-verify|post-fix|analytics-verify|sweep|abandon-test|staff-test|rules-probe|test[-_]|probe[-_]|monitor)/i;
+// Debe ser IDÉNTICO a TEST_ID_RE en `api/_analytics-core.js` (panel = informe). Cuando divergieron,
+// la misma pantalla mostraba dos totales distintos (4.725 en las tarjetas vs 4.741 en el embudo).
+const TEST_SESSION_RE = /^(diag|lat-test|analytics-verify|post-fix|warm-check|secret-verify|verify|test[-_]|review-|plan-|probe[-_]|sweep|abandon-test|staff-test|rules-probe|monitor)/i;
 const realOnly = (list: ConversationSession[]) => list.filter((s) => !TEST_SESSION_RE.test(String(s.id || '')));
 
 // Subscribe to real-time conversation updates

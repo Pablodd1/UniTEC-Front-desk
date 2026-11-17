@@ -343,7 +343,7 @@ function buildReportText(sessions, metrics, periodLabel, reportTime, isWeekly, g
     text += `👥 <b>Últimas Interacciones:</b> No hubo interacciones reales en el período.\n\n`;
   }
 
-  text += `🔗 <i>Panel Admin: https://www.chatbuildinginnovation.us/?admin=true</i>`;
+  text += `🔗 <i>Panel Admin: ${process.env.STAFF_PANEL_ORIGIN || 'https://unitec-front-desk.vercel.app'}/?admin=true</i>`;
   return text;
 }
 
