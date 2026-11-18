@@ -258,6 +258,13 @@ const ConversationMonitor: React.FC<ConversationMonitorProps> = ({
       // panel). Se cuenta aquí, con un increment sobre el path punteado (nunca con updateAnalytics,
       // que reemplazaría el mapa entero).
       bumpSessionCounter(selectedSessionId, 'staffInteractions', 1).catch(() => {});
+      // Si el asesor escribió, la conversación queda TOMADA. Antes solo cambiaba el estado el botón
+      // "Take Over": al responder desde el Monitor la sesión seguía en human_requested, el panel la
+      // mostraba como "esperando asesor" y el bot podía volver a contestar (respuesta doble).
+      const cur = sessions.find((x) => x.id === selectedSessionId);
+      if (cur && cur.status !== 'human_assigned' && cur.status !== 'completed' && cur.status !== 'resolved') {
+        updateSessionStatus(selectedSessionId, 'human_assigned', staffName || 'staff_001').catch(() => {});
+      }
       // Espera real del cliente hasta esta primera respuesta (política 2026-10-15).
       {
         const s: any = sessions.find((x) => x.id === selectedSessionId);
