@@ -2,6 +2,16 @@
 import { Activity, CheckCircle, AlertTriangle, XCircle, Clock, RefreshCw } from 'lucide-react';
 import { SystemStatus, getSystemStatus } from '../services/healthService';
 
+/** Métricas reales del bot (server-side). Las de localStorage nunca se escribían y el panel
+ *  mostraba "0 conversaciones / 0 activas" con miles de sesiones reales. */
+interface LiveMetrics {
+  total: number;
+  activeNow: number;
+  pending: number;
+  todayTotal: number;
+  todayReal: number;
+}
+
 interface ApiHealthMonitorProps {
   status?: SystemStatus | null;
 }
@@ -10,6 +20,29 @@ const ApiHealthMonitor: React.FC<ApiHealthMonitorProps> = ({ status }) => {
   const [currentStatus, setCurrentStatus] = useState<SystemStatus | null>(status || null);
   const [isRefreshing, setIsRefreshing] = useState(false);
   const [lastRefreshed, setLastRefreshed] = useState(new Date());
+  const [live, setLive] = useState<LiveMetrics | null>(null);
+
+  useEffect(() => {
+    let alive = true;
+    const load = () => {
+      fetch('/api/analytics')
+        .then((r) => (r.ok ? r.json() : null))
+        .then((d) => {
+          if (!alive || !d?.kpis) return;
+          setLive({
+            total: Number(d.kpis.total || 0),
+            activeNow: Number(d.activeNow || 0),
+            pending: Number(d.kpis.humanAssisted || 0),
+            todayTotal: Number(d.todayKpis?.total || 0),
+            todayReal: Number(d.todayKpis?.realInteractions || 0),
+          });
+        })
+        .catch(() => {});
+    };
+    load();
+    const t = setInterval(load, 60000);
+    return () => { alive = false; clearInterval(t); };
+  }, []);
 
   const refreshStatus = async () => {
     setIsRefreshing(true);
@@ -204,33 +237,36 @@ const ApiHealthMonitor: React.FC<ApiHealthMonitorProps> = ({ status }) => {
         <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
           <div className="p-3 bg-slate-50 rounded-xl">
             <p className="text-xs font-bold text-slate-400 uppercase tracking-wider">Total Conversations</p>
-            <p className="text-lg font-bold text-slate-800">{currentStatus.metrics.totalConversations}</p>
+            <p className="text-lg font-bold text-slate-800">{live ? live.total.toLocaleString('es') : '…'}</p>
           </div>
           <div className="p-3 bg-slate-50 rounded-xl">
             <p className="text-xs font-bold text-slate-400 uppercase tracking-wider">Active Now</p>
-            <p className="text-lg font-bold text-slate-800">{currentStatus.metrics.activeConversations}</p>
+            <p className="text-lg font-bold text-slate-800">{live ? live.activeNow : '…'}</p>
           </div>
           <div className="p-3 bg-slate-50 rounded-xl">
             <p className="text-xs font-bold text-slate-400 uppercase tracking-wider">Pending Interventions</p>
-            <p className="text-lg font-bold text-slate-800">{currentStatus.metrics.pendingInterventions}</p>
+            <p className="text-lg font-bold text-slate-800">{live ? live.pending : '…'}</p>
           </div>
           <div className="p-3 bg-slate-50 rounded-xl">
             <p className="text-xs font-bold text-slate-400 uppercase tracking-wider">Avg Response Time</p>
-            <p className="text-lg font-bold text-slate-800">{currentStatus.metrics.avgResponseTime.toFixed(2)}s</p>
+            <p className="text-lg font-bold text-slate-800">
+              {currentStatus.context?.avgLatencyMs ? `${(currentStatus.context.avgLatencyMs / 1000).toFixed(2)}s` : '…'}
+            </p>
           </div>
           <div className="p-3 bg-slate-50 rounded-xl">
             <p className="text-xs font-bold text-slate-400 uppercase tracking-wider">Error Rate</p>
             <p className="text-lg font-bold text-slate-800">{currentStatus.metrics.errorRate.toFixed(2)}%</p>
           </div>
           <div className="p-3 bg-slate-50 rounded-xl">
-            <p className="text-xs font-bold text-slate-400 uppercase tracking-wider">Uptime</p>
-            <p className="text-lg font-bold text-slate-800">{currentStatus.metrics.uptime.toFixed(2)}%</p>
+            <p className="text-xs font-bold text-slate-400 uppercase tracking-wider">Hoy (reales/ingresos)</p>
+            <p className="text-lg font-bold text-slate-800">{live ? `${live.todayReal}/${live.todayTotal}` : '…'}</p>
+            <p className="text-[10px] text-slate-400 mt-0.5">chats reales / ingresos de hoy</p>
           </div>
         </div>
       </div>
 
       {/* Error Log (if any) */}
-      {Object.entries(currentStatus.services).some(([, s]) => s.error) && (
+      {Object.entries(currentStatus.services).some(([, s]) => s.error && !s.optional) ? (
         <div className="bg-red-50 p-4 rounded-2xl border border-red-200">
           <h4 className="font-bold text-red-700 mb-2 flex items-center gap-2">
             <AlertTriangle size={16} />
@@ -238,13 +274,18 @@ const ApiHealthMonitor: React.FC<ApiHealthMonitorProps> = ({ status }) => {
           </h4>
           <div className="space-y-2">
             {Object.entries(currentStatus.services)
-              .filter(([, s]) => s.error)
+              .filter(([, s]) => s.error && !s.optional)
               .map(([key, s]) => (
                 <div key={key} className="text-sm text-red-600">
                   <span className="font-bold capitalize">{key}:</span> {s.error}
                 </div>
               ))}
           </div>
+        </div>
+      ) : (
+        <div className="bg-emerald-50 p-4 rounded-2xl border border-emerald-200 flex items-center gap-2">
+          <CheckCircle size={16} className="text-emerald-600" />
+          <span className="text-sm font-medium text-emerald-800">Sin alertas activas.</span>
         </div>
       )}
     </div>

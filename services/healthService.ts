@@ -44,6 +44,10 @@ interface ServiceStatus {
   latency: number;
   lastChecked: string;
   error?: string;
+  /** Servicio que el producto ya NO usa: se muestra, pero no cuenta como alerta ni degrada el estado. */
+  optional?: boolean;
+  /** Nota informativa para el operador (no es un error). */
+  note?: string;
 }
 
 export const getSystemStatus = async (): Promise<SystemStatus> => {
@@ -164,9 +168,11 @@ const checkFirebaseStatus = async (): Promise<ServiceStatus> => {
 const checkTwilioStatus = async (): Promise<ServiceStatus> => {
   const start = Date.now();
   try {
+    // Twilio quedó fuera del producto: las llamadas/SMS salen por Sent.dm. Antes esto aparecía
+    // como "Not configured" en Active Alerts todos los días, aunque no hubiera nada roto.
     const config = localStorage.getItem('twilio_config');
     if (!config) {
-      return { status: 'unknown', latency: 0, lastChecked: new Date().toISOString(), error: 'Not configured' };
+      return { status: 'unknown', latency: 0, lastChecked: new Date().toISOString(), optional: true, note: 'No se usa — llamadas/SMS por Sent.dm' };
     }
     
     const { accountSid, authToken } = JSON.parse(config);
