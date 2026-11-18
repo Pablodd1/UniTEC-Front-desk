@@ -11,7 +11,7 @@
 //   · Nunca borra `test-monitor-*` (son el autotest del bot, no basura).
 import { getGoogleAccessToken } from './_google-auth.js';
 
-const TEST_ID = /^(diag-|analytics-verify|secret-verify|probe[-_]|lat-test|sweep-|review-|plan-)/i;
+const TEST_ID = /^(diag-|analytics-verify|secret-verify|probe[-_]|lat-test|sweep-|review-|plan-|test[-_]|qa[-_])/i;
 const KEEP = /^test-monitor/i;
 
 export const config = { maxDuration: 60 };
