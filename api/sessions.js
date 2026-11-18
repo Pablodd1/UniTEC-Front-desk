@@ -51,22 +51,34 @@ export default async function handler(req, res) {
     if (from) filters.push({ fieldFilter: { field: { fieldPath: 'createdAt' }, op: 'GREATER_THAN_OR_EQUAL', value: { stringValue: `${from}T05:00:00.000Z` } } });
     if (to) filters.push({ fieldFilter: { field: { fieldPath: 'createdAt' }, op: 'LESS_THAN', value: { stringValue: `${plusOneDay(to)}T05:00:00.000Z` } } });
 
-    const structuredQuery = {
+    const baseQuery = {
       from: [{ collectionId: 'conversations' }],
       ...(filters.length
         ? { where: filters.length > 1 ? { compositeFilter: { op: 'AND', filters } } : filters[0] }
         : {}),
       orderBy: [{ field: { fieldPath: 'createdAt' }, direction: 'DESCENDING' }],
-      limit,
     };
 
     let sessions;
     try {
-      const rows = await runQuery(token, structuredQuery);
-      sessions = rows
-        .filter((x) => x.document)
-        .map((x) => parseFirestoreDoc(x.document))
-        .filter((s) => !isTestSession(s.id));
+      // Las sesiones de prueba del monitor (cada 2 h) se mezclan con las reales y el orden por
+      // fecha las deja arriba: pedir `limit` a secas devolvía 103 reales de 500 documentos.
+      // Se pagina hasta juntar `limit` sesiones reales (o agotar el máximo escaneado).
+      const CHUNK = 300;
+      const MAX_SCAN = 2400;
+      const kept = [];
+      let offset = 0;
+      while (kept.length < limit && offset < MAX_SCAN) {
+        const rows = await runQuery(token, { ...baseQuery, limit: CHUNK, offset });
+        const docs = rows.filter((x) => x.document);
+        docs
+          .map((x) => parseFirestoreDoc(x.document))
+          .filter((s) => !isTestSession(s.id))
+          .forEach((s) => kept.push(s));
+        if (docs.length < CHUNK) break; // no hay más documentos
+        offset += CHUNK;
+      }
+      sessions = kept.slice(0, limit);
     } catch (queryErr) {
       // Sin índice / query rechazada: se recorre la colección y se filtra en memoria (más lento).
       console.warn('[sessions] runQuery falló, usando fallback:', queryErr?.message || queryErr);
