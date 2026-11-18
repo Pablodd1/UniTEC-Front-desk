@@ -168,11 +168,24 @@ const checkFirebaseStatus = async (): Promise<ServiceStatus> => {
 const checkTwilioStatus = async (): Promise<ServiceStatus> => {
   const start = Date.now();
   try {
-    // Twilio quedó fuera del producto: las llamadas/SMS salen por Sent.dm. Antes esto aparecía
-    // como "Not configured" en Active Alerts todos los días, aunque no hubiera nada roto.
+    // Antes miraba localStorage twilio_config, que nadie escribía → "Not configured" todos los días
+    // aunque el SMS de alertas SÍ funciona (lo manda el servidor con las variables de entorno).
+    try {
+      const r = await fetch('/api/system-health', { cache: 'no-store' });
+      const d = await r.json().catch(() => ({}));
+      const smsOn = d?.channels?.sms === true;
+      return {
+        status: smsOn ? 'up' : 'unknown',
+        latency: Date.now() - start,
+        lastChecked: new Date().toISOString(),
+        optional: !smsOn,
+        note: smsOn ? 'SMS de alertas activo (servidor)' : 'SMS no configurado en el servidor',
+        error: smsOn ? undefined : 'SMS no configurado',
+      };
+    } catch { /* cae al chequeo local de abajo */ }
     const config = localStorage.getItem('twilio_config');
     if (!config) {
-      return { status: 'unknown', latency: 0, lastChecked: new Date().toISOString(), optional: true, note: 'No se usa — llamadas/SMS por Sent.dm' };
+      return { status: 'unknown', latency: 0, lastChecked: new Date().toISOString(), optional: true, note: 'SMS: sin datos del servidor' };
     }
     
     const { accountSid, authToken } = JSON.parse(config);

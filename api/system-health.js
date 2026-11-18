@@ -15,8 +15,18 @@ export default async function handler(req, res) {
     process.env.API_KEY
   ].filter(Boolean);
 
+  // Configuración de canales de alerta (sin exponer secretos: sólo booleanos).
+  // El panel marcaba Twilio como "Not configured" porque miraba localStorage; el SMS real sale
+  // por Twilio y SÍ está configurado en el servidor.
+  const channels = {
+    sms: !!(process.env.TWILIO_ACCOUNT_SID && process.env.TWILIO_AUTH_TOKEN && process.env.TWILIO_PHONE_NUMBER),
+    telegram: !!(process.env.TELEGRAM_BOT_TOKEN && process.env.TELEGRAM_CHAT_ID),
+    email: !!(process.env.RESEND_API_KEY || process.env.RESEND_API_KEY_ALT),
+    whatsapp: !!(process.env.SENT_DM_API_KEY || (process.env.TWILIO_ACCOUNT_SID && process.env.TWILIO_AUTH_TOKEN)),
+  };
+
   if (keys.length === 0) {
-    return res.status(200).json({ status: 'down', latency: 0, error: 'No Gemini key configured on server', lastChecked: new Date().toISOString() });
+    return res.status(200).json({ status: 'down', latency: 0, channels, error: 'No Gemini key configured on server', lastChecked: new Date().toISOString() });
   }
 
   const start = Date.now();
@@ -27,10 +37,10 @@ export default async function handler(req, res) {
     );
     const latency = Date.now() - start;
     if (response.ok) {
-      return res.status(200).json({ status: 'up', latency, lastChecked: new Date().toISOString() });
+      return res.status(200).json({ status: 'up', latency, channels, lastChecked: new Date().toISOString() });
     }
-    return res.status(200).json({ status: 'degraded', latency, error: `HTTP ${response.status}`, lastChecked: new Date().toISOString() });
+    return res.status(200).json({ status: 'degraded', latency, channels, error: `HTTP ${response.status}`, lastChecked: new Date().toISOString() });
   } catch (e) {
-    return res.status(200).json({ status: 'down', latency: Date.now() - start, error: e.message, lastChecked: new Date().toISOString() });
+    return res.status(200).json({ status: 'down', latency: Date.now() - start, channels, error: e.message, lastChecked: new Date().toISOString() });
   }
 }
