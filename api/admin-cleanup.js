@@ -17,12 +17,12 @@ const KEEP = /^test-monitor/i;
 export const config = { maxDuration: 60 };
 
 function authorized(req) {
-  const secret = process.env.ADMIN_SECRET || '';
-  if (!secret) return false;
+  // ADMIN_SECRET y/o CLEANUP_TOKEN (token de un solo uso para limpiezas programadas).
+  const allowed = [process.env.ADMIN_SECRET, process.env.CLEANUP_TOKEN].filter(Boolean);
+  if (!allowed.length) return false;
   const h = String(req.headers.authorization || '');
   const bearer = h.startsWith('Bearer ') ? h.slice(7).trim() : '';
-  const q = String(req.query?.key || '');
-  return bearer === secret || q === secret;
+  return allowed.some((s) => s === bearer);
 }
 
 export default async function handler(req, res) {
