@@ -371,9 +371,11 @@ const ChatTab: React.FC<ChatTabProps> = ({ quickActions, initialMessage, emergen
   useEffect(() => {
     if (messages.length === 1 && messages[0].id === 'welcome') {
         const brandName = brandId === 'unitec' ? 'Unitec USA Design' : 'Building Innovation';
+        // Mismo saludo data-driven (config/main.botName) que el saludo inicial: este bloque
+        // reescribía el mensaje de bienvenida con el texto fijo y volvía a poner "Decky".
         const welcomeText = language === 'en'
-          ? `Hello, 👋 Welcome to ${brandName}, your partner in constructive solutions and alternatives.\n\nMy name is Decky👷 and I will help you find, among more than 500 products, what your project needs.\n\nSo I can help you right away: what product are you looking for, or what do you need a quote for?`
-          : `Hola, 👋 Bienvenido a ${brandName}, tu aliado en soluciones y alternativas constructivas.\n\nMi nombre es Decky👷 y te voy a ayudar a encontrar, entre más de 500 productos, lo que tu proyecto necesita.\n\nPara ayudarte de una vez, cuéntame: ¿qué producto buscas o qué necesitas cotizar?`;
+          ? `Hello, 👋 Welcome to ${brandName}, your partner in constructive solutions and alternatives.\n\nMy name is ${botName}👷 and I'll help you find, among more than 500 products, what your project needs.\nSo I can help you right away: what product are you looking for, or what do you need a quote for?`
+          : `Hola, 👋 Bienvenido a ${brandName}, tu aliado en soluciones y alternativas constructivas.\n\nMi nombre es ${botName}👷 y te voy a ayudar a encontrar, entre más de 500 productos, lo que tu proyecto necesita.\nPara ayudarte de una vez, cuéntame: ¿qué producto buscas o qué necesitas cotizar?`;
         
         setMessages([{
             id: 'welcome',
@@ -383,7 +385,7 @@ const ChatTab: React.FC<ChatTabProps> = ({ quickActions, initialMessage, emergen
             skipFirestore: true // UI greeting only — never written to the session transcript
         }]);
     }
-  }, [language, brandId]);
+  }, [language, brandId, botName]);
 
 
   useEffect(() => {
