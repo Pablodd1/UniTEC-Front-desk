@@ -138,7 +138,11 @@ export async function commitWrites(writes, tokenOverride = null) {
   const token = tokenOverride || (await getToken());
   const body = {
     writes: writes.map((w) => {
-      const name = `${DOCS}/${w.path.split('/').map(encodeURIComponent).join('/')}`;
+      // `name` en :commit debe ser el NOMBRE DEL RECURSO (projects/…/documents/…), NO una URL.
+      // Con la URL, Firestore responde 400 "Document name … is not valid" y ninguna escritura
+      // transaccional funcionaba (disposition_types y staff-disposition incluidos).
+      const resourceBase = DOCS.replace('https://firestore.googleapis.com/v1/', '');
+      const name = `${resourceBase}/${w.path.split('/').map(encodeURIComponent).join('/')}`;
       const upd = { update: { name, fields: toFields(w.fields || {}) } };
       if (Array.isArray(w.mask) && w.mask.length) upd.updateMask = { fieldPaths: w.mask };
       return upd;
