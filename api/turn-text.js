@@ -110,3 +110,26 @@ export function tightenReply(text) {
   }
   return short;
 }
+
+
+// ── Teléfonos deletreados ────────────────────────────────────────────────────────────────
+// Si el modelo escribe el número con palabras ("tres uno cuatro dos tres tres…"), el cliente
+// no puede marcarlo. Se reconstruye en dígitos cuando el mensaje habla de contacto.
+const NUM_WORDS = {
+  cero: '0', uno: '1', dos: '2', tres: '3', cuatro: '4', cinco: '5', seis: '6',
+  siete: '7', ocho: '8', nueve: '9',
+};
+
+export function digitsFromSpelledPhone(text) {
+  const raw = String(text || '');
+  if (!raw) return raw;
+  if (!/(tel[eé]fono|numero|n[uú]mero|celular|whats|llama|marcar|cont[aá]ct|comunica)/i.test(raw)) return raw;
+
+  const run = /(?:\b(?:cero|uno|dos|tres|cuatro|cinco|seis|siete|ocho|nueve)\b[\s,.-]*){7,}/gi;
+  return raw.replace(run, (m) => {
+    const words = m.toLowerCase().match(/\b(?:cero|uno|dos|tres|cuatro|cinco|seis|siete|ocho|nueve)\b/g) || [];
+    if (words.length < 7) return m;
+    const digits = words.map((w) => NUM_WORDS[w]).join('');
+    return ` ${digits} `;
+  });
+}

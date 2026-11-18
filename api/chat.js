@@ -15,7 +15,7 @@ function isRateLimited(ip, limit = 120, windowMs = 60000) {
 import { inspectConversation } from './health.js';
 import { getSharedTraining } from './shared-training.js';
 import { recordChatTurn } from './_record-chat-turn.js';
-import { normalizeHistory, catalogReply, tightenReply, detectEscalation } from './turn-text.js';
+import { normalizeHistory, catalogReply, tightenReply, detectEscalation, digitsFromSpelledPhone } from './turn-text.js';
 import { alertAnomaly } from './anomaly-alert.js';
 import { createRequire } from 'module';
 const require_ = createRequire(import.meta.url);
@@ -738,6 +738,8 @@ GOOD EXAMPLE: "¡Hola! ¿En qué producto te interesa?"`;
         if (responseText) {
           // Macros literales del cliente (trainingData) pasan completos; el resto se acorta.
           responseText = isPinnedLiteral(responseText) ? String(responseText).trim().slice(0, 1200) : tightenReply(responseText);
+          // Último cinturón: si el número quedó deletreado, se convierte a dígitos antes de enviarlo.
+          responseText = digitsFromSpelledPhone(responseText);
 
           // Record this real chat turn server-side (messages + counters + funnel).
           // AWAITED (not fire-and-forget): Vercel kills pending promises when the
