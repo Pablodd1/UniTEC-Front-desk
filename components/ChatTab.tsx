@@ -100,6 +100,18 @@ interface ChatTabProps {
 
 const ChatTab: React.FC<ChatTabProps> = ({ quickActions, initialMessage, emergencyMode, language, customGreeting, bgImage, brandId }) => {
   const t = UI_TRANSLATIONS[language];
+  // Nombre del bot configurable (Ajustes/entrenamiento → config/main.botName).
+  // Estaba fijo en el texto del saludo ("Decky"), así que la instrucción del administrador
+  // ("mi nombre es IAgo UNITEC") no podía cambiar nada: el widget no la lee.
+  const [botName, setBotName] = useState<string>('Decky');
+  useEffect(() => {
+    let alive = true;
+    fetch('/api/chat-config')
+      .then((r) => (r.ok ? r.json() : null))
+      .then((d) => { if (alive && d?.botName) setBotName(String(d.botName)); })
+      .catch(() => {});
+    return () => { alive = false; };
+  }, []);
   
   const [onboardingStage, setOnboardingStage] = useState<'name' | 'phone' | 'profession' | 'ready'>(() => {
     if (typeof window !== 'undefined') {
@@ -131,9 +143,11 @@ const ChatTab: React.FC<ChatTabProps> = ({ quickActions, initialMessage, emergen
     }
     
     const brandName = brandId === 'unitec' ? 'Unitec USA Design' : 'Building Innovation';
+    // Nombre y redacción tomados de la configuración (config/main.botName). Antes estaba fijo en el
+    // código como "Decky", por eso el cambio pedido en el campo de entrenamiento no se veía.
     const welcomeText = language === 'en'
-      ? `Hello, 👋 Welcome to ${brandName}, your partner in constructive solutions and alternatives.\n\nMy name is Decky👷 and I will help you find, among more than 500 products, what your project needs.\n\nSo I can help you right away: what product are you looking for, or what do you need a quote for?`
-      : `Hola, 👋 Bienvenido a ${brandName}, tu aliado en soluciones y alternativas constructivas.\n\nMi nombre es Decky👷 y te voy a ayudar a encontrar, entre más de 500 productos, lo que tu proyecto necesita.\n\nPara ayudarte de una vez, cuéntame: ¿qué producto buscas o qué necesitas cotizar?`;
+      ? `Hello, 👋 Welcome to ${brandName}, your partner in constructive solutions and alternatives.\n\nMy name is ${botName}👷 and I'll help you find, among more than 500 products, what your project needs.\nSo I can help you right away: what product are you looking for, or what do you need a quote for?`
+      : `Hola, 👋 Bienvenido a ${brandName}, tu aliado en soluciones y alternativas constructivas.\n\nMi nombre es ${botName}👷 y te voy a ayudar a encontrar, entre más de 500 productos, lo que tu proyecto necesita.\nPara ayudarte de una vez, cuéntame: ¿qué producto buscas o qué necesitas cotizar?`;
 
     return [
       {

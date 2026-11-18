@@ -308,6 +308,21 @@ GOOD EXAMPLE: "¡Hola! ¿En qué producto te interesa?"`;
       console.warn('Training injection skipped:', e?.message);
     }
 
+    // ── Nombre del bot (config/main.botName) ─────────────────────────────────
+    // La identidad estaba FIXED en el código ("Decky") en tres lugares (constants.ts, el guard de
+    // abajo y el saludo del widget), así que la nota del administrador en el campo de
+    // entrenamiento ("cambia mi nombre a IAgo UNITEC") no podía tener efecto: el prompt decía
+    // literalmente lo contrario. Aquí manda la configuración.
+    try {
+      const { resolveBotName } = await import('./chat-config.js');
+      const botName = await resolveBotName();
+      if (botName && botName !== 'Decky') {
+        instructions = instructions.replace(/\bDecky\b/g, botName);
+      }
+    } catch (e) {
+      console.warn('[chat] botName lookup skipped:', e?.message);
+    }
+
     // ── Textos LITERALES del cliente (config/main.trainingData) ──────────────────
     // El cliente pega macros que deben salir "sin cambiar la redacción" (p.ej. el showroom de
     // Miami). El cap de brevedad (360/700 chars) los cortaba a mitad de frase y el cliente
