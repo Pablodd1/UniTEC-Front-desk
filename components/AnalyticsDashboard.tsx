@@ -10,38 +10,88 @@ interface AnalyticsDashboardProps {
   onOpenConversation?: (session: ConversationSession) => void;
 }
 
+const BOG_TODAY = () => new Date().toLocaleDateString('en-CA', { timeZone: 'America/Bogota' });
+const bogotaDayKey = (iso: string) => {
+  const d = new Date(iso);
+  return Number.isNaN(d.getTime()) ? '' : d.toLocaleDateString('en-CA', { timeZone: 'America/Bogota' });
+};
+
 const AnalyticsDashboard: React.FC<AnalyticsDashboardProps> = ({ sessions, googleAnalyticsVisits, onOpenConversation }) => {
   const [timeFilter, setTimeFilter] = useState<'all' | 'today' | 'week' | 'month'>('all');
+  const [selectedMonth, setSelectedMonth] = useState<string>('all');
+  const [selectedDay, setSelectedDay] = useState<string>('all');
+  // El registro pintaba ~4.700 filas de golpe (la pestaña se congelaba y no se podía hacer clic).
+  const [rowLimit, setRowLimit] = useState<number>(300);
   const [_liveTime, setLiveTime] = useState(new Date());
 
-  // Refresh live metrics every 30s
+  // Reloj de la pestaña: refresca los contadores "en vivo" cada 30 s.
   useEffect(() => {
     const t = setInterval(() => setLiveTime(new Date()), 30000);
     return () => clearInterval(t);
   }, []);
 
-  // ── Embudo real (Mission Control) ─────────────────────────────────────────
-  // Se consulta al servidor (/api/analytics) para usar EXACTAMENTE el mismo motor que
-  // el informe diario (api/_analytics-core.js). Antes el panel recalculaba los KPIs en
-  // el navegador con otra definición (contaba el saludo del bot como interacción) y los
-  // números del panel y del informe no coincidían nunca.
+  // ── UN SOLO RANGO PARA TODO ───────────────────────────────────────────────
+  // Bug reportado ("los filtros no funcionan"): las tarjetas se pedían al servidor solo con
+  // `timeFilter`, así que elegir Noviembre o un día no movía nada. Ahora el rango sale de los TRES
+  // filtros y alimenta tarjetas, embudo, GA4 y la tabla por igual. Días en hora Bogotá.
+  const range = React.useMemo(() => {
+    const today = BOG_TODAY();
+    const shift = (n: number) =>
+      new Date(Date.now() - n * 86400000).toLocaleDateString('en-CA', { timeZone: 'America/Bogota' });
+    if (selectedMonth !== 'all') {
+      const year = Number(today.slice(0, 4));
+      const m = parseInt(selectedMonth, 10); // 0-11
+      const mm = String(m + 1).padStart(2, '0');
+      const first = `${year}-${mm}-01`;
+      const lastDay = new Date(Date.UTC(year, m + 1, 0)).getUTCDate();
+      if (selectedDay !== 'all') {
+        const d = `${year}-${mm}-${String(parseInt(selectedDay, 10)).padStart(2, '0')}`;
+        return { from: d, to: d };
+      }
+      let to = `${year}-${mm}-${String(lastDay).padStart(2, '0')}`;
+      if (to > today) to = today; // mes en curso: hasta hoy
+      return { from: first, to };
+    }
+    if (selectedDay !== 'all') {
+      const d = `${today.slice(0, 7)}-${String(parseInt(selectedDay, 10)).padStart(2, '0')}`;
+      return { from: d, to: d };
+    }
+    if (timeFilter === 'today') return { from: today, to: today };
+    if (timeFilter === 'week') return { from: shift(6), to: today };
+    if (timeFilter === 'month') return { from: shift(29), to: today };
+    return { from: '', to: '' }; // 'all' = histórico completo
+  }, [timeFilter, selectedMonth, selectedDay]);
+
+  // ── Embudo real + KPIs (Mission Control) ──────────────────────────────────
+  // Se consulta al servidor (/api/analytics) para usar EXACTAMENTE el mismo motor que el informe
+  // diario (api/_analytics-core.js). Refresco automático cada 60 s y al volver a la pestaña.
   const [funnelData, setFunnelData] = useState<any>(null);
+  const [apiError, setApiError] = useState('');
+  const [lastLoadedAt, setLastLoadedAt] = useState('');
   useEffect(() => {
-    const bogotaDay = (offsetDays = 0) =>
-      new Date(Date.now() - offsetDays * 86400000).toLocaleDateString('en-CA', { timeZone: 'America/Bogota' });
-    const toDay = bogotaDay(0);
-    const from = timeFilter === 'today' ? toDay
-      : timeFilter === 'week' ? bogotaDay(6)
-        : timeFilter === 'month' ? `${toDay.slice(0, 7)}-01`
-          : '';
-    const qs = from ? `?from=${from}&to=${toDay}` : '';
     let alive = true;
-    fetch(`/api/analytics${qs}`)
-      .then(r => (r.ok ? r.json() : null))
-      .then(d => { if (alive && d) setFunnelData(d); })
-      .catch(() => { /* el panel sigue funcionando con los KPIs locales */ });
-    return () => { alive = false; };
-  }, [timeFilter]);
+    const load = () => {
+      const qs = range.from ? `?from=${range.from}&to=${range.to}` : '';
+      fetch(`/api/analytics${qs}`)
+        .then((r) => (r.ok ? r.json() : Promise.reject(new Error(`HTTP ${r.status}`))))
+        .then((d) => {
+          if (!alive) return;
+          setFunnelData(d);
+          setApiError('');
+          setLastLoadedAt(new Date().toLocaleTimeString('es-CO', { timeZone: 'America/Bogota' }));
+        })
+        .catch((e) => { if (alive) setApiError(String(e?.message || e)); });
+    };
+    load();
+    const t = setInterval(load, 60000);
+    const onFocus = () => load();
+    if (typeof window !== 'undefined') window.addEventListener('focus', onFocus);
+    return () => {
+      alive = false;
+      clearInterval(t);
+      if (typeof window !== 'undefined') window.removeEventListener('focus', onFocus);
+    };
+  }, [range.from, range.to]);
 
   const exportToCSV = () => {
     const headers = [
@@ -95,12 +145,11 @@ const AnalyticsDashboard: React.FC<AnalyticsDashboardProps> = ({ sessions, googl
   };
 
   const now = new Date();
-  const todayStart = new Date(now.getFullYear(), now.getMonth(), now.getDate()).getTime();
-  const weekStart = todayStart - 7 * 24 * 60 * 60 * 1000;
-  const monthStart = new Date(now.getFullYear(), now.getMonth(), 1).getTime();
 
-  // Always-live: today metrics (independent of filter)
-  const todaySessions = sessions.filter(s => new Date(s.createdAt).getTime() >= todayStart);
+  // "Hoy" SIEMPRE en hora Bogotá (antes usaba la medianoche del navegador, así que un operador en
+  // otra zona veía un día distinto al del informe).
+  const todayKey = BOG_TODAY();
+  const todaySessions = sessions.filter(s => bogotaDayKey(s.createdAt) === todayKey);
   const activeNow = sessions.filter(s => s.status === 'active' || s.status === 'human_assigned').length;
   const pendingInterventionsToday = todaySessions.filter(s => s.status === 'human_requested' || s.status === 'human_assigned').length;
   const avgMsgsToday = todaySessions.length > 0
@@ -109,61 +158,40 @@ const AnalyticsDashboard: React.FC<AnalyticsDashboardProps> = ({ sessions, googl
   const unitecToday = todaySessions.filter(s => s.brandId === 'unitec').length;
   const buildingToday = todaySessions.filter(s => s.brandId === 'building').length;
 
+  const bogotaHour = (iso: string) => {
+    const d = new Date(iso);
+    return Number.isNaN(d.getTime()) ? -1
+      : parseInt(d.toLocaleTimeString('en-US', { hour: '2-digit', hour12: false, timeZone: 'America/Bogota' }), 10);
+  };
+
   // Hourly ingestion for today
   const todayHourlyData = Array.from({ length: 24 }, (_, h) => ({
     hour: `${h.toString().padStart(2, '0')}h`,
-    count: todaySessions.filter(s => new Date(s.createdAt).getHours() === h).length,
+    count: todaySessions.filter(s => bogotaHour(s.createdAt) === h).length,
   }));
 
-  const [selectedMonth, setSelectedMonth] = useState<string>('all');
-  const [selectedDay, setSelectedDay] = useState<string>('all');
-  // El registro pintaba ~4.700 filas de golpe (la pestaña se congelaba y no se podía hacer clic).
-  // Se pagina de 300 en 300 y cada fila abre su conversación.
-  const [rowLimit, setRowLimit] = useState<number>(300);
-
-  // ── Visitas Web (GA4) ─────────────────────────────────────────────────────
-  // POR QUÉ ESTABA CONGELADO: la tarjeta leía `config/main.googleAnalyticsVisits`, un único número
-  // manual (3.188 por defecto en el código) que NO dependía del filtro de fechas. Ahora se pide a
-  // /api/ga-visits con el MISMO rango que la tarjeta. Si GA4 no está conectado (falta
-  // GA4_PROPERTY_ID / GA_SERVICE_ACCOUNT_JSON) se dice explícitamente y no se inventa ninguna cifra.
   const [gaData, setGaData] = useState<{ configured: boolean; sessions?: number; totalUsers?: number; error?: string; missing?: string[]; empty?: boolean; propertyId?: string; serviceAccountEmail?: string } | null>(null);
   useEffect(() => {
-    const bogotaDay = (offsetDays = 0) =>
-      new Date(Date.now() - offsetDays * 86400000).toLocaleDateString('en-CA', { timeZone: 'America/Bogota' });
-    const toDay = bogotaDay(0);
-    let from = '';
-    if (selectedMonth !== 'all') {
-      const m = String(parseInt(selectedMonth, 10) + 1).padStart(2, '0');
-      from = `${new Date().getFullYear()}-${m}-01`;
-    } else if (timeFilter === 'today') from = toDay;
-    else if (timeFilter === 'week') from = bogotaDay(6);
-    else if (timeFilter === 'month') from = bogotaDay(29);
-    if (!from) { setGaData({ configured: false, error: 'sin_rango' }); return; }
+    if (!range.from) { setGaData({ configured: false, error: 'sin_rango' }); return; }
     let alive = true;
-    fetch(`/api/ga-visits?from=${from}&to=${toDay}`)
+    fetch(`/api/ga-visits?from=${range.from}&to=${range.to}`)
       .then((r) => r.json())
       .then((d) => { if (alive) setGaData(d); })
       .catch((e) => { if (alive) setGaData({ configured: false, error: String(e?.message || e) }); });
     return () => { alive = false; };
-  }, [timeFilter, selectedMonth]);
+  }, [range.from, range.to]);
 
   const MONTHS_SPANISH = [
     'Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio',
     'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'
   ];
 
-  // Apply time, month, and day filter for main metrics
+  // La tabla usa EL MISMO rango que las tarjetas (antes filtraba por el mes local del navegador,
+  // así que la lista y los KPIs podían mostrar períodos distintos).
   const filteredSessions = sessions.filter(s => {
-    const d = new Date(s.createdAt);
-    const sTime = d.getTime();
-    
-    if (selectedMonth !== 'all' && d.getMonth() !== parseInt(selectedMonth, 10)) return false;
-    if (selectedDay !== 'all' && d.getDate() !== parseInt(selectedDay, 10)) return false;
-
-    if (timeFilter === 'today') return sTime >= todayStart;
-    if (timeFilter === 'week') return sTime >= weekStart;
-    if (timeFilter === 'month') return sTime >= monthStart;
-    return true;
+    if (!range.from) return true;
+    const key = bogotaDayKey(s.createdAt);
+    return key !== '' && key >= range.from && key <= range.to;
   });
 
   const totalSessions = filteredSessions.length;
@@ -273,6 +301,22 @@ const AnalyticsDashboard: React.FC<AnalyticsDashboardProps> = ({ sessions, googl
 
   return (
     <div className="space-y-6 pb-20">
+      {/* Estado de la fuente + rango efectivo (para que se vea QUÉ período se está mirando) */}
+      <div className="flex flex-wrap items-center justify-between gap-2 px-1">
+        <p className="text-[10px] font-bold uppercase tracking-wider text-slate-500">
+          Período: {range.from ? `${range.from} → ${range.to}` : 'histórico completo'} (hora Bogotá)
+        </p>
+        <p className="text-[10px] text-slate-400">
+          {apiError
+            ? <span className="text-red-500 font-bold">Sin datos del servidor: {apiError}</span>
+            : lastLoadedAt ? `Servidor actualizado ${lastLoadedAt}` : 'Cargando…'}
+        </p>
+      </div>
+      {apiError && (
+        <div className="bg-red-50 border border-red-200 text-red-700 text-xs rounded-xl px-4 py-2">
+          No se pudo leer /api/analytics ({apiError}). Los KPIs de abajo pueden estar desactualizados.
+        </div>
+      )}
       {/* TODAY LIVE PANEL */}
       <div className="bg-gradient-to-br from-slate-900 to-slate-800 rounded-2xl p-6 text-white shadow-xl relative overflow-hidden">
         <div className="absolute inset-0 opacity-10" style={{ backgroundImage: 'radial-gradient(circle at 20% 50%, #22c55e 0%, transparent 50%), radial-gradient(circle at 80% 20%, #3b82f6 0%, transparent 40%)' }} />
