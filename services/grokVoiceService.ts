@@ -105,7 +105,10 @@ export async function connectGrokVoice(
     '\n- Empieza saludando en UNA frase y luego espera: "¡Hola! Bienvenido a UNITEC USA DESIGN, ¿en qué te ayudo?"' +
     '\n- Cada turno: 1-2 frases cortas, máximo 20 palabras, sin URLs ni listas. Estás HABLANDO, no escribiendo: nada de párrafos.' +
     '\n- SHOWROOM/UBICACIÓN: di SOLO "Tenemos showroom en Miami, en 6100 NW 74th Ave, y la atención es con cita previa" y ofrece enviarle la dirección y los detalles por WhatsApp. NUNCA leas el párrafo completo del training en voz alta.' +
-    '\n- ASESOR/COTIZACIÓN: di "Ya avisé a un asesor del equipo, te escribirá por aquí en breve" y pide nombre y número solo si todavía no los tienes.';
+    '\n- ASESOR/COTIZACIÓN: di "Ya avisé a un asesor del equipo, te escribirá por aquí en breve" y pide nombre y número solo si todavía no los tienes.' +
+    // En voz el número NO se lee como cifra ("quinientos setenta y tres mil…"): se dicta dígito por dígito.
+    '\n- TELÉFONOS: cuando des un número de teléfono, DÍCTALO dígito por dígito y agrupado (ej. "cinco siete, tres uno cuatro, dos tres tres, dos uno cuatro siete"). NUNCA lo digas como una cantidad ni lo leas de corrido.' +
+    '\n- PRECIOS: esos sí se dicen como cifra normal ("treinta y siete mil pesos").';
 
   // ── 4. Socket ─────────────────────────────────────────────────────────────
   const ws = new WebSocket(WS_URL, [`xai-client-secret.${tokenData.token}`]);
