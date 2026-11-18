@@ -473,7 +473,7 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({
     setTimeout(() => setIsSavingEscala(false), 800);
   };
 
-  const handleSaveTraining = async () => {
+  const handleSaveTraining = async (append = false) => {
     setIsSavingTraining(true);
     setTrainingSaveStatus('idle');
     setTrainingSaveMessage('');
@@ -481,7 +481,7 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({
       const res = await fetch('/api/training', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ trainingData }),
+        body: JSON.stringify(append ? { trainingData, append: true } : { trainingData }),
       });
       const json = await res.json().catch(() => ({}));
       if (!res.ok || json.ok === false) {
@@ -491,6 +491,10 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({
       try { await saveAppConfig({ trainingData }); } catch { /* optional per-user copy */ }
       try { window.localStorage.setItem('unitec_training_data', trainingData); } catch { /* ignore */ }
       setTrainingSaveStatus(json.loaded === false || json.telegram?.sent === false ? 'error' : 'ok');
+      if (append && json.loaded !== false) {
+        setTrainingSaveMessage('Nota AÑADIDA al entrenamiento existente (no se borró nada de lo anterior). El bot la usa en el próximo mensaje.');
+        return;
+      }
       if (json.loaded === false) {
         setTrainingSaveMessage(json.message || 'Se guardó, pero la recarga no coincide.');
       } else if (json.telegram?.sent) {
@@ -1115,18 +1119,37 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({
                                     <p className="text-xs text-slate-500">Add custom knowledge, FAQs, or brand voice examples.</p>
                                 </div>
                             </div>
-                            <button 
-                                onClick={handleSaveTraining}
-                                disabled={isSavingTraining}
-                                className="px-8 py-2.5 bg-brand-600 text-white rounded-xl text-xs font-bold shadow-lg hover:bg-brand-700 flex items-center gap-2 transition-all active:scale-95"
-                            >
-                                {isSavingTraining ? <Loader2 size={14} className="animate-spin" /> : <Save size={14} />}
-                                Save Training Data
-                            </button>
+                            <div className="flex items-center gap-2">
+                                {/* Añade la nota al final conservando todo lo anterior (append server-side).
+                                    Antes solo existía Guardar, que REEMPLAZA el cuadro completo: una nota
+                                    corta pegada sola borraba todas las pautas anteriores. */}
+                                <button
+                                    onClick={() => handleSaveTraining(true)}
+                                    disabled={isSavingTraining}
+                                    className="px-5 py-2.5 bg-emerald-600 text-white rounded-xl text-xs font-bold shadow-lg hover:bg-emerald-700 flex items-center gap-2 transition-all active:scale-95"
+                                    title="Agrega este texto al final del entrenamiento existente, sin borrar lo anterior"
+                                >
+                                    {isSavingTraining ? <Loader2 size={14} className="animate-spin" /> : <Save size={14} />}
+                                    Añadir sin borrar
+                                </button>
+                                <button 
+                                    onClick={() => handleSaveTraining(false)}
+                                    disabled={isSavingTraining}
+                                    className="px-6 py-2.5 bg-brand-600 text-white rounded-xl text-xs font-bold shadow-lg hover:bg-brand-700 flex items-center gap-2 transition-all active:scale-95"
+                                    title="Reemplaza TODO el contenido del cuadro por lo que hay escrito ahora"
+                                >
+                                    {isSavingTraining ? <Loader2 size={14} className="animate-spin" /> : <Save size={14} />}
+                                    Guardar (reemplaza)
+                                </button>
+                            </div>
                         </div>
                         
                         <div className="space-y-4">
                             <label className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Knowledge Base Content</label>
+                            <p className="text-[10px] text-slate-500 -mt-2">
+                                “Añadir sin borrar” agrega el texto al final. “Guardar (reemplaza)” cambia todo el cuadro:
+                                úselo solo si editó el texto completo. El bot toma los cambios en 1-5 minutos.
+                            </p>
                             <textarea
                                 value={trainingData}
                                 onChange={(e) => { setTrainingData(e.target.value); setTrainingSaveStatus('idle'); }}
