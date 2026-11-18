@@ -121,8 +121,10 @@ export function parseFirestoreDoc(doc) {
     status: fields.status?.stringValue || 'active',
     source: fields.source?.stringValue || 'web',
     language: fields.language?.stringValue || 'es',
-    createdAt: fields.createdAt?.stringValue || new Date().toISOString(),
-    lastUpdated: fields.lastUpdated?.stringValue || new Date().toISOString(),
+    // NUNCA inventar la fecha: había 5 documentos sin `createdAt` y el fallback `new Date()` los
+    // fechaba HOY en cada lectura, así que se colaban en "Ingresaron hoy" y en cualquier filtro.
+    createdAt: fields.createdAt?.stringValue || '',
+    lastUpdated: fields.lastUpdated?.stringValue || '',
     firstUserMessageAt: fields.firstUserMessageAt?.stringValue || null,
     flowStage: fields.flowStage?.stringValue || 'greeted',
     funnelStep: fields.funnelStep?.stringValue || '',

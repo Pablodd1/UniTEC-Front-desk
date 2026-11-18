@@ -39,9 +39,17 @@ export default async function handler(req, res) {
   try {
     const token = await getToken();
 
+    // Días BOGOTÁ (UTC-5) = [from 05:00Z, (to+1día) 05:00Z). Con comparación de texto UTC la
+    // ventana se corría un día y no coincidía con los KPIs (que sí son Bogotá).
+    const plusOneDay = (day) => {
+      const dt = new Date(`${day}T00:00:00Z`);
+      if (Number.isNaN(dt.getTime())) return day;
+      dt.setUTCDate(dt.getUTCDate() + 1);
+      return dt.toISOString().slice(0, 10);
+    };
     const filters = [];
-    if (from) filters.push({ fieldFilter: { field: { fieldPath: 'createdAt' }, op: 'GREATER_THAN_OR_EQUAL', value: { stringValue: from } } });
-    if (to) filters.push({ fieldFilter: { field: { fieldPath: 'createdAt' }, op: 'LESS_THAN_OR_EQUAL', value: { stringValue: `${to}T23:59:59.999Z` } } });
+    if (from) filters.push({ fieldFilter: { field: { fieldPath: 'createdAt' }, op: 'GREATER_THAN_OR_EQUAL', value: { stringValue: `${from}T05:00:00.000Z` } } });
+    if (to) filters.push({ fieldFilter: { field: { fieldPath: 'createdAt' }, op: 'LESS_THAN', value: { stringValue: `${plusOneDay(to)}T05:00:00.000Z` } } });
 
     const structuredQuery = {
       from: [{ collectionId: 'conversations' }],
