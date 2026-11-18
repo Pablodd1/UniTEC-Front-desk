@@ -78,8 +78,8 @@ const toFields = (obj) => Object.fromEntries(Object.entries(obj).map(([k, v]) =>
 const fromFields = (fields) => Object.fromEntries(Object.entries(fields || {}).map(([k, v]) => [k, fromValue(v)]));
 
 /** Read a document; returns null when it does not exist. */
-export async function getDoc(path) {
-  const token = await getToken();
+export async function getDoc(path, tokenOverride = null) {
+  const token = tokenOverride || (await getToken());
   const res = await fetch(docUrl(path), { headers: { Authorization: `Bearer ${token}` }, signal: AbortSignal.timeout(8000) });
   if (res.status === 404) return null;
   if (!res.ok) throw new Error(`getDoc ${path}: ${res.status}`);
@@ -93,8 +93,8 @@ export async function getDoc(path) {
  * whole document. Nested objects are sent as nested mapValue automatically, which is what a dotted
  * mask path requires.
  */
-export async function setDoc(path, fields, maskPaths = null) {
-  const token = await getToken();
+export async function setDoc(path, fields, maskPaths = null, tokenOverride = null) {
+  const token = tokenOverride || (await getToken());
   const url = new URL(docUrl(path));
   if (maskPaths?.length) maskPaths.forEach((p) => url.searchParams.append('updateMask.fieldPaths', p));
   const res = await fetch(url.toString(), {
@@ -111,8 +111,8 @@ export async function setDoc(path, fields, maskPaths = null) {
 }
 
 /** Append a document with a generated id under `collection`. Returns the new id. */
-export async function addDoc(collection, fields) {
-  const token = await getToken();
+export async function addDoc(collection, fields, tokenOverride = null) {
+  const token = tokenOverride || (await getToken());
   const res = await fetch(`${BASE_URL()}/${collection.split('/').map(encodeURIComponent).join('/')}`, {
     method: 'POST',
     headers: { Authorization: `Bearer ${token}`, 'Content-Type': 'application/json' },
@@ -134,8 +134,8 @@ export async function addDoc(collection, fields) {
  * `mask` = dotted field paths to update; omit to write the whole document (create).
  * Returns the commit response body (or throws on failure).
  */
-export async function commitWrites(writes) {
-  const token = await getToken();
+export async function commitWrites(writes, tokenOverride = null) {
+  const token = tokenOverride || (await getToken());
   const body = {
     writes: writes.map((w) => {
       const name = `${DOCS}/${w.path.split('/').map(encodeURIComponent).join('/')}`;

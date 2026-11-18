@@ -12,6 +12,15 @@
 import { createRequire } from 'module';
 import { getToken, getDoc, commitWrites } from './_firestore-rest.js';
 import { DISPOSITION_DEFAULTS, isValidDispositionCode, verifyAdmin } from './_disposition.js';
+import { getGoogleAccessToken } from './_google-auth.js';
+
+// `disposition_types` no está en las reglas públicas: con el token anónimo de Firebase daba
+// 403 (listTypes 403) y el selector del asesor salía vacío. Se usa el token de la cuenta de
+// servicio (IAM), al que las reglas no aplican. Si no hay credenciales, cae al token anónimo.
+async function firestoreToken() {
+  const admin = await getGoogleAccessToken();
+  return admin || (await getToken());
+}
 
 const require_ = createRequire(import.meta.url);
 const firebaseConfig = require_('../firebase-applet-config.json');
@@ -22,7 +31,7 @@ const COLLECTION = 'disposition_types';
 
 /** Read every doc in `disposition_types` (small, bounded collection). */
 async function listTypes() {
-  const token = await getToken();
+  const token = await firestoreToken();
   const out = [];
   let pageToken = '';
   while (true) {
@@ -53,10 +62,11 @@ async function ensureSeeded() {
   const missing = DISPOSITION_DEFAULTS.filter((d) => !have.has(d.code));
   if (!missing.length) return existing;
   const now = new Date().toISOString();
+  const token = await firestoreToken();
   await commitWrites(missing.map((d) => ({
     path: `${COLLECTION}/${d.code}`,
     fields: { code: d.code, label: d.label, active: true, order: DISPOSITION_DEFAULTS.indexOf(d), createdAt: now },
-  })));
+  })), token);
   return listTypes();
 }
 
@@ -80,21 +90,23 @@ export default async function handler(req, res) {
 
     const body = req.body || {};
     const code = String(body.code || '').trim().toUpperCase();
+    // Token con permisos IAM: las reglas de Firestore no cubren `disposition_types`.
+    const token = await firestoreToken();
 
     if (req.method === 'POST') {
       const label = String(body.label || '').trim();
       if (!isValidDispositionCode(code)) return res.status(400).json({ ok: false, error: 'invalid_code' });
       if (!label || label.length > 120) return res.status(400).json({ ok: false, error: 'invalid_label' });
-      const existing = await getDoc(`${COLLECTION}/${code}`);
+      const existing = await getDoc(`${COLLECTION}/${code}`, token);
       if (existing) return res.status(409).json({ ok: false, error: 'code_already_exists' });
       const now = new Date().toISOString();
-      await commitWrites([{ path: `${COLLECTION}/${code}`, fields: { code, label, active: true, order: 0, createdAt: now } }]);
+      await commitWrites([{ path: `${COLLECTION}/${code}`, fields: { code, label, active: true, order: 0, createdAt: now } }], token);
       return res.status(200).json({ ok: true, type: { code, label, active: true } });
     }
 
     if (req.method === 'PUT') {
       if (!isValidDispositionCode(code)) return res.status(400).json({ ok: false, error: 'invalid_code' });
-      const existing = await getDoc(`${COLLECTION}/${code}`);
+      const existing = await getDoc(`${COLLECTION}/${code}`, token);
       if (!existing) return res.status(404).json({ ok: false, error: 'code_not_found' });
       const fields = {};
       if (body.label !== undefined) {
@@ -104,16 +116,16 @@ export default async function handler(req, res) {
       }
       if (body.active !== undefined) fields.active = !!body.active;
       if (!Object.keys(fields).length) return res.status(400).json({ ok: false, error: 'nothing_to_update' });
-      await commitWrites([{ path: `${COLLECTION}/${code}`, fields, mask: Object.keys(fields) }]);
+      await commitWrites([{ path: `${COLLECTION}/${code}`, fields, mask: Object.keys(fields) }], token);
       return res.status(200).json({ ok: true, updated: { code, ...fields } });
     }
 
     if (req.method === 'DELETE') {
       if (!isValidDispositionCode(code)) return res.status(400).json({ ok: false, error: 'invalid_code' });
-      const existing = await getDoc(`${COLLECTION}/${code}`);
+      const existing = await getDoc(`${COLLECTION}/${code}`, token);
       if (!existing) return res.status(404).json({ ok: false, error: 'code_not_found' });
       // Soft-delete only: never hard-delete a code that may already be referenced by dispositions.
-      await commitWrites([{ path: `${COLLECTION}/${code}`, fields: { active: false }, mask: ['active'] }]);
+      await commitWrites([{ path: `${COLLECTION}/${code}`, fields: { active: false }, mask: ['active'] }], token);
       return res.status(200).json({ ok: true, softDeleted: code });
     }
 
