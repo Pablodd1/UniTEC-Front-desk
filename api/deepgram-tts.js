@@ -1,3 +1,5 @@
+import { phoneForSpeech } from './_phone-speech.js';
+
 export default async function handler(req, res) {
   res.setHeader('Access-Control-Allow-Origin', '*');
   res.setHeader('Access-Control-Allow-Methods', 'POST,OPTIONS');
@@ -32,7 +34,15 @@ export default async function handler(req, res) {
       .replace(/\s+/g, ' ')
       .trim();
 
-    if (!cleanText) {
+    // Teléfonos: el TTS los leía como una cifra enorme ("quinientos setenta y tres mil...").
+    // Se dictan dígito por dígito para que el cliente pueda marcarlos.
+    const speechText = phoneForSpeech(cleanText);
+
+    if (req.body?.debug === true) {
+      return res.status(200).json({ ok: true, debug: true, speechText });
+    }
+
+    if (!speechText) {
       return res.status(400).json({ error: 'Text empty after markdown sanitization' });
     }
 
@@ -47,7 +57,7 @@ export default async function handler(req, res) {
         'Authorization': `Token ${apiKey}`,
         'Content-Type': 'application/json'
       },
-      body: JSON.stringify({ text: cleanText })
+      body: JSON.stringify({ text: speechText })
     });
 
     if (!dgRes.ok) {

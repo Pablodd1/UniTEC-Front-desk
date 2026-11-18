@@ -1,4 +1,5 @@
 // @ts-nocheck
+import { phoneForSpeech } from './phoneSpeech';
 // deepgramService.ts — Voice TTS/STT with cascading fallback
 // Priority: Fish Audio S2 Pro → Deepgram Aura 2 → Browser WebSpeech
 // Same exports as before — callers (geminiService.ts) need zero changes
@@ -80,14 +81,18 @@ export async function speakTextWithDeepgram(
 ): Promise<void> {
   if (!text || !text.trim()) return;
 
+  // El TTS leía los teléfonos como una cifra enorme ("quinientos setenta y tres mil...").
+  // Se dictan dígito por dígito antes de sintetizar; el chat sigue mostrando el número normal.
+  const speechText = phoneForSpeech(text);
+
   // 1. Try Fish Audio — superior Spanish, emotion-capable
-  if (await speakWithFishAudio(text, fallbackLanguage)) return;
+  if (await speakWithFishAudio(speechText, fallbackLanguage)) return;
 
   // 2. Fall back to Deepgram Aura 2
-  if (await speakWithDeepgram(text, modelName, fallbackLanguage)) return;
+  if (await speakWithDeepgram(speechText, modelName, fallbackLanguage)) return;
 
   // 3. Last resort: browser WebSpeech
-  return fallbackWebSpeech(text, fallbackLanguage);
+  return fallbackWebSpeech(speechText, fallbackLanguage);
 }
 
 function fallbackWebSpeech(text: string, language: string): Promise<void> {
