@@ -128,6 +128,36 @@ export async function addDoc(collection, fields) {
 }
 
 /**
+ * Commit several writes in ONE atomic transaction (Firestore `:commit`).
+ * Each entry: { path, fields, mask? } where `path` is relative to the Firestore documents root
+ * (e.g. 'conversations/<id>') and `fields` is a PLAIN object (converted to typed values here).
+ * `mask` = dotted field paths to update; omit to write the whole document (create).
+ * Returns the commit response body (or throws on failure).
+ */
+export async function commitWrites(writes) {
+  const token = await getToken();
+  const body = {
+    writes: writes.map((w) => {
+      const name = `${DOCS}/${w.path.split('/').map(encodeURIComponent).join('/')}`;
+      const upd = { update: { name, fields: toFields(w.fields || {}) } };
+      if (Array.isArray(w.mask) && w.mask.length) upd.updateMask = { fieldPaths: w.mask };
+      return upd;
+    }),
+  };
+  const res = await fetch(`${DOCS}:commit`, {
+    method: 'POST',
+    headers: { Authorization: `Bearer ${token}`, 'Content-Type': 'application/json' },
+    body: JSON.stringify(body),
+    signal: AbortSignal.timeout(8000),
+  });
+  if (!res.ok) {
+    const text = await res.text().catch(() => '');
+    throw new Error(`commitWrites: ${res.status} ${text.slice(0, 200)}`);
+  }
+  return res.json();
+}
+
+/**
  * Increment `path.field` by 1 atomically-enough for analytics: read → +1 → masked nested write.
  * Never throws: telemetry must never break the request it is describing.
  */

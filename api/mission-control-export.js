@@ -10,6 +10,7 @@
 
 import { createRequire } from 'module';
 import { getFirestoreToken, listAllSessions, funnel, bogotaDayKey } from './_analytics-core.js';
+import { dispositionBreakdown } from './_disposition.js';
 import {
   auditEscalations, priceIntegrity, readMonitorHistory, readEscalationHealth,
   brandSnapshot, bogotaNow, BASE_URL, probe,
@@ -190,6 +191,7 @@ export default async function handler(req, res) {
       },
       funnel: snapshot.funnel,
       escalations,
+      dispositions: dispositionBreakdown(real),
       escalationHealth: escHealth,
       priceIntegrity: integrity,
       services: { widget, gemini: monitor?.last?.services?.gemini || null, voice: monitor?.last?.services?.voice ?? null },

@@ -24,6 +24,8 @@ import { getDoc, setDoc, addDoc, bumpCounter } from './_firestore-rest.js';
 // escalera 2/5/10 y el nudge no dejaran rastro: los flags se escribían pero la llamada al handler
 // fallaba y nadie lo veía (10 nudges entre el 7 y el 9 de octubre, 0 docs de auditoría).
 import { callNotifyEscalation } from './_alert.js';
+// Tipificación obligatoria: recordatorios de disposición pendiente y follow-up de seguimiento.
+import { isDispositionSatisfied, SEGUIMIENTO_PENDIENTE_CODE } from './_disposition.js';
 
 const WA_LINK = 'https://wa.me/573142332147';
 const WA_PHONE = '+57 314 233 2147';
@@ -36,6 +38,11 @@ const TAKEOVER_NUDGE_MIN = 10;
 // escalón final ya disparado y el cliente sin escribir por una hora, se cierra y se cuenta.
 const UNATTENDED_CLOSE_MIN = 60;
 const MAX_AGE_MS = 6 * 60 * 60 * 1000;
+
+// Tipificación obligatoria (disposición): si el asesor tomó una escalación urgente y no la
+// tipifica, el sistema insiste a las 2 h (aviso al asesor) y a las 24 h (escalación a Nancy/manager).
+const DISP_REMIND_MIN = 120;
+const DISP_ESCALATE_MIN = 24 * 60;
 
 // Same signature the rest of the analytics code uses for its own probe sessions.
 const TEST_ID_RE = /^(diag|lat-test|analytics-verify|post-fix-check|warm-check|secret-verify|verify|final_|n2_|nancy_|test|sla-test|v\d|v[a-z]{4,}\s)/i;
@@ -64,6 +71,56 @@ async function sendSlaAlert(_req, session, stage, waitedMin) {
       { role: 'user', text: `Esperando asesor desde hace ${Math.round(waitedMin)} min (etapa SLA ${stage}).` },
       { role: 'model', text: session.lastMessage || '' },
     ],
+  };
+  try {
+    const r = await callNotifyEscalation(body);
+    return { ok: r.statusCode === 200, status: r.statusCode, via: 'in_process', results: r.body?.results || null };
+  } catch (err) {
+    return { ok: false, status: 0, via: 'in_process', error: String(err?.message || err) };
+  }
+}
+
+/** Aviso de tipificación pendiente (disposición): 2 h al asesor, 24 h a Nancy/manager. */
+async function sendDispositionAlert(_req, session, kind, waitedMin) {
+  const body = {
+    type: 'disposition',
+    priority: kind === 'escalate' ? 'urgent' : 'high',
+    customerName: session.customerName || 'Cliente',
+    customerPhone: session.customerPhone || '',
+    customerEmail: session.customerEmail || '',
+    message: kind === 'escalate'
+      ? 'Conversación urgente pendiente de tipificación (disposición) hace más de 24 h. Requiere cierre por un administrador.'
+      : `El asesor lleva ${Math.round(waitedMin)} min sin tipificar la conversación (disposición obligatoria).`,
+    brand: session.brandId || 'unitec',
+    sessionId: session.id,
+    waitingSince: session.dispositionRequiredAt || session.lastUpdated || '',
+    pageUrl: session.parentHost || '',
+    // 24 h → Nancy/manager por teléfono (si está configurado); si no, va al equipo con prioridad urgente.
+    ...(kind === 'escalate' && process.env.DISPOSITION_ESCALATION_PHONE
+      ? { adminPhone: process.env.DISPOSITION_ESCALATION_PHONE }
+      : {}),
+  };
+  try {
+    const r = await callNotifyEscalation(body);
+    return { ok: r.statusCode === 200, status: r.statusCode, via: 'in_process', results: r.body?.results || null };
+  } catch (err) {
+    return { ok: false, status: 0, via: 'in_process', error: String(err?.message || err) };
+  }
+}
+
+/** Recordatorio de follow-up: la disposición SEGUIMIENTO_PENDIENTE llegó a su fecha de seguimiento. */
+async function sendFollowUpAlert(_req, session) {
+  const body = {
+    type: 'disposition',
+    priority: 'high',
+    customerName: session.customerName || 'Cliente',
+    customerPhone: session.customerPhone || '',
+    customerEmail: session.customerEmail || '',
+    message: `Recordatorio de seguimiento pendiente (SEGUIMIENTO_PENDIENTE). Fecha programada: ${session.followUpAt || session.disposition?.followUpAt || 'no indicada'}.`,
+    brand: session.brandId || 'unitec',
+    sessionId: session.id,
+    waitingSince: session.followUpAt || '',
+    pageUrl: session.parentHost || '',
   };
   try {
     const r = await callNotifyEscalation(body);
@@ -135,7 +192,11 @@ export default async function handler(req, res) {
       // 2026-11-01 "Pasto", review 2026-11-02). human_requested se procesa sin importar la edad;
       // human_assigned CONSERVA el cap (no reprocesar sesiones históricas del panel sin decisión).
       const needsClosure = status === 'human_requested';
-      if (!lastUpdatedMs || (!needsClosure && now - lastUpdatedMs > MAX_AGE_MS)) continue;
+      // Tipificación obligatoria pendiente: el traspaso fue urgente y aún no está tipificado.
+      // Se procesa sin importar la edad (el reloj 2h/24h arranca en dispositionRequiredAt, no en
+      // lastUpdated) y toma su propia rama más abajo, en vez de la escalera SLA genérica.
+      const dispositionPending = s.dispositionRequired === true && !isDispositionSatisfied(s);
+      if (!lastUpdatedMs || (!needsClosure && !dispositionPending && now - lastUpdatedMs > MAX_AGE_MS)) continue;
 
       // Extra fields (slaStage, lastEscalationAt) live outside the parser's whitelist → read the doc.
       let doc = null;
@@ -156,6 +217,48 @@ export default async function handler(req, res) {
 
       if (quietHours) {
         plan.push({ session: s.id, status, stage, waitedMin: Math.round(waitedMin), actions: ['deferred:quiet_hours'] });
+        continue;
+      }
+
+      // ── Tipificación obligatoria: recordatorios (independientes de la escalera SLA) ──
+      // 2 h → aviso al asesor; 24 h → escalación a Nancy/manager. Pendiente de tipificación
+      // NO aplica la escalera 2/5/10 ni el cierre automático: se queda en cola hasta tipificar.
+      if (dispositionPending) {
+        const dispSince = s.dispositionRequiredAt || s.lastUpdated;
+        const dispWait = minutesSince(dispSince, now) ?? 0;
+        const dispStage = Number(s.dispositionReminderStage || 0);
+        const dispEntry = {
+          session: s.id,
+          status,
+          phone: s.customerPhone || '',
+          stage: dispStage,
+          waitedMin: Math.round(dispWait),
+          actions: [],
+        };
+        if (dispWait >= DISP_ESCALATE_MIN && dispStage < 2) {
+          dispEntry.actions.push('disposition:escalate_24h');
+          if (!dryRun) {
+            const alert = await sendDispositionAlert(req, s, 'escalate', dispWait);
+            await setDoc(`conversations/${s.id}`, {
+              dispositionReminderStage: 2,
+              lastDispositionReminderAt: new Date().toISOString(),
+              lastSlaDelivery: deliveryRecord(alert, 'disposition_24h'),
+            }, ['dispositionReminderStage', 'lastDispositionReminderAt', 'lastSlaDelivery']);
+            done.push({ ...dispEntry, alert });
+          }
+        } else if (dispWait >= DISP_REMIND_MIN && dispStage < 1) {
+          dispEntry.actions.push('disposition:remind_2h');
+          if (!dryRun) {
+            const alert = await sendDispositionAlert(req, s, 'remind', dispWait);
+            await setDoc(`conversations/${s.id}`, {
+              dispositionReminderStage: 1,
+              lastDispositionReminderAt: new Date().toISOString(),
+              lastSlaDelivery: deliveryRecord(alert, 'disposition_2h'),
+            }, ['dispositionReminderStage', 'lastDispositionReminderAt', 'lastSlaDelivery']);
+            done.push({ ...dispEntry, alert });
+          }
+        }
+        plan.push(dispEntry);
         continue;
       }
 
@@ -249,6 +352,31 @@ export default async function handler(req, res) {
         continue;
       }
       plan.push(entry);
+    }
+
+    // ── Recordatorios de follow-up (SEGUIMIENTO_PENDIENTE con fecha de seguimiento vencida) ──
+    // Estas sesiones ya están 'completed' (disposición hecha), por eso se barren en una pasada
+    // aparte: la escalera SLA y el cierre solo miran human_requested/human_assigned.
+    for (const s of sessions) {
+      if (!s?.id || TEST_ID_RE.test(s.id)) continue;
+      if (s.dispositionStatus !== 'done') continue;
+      if (s.disposition?.code !== SEGUIMIENTO_PENDIENTE_CODE) continue;
+      const due = Date.parse(s.followUpAt || s.disposition?.followUpAt || '');
+      if (!Number.isFinite(due) || due > now) continue; // aún no vence
+      if (s.followUpRemindedAt) continue; // ya se recordó
+      const fuEntry = { session: s.id, status: s.status, phone: s.customerPhone || '', actions: [] };
+      if (quietHours) {
+        fuEntry.actions.push('defer:followup_quiet');
+        plan.push(fuEntry);
+        continue;
+      }
+      fuEntry.actions.push('followup:reminder');
+      if (!dryRun) {
+        const alert = await sendFollowUpAlert(req, s);
+        await setDoc(`conversations/${s.id}`, { followUpRemindedAt: new Date().toISOString() }, ['followUpRemindedAt']);
+        done.push({ ...fuEntry, alert });
+      }
+      plan.push(fuEntry);
     }
 
     return res.status(200).json({

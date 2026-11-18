@@ -141,6 +141,15 @@ export function parseFirestoreDoc(doc) {
     campaign: fields.campaign?.stringValue || '',
     topics,
     extractedData: parseMap(fields.extractedData),
+    // Tipificación (disposición) obligatoria de traspasos urgentes — campos leídos por el
+    // barrido SLA (recordatorios), el guard de cierre y los desgloses de analítica.
+    dispositionStatus: fields.dispositionStatus?.stringValue || '',
+    dispositionRequired: fields.dispositionRequired?.booleanValue === true,
+    dispositionRequiredAt: fields.dispositionRequiredAt?.stringValue || '',
+    dispositionReminderStage: parseInt(fields.dispositionReminderStage?.integerValue ?? '0', 10),
+    disposition: parseMap(fields.disposition),
+    followUpAt: fields.followUpAt?.stringValue || '',
+    followUpRemindedAt: fields.followUpRemindedAt?.stringValue || '',
     analytics: (() => {
       const af = fields.analytics?.mapValue?.fields || {};
       return {

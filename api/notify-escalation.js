@@ -11,6 +11,9 @@ import { addDoc, bumpCounter, getDoc, setDoc } from './_firestore-rest.js';
 // Link de un toque para el staff (firmado, atado a la sesión): sin esto la alerta cae en el muro de
 // login del panel y "no hay forma de entrar al chat".
 import { staffUrl } from './_staff-token.js';
+// Mandatory disposition: el traspaso a humano (type 'staff') o una escalación 'urgent' marca la
+// sesión como `dispositionRequired` para que el asesor la tipifique antes de cerrarla.
+import { isDispositionRequiredEscalation } from './_disposition.js';
 
 // --- CORS ---
 function setCORS(res, req) {
@@ -339,11 +342,12 @@ async function recordEscalation(d, results, anySuccess) {
     // inflates `escalationCount` and the "how many customers asked for a human" metric lies.
     const counterField = d.type === 'sla' ? 'analytics.slaRealerts'
       : d.type === 'abandon' ? 'analytics.abandonAlerts'
+      : d.type === 'disposition' ? 'analytics.dispositionReminders'
       : 'analytics.escalationCount';
     // Dónde quedó la alerta de Telegram, para poder cerrarla cuando el asesor atienda.
     const tg = results?.telegram;
     const tgFirst = Array.isArray(tg?.details) ? tg.details.find((x) => x.ok && x.messageId) : null;
-    counter = await bumpCounter(`conversations/${d.sessionId}`, counterField, {
+    const meta = {
       staffAlertPending: !anySuccess,
       lastEscalationAt: stamp,
       escalationType: d.type || 'custom',
@@ -358,7 +362,20 @@ async function recordEscalation(d, results, anySuccess) {
             tgAlertType: d.type || 'custom',
           }
         : {}),
-    });
+    };
+    // Tipificación obligatoria: el traspaso a humano (type 'staff') o una escalación 'urgent' deja
+    // la sesión `dispositionRequired`. El reloj NO se reinicia en re-alertas: si ya hay
+    // dispositionRequiredAt se conserva el original (la escalera 2h/24h depende de él).
+    if (isDispositionRequiredEscalation(d)) {
+      meta.dispositionRequired = true;
+      try {
+        const cur = await getDoc(`conversations/${d.sessionId}`);
+        if (!cur?.fields?.dispositionRequiredAt) meta.dispositionRequiredAt = stamp;
+      } catch {
+        meta.dispositionRequiredAt = stamp;
+      }
+    }
+    counter = await bumpCounter(`conversations/${d.sessionId}`, counterField, meta);
   }
   // Rollup legible para los monitores: `escalations` NO se puede leer con la identidad de la app
   // (403 verificado), así que la salud de entrega se publica en config/main (legible, sin PII).

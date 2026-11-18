@@ -16,6 +16,7 @@
 import { verifyStaffToken } from './_staff-token.js';
 import { getDoc, setDoc, addDoc } from './_firestore-rest.js';
 import { editTelegramMessage } from './_telegram.js';
+import { dispositionGuard } from './_disposition.js';
 
 const SID_RE = /^[\w-]{1,120}$/;
 const TERMINAL = new Set(['resolved', 'completed', 'abandoned', 'abandoned_at_greeting']);
@@ -47,6 +48,11 @@ export default async function handler(req, res) {
     if (TERMINAL.has(current)) {
       return res.status(200).json({ ok: true, alreadyResolved: true, status: current });
     }
+
+    // Tipificación obligatoria: una escalación urgente (dispositionRequired) no puede cerrarse
+    // sin que el asesor la haya tipificado. La ruta correcta es POST /api/staff-disposition.
+    const guard = dispositionGuard(f);
+    if (guard.blocked) return res.status(guard.status).json({ ok: false, error: guard.error });
 
     const now = new Date().toISOString();
     await setDoc(

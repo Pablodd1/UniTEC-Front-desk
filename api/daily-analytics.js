@@ -18,6 +18,7 @@ function formatDuration(seconds) {
  * (Antes cada superficie tenía su propia lista y los números divergían.)
  */
 import { isTestSession, funnel, STEP_ORDER } from './_analytics-core.js';
+import { dispositionBreakdown } from './_disposition.js';
 
 /**
  * Keyword intent classification.
@@ -305,6 +306,23 @@ function buildReportText(sessions, metrics, periodLabel, reportTime, isWeekly, g
   }
   text += `  └ Cotización/Precio pedidos: <b>${metrics.quoteRequested ?? 0}</b>\n\n`;
 
+  // ── SECCIÓN 3.b: TIPIFICACIÓN (DISPOSICIÓN) ─────────────────────
+  if (metrics.dispositions) {
+    const dp = metrics.dispositions;
+    const topCodes = Object.entries(dp.counts || {}).sort((a, b) => b[1] - a[1]).slice(0, 8);
+    text += `🏷️ <b>Tipificación de traspasos (disposición):</b>\n`;
+    text += `  • Tipificadas: <b>${dp.typed}</b> · Legacy: <b>${dp.legacy}</b> · Pendientes >24h: <b>${dp.pending24h}</b>\n`;
+    text += `  • Conversión (Venta efectiva / tipificadas): <b>${dp.conversionRate}%</b>\n`;
+    if (topCodes.length === 0) {
+      text += `  • Sin códigos registrados en el período\n`;
+    } else {
+      topCodes.forEach(([code, n]) => {
+        text += `  • ${code}: <b>${n}</b>\n`;
+      });
+    }
+    text += `\n`;
+  }
+
   // ── SECCIÓN 4: TIEMPOS PROMEDIO ───────────────────────────
   text += `⏱️ <b>Tiempos Promedio:</b>\n`;
   text += `• Hasta primer mensaje:  <b>${metrics.avgTimeToFirstMsg}</b>\n`;
@@ -457,7 +475,9 @@ function computeMetrics(sessions) {
     sourceWeb, sourceWhatsapp, sourcePhone,
     topIntents, peakHour: peakHourStr, recentReal,
     // Embudo real (misma función que alimenta el panel Mission Control vía /api/analytics)
-    funnel: funnel(sessions)
+    funnel: funnel(sessions),
+    // Tipificación obligatoria: desglose de disposiciones (no-legacy) + conversión + pendientes >24h.
+    dispositions: dispositionBreakdown(realSessions),
   };
 }
 
@@ -503,6 +523,12 @@ function parseFirestoreDoc(doc) {
     campaign: fields.campaign?.stringValue || '',
     topics,
     extractedData: parseMap(fields.extractedData),
+    // Tipificación obligatoria — desglose de disposición en el informe diario/semanal.
+    dispositionStatus: fields.dispositionStatus?.stringValue || '',
+    dispositionRequired: fields.dispositionRequired?.booleanValue === true,
+    dispositionRequiredAt: fields.dispositionRequiredAt?.stringValue || '',
+    disposition: parseMap(fields.disposition),
+    followUpAt: fields.followUpAt?.stringValue || '',
     // Parse analytics sub-map with proper numeric types
     analytics: (() => {
       const af = fields.analytics?.mapValue?.fields || {};
