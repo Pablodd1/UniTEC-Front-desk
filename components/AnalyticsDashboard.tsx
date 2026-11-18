@@ -93,6 +93,28 @@ const AnalyticsDashboard: React.FC<AnalyticsDashboardProps> = ({ sessions, googl
     };
   }, [range.from, range.to]);
 
+  // ── Lista de sesiones SERVER-SIDE (tabla + contadores) ────────────────────
+  // La suscripción Firestore del navegador traía 4.700 docs tarde/incompletos y con createdAt como
+  // Timestamp: con un filtro activo la tabla quedaba en "0 de 0". /api/sessions usa la misma
+  // lectura del servidor que los KPIs, con los mismos días Bogotá y el mismo filtro de pruebas.
+  const [serverSessions, setServerSessions] = useState<ConversationSession[] | null>(null);
+  useEffect(() => {
+    let alive = true;
+    const load = () => {
+      const qs = `?limit=500${range.from ? `&from=${range.from}&to=${range.to}` : ''}`;
+      fetch(`/api/sessions${qs}`)
+        .then((r) => (r.ok ? r.json() : Promise.reject(new Error(`HTTP ${r.status}`))))
+        .then((d) => { if (alive && Array.isArray(d.sessions)) setServerSessions(d.sessions); })
+        .catch(() => { /* si falla se usa la lista local como respaldo */ });
+    };
+    load();
+    const t = setInterval(load, 60000);
+    return () => { alive = false; clearInterval(t); };
+  }, [range.from, range.to]);
+
+  // La tabla y los contadores usan la lista del servidor; respaldo: la del navegador.
+  const listSessions: ConversationSession[] = serverSessions ?? sessions;
+
   const exportToCSV = () => {
     const headers = [
       'Session ID', 'Created At', 'Last Updated', 'Brand', 'Language', 
@@ -146,17 +168,21 @@ const AnalyticsDashboard: React.FC<AnalyticsDashboardProps> = ({ sessions, googl
 
   const now = new Date();
 
-  // "Hoy" SIEMPRE en hora Bogotá (antes usaba la medianoche del navegador, así que un operador en
-  // otra zona veía un día distinto al del informe).
+  // "Hoy" y "en vivo" desde el SERVIDOR (una sola lectura) con respaldo local.
   const todayKey = BOG_TODAY();
-  const todaySessions = sessions.filter(s => bogotaDayKey(s.createdAt) === todayKey);
-  const activeNow = sessions.filter(s => s.status === 'active' || s.status === 'human_assigned').length;
-  const pendingInterventionsToday = todaySessions.filter(s => s.status === 'human_requested' || s.status === 'human_assigned').length;
-  const avgMsgsToday = todaySessions.length > 0
-    ? (todaySessions.reduce((sum, s) => sum + (s.analytics?.messageCount || 0), 0) / todaySessions.length).toFixed(1)
-    : '0';
-  const unitecToday = todaySessions.filter(s => s.brandId === 'unitec').length;
-  const buildingToday = todaySessions.filter(s => s.brandId === 'building').length;
+  const todayKpis = funnelData?.todayKpis || null;
+  const todaySessions = listSessions.filter(s => bogotaDayKey(s.createdAt) === todayKey);
+  const activeNow = Number.isFinite(Number(funnelData?.activeNow)) ? Number(funnelData.activeNow) : listSessions.filter(s => s.status === 'active' || s.status === 'human_assigned').length;
+  const todayTotal = todayKpis ? Number(todayKpis.total || 0) : todaySessions.length;
+  const pendingInterventionsToday = todayKpis ? Number(todayKpis.humanAssisted || 0)
+    : todaySessions.filter(s => s.status === 'human_requested' || s.status === 'human_assigned').length;
+  const avgMsgsToday = todayKpis
+    ? String(todayKpis.avgUserMessages ?? '0')
+    : (todaySessions.length > 0
+      ? (todaySessions.reduce((sum, s) => sum + (s.analytics?.messageCount || 0), 0) / todaySessions.length).toFixed(1)
+      : '0');
+  const unitecToday = todayKpis ? Number(todayKpis.byBrand?.unitec || 0) : todaySessions.filter(s => s.brandId === 'unitec').length;
+  const buildingToday = todayKpis ? Number(todayKpis.byBrand?.building || 0) : todaySessions.filter(s => s.brandId === 'building').length;
 
   const bogotaHour = (iso: string) => {
     const d = new Date(iso);
@@ -188,7 +214,7 @@ const AnalyticsDashboard: React.FC<AnalyticsDashboardProps> = ({ sessions, googl
 
   // La tabla usa EL MISMO rango que las tarjetas (antes filtraba por el mes local del navegador,
   // así que la lista y los KPIs podían mostrar períodos distintos).
-  const filteredSessions = sessions.filter(s => {
+  const filteredSessions = listSessions.filter(s => {
     if (!range.from) return true;
     const key = bogotaDayKey(s.createdAt);
     return key !== '' && key >= range.from && key <= range.to;
@@ -343,7 +369,7 @@ const AnalyticsDashboard: React.FC<AnalyticsDashboardProps> = ({ sessions, googl
                 <MessageSquare size={12} className="text-blue-400" />
                 <span className="text-[9px] font-bold text-slate-400 uppercase tracking-wider">Ingresaron hoy</span>
               </div>
-              <p className="text-3xl font-black text-blue-400">{todaySessions.length}</p>
+              <p className="text-3xl font-black text-blue-400">{todayTotal}</p>
               <p className="text-[9px] text-slate-400 mt-1">Total visitas del día</p>
             </div>
             <div className="bg-white/10 rounded-xl p-4 backdrop-blur-sm border border-white/10">

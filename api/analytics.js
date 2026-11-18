@@ -34,6 +34,31 @@ export default async function handler(req, res) {
     if (!idToken) return res.status(503).json({ error: 'auth_unavailable' });
 
     let sessions = await listAllSessions(idToken);
+
+    // ── "En vivo": NO depende del filtro de fechas ───────────────────────────
+    // Activos ahora + resumen del día de HOY en Bogotá, calculados aquí para que el panel no tenga
+    // que depender de la suscripción Firestore del navegador (llegaba tarde/incompleta: "no cuenta
+    // en vivo"). Una sola lectura de Firestore sirve para todo el panel.
+    const todayKey = new Date().toLocaleDateString('en-CA', { timeZone: 'America/Bogota' });
+    const realAll = sessions.filter((s) => !isTestSession(s.id));
+    const activeNow = realAll.filter((s) => s.status === 'active' || s.status === 'human_assigned').length;
+    const todayList = realAll.filter((s) => bogotaDayKey(s.createdAt) === todayKey);
+    const todayKpis = {
+      day: todayKey,
+      total: todayList.length,
+      realInteractions: todayList.filter((s) => Number(s.analytics?.userMessageCount || 0) > 0).length,
+      greetingOnly: todayList.filter((s) => Number(s.analytics?.messageCount || 0) > 0 && !Number(s.analytics?.userMessageCount || 0)).length,
+      humanAssisted: todayList.filter((s) => s.status === 'human_requested' || s.status === 'human_assigned').length,
+      avgUserMessages: todayList.length
+        ? Number((todayList.reduce((n, s) => n + Number(s.analytics?.messageCount || 0), 0) / todayList.length).toFixed(1))
+        : 0,
+      byBrand: todayList.reduce((acc, s) => {
+        const b = s.brandId || 'unitec';
+        acc[b] = (acc[b] || 0) + 1;
+        return acc;
+      }, {}),
+    };
+
     if (from || to) sessions = filterByBogotaRange(sessions, from, to);
 
     const real = sessions.filter((s) => !isTestSession(s.id));
@@ -89,6 +114,9 @@ export default async function handler(req, res) {
     return res.status(200).json({
       generatedAt: new Date().toISOString(),
       range: { from: from || null, to: to || null },
+      activeNow,
+      today: todayKey,
+      todayKpis,
       kpis,
       funnel: funnel(sessions),
       byBrand,
