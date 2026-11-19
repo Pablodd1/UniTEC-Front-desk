@@ -7,6 +7,7 @@ import {
   updateSessionStatus,
   resolveConversation,
 } from '../services/conversationService';
+import DispositionPicker from './DispositionPicker';
 
 // Vista de respuesta de UN SOLO toque para el staff.
 //
@@ -50,6 +51,9 @@ const StaffReply: React.FC<Props> = ({ sessionId, knownName, knownPhone }) => {
   const [resolving, setResolving] = useState(false);
   const [resolved, setResolved] = useState(false);
   const [resolveNote, setResolveNote] = useState<string | null>(null);
+  // Tipificación obligatoria: si la transferencia fue URGENTE, no se puede cerrar sin registrar
+  // el resultado de la atención (requisito del cliente).
+  const [dispositionSaved, setDispositionSaved] = useState(false);
   const bottomRef = useRef<HTMLDivElement>(null);
 
   // Token del link de un toque (?staff=<token>): es lo que permite cerrar desde el teléfono, sin
@@ -98,8 +102,17 @@ const StaffReply: React.FC<Props> = ({ sessionId, knownName, knownPhone }) => {
   };
 
   // Cerrar la conversación: es lo que la saca de la cola de alertas y apaga el aviso del teléfono.
+  const sAny = session as any;
+  const dispositionRequired = sAny?.dispositionRequired === true;
+  const dispositionDone = sAny?.dispositionStatus === 'done';
+  const mustDispose = dispositionRequired && !dispositionDone && !dispositionSaved;
+
   const resolve = async () => {
     if (resolving || isResolved) return;
+    if (mustDispose) {
+      setError('Antes de cerrar, registra el resultado de la atención (tipificación obligatoria).');
+      return;
+    }
     const name = staffName.trim() || 'Asesor';
     if (typeof window !== 'undefined') localStorage.setItem(STAFF_NAME_KEY, name);
     setResolving(true);
@@ -182,6 +195,20 @@ const StaffReply: React.FC<Props> = ({ sessionId, knownName, knownPhone }) => {
           )}
         </div>
       </header>
+
+      {!isResolved && (dispositionRequired || dispositionDone) && (
+        <div className="px-4 py-3 w-full max-w-3xl mx-auto">
+          <DispositionPicker
+            sessionId={sessionId}
+            required={dispositionRequired && !dispositionDone}
+            done={dispositionDone}
+            current={sAny?.disposition}
+            staffToken={staffToken}
+            staffName={staffName}
+            onSaved={() => setDispositionSaved(true)}
+          />
+        </div>
+      )}
 
       {isResolved && (
         <div className="bg-emerald-50 border-b border-emerald-100 px-4 py-2 text-center text-xs text-emerald-700">

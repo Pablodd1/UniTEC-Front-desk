@@ -7,6 +7,7 @@ import {
   ArrowUpRight, Eye, UserCheck, Timer, 
   Check
 } from 'lucide-react';
+import DispositionPicker from './DispositionPicker';
 import { ConversationSession, subscribeToConversation, subscribeToMessages, ConversationMessage, addMessage, updateSessionStatus, addConversationTag, addConversationNote, bumpSessionCounter, markFirstStaffReply } from '../services/conversationService';
 import { playNotificationSound } from '../services/soundService';
 
@@ -76,6 +77,7 @@ const ConversationMonitor: React.FC<ConversationMonitorProps> = ({
   staffName = 'Admin',
   focusSessionId = null,
 }) => {
+  const [dispositionDoneLocal, setDispositionDoneLocal] = useState(false);
   const [selectedSessionId, setSelectedSessionId] = useState<string | null>(null);
   const [selectedSession, setSelectedSession] = useState<ConversationSession | null>(null);
   const [messages, setMessages] = useState<ConversationMessage[]>([]);
@@ -702,6 +704,20 @@ const ConversationMonitor: React.FC<ConversationMonitorProps> = ({
           </div>
         </div>
         
+        {/* Tipificación obligatoria: la transferencia urgente no se cierra sin registrar el resultado. */}
+        {selectedSession && ((selectedSession as any).dispositionRequired === true || (selectedSession as any).dispositionStatus === 'done') && (
+          <div className="mt-3">
+            <DispositionPicker
+              sessionId={selectedSession.id}
+              required={(selectedSession as any).dispositionRequired === true && (selectedSession as any).dispositionStatus !== 'done' && !dispositionDoneLocal}
+              done={(selectedSession as any).dispositionStatus === 'done'}
+              current={(selectedSession as any).disposition}
+              staffName={staffName}
+              onSaved={() => setDispositionDoneLocal(true)}
+            />
+          </div>
+        )}
+
         {/* SLA Alert */}
         {showSlaAlert && selectedSession?.status === 'human_requested' && (
           <div className="mt-3 p-2 bg-red-50 border border-red-200 rounded-lg flex items-center gap-2 text-red-700 text-sm">

@@ -781,6 +781,51 @@ export const extractCustomerData = async (
   }
 };
 
+
+// ── Tipificación obligatoria (requisito del cliente) ─────────────────────────────────────────
+// Registra el resultado de la atención y cierra la conversación en una sola escritura, más un
+// documento de auditoría append-only en conversations/{id}/dispositions. El backend valida lo mismo
+// en /api/staff-disposition (ruta del enlace de alerta); aquí se usa desde el panel.
+export const saveSessionDisposition = async (
+  sessionId: string,
+  d: { code: string; label: string; note?: string; followUpAt?: string; byName?: string }
+): Promise<void> => {
+  const now = new Date().toISOString();
+  const disposition = {
+    code: d.code,
+    label: d.label,
+    note: (d.note || '').slice(0, 500),
+    followUpAt: d.followUpAt || '',
+    by: 'panel',
+    byName: d.byName || 'Asesor',
+    at: now,
+  };
+  await updateDoc(doc(db, COLLECTIONS.sessions, sessionId), {
+    disposition,
+    dispositionStatus: 'done',
+    dispositionRequired: true,
+    dispositionCompletedAt: now,
+    status: 'completed',
+    assignedTo: d.byName || 'Asesor',
+    lastUpdated: now,
+  });
+  // Auditoría: si las reglas no permiten la subcolección, la tipificación ya quedó en la sesión.
+  try {
+    await addDoc(collection(db, COLLECTIONS.sessions, sessionId, 'dispositions'), disposition);
+  } catch (e) {
+    console.warn('disposition audit doc skipped:', e);
+  }
+  const local = getLocalSessions();
+  const idx = local.findIndex((x) => x.id === sessionId);
+  if (idx !== -1) {
+    (local[idx] as any).disposition = disposition;
+    (local[idx] as any).dispositionStatus = 'done';
+    local[idx].status = 'completed';
+    local[idx].lastUpdated = now;
+    saveLocalSessions(local);
+  }
+};
+
 // Marca PERSISTIDA de que el aviso de takeover ya se mostró (para no repetirlo en cada recarga).
 export const markStaffNotice = async (sessionId: string): Promise<void> => {
   if (getPrivacyMode()) return;
