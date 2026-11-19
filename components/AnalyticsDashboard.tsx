@@ -738,6 +738,43 @@ const AnalyticsDashboard: React.FC<AnalyticsDashboardProps> = ({ sessions, googl
         )}
       </div>
 
+      {/* Tipificación de interacciones URGENTES (seguimiento comercial — requisito del cliente) */}
+      {funnelData?.dispositions && (funnelData.dispositions.typed > 0 || funnelData.dispositions.pending24h > 0) && (
+        <div className="bg-white p-6 rounded-2xl border border-slate-200">
+          <div className="flex items-start justify-between gap-3 mb-4">
+            <div>
+              <h3 className="font-bold text-slate-800">Tipificación de interacciones urgentes</h3>
+              <p className="text-xs text-slate-500 mt-0.5">
+                Resultado que el asesor registró en cada transferencia marcada como urgente.
+              </p>
+            </div>
+            <div className="flex gap-2 shrink-0">
+              <span className="px-3 py-1 bg-emerald-50 text-emerald-700 rounded-full text-xs font-bold">
+                Conversión {funnelData.dispositions.conversionRate}%
+              </span>
+              {funnelData.dispositions.pending24h > 0 && (
+                <span className="px-3 py-1 bg-amber-50 text-amber-700 rounded-full text-xs font-bold">
+                  {funnelData.dispositions.pending24h} sin tipificar &gt;24 h
+                </span>
+              )}
+            </div>
+          </div>
+          <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
+            {Object.entries(funnelData.dispositions.counts || {})
+              .sort((a: any, b: any) => b[1] - a[1])
+              .map(([code, count]: any) => (
+                <div key={code} className="p-3 bg-slate-50 rounded-xl">
+                  <p className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">{code.replace(/_/g, ' ')}</p>
+                  <p className="text-lg font-bold text-slate-800">{count}</p>
+                </div>
+              ))}
+          </div>
+          <p className="text-[11px] text-slate-400 mt-3">
+            {funnelData.dispositions.typed} tipificadas · {funnelData.dispositions.legacy} cerradas antes de la regla (sin tipificar)
+          </p>
+        </div>
+      )}
+
       {/* Intent Distribution */}
       {Object.keys(intentDistribution).length > 0 && (
         <div className="bg-white p-6 rounded-2xl border border-slate-200">
