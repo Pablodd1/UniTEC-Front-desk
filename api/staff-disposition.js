@@ -20,6 +20,7 @@ import { getDoc, commitWrites } from './_firestore-rest.js';
 import {
   DISPOSITION_LABELS, isValidDispositionCode, validateDispositionFields, verifyAdmin,
 } from './_disposition.js';
+import { getGoogleAccessToken } from './_google-auth.js';
 
 const SID_RE = /^[\w-]{1,120}$/;
 const ALLOWED_PENDING_STATUS = new Set(['human_assigned', 'pending_disposition']);
@@ -151,10 +152,13 @@ export default async function handler(req, res) {
       source,
     };
 
+    // La subcolección `dispositions` no está en las reglas públicas: con el token anónimo la
+    // auditoría devolvía 403 y se perdía el rastro. Con la cuenta de servicio sí se escribe.
+    const saToken = await getGoogleAccessToken();
     await commitWrites([
       { path: `conversations/${sessionId}`, fields: sessionFields, mask: sessionMask },
       { path: `conversations/${sessionId}/dispositions/${auditId}`, fields: auditFields },
-    ]);
+    ], saToken);
 
     return res.status(200).json({ ok: true, status: 'completed', disposition, auditId, source });
   } catch (err) {

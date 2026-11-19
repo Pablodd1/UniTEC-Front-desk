@@ -4,6 +4,7 @@
 // Días en hora Bogotá (UTC-5), igual que el informe.
 
 import { getFirestoreToken, listAllSessions, filterByBogotaRange, bogotaDayKey, funnel, isTestSession } from './_analytics-core.js';
+import { dispositionBreakdown } from './_disposition.js';
 
 function classifyIntent(text) {
   const t = String(text || '').toLowerCase();
@@ -123,6 +124,8 @@ export default async function handler(req, res) {
       bySource,
       byDay: byHour,
       intents: Object.entries(intentCounts).sort((a, b) => b[1] - a[1]).slice(0, 12),
+      // Seguimiento comercial: cuántas interacciones urgentes quedaron tipificadas y con qué resultado.
+      dispositions: dispositionBreakdown(sessions),
       recentReal,
     });
   } catch (e) {
