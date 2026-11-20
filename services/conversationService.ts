@@ -4,6 +4,41 @@ import { db } from '../firebase';
 import { collection, addDoc, getDocs, doc, updateDoc, query, orderBy, onSnapshot, getDoc, where, serverTimestamp, setDoc, increment, arrayUnion, arrayRemove } from 'firebase/firestore';
 
 
+
+// ── Normalización de fechas ──────────────────────────────────────────────────────────────────────
+// El bot escribe algunos `timestamp` como Timestamp de Firestore ({type, seconds, nanoseconds}) y
+// otros como texto ISO. Si un objeto llega a JSX, React lanza "Objects are not valid as a React
+// child" (#31) y la vista se cae. Aquí se normaliza TODO en el borde, antes de entrar a la UI.
+const toIso = (v: any): string => {
+  if (!v) return '';
+  if (typeof v === 'string') return v;
+  if (v instanceof Date) return isNaN(v.getTime()) ? '' : v.toISOString();
+  if (typeof v === 'object') {
+    try { if (typeof v.toDate === 'function') { const d = v.toDate(); return d instanceof Date && !isNaN(d.getTime()) ? d.toISOString() : ''; } } catch {}
+    const secs = v.seconds ?? v._seconds;
+    if (typeof secs === 'number') { const d = new Date(secs * 1000); return isNaN(d.getTime()) ? '' : d.toISOString(); }
+  }
+  if (typeof v === 'number') { const d = new Date(v); return isNaN(d.getTime()) ? '' : d.toISOString(); }
+  return '';
+};
+
+const normalizeMessage = (m: any, id?: string) => ({
+  ...m,
+  id: m?.id || id || '',
+  text: typeof m?.text === 'string' ? m.text : (m?.text == null ? '' : String(m.text)),
+  timestamp: toIso(m?.timestamp) || new Date(0).toISOString(),
+});
+
+const normalizeSessionFields = (s: any) => ({
+  ...s,
+  createdAt: toIso(s?.createdAt) || '',
+  lastUpdated: toIso(s?.lastUpdated) || '',
+  firstUserMessageAt: toIso(s?.firstUserMessageAt) || null,
+  humanAssignedAt: toIso(s?.humanAssignedAt) || undefined,
+  escalatedAt: toIso(s?.escalatedAt) || undefined,
+  dispositionRequiredAt: toIso(s?.dispositionRequiredAt) || undefined,
+});
+
 // --- OFFLINE-FIRST / FIREBASE API SUSPENSION RESILIENCY FALLBACK SYSTEM ---
 const getLocalSessions = (): ConversationSession[] => {
   if (typeof window === 'undefined') return [];
@@ -588,7 +623,7 @@ export const subscribeToConversations = (
   let unsubSnapshot = () => {};
   try {
     unsubSnapshot = onSnapshot(q, (snapshot) => {
-      const sessions = realOnly(snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() } as ConversationSession)));
+      const sessions = realOnly(snapshot.docs.map(doc => normalizeSessionFields({ id: doc.id, ...doc.data() }) as ConversationSession));
       const local = getLocalSessions();
       const merged = [...sessions];
       local.forEach(l => {
@@ -644,7 +679,7 @@ export const subscribeToConversation = (
       doc(db, COLLECTIONS.sessions, sessionId),
       (doc) => {
         if (doc.exists()) {
-          callback(maskOne({ id: doc.id, ...doc.data() } as ConversationSession));
+          callback(maskOne(normalizeSessionFields({ id: doc.id, ...doc.data() }) as ConversationSession));
         } else {
           callback(null);
         }
@@ -710,7 +745,7 @@ export const subscribeToMessages = (
   let unsubSnapshot = () => {};
   try {
     unsubSnapshot = onSnapshot(q, (snapshot) => {
-      let messages = snapshot.docs.map(doc => doc.data() as ConversationMessage);
+      let messages = snapshot.docs.map(doc => normalizeMessage(doc.data(), doc.id) as ConversationMessage);
       const local = getLocalSessions();
       const foundLocal = local.find(s => s.id === sessionId);
       

@@ -53,11 +53,21 @@ const CHAT_TAGS = [
 ];
 
 /** Format timestamp into DD/MM/YY HH:mm for default connection date display */
-const formatDateTime = (dateStr?: string): string => {
+// Devuelve SIEMPRE texto: si llega un Timestamp de Firestore ({seconds,nanoseconds}) o una fecha
+// inválida, antes se devolvía el objeto tal cual y React lanzaba "Objects are not valid as a React
+// child" (#31), tumbando la vista.
+const formatDateTime = (dateStr?: any): string => {
   if (!dateStr) return 'N/A';
   try {
-    const d = new Date(dateStr);
-    if (isNaN(d.getTime())) return dateStr;
+    const raw = (dateStr && typeof dateStr === 'object')
+      ? (typeof dateStr.toDate === 'function' ? dateStr.toDate()
+        : typeof dateStr.seconds === 'number' ? new Date(dateStr.seconds * 1000)
+        : typeof dateStr._seconds === 'number' ? new Date(dateStr._seconds * 1000)
+        : null)
+      : dateStr;
+    if (raw === null) return 'N/A';
+    const d = new Date(raw);
+    if (isNaN(d.getTime())) return 'N/A';
     const day = String(d.getDate()).padStart(2, '0');
     const month = String(d.getMonth() + 1).padStart(2, '0');
     const year = String(d.getFullYear()).slice(-2);
@@ -65,7 +75,7 @@ const formatDateTime = (dateStr?: string): string => {
     const minutes = String(d.getMinutes()).padStart(2, '0');
     return `${day}/${month}/${year} ${hours}:${minutes}`;
   } catch (e) {
-    return dateStr;
+    return 'N/A';
   }
 };
 
@@ -442,8 +452,10 @@ const ConversationMonitor: React.FC<ConversationMonitorProps> = ({
   };
 
   const formatTime = (seconds: number) => {
-    const mins = Math.floor(seconds / 60);
-    const secs = seconds % 60;
+    const total = Number(seconds);
+    if (!Number.isFinite(total) || total < 0) return '0:00';
+    const mins = Math.floor(total / 60);
+    const secs = Math.floor(total % 60);
     return `${mins}:${secs.toString().padStart(2, '0')}`;
   };
 

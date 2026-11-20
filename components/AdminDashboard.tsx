@@ -876,7 +876,16 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({
                                             <p className="text-[10px] text-slate-500 mt-0.5">{log.actionTaken}</p>
                                         </div>
                                         <div className="text-right">
-                                            <p className="text-[10px] text-slate-400">{new Date(log.timestamp).toLocaleString()}</p>
+                                            <p className="text-[10px] text-slate-400">{(() => {
+  // log.timestamp puede ser un Timestamp de Firestore ({seconds,nanoseconds}) o texto.
+  const v: any = (log as any).timestamp;
+  if (v && typeof v === 'object') {
+    const s = v.seconds ?? v._seconds;
+    return s ? new Date(s * 1000).toLocaleString() : '—';
+  }
+  const d = new Date(v);
+  return isNaN(d.getTime()) ? '—' : d.toLocaleString();
+})()}</p>
                                             <span className={`inline-block mt-1 text-[8px] font-black uppercase tracking-widest px-2 py-0.5 rounded-full ${
                                                 log.provider === 'Escala' ? 'bg-emerald-100 text-emerald-600' : 'bg-blue-100 text-blue-600'
                                             }`}>
