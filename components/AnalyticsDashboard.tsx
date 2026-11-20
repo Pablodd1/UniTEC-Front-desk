@@ -775,6 +775,42 @@ const AnalyticsDashboard: React.FC<AnalyticsDashboardProps> = ({ sessions, googl
         </div>
       )}
 
+      {/* Etiquetas operativas (filtración y reporte) */}
+      {funnelData?.tags && funnelData.tags.tagged > 0 && (
+        <div className="bg-white p-6 rounded-2xl border border-slate-200">
+          <div className="flex items-start justify-between gap-3 mb-4">
+            <div>
+              <h3 className="font-bold text-slate-800">Etiquetas de conversación</h3>
+              <p className="text-xs text-slate-500 mt-0.5">
+                Clasificación que puso el equipo en el Monitor (Sales, Support, Complaint…).
+              </p>
+            </div>
+            <span className="px-3 py-1 bg-slate-100 text-slate-700 rounded-full text-xs font-bold shrink-0">
+              {funnelData.tags.tagged} de {funnelData.tags.total} etiquetadas
+            </span>
+          </div>
+          <div className="space-y-2">
+            {Object.entries(funnelData.tags.counts || {})
+              .sort((a: any, b: any) => b[1] - a[1])
+              .map(([tag, count]: any) => {
+                const pct = funnelData.tags.total ? Math.round((count / funnelData.tags.total) * 100) : 0;
+                return (
+                  <div key={tag} className="flex items-center gap-3">
+                    <span className="w-24 text-[11px] font-bold text-slate-500 capitalize">{tag}</span>
+                    <div className="flex-1 h-2 bg-slate-100 rounded-full overflow-hidden">
+                      <div className="h-full bg-brand-500 rounded-full" style={{ width: `${pct}%` }} />
+                    </div>
+                    <span className="w-14 text-right text-xs font-bold text-slate-700">{count}</span>
+                  </div>
+                );
+              })}
+          </div>
+          <p className="text-[11px] text-slate-400 mt-3">
+            También puedes filtrar el Monitor por etiqueta; las etiquetas por mensaje se ven en cada burbuja.
+          </p>
+        </div>
+      )}
+
       {/* Intent Distribution */}
       {Object.keys(intentDistribution).length > 0 && (
         <div className="bg-white p-6 rounded-2xl border border-slate-200">

@@ -8,7 +8,7 @@ import {
   Check
 } from 'lucide-react';
 import DispositionPicker from './DispositionPicker';
-import { ConversationSession, subscribeToConversation, subscribeToMessages, ConversationMessage, addMessage, updateSessionStatus, addConversationTag, removeConversationTag, clearConversationTags, addConversationNote, bumpSessionCounter, markFirstStaffReply } from '../services/conversationService';
+import { ConversationSession, subscribeToConversation, subscribeToMessages, ConversationMessage, addMessage, updateSessionStatus, addConversationTag, removeConversationTag, clearConversationTags, addMessageTag, removeMessageTag, addConversationNote, bumpSessionCounter, markFirstStaffReply } from '../services/conversationService';
 import { playNotificationSound } from '../services/soundService';
 
 interface ConversationMonitorProps {
@@ -79,6 +79,7 @@ const ConversationMonitor: React.FC<ConversationMonitorProps> = ({
 }) => {
   const [dispositionDoneLocal, setDispositionDoneLocal] = useState(false);
   const [tagError, setTagError] = useState<string | null>(null);
+  const [tagMenuMsgId, setTagMenuMsgId] = useState<string | null>(null);
   const [selectedSessionId, setSelectedSessionId] = useState<string | null>(null);
   const [selectedSession, setSelectedSession] = useState<ConversationSession | null>(null);
   const [messages, setMessages] = useState<ConversationMessage[]>([]);
@@ -87,7 +88,7 @@ const ConversationMonitor: React.FC<ConversationMonitorProps> = ({
   const [soundEnabled, setSoundEnabled] = useState(true);
   const [filterStatus, setFilterStatus] = useState<string>('all');
   const [filterBrand, setFilterBrand] = useState<string>('all');
-  const [filterTag, _setFilterTag] = useState<string>('all');
+  const [filterTag, setFilterTag] = useState<string>('all');
   const [searchQuery, setSearchQuery] = useState('');
   const [showCannedResponses, setShowCannedResponses] = useState(false);
   const [showTags, setShowTags] = useState(false);
@@ -303,6 +304,19 @@ const ConversationMonitor: React.FC<ConversationMonitorProps> = ({
     } catch (e: any) {
       console.error('Failed to toggle tag:', e);
       setTagError(e?.message || 'No se pudo guardar la etiqueta.');
+    }
+  };
+
+  // Etiqueta un MENSAJE concreto (no la conversación). Se guarda en el doc del mensaje.
+  const handleToggleMessageTag = async (messageId: string, tagId: string, active: boolean) => {
+    if (!selectedSessionId) return;
+    setTagError(null);
+    try {
+      if (active) await removeMessageTag(selectedSessionId, messageId, tagId);
+      else await addMessageTag(selectedSessionId, messageId, tagId);
+    } catch (e: any) {
+      console.error('Failed to tag message:', e);
+      setTagError(e?.message || 'No se pudo etiquetar el mensaje.');
     }
   };
 
@@ -787,6 +801,26 @@ const ConversationMonitor: React.FC<ConversationMonitorProps> = ({
             </div>
           )}
 
+          {/* Filtro por etiqueta: deja sólo las conversaciones marcadas */}
+          <div className="px-4 pt-3 flex items-center gap-2 flex-wrap">
+            <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Filtrar</span>
+            <button
+              onClick={() => setFilterTag('all')}
+              className={`px-2 py-1 rounded text-[10px] font-bold ${filterTag === 'all' ? 'bg-slate-800 text-white' : 'bg-slate-100 text-slate-600'}`}
+            >
+              Todas
+            </button>
+            {CHAT_TAGS.map(t => (
+              <button
+                key={t.id}
+                onClick={() => setFilterTag(filterTag === t.id ? 'all' : t.id)}
+                className={`px-2 py-1 rounded text-[10px] font-bold ${t.color} ${filterTag === t.id ? 'ring-2 ring-slate-400' : 'opacity-70 hover:opacity-100'}`}
+              >
+                {t.label}
+              </button>
+            ))}
+          </div>
+
           {/* Messages */}
           <div className="flex-1 min-h-0 overflow-y-auto overscroll-contain p-4 space-y-3">
             {messages.length === 0 ? (
@@ -809,14 +843,54 @@ const ConversationMonitor: React.FC<ConversationMonitorProps> = ({
                     }`}
                   >
                     <p>{msg.text}</p>
-                    <div className="flex items-center justify-between mt-1">
+                    {((msg as any).tags?.length > 0) && (
+                      <div className="flex flex-wrap gap-1 mt-1">
+                        {((msg as any).tags as string[]).map(t => {
+                          const def = CHAT_TAGS.find(x => x.id === t);
+                          return (
+                            <span key={t} className={`px-1.5 py-0.5 rounded text-[9px] font-bold flex items-center gap-1 ${def?.color || 'bg-slate-200 text-slate-700'}`}>
+                              {def?.label || t}
+                              <button title="Quitar etiqueta del mensaje" onClick={() => handleToggleMessageTag(msg.id, t, true)}>
+                                <X size={8} />
+                              </button>
+                            </span>
+                          );
+                        })}
+                      </div>
+                    )}
+                    <div className="flex items-center justify-between mt-1 gap-2">
                       <span className="text-[10px] opacity-60">
                         {msg.staffName && `Staff: ${msg.staffName}`}
                       </span>
-                      <span className="text-[10px] opacity-60">
-                        {new Date(msg.timestamp).toLocaleTimeString()}
-                      </span>
+                      <div className="flex items-center gap-1.5">
+                        <button
+                          title="Etiquetar este mensaje"
+                          onClick={() => setTagMenuMsgId(tagMenuMsgId === msg.id ? null : msg.id)}
+                          className="opacity-50 hover:opacity-100"
+                        >
+                          <Tag size={10} />
+                        </button>
+                        <span className="text-[10px] opacity-60">
+                          {new Date(msg.timestamp).toLocaleTimeString()}
+                        </span>
+                      </div>
                     </div>
+                    {tagMenuMsgId === msg.id && (
+                      <div className="mt-2 p-2 rounded-lg bg-white/90 border border-slate-200 flex flex-wrap gap-1">
+                        {CHAT_TAGS.map(t => {
+                          const on = ((msg as any).tags || []).includes(t.id);
+                          return (
+                            <button
+                              key={t.id}
+                              onClick={() => handleToggleMessageTag(msg.id, t.id, on)}
+                              className={`px-2 py-1 rounded text-[9px] font-bold ${t.color} ${on ? 'ring-2 ring-slate-400' : 'opacity-70 hover:opacity-100'}`}
+                            >
+                              {t.label}
+                            </button>
+                          );
+                        })}
+                      </div>
+                    )}
                   </div>
                 </div>
               ))

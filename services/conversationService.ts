@@ -959,31 +959,88 @@ export const subscribeToInterventions = (
   };
 };
 
+
+// Firestore responde "No document to update" cuando la conversación ya no existe (borrada o
+// limpiada). Antes ese texto crudo llegaba a la pantalla del asesor. Aquí se traduce y se descarta
+// la copia local para que la sesión fantasma desaparezca de la lista.
+const isNotFoundError = (e: any): boolean => {
+  const msg = String(e?.message || e?.code || e || '');
+  return msg.includes('No document to update') || msg.includes('not-found') || msg.includes('NOT_FOUND');
+};
+
+const dropStaleSession = (sessionId: string): void => {
+  try {
+    const local = getLocalSessions().filter(s => s.id !== sessionId);
+    saveLocalSessions(local);
+  } catch {}
+};
+
+const tagWriteError = (sessionId: string, e: any): Error => {
+  if (isNotFoundError(e)) {
+    dropStaleSession(sessionId);
+    return new Error('Esta conversación ya no existe (fue borrada). Actualiza la lista.');
+  }
+  return new Error('No se pudo guardar la etiqueta. Reintenta.');
+};
+
 // Add a tag to a conversation.
 // NOTA: las etiquetas son metadato OPERATIVO (clasificación de la conversación), no contenido del
 // chat ni PHI. Antes devolvían sin hacer nada cuando Privacy Mode estaba activo, así que al pulsar
 // una etiqueta no pasaba nada: el panel parecía roto. Ahora se guardan siempre.
 export const addConversationTag = async (sessionId: string, tag: string): Promise<void> => {
   const sessionRef = doc(db, COLLECTIONS.sessions, sessionId);
-  await updateDoc(sessionRef, {
-    tags: arrayUnion(tag),
-    lastUpdated: new Date().toISOString(),
-  });
+  try {
+    await updateDoc(sessionRef, {
+      tags: arrayUnion(tag),
+      lastUpdated: new Date().toISOString(),
+    });
+  } catch (e) {
+    throw tagWriteError(sessionId, e);
+  }
 };
 
 // Quita una etiqueta de la conversación (borrado real, no sólo visual).
 export const removeConversationTag = async (sessionId: string, tag: string): Promise<void> => {
   const sessionRef = doc(db, COLLECTIONS.sessions, sessionId);
-  await updateDoc(sessionRef, {
-    tags: arrayRemove(tag),
-    lastUpdated: new Date().toISOString(),
-  });
+  try {
+    await updateDoc(sessionRef, {
+      tags: arrayRemove(tag),
+      lastUpdated: new Date().toISOString(),
+    });
+  } catch (e) {
+    throw tagWriteError(sessionId, e);
+  }
+};
+
+// ── Etiquetas POR MENSAJE ────────────────────────────────────────────────────────────────────────
+// El asesor marca un mensaje concreto (una queja, una cotización, un dato técnico) y esa marca se
+// guarda en el documento del mensaje, no en la conversación.
+export const addMessageTag = async (sessionId: string, messageId: string, tag: string): Promise<void> => {
+  const ref = doc(db, COLLECTIONS.sessions, sessionId, 'messages', messageId);
+  try {
+    await updateDoc(ref, { tags: arrayUnion(tag) });
+  } catch (e) {
+    throw tagWriteError(sessionId, e);
+  }
+};
+
+export const removeMessageTag = async (sessionId: string, messageId: string, tag: string): Promise<void> => {
+  const ref = doc(db, COLLECTIONS.sessions, sessionId, 'messages', messageId);
+  try {
+    await updateDoc(ref, { tags: arrayRemove(tag) });
+  } catch (e) {
+    throw tagWriteError(sessionId, e);
+  }
 };
 
 // Deja la conversación sin ninguna etiqueta.
 export const clearConversationTags = async (sessionId: string): Promise<void> => {
   const sessionRef = doc(db, COLLECTIONS.sessions, sessionId);
-  await updateDoc(sessionRef, { tags: [], lastUpdated: new Date().toISOString() });
+  try {
+    await updateDoc(sessionRef, { tags: [], lastUpdated: new Date().toISOString() });
+  } catch (e) {
+    throw tagWriteError(sessionId, e);
+  }
 };
 
 

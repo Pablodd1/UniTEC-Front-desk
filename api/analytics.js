@@ -21,6 +21,20 @@ function classifyIntent(text) {
   return 'Otros / General';
 }
 
+
+/** Conteo de etiquetas de conversación para el reporte (sales / support / complaint...). */
+function tagBreakdown(sessions) {
+  const counts = {};
+  let tagged = 0;
+  for (const s of sessions || []) {
+    const list = Array.isArray(s.tags) ? s.tags : [];
+    if (list.length) tagged++;
+    for (const t of list) counts[t] = (counts[t] || 0) + 1;
+  }
+  const total = (sessions || []).length;
+  return { counts, tagged, untagged: total - tagged, total };
+}
+
 export default async function handler(req, res) {
   res.setHeader('Access-Control-Allow-Origin', '*');
   res.setHeader('Access-Control-Allow-Methods', 'GET,OPTIONS');
@@ -126,6 +140,8 @@ export default async function handler(req, res) {
       intents: Object.entries(intentCounts).sort((a, b) => b[1] - a[1]).slice(0, 12),
       // Seguimiento comercial: cuántas interacciones urgentes quedaron tipificadas y con qué resultado.
       dispositions: dispositionBreakdown(sessions),
+      // Etiquetas operativas: volumen por etiqueta y cobertura del etiquetado.
+      tags: tagBreakdown(sessions),
       recentReal,
     });
   } catch (e) {
