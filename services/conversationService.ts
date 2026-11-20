@@ -564,14 +564,21 @@ const realOnly = (list: ConversationSession[]) => list.filter((s) => !TEST_SESSI
 export const subscribeToConversations = (
   callback: (sessions: ConversationSession[]) => void
 ): (() => void) => {
-  if (getPrivacyMode()) {
-    logPrivacy('subscribeToConversations');
-    callback([]);
-    return () => {};
-  }
-  
+  // Privacy Mode oculta la IDENTIDAD del cliente, no la operación. Antes devolvía una lista vacía,
+  // así que con el modo activo el Monitor no mostraba ninguna conversación y parecía roto (y sin
+  // conversación seleccionada no se podían poner etiquetas). Ahora se listan enmascaradas.
+  const mask = (list: ConversationSession[]): ConversationSession[] => {
+    if (!getPrivacyMode()) return list;
+    return list.map(s => ({
+      ...s,
+      customerName: s.customerName ? 'Cliente' : s.customerName,
+      customerPhone: s.customerPhone ? '•••••' : s.customerPhone,
+      customerEmail: s.customerEmail ? '•••@•••' : s.customerEmail,
+    } as ConversationSession));
+  };
+
   // Return local storage fallback immediately
-  callback(realOnly(getLocalSessions()));
+  callback(mask(realOnly(getLocalSessions())));
   
   const subRecord: ActiveSubscription = { type: 'conversations', callback };
   activeSubs.push(subRecord);
@@ -591,10 +598,10 @@ export const subscribeToConversations = (
       });
       merged.sort((a, b) => new Date(b.lastUpdated).getTime() - new Date(a.lastUpdated).getTime());
       saveLocalSessions(merged);
-      callback(merged);
+      callback(mask(merged));
     }, (error) => {
       console.warn('Error subscribing to conversations, returning local sessions:', error);
-      callback(realOnly(getLocalSessions()));
+      callback(mask(realOnly(getLocalSessions())));
     });
   } catch (e) {
     console.warn('Failed to setup conversations snapshot subscription:', e);
