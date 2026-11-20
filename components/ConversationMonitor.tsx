@@ -80,6 +80,14 @@ const ConversationMonitor: React.FC<ConversationMonitorProps> = ({
   const [dispositionDoneLocal, setDispositionDoneLocal] = useState(false);
   const [tagError, setTagError] = useState<string | null>(null);
   const [tagMenuMsgId, setTagMenuMsgId] = useState<string | null>(null);
+  // Gracia de 2,5 s antes de declarar la sesión como inexistente (evita el parpadeo al abrir).
+  const [sessionWait, setSessionWait] = useState(false);
+
+  useEffect(() => {
+    if (!selectedSessionId || selectedSession) { setSessionWait(false); return; }
+    const t = setTimeout(() => setSessionWait(true), 2500);
+    return () => clearTimeout(t);
+  }, [selectedSessionId, selectedSession]);
   const [selectedSessionId, setSelectedSessionId] = useState<string | null>(null);
   const [selectedSession, setSelectedSession] = useState<ConversationSession | null>(null);
   const [messages, setMessages] = useState<ConversationMessage[]>([]);
@@ -650,6 +658,27 @@ const ConversationMonitor: React.FC<ConversationMonitorProps> = ({
               })
             )}
           </div>
+        </div>
+      </div>
+    );
+  }
+
+  // La sesión seleccionada ya no existe (se borró o se limpió): antes el panel quedaba en blanco.
+  if (selectedSessionId && !selectedSession && sessionWait) {
+    return (
+      <div className="h-full flex items-center justify-center p-8">
+        <div className="max-w-md w-full rounded-2xl border border-slate-200 bg-white p-6 text-center">
+          <p className="font-bold text-slate-800">Esta conversación ya no existe</p>
+          <p className="text-xs text-slate-500 mt-1">
+            Puede que se haya borrado o que se haya limpiado durante la prueba. Vuelve a la lista para
+            elegir otra.
+          </p>
+          <button
+            onClick={() => { setSelectedSessionId(null); onSelectSession(null); setVisitorInfo(null); }}
+            className="mt-4 px-4 py-2 rounded-lg bg-slate-800 text-white text-xs font-bold"
+          >
+            Volver a la lista
+          </button>
         </div>
       </div>
     );

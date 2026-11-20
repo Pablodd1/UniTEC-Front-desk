@@ -12,6 +12,7 @@ import { doc, writeBatch } from 'firebase/firestore';
 
 import { subscribeToConversations, subscribeToInterventions, updateSessionStatus, addMessage, subscribeToMessages } from '../services/conversationService';
 import ConversationMonitor from './ConversationMonitor';
+import ErrorBoundary from './ErrorBoundary';
 import StaffIntervention from './StaffIntervention';
 import RecentAlerts from './RecentAlerts';
 import AnalyticsDashboard from './AnalyticsDashboard';
@@ -2100,6 +2101,7 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({
         case 'conversations':
             return (
                 <div className="h-[calc(100vh-200px)] animate-in slide-in-from-bottom-2 duration-500">
+                    <ErrorBoundary label="monitor" onReset={() => _setSelectedConversation(null)}>
                     <ConversationMonitor 
                         sessions={conversations}
                         focusSessionId={_selectedConversation?.id ?? initialSessionId ?? null}
@@ -2108,6 +2110,7 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({
                         }}
                         onRequestIntervention={async (sessionId) => { try { await updateSessionStatus(sessionId, 'human_assigned', 'staff_001'); } catch (e) { console.error('Failed to take over session', e); } }}
                     />
+                    </ErrorBoundary>
                 </div>
             );
             
@@ -2306,7 +2309,11 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({
         </div>
         <div className="flex-1 overflow-y-auto p-4 md:p-8 no-scrollbar">
             <div className="max-w-7xl mx-auto">
-                {renderTabContent()}
+                {/* Ninguna pestaña debe dejar la pantalla en blanco: si un componente falla,
+                    se muestra el aviso y se puede volver, en vez de perder el panel completo. */}
+                <ErrorBoundary label={`tab:${activeSubTab}`} key={activeSubTab}>
+                    {renderTabContent()}
+                </ErrorBoundary>
             </div>
         </div>
     </div>
