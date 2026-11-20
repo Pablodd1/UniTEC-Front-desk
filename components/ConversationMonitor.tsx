@@ -8,7 +8,7 @@ import {
   Check
 } from 'lucide-react';
 import DispositionPicker from './DispositionPicker';
-import { ConversationSession, subscribeToConversation, subscribeToMessages, ConversationMessage, addMessage, updateSessionStatus, addConversationTag, addConversationNote, bumpSessionCounter, markFirstStaffReply } from '../services/conversationService';
+import { ConversationSession, subscribeToConversation, subscribeToMessages, ConversationMessage, addMessage, updateSessionStatus, addConversationTag, removeConversationTag, clearConversationTags, addConversationNote, bumpSessionCounter, markFirstStaffReply } from '../services/conversationService';
 import { playNotificationSound } from '../services/soundService';
 
 interface ConversationMonitorProps {
@@ -78,6 +78,7 @@ const ConversationMonitor: React.FC<ConversationMonitorProps> = ({
   focusSessionId = null,
 }) => {
   const [dispositionDoneLocal, setDispositionDoneLocal] = useState(false);
+  const [tagError, setTagError] = useState<string | null>(null);
   const [selectedSessionId, setSelectedSessionId] = useState<string | null>(null);
   const [selectedSession, setSelectedSession] = useState<ConversationSession | null>(null);
   const [messages, setMessages] = useState<ConversationMessage[]>([]);
@@ -291,13 +292,27 @@ const ConversationMonitor: React.FC<ConversationMonitorProps> = ({
     setShowCannedResponses(false);
   };
 
-  const handleAddTag = async (tagId: string) => {
+  // Alta y baja en el mismo control: pulsar una etiqueta activa la quita.
+  const handleToggleTag = async (tagId: string) => {
     if (!selectedSessionId) return;
+    const active = (selectedSession?.tags || []).includes(tagId);
+    setTagError(null);
     try {
-      await addConversationTag(selectedSessionId, tagId);
-      setShowTags(false);
-    } catch (e) {
-      console.error('Failed to add tag:', e);
+      if (active) await removeConversationTag(selectedSessionId, tagId);
+      else await addConversationTag(selectedSessionId, tagId);
+    } catch (e: any) {
+      console.error('Failed to toggle tag:', e);
+      setTagError(e?.message || 'No se pudo guardar la etiqueta.');
+    }
+  };
+
+  const handleClearTags = async () => {
+    if (!selectedSessionId) return;
+    setTagError(null);
+    try {
+      await clearConversationTags(selectedSessionId);
+    } catch (e: any) {
+      setTagError(e?.message || 'No se pudieron borrar las etiquetas.');
     }
   };
 
@@ -851,22 +866,42 @@ const ConversationMonitor: React.FC<ConversationMonitorProps> = ({
             {showTags && (
               <div className="mb-2 bg-slate-50 rounded-lg p-2">
                 <div className="flex items-center justify-between mb-2">
-                  <span className="text-xs font-medium text-slate-500">Add Tags</span>
-                  <button onClick={() => setShowTags(false)} className="text-slate-400 hover:text-slate-600">
-                    <X size={12} />
-                  </button>
+                  <span className="text-xs font-medium text-slate-500">
+                    Etiquetas <span className="text-slate-400">· pulsa para poner o quitar</span>
+                  </span>
+                  <div className="flex items-center gap-2">
+                    {(selectedSession?.tags?.length || 0) > 0 && (
+                      <button
+                        onClick={handleClearTags}
+                        className="text-[11px] font-bold text-red-600 hover:text-red-700"
+                      >
+                        Borrar todas
+                      </button>
+                    )}
+                    <button onClick={() => setShowTags(false)} className="text-slate-400 hover:text-slate-600">
+                      <X size={12} />
+                    </button>
+                  </div>
                 </div>
                 <div className="flex gap-2 flex-wrap">
-                  {CHAT_TAGS.map((tag) => (
-                    <button
-                      key={tag.id}
-                      onClick={() => handleAddTag(tag.id)}
-                      className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-colors ${tag.color}`}
-                    >
-                      {tag.label}
-                    </button>
-                  ))}
+                  {CHAT_TAGS.map((tag) => {
+                    const on = (selectedSession?.tags || []).includes(tag.id);
+                    return (
+                      <button
+                        key={tag.id}
+                        onClick={() => handleToggleTag(tag.id)}
+                        className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-all flex items-center gap-1 ${
+                          on ? `${tag.color} ring-2 ring-offset-1 ring-slate-400` : `${tag.color} opacity-60 hover:opacity-100`
+                        }`}
+                      >
+                        {on && <Check size={11} />}
+                        {tag.label}
+                        {on && <X size={11} className="ml-0.5" />}
+                      </button>
+                    );
+                  })}
                 </div>
+                {tagError && <p className="text-[11px] text-red-600 mt-2">{tagError}</p>}
               </div>
             )}
             
@@ -989,15 +1024,27 @@ const ConversationMonitor: React.FC<ConversationMonitorProps> = ({
             {/* Tags */}
             {selectedSession?.tags && selectedSession.tags.length > 0 && (
               <div>
-                <h4 className="text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">Tags</h4>
+                <div className="flex items-center justify-between mb-2">
+                  <h4 className="text-xs font-bold text-slate-400 uppercase tracking-wider">Tags</h4>
+                  <button onClick={handleClearTags} className="text-[10px] font-bold text-red-500 hover:text-red-600">
+                    Borrar todas
+                  </button>
+                </div>
                 <div className="flex flex-wrap gap-1">
                   {selectedSession.tags.map(tag => {
                     const tagDef = CHAT_TAGS.find(t => t.id === tag);
-                    return tagDef ? (
-                      <span key={tag} className={`px-2 py-1 rounded text-[10px] font-medium ${tagDef.color}`}>
-                        {tagDef.label}
+                    return (
+                      <span key={tag} className={`px-2 py-1 rounded text-[10px] font-medium flex items-center gap-1 ${tagDef?.color || 'bg-slate-100 text-slate-600'}`}>
+                        {tagDef?.label || tag}
+                        <button
+                          title="Quitar etiqueta"
+                          onClick={() => handleToggleTag(tag)}
+                          className="hover:text-red-600"
+                        >
+                          <X size={10} />
+                        </button>
                       </span>
-                    ) : null;
+                    );
                   })}
                 </div>
               </div>

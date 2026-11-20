@@ -1,7 +1,7 @@
 // @ts-nocheck
 import { getPrivacyMode } from './firestoreService';
 import { db } from '../firebase';
-import { collection, addDoc, getDocs, doc, updateDoc, query, orderBy, onSnapshot, getDoc, where, serverTimestamp, setDoc, increment } from 'firebase/firestore';
+import { collection, addDoc, getDocs, doc, updateDoc, query, orderBy, onSnapshot, getDoc, where, serverTimestamp, setDoc, increment, arrayUnion, arrayRemove } from 'firebase/firestore';
 
 
 // --- OFFLINE-FIRST / FIREBASE API SUSPENSION RESILIENCY FALLBACK SYSTEM ---
@@ -946,47 +946,34 @@ export const subscribeToInterventions = (
   };
 };
 
-// Add a tag to a conversation
+// Add a tag to a conversation.
+// NOTA: las etiquetas son metadato OPERATIVO (clasificación de la conversación), no contenido del
+// chat ni PHI. Antes devolvían sin hacer nada cuando Privacy Mode estaba activo, así que al pulsar
+// una etiqueta no pasaba nada: el panel parecía roto. Ahora se guardan siempre.
 export const addConversationTag = async (sessionId: string, tag: string): Promise<void> => {
-  if (getPrivacyMode()) {
-    logPrivacy('addConversationTag');
-    return; // Don't save tags
-  }
-  
   const sessionRef = doc(db, COLLECTIONS.sessions, sessionId);
-  const session = await getDoc(sessionRef);
-  
-  if (session.exists()) {
-    const data = session.data() as ConversationSession;
-    const currentTags = data.tags || [];
-    if (!currentTags.includes(tag)) {
-      await updateDoc(sessionRef, {
-        tags: [...currentTags, tag],
-        lastUpdated: new Date().toISOString(),
-      });
-    }
-  }
+  await updateDoc(sessionRef, {
+    tags: arrayUnion(tag),
+    lastUpdated: new Date().toISOString(),
+  });
 };
 
-// Remove a tag from a conversation
+// Quita una etiqueta de la conversación (borrado real, no sólo visual).
 export const removeConversationTag = async (sessionId: string, tag: string): Promise<void> => {
-  if (getPrivacyMode()) {
-    logPrivacy('removeConversationTag');
-    return; // Don't modify tags
-  }
-  
   const sessionRef = doc(db, COLLECTIONS.sessions, sessionId);
-  const session = await getDoc(sessionRef);
-  
-  if (session.exists()) {
-    const data = session.data() as ConversationSession;
-    const currentTags = data.tags || [];
-    await updateDoc(sessionRef, {
-      tags: currentTags.filter(t => t !== tag),
-      lastUpdated: new Date().toISOString(),
-    });
-  }
+  await updateDoc(sessionRef, {
+    tags: arrayRemove(tag),
+    lastUpdated: new Date().toISOString(),
+  });
 };
+
+// Deja la conversación sin ninguna etiqueta.
+export const clearConversationTags = async (sessionId: string): Promise<void> => {
+  const sessionRef = doc(db, COLLECTIONS.sessions, sessionId);
+  await updateDoc(sessionRef, { tags: [], lastUpdated: new Date().toISOString() });
+};
+
+
 
 // Add a private note to a conversation
 export const addConversationNote = async (
