@@ -140,6 +140,9 @@ export function parseFirestoreDoc(doc) {
     city: fields.city?.stringValue || '',
     campaign: fields.campaign?.stringValue || '',
     topics,
+    // Etiquetas operativas del Monitor (Sales/Support/Complaint…). Sin esto el desglose de
+    // analítica siempre salía vacío: el mapeo descartaba el campo.
+    tags: fields.tags?.arrayValue?.values?.map((v) => v.stringValue).filter(Boolean) || [],
     extractedData: parseMap(fields.extractedData),
     // Tipificación (disposición) obligatoria de traspasos urgentes — campos leídos por el
     // barrido SLA (recordatorios), el guard de cierre y los desgloses de analítica.
