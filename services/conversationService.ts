@@ -619,15 +619,21 @@ export const subscribeToConversation = (
   sessionId: string,
   callback: (session: ConversationSession | null) => void
 ): (() => void) => {
-  if (getPrivacyMode()) {
-    logPrivacy('subscribeToConversation');
-    callback(null);
-    return () => {};
-  }
-  
+  // Privacy Mode no debe dejar el panel en blanco: la ficha (estado, etiquetas, notas) es operativa;
+  // sólo se enmascara la identidad del cliente. El contenido de los mensajes sí se oculta.
+  const maskOne = (x: ConversationSession | null): ConversationSession | null => {
+    if (!x || !getPrivacyMode()) return x;
+    return {
+      ...x,
+      customerName: x.customerName ? 'Cliente' : x.customerName,
+      customerPhone: x.customerPhone ? '•••••' : x.customerPhone,
+      customerEmail: x.customerEmail ? '•••@•••' : x.customerEmail,
+    } as ConversationSession;
+  };
+
   // Return local storage immediately
   const local = getLocalSessions();
-  callback(local.find(s => s.id === sessionId) || null);
+  callback(maskOne(local.find(s => s.id === sessionId) || null));
   
   const subRecord: ActiveSubscription = { type: 'conversation', sessionId, callback };
   activeSubs.push(subRecord);
@@ -638,14 +644,14 @@ export const subscribeToConversation = (
       doc(db, COLLECTIONS.sessions, sessionId),
       (doc) => {
         if (doc.exists()) {
-          callback(doc.data() as ConversationSession);
+          callback(maskOne({ id: doc.id, ...doc.data() } as ConversationSession));
         } else {
           callback(null);
         }
       },
       (error) => {
         console.warn(`Error subscribing to conversation ${sessionId}:`, error);
-        callback(getLocalSessions().find(s => s.id === sessionId) || null);
+        callback(maskOne(getLocalSessions().find(s => s.id === sessionId) || null));
       }
     );
   } catch (e) {
