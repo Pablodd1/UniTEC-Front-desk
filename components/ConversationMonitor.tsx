@@ -82,14 +82,17 @@ const ConversationMonitor: React.FC<ConversationMonitorProps> = ({
   const [tagMenuMsgId, setTagMenuMsgId] = useState<string | null>(null);
   // Gracia de 2,5 s antes de declarar la sesión como inexistente (evita el parpadeo al abrir).
   const [sessionWait, setSessionWait] = useState(false);
+  const [selectedSessionId, setSelectedSessionId] = useState<string | null>(null);
+  const [selectedSession, setSelectedSession] = useState<ConversationSession | null>(null);
 
+  // OJO: este efecto iba declarado antes de los useState y rompía el panel entero
+  // ("Cannot access 'u' before initialization"): el array de dependencias leía `selectedSessionId`
+  // y `selectedSession` antes de que existieran. Debe ir SIEMPRE después de sus estados.
   useEffect(() => {
     if (!selectedSessionId || selectedSession) { setSessionWait(false); return; }
     const t = setTimeout(() => setSessionWait(true), 2500);
     return () => clearTimeout(t);
   }, [selectedSessionId, selectedSession]);
-  const [selectedSessionId, setSelectedSessionId] = useState<string | null>(null);
-  const [selectedSession, setSelectedSession] = useState<ConversationSession | null>(null);
   const [messages, setMessages] = useState<ConversationMessage[]>([]);
   const [staffResponse, setStaffResponse] = useState('');
   const [isSending, setIsSending] = useState(false);
