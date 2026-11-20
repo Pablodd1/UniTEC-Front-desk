@@ -89,6 +89,7 @@ const ConversationMonitor: React.FC<ConversationMonitorProps> = ({
 }) => {
   const [dispositionDoneLocal, setDispositionDoneLocal] = useState(false);
   const [tagError, setTagError] = useState<string | null>(null);
+  const [tagSaved, setTagSaved] = useState(false);
   const [tagMenuMsgId, setTagMenuMsgId] = useState<string | null>(null);
   // Gracia de 2,5 s antes de declarar la sesión como inexistente (evita el parpadeo al abrir).
   const [sessionWait, setSessionWait] = useState(false);
@@ -112,7 +113,7 @@ const ConversationMonitor: React.FC<ConversationMonitorProps> = ({
   const [filterTag, setFilterTag] = useState<string>('all');
   const [searchQuery, setSearchQuery] = useState('');
   const [showCannedResponses, setShowCannedResponses] = useState(false);
-  const [showTags, setShowTags] = useState(false);
+  const [showTags, setShowTags] = useState(true);
   const [showNotes, setShowNotes] = useState(false);
   const [noteText, setNoteText] = useState('');
   const [isTyping, setIsTyping] = useState(false);
@@ -322,6 +323,8 @@ const ConversationMonitor: React.FC<ConversationMonitorProps> = ({
     try {
       if (active) await removeConversationTag(selectedSessionId, tagId);
       else await addConversationTag(selectedSessionId, tagId);
+      setTagSaved(true);
+      window.setTimeout(() => setTagSaved(false), 2500);
     } catch (e: any) {
       console.error('Failed to toggle tag:', e);
       setTagError(e?.message || 'No se pudo guardar la etiqueta.');
@@ -346,6 +349,8 @@ const ConversationMonitor: React.FC<ConversationMonitorProps> = ({
     setTagError(null);
     try {
       await clearConversationTags(selectedSessionId);
+      setTagSaved(true);
+      window.setTimeout(() => setTagSaved(false), 2500);
     } catch (e: any) {
       setTagError(e?.message || 'No se pudieron borrar las etiquetas.');
     }
@@ -847,22 +852,25 @@ const ConversationMonitor: React.FC<ConversationMonitorProps> = ({
 
           {/* Filtro por etiqueta: deja sólo las conversaciones marcadas */}
           <div className="px-4 pt-3 flex items-center gap-2 flex-wrap">
-            <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Filtrar</span>
+            <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Sólo ver</span>
             <button
               onClick={() => setFilterTag('all')}
-              className={`px-2 py-1 rounded text-[10px] font-bold ${filterTag === 'all' ? 'bg-slate-800 text-white' : 'bg-slate-100 text-slate-600'}`}
+              className={`px-2 py-1 rounded border text-[10px] font-bold ${filterTag === 'all' ? 'bg-slate-800 border-slate-800 text-white' : 'bg-white border-slate-200 text-slate-500 hover:border-slate-300'}`}
             >
-              Todas
+              Todas ({sessions.length})
             </button>
             {CHAT_TAGS.map(t => (
               <button
                 key={t.id}
                 onClick={() => setFilterTag(filterTag === t.id ? 'all' : t.id)}
-                className={`px-2 py-1 rounded text-[10px] font-bold ${t.color} ${filterTag === t.id ? 'ring-2 ring-slate-400' : 'opacity-70 hover:opacity-100'}`}
+                title={filterTag === t.id ? 'Quitar este filtro' : `Ver sólo las conversaciones con "${t.label}"`}
+                className={`px-2 py-1 rounded border text-[10px] font-bold flex items-center gap-1 ${filterTag === t.id ? 'bg-slate-800 border-slate-800 text-white' : 'bg-white border-slate-200 text-slate-500 hover:border-slate-300'}`}
               >
+                <span className={`w-1.5 h-1.5 rounded-full ${t.color.split(' ')[0]}`} />
                 {t.label}
               </button>
             ))}
+            <span className="text-[9px] text-slate-400 italic">· filtro de la lista, no etiqueta la conversación</span>
           </div>
 
           {/* Messages */}
@@ -985,7 +993,8 @@ const ConversationMonitor: React.FC<ConversationMonitorProps> = ({
               <div className="mb-2 bg-slate-50 rounded-lg p-2">
                 <div className="flex items-center justify-between mb-2">
                   <span className="text-xs font-medium text-slate-500">
-                    Etiquetas <span className="text-slate-400">· pulsa para poner o quitar</span>
+                    Etiquetas de la conversación <span className="text-slate-400">· pulsa para poner o quitar</span>
+                    {tagSaved && <span className="text-emerald-600 font-bold"> · guardado ✓</span>}
                   </span>
                   <div className="flex items-center gap-2">
                     {(selectedSession?.tags?.length || 0) > 0 && (
@@ -1019,6 +1028,25 @@ const ConversationMonitor: React.FC<ConversationMonitorProps> = ({
                     );
                   })}
                 </div>
+                {(selectedSession?.tags?.length || 0) > 0 && (
+                  <div className="flex items-center gap-1 flex-wrap mt-2 pt-2 border-t border-slate-100">
+                    <span className="text-[10px] font-bold uppercase tracking-wider text-slate-400">Aplicadas</span>
+                    {(selectedSession?.tags || []).map((id) => {
+                      const t = CHAT_TAGS.find((x) => x.id === id);
+                      return (
+                        <button
+                          key={id}
+                          onClick={() => handleToggleTag(id)}
+                          title="Quitar esta etiqueta"
+                          className={`px-2 py-0.5 rounded text-[10px] font-bold flex items-center gap-1 ${t?.color || 'bg-slate-100 text-slate-600'}`}
+                        >
+                          {t?.label || id}
+                          <X size={10} />
+                        </button>
+                      );
+                    })}
+                  </div>
+                )}
                 {tagError && <p className="text-[11px] text-red-600 mt-2">{tagError}</p>}
               </div>
             )}
