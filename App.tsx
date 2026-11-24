@@ -94,9 +94,12 @@ const App: React.FC = () => {
       const params = new URLSearchParams(window.location.search);
       const urlBrand = params.get('brandId');
       const urlLang = params.get('lang');
-      // Force unitec per business requirements for Colombia unless a valid brandId comes in the URL.
       const brand: 'unitec' | 'building' =
-        urlBrand === 'unitec' || urlBrand === 'building' ? urlBrand : 'unitec';
+        urlBrand === 'unitec' || urlBrand === 'building'
+          ? urlBrand
+          : (typeof window !== 'undefined' && window.location.hostname.includes('buildinginnovation'))
+            ? 'building'
+            : 'unitec';
       setCurrentBrandId(brand);
       // Idioma: ?lang manda si es válido; si no, el default de la marca
       // (unitec → español, building → inglés). El toggle ES/EN sigue disponible en ambas.
