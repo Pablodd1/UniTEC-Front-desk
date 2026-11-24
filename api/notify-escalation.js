@@ -254,7 +254,7 @@ function buildTelegramMessage(d) {
 
 function buildEmailHtml(d) {
   const color = d.priority === 'urgent' ? '#dc2626' : d.priority === 'high' ? '#ea580c' : '#ca8a04';
-  const title = d.type === 'quote' ? '💰 Solicitud de cotización' : d.type === 'staff' ? '🧑‍💼 Cliente pidió un asesor' : d.type === 'sla' ? '⏰ Cliente esperando — sin respuesta' : d.type === 'abandon' ? '🚪 Cliente abandonó la conversación' : d.type === 'contact' ? '📞 Datos de contacto capturados' : '🚨 Escalamiento';
+  const title = d.type === 'quote' ? '💰 Solicitud de cotización' : d.type === 'staff' ? '🧑‍💼 Cliente pidió un asesor' : d.type === 'sla' ? '⏰ Cliente esperando — sin respuesta' : d.type === 'abandon' ? '🚪 Cliente abandonó la conversación' : d.type === 'contact' ? '📞 Datos de contacto capturados' : d.type === 'disposition' ? '📅 Tarea de seguimiento vencida — fecha límite' : '🚨 Escalamiento';
   return `<!DOCTYPE html><html><head><style>
   body{font-family:Arial,sans-serif;line-height:1.6;color:#333}
   .container{max-width:600px;margin:0 auto;padding:20px}
@@ -498,7 +498,7 @@ export default async function handler(req, res) {
   const [telegramR, emailR, smsR] = await Promise.allSettled([
     sendTelegram(buildTelegramMessage(d)),
     sendEmail(
-      `ALERTFROMCHATBOT — [${d.priority.toUpperCase()}] ${d.type === 'quote' ? 'Solicitud de cotización' : d.type === 'staff' ? 'Cliente pidió un asesor' : d.type === 'sla' ? 'CLIENTE SIN RESPUESTA (SLA)' : d.type === 'abandon' ? 'CLIENTE ABANDONÓ LA CONVERSACIÓN' : d.type === 'contact' ? 'DATOS DE CONTACTO CAPTURADOS' : 'Escalamiento'} — ${customerName || 'Cliente'}`,
+      `ALERTFROMCHATBOT — [${d.priority.toUpperCase()}] ${d.type === 'quote' ? 'Solicitud de cotización' : d.type === 'staff' ? 'Cliente pidió un asesor' : d.type === 'sla' ? 'CLIENTE SIN RESPUESTA (SLA)' : d.type === 'abandon' ? 'CLIENTE ABANDONÓ LA CONVERSACIÓN' : d.type === 'contact' ? 'DATOS DE CONTACTO CAPTURADOS' : d.type === 'disposition' ? 'TAREA DE SEGUIMIENTO VENCIDA (FECHA LÍMITE)' : 'Escalamiento'} — ${customerName || 'Cliente'}`,
       buildEmailHtml(d)
     ),
     // UN SOLO RAÍL DE TELÉFONO: Twilio SMS. Sin Sent.dm no hay primario muerto que esconda el fallo.

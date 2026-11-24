@@ -180,6 +180,7 @@ export default async function handler(req, res) {
 
     const plan = [];
     const done = [];
+    const skippedCompleted = [];
 
     for (const s of sessions) {
       if (!s?.id || TEST_ID_RE.test(s.id)) continue;
@@ -361,6 +362,13 @@ export default async function handler(req, res) {
       if (!s?.id || TEST_ID_RE.test(s.id)) continue;
       if (s.dispositionStatus !== 'done') continue;
       if (s.disposition?.code !== SEGUIMIENTO_PENDIENTE_CODE) continue;
+      // Tarea ya marcada como completada (sesión cerrada/resuelta) → la fecha límite vencida NO
+      // debe notificar: el follow-up se atendió. Sin este gate, una sesión cerrada que conserva el
+      // código SEGUIMIENTO_PENDIENTE despertaba al equipo con un recordatorio de algo ya hecho.
+      if (s.status === 'completed' || s.status === 'resolved') {
+        skippedCompleted.push(s.id);
+        continue;
+      }
       const due = Date.parse(s.followUpAt || s.disposition?.followUpAt || '');
       if (!Number.isFinite(due) || due > now) continue; // aún no vence
       if (s.followUpRemindedAt) continue; // ya se recordó
@@ -385,6 +393,8 @@ export default async function handler(req, res) {
       scanned: sessions.length,
       candidates: plan.length,
       acted: done.length,
+      skippedCompleted: skippedCompleted.length,
+      skippedCompletedIds: skippedCompleted.slice(0, 20),
       plan,
       done,
       ranAt: new Date().toISOString(),
