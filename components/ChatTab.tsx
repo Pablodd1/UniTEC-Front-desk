@@ -1378,37 +1378,53 @@ const ChatTab: React.FC<ChatTabProps> = ({ quickActions, initialMessage, emergen
               </div>
               <div>
                 <h3 className="text-[17px] font-black text-slate-800 leading-tight">Asistente {brandId === 'unitec' ? 'UNITEC USA DESIGN' : 'Building Innovation'}</h3>
-                <p className="text-xs font-semibold text-emerald-600 uppercase tracking-wider mt-0.5">Fácil de usar / En línea</p>
+                <p className="text-xs font-semibold text-emerald-600 uppercase tracking-wider mt-0.5">{language === 'en' ? 'Easy to use / Online' : 'Fácil de usar / En línea'}</p>
               </div>
             </div>
             
             <p className="text-[13.5px] text-slate-600 leading-relaxed mb-4">
-              <strong>¡Hola! Bienvenido.</strong> Hemos diseñado este chat para que sea tan fácil y familiar como usar <strong>WhatsApp</strong>. No necesitas saber tecnología para usarlo:
+              {language === 'en' ? (
+                <><strong>Hello! Welcome.</strong> We designed this chat to be as easy and familiar as using <strong>WhatsApp</strong>. You don't need any tech knowledge to use it:</>
+              ) : (
+                <><strong>¡Hola! Bienvenido.</strong> Hemos diseñado este chat para que sea tan fácil y familiar como usar <strong>WhatsApp</strong>. No necesitas saber tecnología para usarlo:</>
+              )}
             </p>
             
             <div className="space-y-3 bg-[#f0f9ff]/70 border border-blue-100 rounded-2xl p-4 mb-4">
               <div className="flex gap-3">
                 <span className="text-[15px] shrink-0">- </span>
                 <p className="text-xs text-slate-600 leading-normal">
-                  <strong>Escribe o Presiona:</strong> Puedes escribir tu mensaje en la parte inferior o simplemente presionar uno de los botones de opciones rápidas.
+                  {language === 'en' ? (
+                    <><strong>Type or Tap:</strong> Write your message at the bottom or simply tap one of the quick-action buttons.</>
+                  ) : (
+                    <><strong>Escribe o Presiona:</strong> Puedes escribir tu mensaje en la parte inferior o simplemente presionar uno de los botones de opciones rápidas.</>
+                  )}
                 </p>
               </div>
               <div className="flex gap-3">
                 <span className="text-[15px] shrink-0">- </span>
                 <p className="text-xs text-slate-600 leading-normal">
-                  <strong>Respuesta Instantánea:</strong> Nuestro asistente inteligente te responderá de inmediato sobre productos, stock y cotizaciones.
+                  {language === 'en' ? (
+                    <><strong>Instant Answers:</strong> Our intelligent assistant responds right away about products, stock and quotes.</>
+                  ) : (
+                    <><strong>Respuesta Instantánea:</strong> Nuestro asistente inteligente te responderá de inmediato sobre productos, stock y cotizaciones.</>
+                  )}
                 </p>
               </div>
               <div className="flex gap-3">
                 <span className="text-[15px] shrink-0">- </span>
                 <p className="text-xs text-slate-600 leading-normal">
-                  <strong>Atención del Personal:</strong> Si necesitas ayuda adicional, un asesor de nuestro equipo podrá continuar la conversación.
+                  {language === 'en' ? (
+                    <><strong>Staff Support:</strong> If you need extra help, a member of our team can continue the conversation.</>
+                  ) : (
+                    <><strong>Atención del Personal:</strong> Si necesitas ayuda adicional, un asesor de nuestro equipo podrá continuar la conversación.</>
+                  )}
                 </p>
               </div>
             </div>
 
             <div className="text-center pt-2">
-              <span className="text-[11px] font-bold text-slate-400 uppercase tracking-wider">Toca un botón de abajo o escribe un mensaje para comenzar</span>
+              <span className="text-[11px] font-bold text-slate-400 uppercase tracking-wider">{language === 'en' ? 'Tap a button below or write a message to start' : 'Toca un botón de abajo o escribe un mensaje para comenzar'}</span>
             </div>
           </div>
 
