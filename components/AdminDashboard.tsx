@@ -1,6 +1,6 @@
 // @ts-nocheck
 import React, { useState, useEffect } from 'react';
-import { Plug, Phone, ShieldCheck, Database, Mic2, Save, RefreshCw, Check, Loader2, Volume2, TrendingUp, Zap, Gauge, Building2, Store, Brain, Code, Copy, ExternalLink, Rocket, ToggleRight, ToggleLeft, DollarSign, MessageSquare, Headphones, BarChart3, AlertTriangle, X, Send } from 'lucide-react';
+import { Plug, Phone, ShieldCheck, Database, Mic2, Save, RefreshCw, Check, Loader2, Volume2, TrendingUp, Zap, Gauge, Building2, Store, Brain, Code, Copy, ExternalLink, Rocket, ToggleRight, ToggleLeft, DollarSign, MessageSquare, Headphones, BarChart3, AlertTriangle, X, Send, ClipboardList, Trash2, CalendarClock } from 'lucide-react';
 import { EscalaConfig, VoiceName, VoiceProvider, BillingInvoice, ConversationSession, InterventionRequest, ConversationMessage } from '../types';
 import { playGeminiTTS, generateEmbedding } from '../services/geminiService';
 import { getEscalaConfig, saveEscalaConfig, testEscalaConnection } from '../services/escalaService';
@@ -55,7 +55,7 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({
     language,
     initialSessionId
 }) => {
-  const [activeSubTab, setActiveSubTab] = useState<'chats' | 'catalogs' | 'usage' | 'voice' | 'visuals' | 'training' | 'integrations' | 'telegram' | 'deploy' | 'functionalities' | 'general' | 'conversations' | 'interventions' | 'analytics' | 'health' | 'retraining'>(initialSessionId ? 'conversations' : 'chats');
+  const [activeSubTab, setActiveSubTab] = useState<'chats' | 'catalogs' | 'usage' | 'voice' | 'visuals' | 'training' | 'integrations' | 'telegram' | 'deploy' | 'functionalities' | 'general' | 'conversations' | 'interventions' | 'analytics' | 'health' | 'retraining' | 'tasks'>(initialSessionId ? 'conversations' : 'chats');
   
   // NEW: Conversation Tracking States
   const [conversations, setConversations] = useState<ConversationSession[]>([]);
@@ -648,6 +648,123 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({
   };
 
   const currentVoiceList = [...geminiVoices];
+
+  // ── TAREAS con fecha límite (un sistema, dos marcas) ──────────────────────────
+  // Las tareas viven en Firestore (`tasks`) con brandId; el panel distingue la marca de cada
+  // entrada y la analítica se parte por marca. La notificación al vencer (fecha límite sin
+  // completar) la dispara api/task-deadline-sweep.js (cron */5) por Telegram + email + SMS.
+  const [tasksSecret, setTasksSecret] = useState<string>(() =>
+    typeof window !== 'undefined' ? (window.sessionStorage.getItem('unitec_tasks_secret') || '') : '');
+  const [tasksSecretInput, setTasksSecretInput] = useState('');
+  const [tasks, setTasks] = useState<any[]>([]);
+  const [tasksLoading, setTasksLoading] = useState(false);
+  const [tasksError, setTasksError] = useState('');
+  const [tasksFilterBrand, setTasksFilterBrand] = useState<'all' | 'unitec' | 'building'>('all');
+  const [tasksFilterStatus, setTasksFilterStatus] = useState<'all' | 'open' | 'completed'>('all');
+  const [newTaskTitle, setNewTaskTitle] = useState('');
+  const [newTaskNote, setNewTaskNote] = useState('');
+  const [newTaskBrand, setNewTaskBrand] = useState<'unitec' | 'building'>('unitec');
+  const [newTaskDue, setNewTaskDue] = useState('');
+
+  const tasksHeaders = () => ({ Authorization: `Bearer ${tasksSecret}` });
+
+  const fetchTasks = async () => {
+    if (!tasksSecret) return;
+    setTasksLoading(true);
+    setTasksError('');
+    try {
+      const r = await fetch('/api/tasks', { headers: tasksHeaders() });
+      const d = await r.json().catch(() => ({}));
+      if (r.status === 401) {
+        setTasksSecret('');
+        if (typeof window !== 'undefined') window.sessionStorage.removeItem('unitec_tasks_secret');
+        setTasksError('unauthorized');
+        return;
+      }
+      if (!r.ok) { setTasksError(d?.error || `HTTP ${r.status}`); return; }
+      setTasks(Array.isArray(d.tasks) ? d.tasks : []);
+    } catch (e) {
+      setTasksError(String((e as any)?.message || e));
+    } finally {
+      setTasksLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    if (activeSubTab === 'tasks' && tasksSecret) fetchTasks();
+  }, [activeSubTab, tasksSecret]);
+
+  const unlockTasks = () => {
+    const s = tasksSecretInput.trim();
+    if (!s) return;
+    setTasksSecret(s);
+    if (typeof window !== 'undefined') window.sessionStorage.setItem('unitec_tasks_secret', s);
+    setTasksSecretInput('');
+    setTasksError('');
+  };
+
+  const createTask = async () => {
+    if (!newTaskTitle.trim() || !newTaskDue) {
+      setTasksError('Título y fecha límite son obligatorios');
+      return;
+    }
+    setTasksLoading(true);
+    setTasksError('');
+    try {
+      const r = await fetch('/api/tasks', {
+        method: 'POST',
+        headers: { ...tasksHeaders(), 'Content-Type': 'application/json' },
+        body: JSON.stringify({ brandId: newTaskBrand, title: newTaskTitle, note: newTaskNote, dueAt: new Date(newTaskDue).toISOString(), createdBy: 'panel' }),
+      });
+      const d = await r.json().catch(() => ({}));
+      if (!r.ok) { setTasksError(d?.error || `HTTP ${r.status}`); return; }
+      setNewTaskTitle('');
+      setNewTaskNote('');
+      setNewTaskDue('');
+      fetchTasks();
+    } catch (e) {
+      setTasksError(String((e as any)?.message || e));
+    } finally {
+      setTasksLoading(false);
+    }
+  };
+
+  const setTaskStatus = async (id: string, status: 'open' | 'completed') => {
+    setTasksLoading(true);
+    setTasksError('');
+    try {
+      const r = await fetch('/api/tasks', {
+        method: 'PATCH',
+        headers: { ...tasksHeaders(), 'Content-Type': 'application/json' },
+        body: JSON.stringify({ id, status, completedBy: 'panel' }),
+      });
+      const d = await r.json().catch(() => ({}));
+      if (!r.ok) { setTasksError(d?.error || `HTTP ${r.status}`); return; }
+      fetchTasks();
+    } catch (e) {
+      setTasksError(String((e as any)?.message || e));
+    } finally {
+      setTasksLoading(false);
+    }
+  };
+
+  const deleteTask = async (id: string) => {
+    setTasksLoading(true);
+    setTasksError('');
+    try {
+      const r = await fetch('/api/tasks', {
+        method: 'DELETE',
+        headers: { ...tasksHeaders(), 'Content-Type': 'application/json' },
+        body: JSON.stringify({ id }),
+      });
+      if (!r.ok) { const d = await r.json().catch(() => ({})); setTasksError(d?.error || `HTTP ${r.status}`); return; }
+      fetchTasks();
+    } catch (e) {
+      setTasksError(String((e as any)?.message || e));
+    } finally {
+      setTasksLoading(false);
+    }
+  };
 
   const renderTabContent = () => {
     switch(activeSubTab) {
@@ -2185,6 +2302,186 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({
                     <RetrainingAnalytics liveSessions={conversations} />
                 </div>
             );
+
+        case 'tasks': {
+            const nowMs = Date.now();
+            const openTasks = tasks.filter(t => (t.status || 'open') === 'open');
+            const overdue = openTasks.filter(t => { const d = Date.parse(t.dueAt || ''); return Number.isFinite(d) && d <= nowMs; });
+            const completed = tasks.filter(t => t.status === 'completed');
+            const brandOf = (arr: any[], b: string) => arr.filter(t => t.brandId === b);
+            const shown = tasks.filter(t =>
+              (tasksFilterBrand === 'all' || t.brandId === tasksFilterBrand) &&
+              (tasksFilterStatus === 'all' || (t.status || 'open') === tasksFilterStatus));
+            const fmtDue = (iso: string) => {
+              const d = new Date(iso);
+              if (Number.isNaN(d.getTime())) return '—';
+              return d.toLocaleString('es-CO', { timeZone: 'America/Bogota', day: '2-digit', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit' });
+            };
+
+            return (
+                <div className="space-y-8 animate-in slide-in-from-bottom-2 duration-500 pb-20">
+                    <div className="bg-white p-8 rounded-2xl border border-slate-200 shadow-sm">
+                        <div className="flex items-center justify-between mb-6">
+                            <div className="flex items-center gap-4">
+                                <div className="w-12 h-12 bg-brand-50 text-brand-600 rounded-2xl flex items-center justify-center shrink-0">
+                                    <CalendarClock size={24} />
+                                </div>
+                                <div>
+                                    <h3 className="text-lg font-bold text-slate-800">Tareas con fecha límite</h3>
+                                    <p className="text-xs text-slate-500">Al vencer sin estar completadas, avisan por Telegram + correo + SMS (cada 5 min).</p>
+                                </div>
+                            </div>
+                            {tasksSecret ? (
+                                <button onClick={fetchTasks} disabled={tasksLoading} className="flex items-center gap-2 px-4 py-2 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 text-[10px] font-black uppercase tracking-widest transition-all disabled:opacity-50">
+                                    <RefreshCw size={13} className={tasksLoading ? 'animate-spin' : ''} /> Actualizar
+                                </button>
+                            ) : null}
+                        </div>
+
+                        {tasksError && (
+                            <div className="mb-5 p-3 rounded-xl bg-red-50 border border-red-200 text-red-700 text-xs font-bold">{tasksError}</div>
+                        )}
+
+                        {!tasksSecret ? (
+                            <div className="max-w-md mx-auto text-center py-6">
+                                <ShieldCheck size={28} className="mx-auto text-slate-300 mb-3" />
+                                <p className="text-sm font-bold text-slate-700 mb-1">Desbloquear tareas</p>
+                                <p className="text-xs text-slate-500 mb-4">Ingresa el ADMIN_SECRET del panel (mismo de la llave Gemini). Se guarda solo en esta sesión.</p>
+                                <div className="flex gap-2">
+                                    <input
+                                        type="password"
+                                        value={tasksSecretInput}
+                                        onChange={(e) => setTasksSecretInput(e.target.value)}
+                                        onKeyDown={(e) => e.key === 'Enter' && unlockTasks()}
+                                        placeholder="ADMIN_SECRET"
+                                        className="flex-1 px-4 py-2.5 rounded-xl border border-slate-300 text-sm focus:outline-none focus:ring-2 focus:ring-brand-500"
+                                    />
+                                    <button onClick={unlockTasks} className="px-5 py-2.5 bg-brand-600 text-white rounded-xl text-xs font-black uppercase tracking-widest hover:bg-brand-700 transition-all">Abrir</button>
+                                </div>
+                            </div>
+                        ) : (
+                            <>
+                                {/* Analítica por marca */}
+                                <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
+                                    {(['unitec', 'building'] as const).map((b) => (
+                                        <div key={b} className={`p-4 rounded-2xl border ${b === 'unitec' ? 'bg-sky-50/60 border-sky-100' : 'bg-emerald-50/60 border-emerald-100'}`}>
+                                            <p className="text-[10px] font-black uppercase tracking-widest text-slate-500 mb-2">{b === 'unitec' ? 'UNITEC USA DESIGN' : 'BUILDING INNOVATION'}</p>
+                                            <div className="flex items-end justify-between">
+                                                <div>
+                                                    <p className="text-2xl font-black text-slate-800">{brandOf(tasks, b).length}</p>
+                                                    <p className="text-[9px] font-bold text-slate-400 uppercase">total</p>
+                                                </div>
+                                                <div className="text-right text-[10px] font-bold leading-4">
+                                                    <p className="text-slate-600">Abiertas: {brandOf(openTasks, b).length}</p>
+                                                    <p className="text-red-500">Vencidas: {brandOf(overdue, b).length}</p>
+                                                    <p className="text-emerald-600">Completadas: {brandOf(completed, b).length}</p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    ))}
+                                </div>
+
+                                {/* Crear tarea */}
+                                <div className="p-5 rounded-2xl border border-slate-200 bg-slate-50/50 mb-8">
+                                    <p className="text-[10px] font-black uppercase tracking-widest text-slate-500 mb-3">Nueva tarea</p>
+                                    <div className="grid grid-cols-1 md:grid-cols-12 gap-3">
+                                        <input
+                                            value={newTaskTitle}
+                                            onChange={(e) => setNewTaskTitle(e.target.value)}
+                                            placeholder="Título de la tarea (ej. Llamar cliente de cotización)"
+                                            className="md:col-span-6 px-4 py-2.5 rounded-xl border border-slate-300 text-sm focus:outline-none focus:ring-2 focus:ring-brand-500 bg-white"
+                                        />
+                                        <input
+                                            type="datetime-local"
+                                            value={newTaskDue}
+                                            onChange={(e) => setNewTaskDue(e.target.value)}
+                                            className="md:col-span-3 px-4 py-2.5 rounded-xl border border-slate-300 text-sm focus:outline-none focus:ring-2 focus:ring-brand-500 bg-white"
+                                        />
+                                        <select
+                                            value={newTaskBrand}
+                                            onChange={(e) => setNewTaskBrand(e.target.value as 'unitec' | 'building')}
+                                            className="md:col-span-1 px-3 py-2.5 rounded-xl border border-slate-300 text-sm bg-white focus:outline-none focus:ring-2 focus:ring-brand-500"
+                                        >
+                                            <option value="unitec">UNITEC</option>
+                                            <option value="building">BUILDING</option>
+                                        </select>
+                                        <button onClick={createTask} disabled={tasksLoading} className="md:col-span-2 py-2.5 bg-brand-600 text-white rounded-xl text-[10px] font-black uppercase tracking-widest hover:bg-brand-700 transition-all disabled:opacity-50 flex items-center justify-center gap-1.5">
+                                            <Save size={13} /> Crear
+                                        </button>
+                                    </div>
+                                    <input
+                                        value={newTaskNote}
+                                        onChange={(e) => setNewTaskNote(e.target.value)}
+                                        placeholder="Nota opcional (aparece en la alerta si la tarea vence)"
+                                        className="mt-3 w-full px-4 py-2.5 rounded-xl border border-slate-300 text-sm focus:outline-none focus:ring-2 focus:ring-brand-500 bg-white"
+                                    />
+                                </div>
+
+                                {/* Filtros */}
+                                <div className="flex flex-wrap items-center gap-2 mb-4">
+                                    {(['all', 'unitec', 'building'] as const).map((b) => (
+                                        <button key={b} onClick={() => setTasksFilterBrand(b)} className={`px-3 py-1.5 rounded-xl text-[10px] font-black uppercase tracking-wider transition-all ${tasksFilterBrand === b ? 'bg-brand-600 text-white shadow' : 'bg-slate-100 text-slate-500 hover:bg-slate-200'}`}>
+                                            {b === 'all' ? 'Todas las marcas' : b === 'unitec' ? 'UNITEC' : 'BUILDING'}
+                                        </button>
+                                    ))}
+                                    <div className="w-px h-5 bg-slate-200 mx-1" />
+                                    {(['all', 'open', 'completed'] as const).map((s) => (
+                                        <button key={s} onClick={() => setTasksFilterStatus(s)} className={`px-3 py-1.5 rounded-xl text-[10px] font-black uppercase tracking-wider transition-all ${tasksFilterStatus === s ? 'bg-slate-800 text-white shadow' : 'bg-slate-100 text-slate-500 hover:bg-slate-200'}`}>
+                                            {s === 'all' ? 'Todas' : s === 'open' ? 'Abiertas' : 'Completadas'}
+                                        </button>
+                                    ))}
+                                </div>
+
+                                {/* Lista */}
+                                {tasksLoading && tasks.length === 0 ? (
+                                    <div className="text-center py-10 text-slate-400"><Loader2 size={20} className="animate-spin mx-auto mb-2" /><p className="text-[10px] font-bold uppercase tracking-widest">Cargando…</p></div>
+                                ) : shown.length === 0 ? (
+                                    <div className="text-center py-10 text-slate-400"><ClipboardList size={24} className="mx-auto mb-2 opacity-50" /><p className="text-[10px] font-bold uppercase tracking-widest">No hay tareas</p></div>
+                                ) : (
+                                    <div className="space-y-3">
+                                        {shown.map((t) => {
+                                            const isOpen = (t.status || 'open') === 'open';
+                                            const isOverdue = isOpen && Number.isFinite(Date.parse(t.dueAt || '')) && Date.parse(t.dueAt) <= nowMs;
+                                            return (
+                                                <div key={t.id} className={`flex flex-col md:flex-row md:items-center gap-3 p-4 rounded-2xl border transition-all ${isOpen ? (isOverdue ? 'bg-red-50/60 border-red-200' : 'bg-white border-slate-200') : 'bg-slate-50 border-slate-200 opacity-70'}`}>
+                                                    <div className="flex-1 min-w-0">
+                                                        <div className="flex flex-wrap items-center gap-2 mb-1">
+                                                            <span className={`text-[8px] font-black uppercase tracking-widest px-2 py-0.5 rounded-full ${t.brandId === 'building' ? 'bg-emerald-100 text-emerald-700' : 'bg-sky-100 text-sky-700'}`}>
+                                                                {t.brandId === 'building' ? 'BUILDING' : 'UNITEC'}
+                                                            </span>
+                                                            <span className={`text-[8px] font-black uppercase tracking-widest px-2 py-0.5 rounded-full ${isOpen ? (isOverdue ? 'bg-red-500 text-white' : 'bg-amber-100 text-amber-700') : 'bg-emerald-100 text-emerald-700'}`}>
+                                                                {isOpen ? (isOverdue ? 'VENCIDA' : 'ABIERTA') : 'COMPLETADA'}
+                                                            </span>
+                                                            <span className="text-[9px] font-bold text-slate-400 uppercase tracking-wider">
+                                                                Fecha límite: {fmtDue(t.dueAt)}
+                                                            </span>
+                                                        </div>
+                                                        <p className={`text-sm font-bold ${isOpen ? 'text-slate-800' : 'text-slate-500 line-through'}`}>{t.title}</p>
+                                                        {t.note && <p className="text-xs text-slate-500 mt-0.5 truncate">{t.note}</p>}
+                                                        {t.completedAt && <p className="text-[9px] text-emerald-600 font-bold mt-0.5">Completada el {fmtDue(t.completedAt)} · por {t.completedBy || '—'}</p>}
+                                                        {t.notifiedAt && <p className="text-[9px] text-orange-500 font-bold mt-0.5">Alerta de vencimiento enviada {fmtDue(t.notifiedAt)}</p>}
+                                                    </div>
+                                                    <div className="flex gap-2 shrink-0">
+                                                        <button onClick={() => setTaskStatus(t.id, isOpen ? 'completed' : 'open')} disabled={tasksLoading}
+                                                            className={`flex items-center gap-1.5 px-3 py-2 rounded-xl text-[9px] font-black uppercase tracking-widest transition-all disabled:opacity-50 ${isOpen ? 'bg-emerald-600 text-white hover:bg-emerald-700' : 'bg-slate-200 text-slate-600 hover:bg-slate-300'}`}>
+                                                            <Check size={12} /> {isOpen ? 'Completar' : 'Reabrir'}
+                                                        </button>
+                                                        <button onClick={() => deleteTask(t.id)} disabled={tasksLoading}
+                                                            className="flex items-center gap-1.5 px-3 py-2 rounded-xl bg-slate-100 text-slate-500 hover:bg-red-50 hover:text-red-600 text-[9px] font-black uppercase tracking-widest transition-all disabled:opacity-50">
+                                                            <Trash2 size={12} /> Eliminar
+                                                        </button>
+                                                    </div>
+                                                </div>
+                                            );
+                                        })}
+                                    </div>
+                                )}
+                            </>
+                        )}
+                    </div>
+                </div>
+            );
+        }
     }
   };
 
@@ -2264,6 +2561,7 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({
                  { id: 'conversations',   label: 'Monitor', icon: <Phone size={13} /> },
                  { id: 'interventions',   label: 'Alertas',       icon: <span className="relative flex items-center gap-1"><Headphones size={13} />{pendingAlerts.length > 0 && <span className="absolute -top-1.5 -right-2 w-3.5 h-3.5 bg-red-500 rounded-full text-[8px] font-black text-white flex items-center justify-center animate-bounce">{pendingAlerts.length}</span>}</span> },
                  { id: 'catalogs',        label: 'Catálogos',     icon: <Copy size={13} /> },
+                 { id: 'tasks',           label: 'Tareas',        icon: <ClipboardList size={13} /> },
                ].map((t: any) => (
                  <button
                    key={t.id}

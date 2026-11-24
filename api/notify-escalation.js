@@ -210,8 +210,8 @@ async function sendTwilioWhatsApp(phone, text) {
 
 // --- Templates ---
 function buildTelegramMessage(d) {
-  const icon = d.type === 'quote' ? '💰' : d.type === 'staff' ? '🧑‍💼' : d.type === 'sla' ? '⏰' : d.type === 'abandon' ? '🚪' : d.type === 'contact' ? '📞' : '🚨';
-  const typeLabel = d.type === 'quote' ? 'COTIZACIÓN' : d.type === 'staff' ? 'ASESOR HUMANO' : d.type === 'sla' ? 'SIN RESPUESTA — SLA' : d.type === 'abandon' ? 'CLIENTE ABANDONÓ' : d.type === 'contact' ? 'DATOS DE CONTACTO' : 'ESCALAMIENTO';
+  const icon = d.type === 'quote' ? '💰' : d.type === 'staff' ? '🧑‍💼' : d.type === 'sla' ? '⏰' : d.type === 'abandon' ? '🚪' : d.type === 'contact' ? '📞' : d.type === 'task' ? '📋' : d.type === 'disposition' ? '📅' : '🚨';
+  const typeLabel = d.type === 'quote' ? 'COTIZACIÓN' : d.type === 'staff' ? 'ASESOR HUMANO' : d.type === 'sla' ? 'SIN RESPUESTA — SLA' : d.type === 'abandon' ? 'CLIENTE ABANDONÓ' : d.type === 'contact' ? 'DATOS DE CONTACTO' : d.type === 'task' ? 'TAREA VENCIDA' : d.type === 'disposition' ? 'SEGUIMIENTO VENCIDO' : 'ESCALAMIENTO';
   const nn = (v) => (v && String(v).trim() ? String(v).trim() : 'no indicado');
 
   // DETALLE COMPLETO SIEMPRE: el cliente pidió que la alerta llegue con todos los datos, no con
@@ -285,7 +285,7 @@ function buildEmailHtml(d) {
 }
 
 function buildWhatsAppText(d) {
-  const prefix = d.type === 'quote' ? '💰 COTIZACION' : d.type === 'staff' ? '🧑‍💼 PIDIO ASESOR' : d.type === 'sla' ? '⏰ SIN RESPUESTA' : d.type === 'abandon' ? '🚪 ABANDONO' : d.type === 'contact' ? '📞 CONTACTO' : '🔔 ALERTA';
+  const prefix = d.type === 'quote' ? '💰 COTIZACION' : d.type === 'staff' ? '🧑‍💼 PIDIO ASESOR' : d.type === 'sla' ? '⏰ SIN RESPUESTA' : d.type === 'abandon' ? '🚪 ABANDONO' : d.type === 'contact' ? '📞 CONTACTO' : d.type === 'task' ? '📋 TAREA VENCIDA' : '🔔 ALERTA';
   const lastUser = Array.isArray(d.transcript)
     ? [...d.transcript].reverse().find((t) => t?.role === 'user')?.text
     : '';
@@ -498,7 +498,7 @@ export default async function handler(req, res) {
   const [telegramR, emailR, smsR] = await Promise.allSettled([
     sendTelegram(buildTelegramMessage(d)),
     sendEmail(
-      `ALERTFROMCHATBOT — [${d.priority.toUpperCase()}] ${d.type === 'quote' ? 'Solicitud de cotización' : d.type === 'staff' ? 'Cliente pidió un asesor' : d.type === 'sla' ? 'CLIENTE SIN RESPUESTA (SLA)' : d.type === 'abandon' ? 'CLIENTE ABANDONÓ LA CONVERSACIÓN' : d.type === 'contact' ? 'DATOS DE CONTACTO CAPTURADOS' : d.type === 'disposition' ? 'TAREA DE SEGUIMIENTO VENCIDA (FECHA LÍMITE)' : 'Escalamiento'} — ${customerName || 'Cliente'}`,
+      `ALERTFROMCHATBOT — [${d.priority.toUpperCase()}] ${d.type === 'quote' ? 'Solicitud de cotización' : d.type === 'staff' ? 'Cliente pidió un asesor' : d.type === 'sla' ? 'CLIENTE SIN RESPUESTA (SLA)' : d.type === 'abandon' ? 'CLIENTE ABANDONÓ LA CONVERSACIÓN' : d.type === 'contact' ? 'DATOS DE CONTACTO CAPTURADOS' : d.type === 'task' ? 'TAREA VENCIDA (FECHA LÍMITE)' : d.type === 'disposition' ? 'TAREA DE SEGUIMIENTO VENCIDA (FECHA LÍMITE)' : 'Escalamiento'} — ${customerName || 'Cliente'}`,
       buildEmailHtml(d)
     ),
     // UN SOLO RAÍL DE TELÉFONO: Twilio SMS. Sin Sent.dm no hay primario muerto que esconda el fallo.
