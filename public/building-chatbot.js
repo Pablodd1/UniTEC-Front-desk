@@ -9,7 +9,7 @@
     position: 'bottom-right',
     buttonColor: '#0ea5e9',
     buttonText: 'ðŸ’¬ Chat',
-    language: 'es',
+    language: 'en', // Building Innovation: English first (bilingual ES available)
     zIndex: 9999,
   };
 

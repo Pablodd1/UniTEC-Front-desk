@@ -91,13 +91,16 @@ const App: React.FC = () => {
 
   useEffect(() => {
     const detectCountryAndSetBrand = async () => {
-      const urlBrand = new URLSearchParams(window.location.search).get('brandId');
-      if (urlBrand === 'unitec' || urlBrand === 'building') {
-        setCurrentBrandId(urlBrand as 'unitec' | 'building');
-        return;
-      }
-      // Force unitec per business requirements for Colombia
-      setCurrentBrandId('unitec');
+      const params = new URLSearchParams(window.location.search);
+      const urlBrand = params.get('brandId');
+      const urlLang = params.get('lang');
+      // Force unitec per business requirements for Colombia unless a valid brandId comes in the URL.
+      const brand: 'unitec' | 'building' =
+        urlBrand === 'unitec' || urlBrand === 'building' ? urlBrand : 'unitec';
+      setCurrentBrandId(brand);
+      // Idioma: ?lang manda si es válido; si no, el default de la marca
+      // (unitec → español, building → inglés). El toggle ES/EN sigue disponible en ambas.
+      setLanguage(urlLang === 'en' || urlLang === 'es' ? urlLang : brand === 'building' ? 'en' : 'es');
     };
     detectCountryAndSetBrand();
   }, []);
@@ -156,7 +159,7 @@ const App: React.FC = () => {
 
   useEffect(() => {
     const isUnitec = currentBrandId === 'unitec';
-    document.documentElement.lang = 'es';
+    document.documentElement.lang = language;
     document.title = isUnitec
       ? 'UNITEC USA Design | Recepcionista Virtual IA | Distribución Mayorista'
       : 'Building Innovation | Asistente Virtual IA | Miami, Florida';
@@ -203,7 +206,7 @@ const App: React.FC = () => {
       document.head.appendChild(shortcutLink);
     }
     shortcutLink.href = encoded;
-  }, [currentBrandId]);
+  }, [currentBrandId, language]);
 
   const handleLogout = async () => {
     sessionStorage.removeItem('unitec_local_admin');
