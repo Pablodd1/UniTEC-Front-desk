@@ -10,7 +10,10 @@ import { createHmac, timingSafeEqual } from 'crypto';
 const DEFAULT_TTL_HOURS = 48;
 
 /** Canonical origin the staff alert links must point at (NOT the widget iframe origin). */
-export const STAFF_PANEL_ORIGIN = process.env.STAFF_PANEL_ORIGIN || 'https://www.chatbuildinginnovation.us';
+export const STAFF_PANEL_ORIGIN =
+  process.env.STAFF_PANEL_ORIGIN
+  || (process.env.VERCEL_PROJECT_PRODUCTION_URL ? `https://${process.env.VERCEL_PROJECT_PRODUCTION_URL}` : '')
+  || 'https://unitec-front-desk.vercel.app';
 
 const secret = () => process.env.ADMIN_SECRET || '';
 
