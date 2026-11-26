@@ -29,9 +29,10 @@ export async function resolveBotName({ force = false, brand = 'unitec' } = {}) {
     if (r.ok) {
       const d = await r.json();
       const f = d?.fields || {};
-      // Brand-specific override wins; the shared botName stays for UNITEC.
+      // Brand-specific override wins. The shared botName belongs to UNITEC, so BI must NOT
+      // inherit it ("IAgo UNITEC" was greeting Miami customers).
       const name = brand === 'building'
-        ? String(f.botNameBuilding?.stringValue || f.botName?.stringValue || '').trim()
+        ? String(f.botNameBuilding?.stringValue || '').trim()
         : String(f.botName?.stringValue || '').trim();
       cache = { name: name || fallback, at: Date.now(), brand };
     }
