@@ -62,12 +62,13 @@ const COP_AMOUNT = /\$\s?\d{1,3}(?:[.,]\d{3})+\s*(COP|pesos)?/i;
   const s = await get(`/api/sessions?from=${from}&to=${to}&limit=2000`);
   const rows = Array.isArray(s.sessions) ? s.sessions : [];
   const byBrand = { unitec: 0, building: 0, untagged: 0 };
+  let emptied = 0;
   for (const r of rows) {
     if (r.brandId === 'building') byBrand.building++;
     else if (r.brandId === 'unitec') byBrand.unitec++;
     else byBrand.untagged++;
   }
-  console.log(`sessions: ${rows.length}  (unitec ${byBrand.unitec} · building ${byBrand.building} · untagged ${byBrand.untagged})`);
+  console.log(`sessions: ${rows.length}  (unitec ${byBrand.unitec} · building ${byBrand.building} · untagged ${byBrand.untagged} · opened-only ${emptied})`);
   if (!rows.length) fail('no sessions returned for the range — the panel would look empty');
   if (byBrand.untagged) fail(`${byBrand.untagged} untagged sessions would render under UNITEC`);
 
@@ -84,7 +85,8 @@ const COP_AMOUNT = /\$\s?\d{1,3}(?:[.,]\d{3})+\s*(COP|pesos)?/i;
     if (brand === 'building' && COP_AMOUNT.test(msg)) {
       fail(`building session ${r.id} shows a COP-style amount: "${msg.slice(0, 90)}"`);
     }
-    if (!r.lastMessage) warn(`session ${r.id} (${brand}) has no lastMessage — blank row in the monitor`);
+    if (!r.lastMessage && !r.isEmptySession) warn(`session ${r.id} (${brand}) has no lastMessage — blank row in the monitor`);
+    if (r.isEmptySession) emptied++;
     if (!r.lastUpdated) warn(`session ${r.id} (${brand}) has no lastUpdated — cannot sort by recency`);
   }
 

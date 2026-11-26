@@ -92,6 +92,17 @@ export default async function handler(req, res) {
     }
 
     res.setHeader('Cache-Control', 's-maxage=20, stale-while-revalidate=40');
+    // A session with no message is not a blank row: it means the visitor opened the widget and
+    // never wrote. Label it explicitly (and flag it) so staff don't read an empty line as a bug,
+    // and so the brand audit can tell "opened" from "missing data".
+    sessions = sessions.map((s) => {
+      if (String(s.lastMessage || '').trim()) return s;
+      return {
+        ...s,
+        lastMessage: s.language === 'en' ? 'Opened the chat, no message yet' : 'Abrió el chat, sin escribir',
+        isEmptySession: true,
+      };
+    });
     return res.status(200).json({
       generatedAt: new Date().toISOString(),
       range: { from: from || null, to: to || null },
