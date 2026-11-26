@@ -45,9 +45,10 @@ export function specsToImperial(specs = '') {
       const num = parseFloat(value.replace(',', '.'));
       if (!Number.isFinite(num)) return `${en}: ${value}`;
       // The unit is the token right after the number ("2.44m", "122cm", "2.9m²", "19kg").
-      const um = value.match(/(\d)\s*(m²|m2|mt2|cm|mm|kg|lbs?|m|metros?|mts)(?=\s|$|\||\))/i);
+      const um = value.match(/(\d)\s*(kg\/m²|kg\/m2|m²|m2|mt2|cm|mm|kg|lbs?|m|metros?|mts)(?=\s|$|\||\))/i);
       const unit = um ? um[2].toLowerCase() : '';
       let conv = '';
+      if (unit === 'kg/m²' || unit === 'kg/m2') conv = `${UNITS.round(num * 0.204816)} lb/sq ft`;
       if (unit === 'cm') conv = `${UNITS.round(UNITS.cm(num))} in`;
       else if (unit === 'mm') conv = `${UNITS.round(UNITS.mm(num), 2)} in`;
       else if (['m²', 'm2', 'mt2'].includes(unit)) conv = `${UNITS.round(UNITS.m2(num))} sq ft`;

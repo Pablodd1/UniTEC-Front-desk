@@ -203,6 +203,22 @@ export default async function handler(req, res) {
 
   try {
     const { message, history: rawHistory, instructions: clientInstructions, sessionId: clientSessionId, brandId = 'unitec', parentHost, stream: wantStream } = req.body;
+    // Tracks whether a VERIFIED usd price exists for this turn (declared before buildPayload
+    // because the price block is assembled inside it).
+    let biPricesKnown = false;
+    // Last line of defence: Building Innovation has no USD list yet, so any amount in a BI
+    // reply that was not backed by a verified price row is removed before it reaches the
+    // customer (a fabricated $8.00 on a live Miami sales bot is worse than no price).
+    const guardBiPrice = (text) => {
+      if (brandId !== 'building' || biPricesKnown || !text) return text;
+      if (!/\$\s?\d[\d.,]*/.test(String(text))) return text;
+      const cleaned = String(text)
+        .replace(/\$\s?\d[\d.,]*(\s?(USD|usd|dollars?))?/g, '')
+        .replace(/\s{2,}/g, ' ')
+        .replace(/\s+([.,;!?])/g, '$1')
+        .trim();
+      return `${cleaned} The exact USD price for this reference must be confirmed by our sales team.`;
+    };
     const origin = req.headers.origin || 'https://chatbuildinginnovation.us';
     if (!message) {
       return res.status(400).json({ error: 'Missing message in request body' });
@@ -520,6 +536,14 @@ ${_bp.rules}`;
               priceLines.push(`- ${p.name} (${p.subcategory || p.category || '—'}): ${priceInfo.price_cop} por ${priceInfo.unit} (APROXIMADO)`);
             }
           }
+      // BUILDING INNOVATION has no USD price list yet: if no verified row exists, the model
+      // must never state an amount. The context says so AND the reply is sanitised below.
+      if (isBI && priceLines.length === 0) {
+        biPricesKnown = false;
+        blocks.push(`[PRICE RULE — NO USD PRICE AVAILABLE]:\nNo USD price exists for these products. Do NOT quote, estimate, approximate or convert any amount, in any currency. If the customer asks the price, answer exactly: "Price on request — our sales team confirms the exact USD price for this reference."`);
+      } else if (isBI) {
+        biPricesKnown = true;
+      }
           if (priceLines.length > 0) {
             blocks.push(isBI
               ? `[LISTA DE PRECIOS - USD per unit, approximate]:\n${priceLines.join('\n')}\nApproximate values per unit. Quote ONLY the row for the product asked. If it is not in this list, say "Price on request". Never convert to another currency.`
@@ -637,7 +661,7 @@ ${_bp.rules}`;
         await alertAnomaly('BOT_SIN_RESPUESTA', sawError || 'Todas las llaves de IA fallaron (stream).', clientSessionId);
       }
 
-      const finalText = cleanCut(streamedText);
+      const finalText = guardBiPrice(cleanCut(streamedText));
       if (clientSessionId && finalText && !finalText.includes('actualización de credenciales')) {
         const recorded = await recordChatTurn({ sessionId: clientSessionId, userText: message, replyText: finalText, brand: brandId, parentHost, latencyMs });
         if (recorded && recorded.recorded === false) {
@@ -790,6 +814,7 @@ ${_bp.rules}`;
           responseText = isPinnedLiteral(responseText) ? String(responseText).trim().slice(0, 1200) : tightenReply(responseText);
           // Último cinturón: si el número quedó deletreado, se convierte a dígitos antes de enviarlo.
           responseText = digitsFromSpelledPhone(responseText);
+          responseText = guardBiPrice(responseText);
 
           // Record this real chat turn server-side (messages + counters + funnel).
           // AWAITED (not fire-and-forget): Vercel kills pending promises when the
