@@ -7,6 +7,7 @@
     "dev": "vite",
     "build": "vite build",
     "test": "vitest run",
+    "test:brands": "tsx scripts/test-brand-prompts.ts",
     "lint": "tsc --noEmit",
     "preview": "vite preview"
   },

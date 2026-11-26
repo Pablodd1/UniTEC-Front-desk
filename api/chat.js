@@ -18,6 +18,7 @@ import { recordChatTurn } from './_record-chat-turn.js';
 import { normalizeHistory, catalogReply, tightenReply, detectEscalation, digitsFromSpelledPhone } from './turn-text.js';
 import { alertAnomaly } from './anomaly-alert.js';
 import { createRequire } from 'module';
+import { brandPack, specsToImperial, priceForBrand } from './brand-packs.js';
 const require_ = createRequire(import.meta.url);
 const firebaseConfig = require_('../firebase-applet-config.json');
 
@@ -232,7 +233,9 @@ export default async function handler(req, res) {
     // answers EVERYTHING with Pauta 4 (generic 24/7 asesoría) — none of the front-desk
     // knowledge comes out. This guard re-injects the base front-desk knowledge
     // server-side so it is ALWAYS present, no matter how the chat is triggered.
-    const BASE_FRONT_DESK = `# ROLE & IDENTITY
+    // Brand guard. UNITEC keeps its long-standing text verbatim; BUILDING INNOVATION gets
+    // its own pack so the fallback can never speak UNITEC's warehouse, language or currency.
+    const BASE_FRONT_DESK_UNITEC = `# ROLE & IDENTITY
 You are the professional AI Front Desk Assistant and Senior Sales Representative for UNITEC USA DESIGN (Importador Directo - Distribución Mayorista). Colombia / Florida, USA. Answer in Spanish first, switch to English only if the customer writes in English.
 
 # CONTACTO OFICIAL PARA ESCALAR (EL ÚNICO PERMITIDO)
@@ -282,6 +285,31 @@ BAD EXAMPLE (NEVER DO THIS): "¡Hola! Somos importadores directos y distribuidor
 
 GOOD EXAMPLE: "¡Hola! ¿En qué producto te interesa?"`;
 
+    const _bp = brandPack(brandId);
+    const BASE_FRONT_DESK_BUILDING = `# ROLE & IDENTITY
+You are the professional AI Front Desk Assistant and Senior Sales Representative for ${_bp.name} (${_bp.tagline}). ${_bp.market}. ${_bp.langLine}
+
+# OFFICIAL CONTACT (the only one you may give)
+- WhatsApp: ${_bp.phone} | ${_bp.wa}
+- Team: ${_bp.staff}
+
+# UNITS & CURRENCY
+- ${_bp.unitsLine}
+
+# SHARED FRONT-DESK RULES (both companies)
+- ONE question per message. Never two.
+- Do NOT ask for the customer's name at the start. Use a name only if they give it ("my name is X"). Never treat a product or a location as the customer's name.
+- Answer first, ask after. Max 2-3 short sentences, no lists, no bullets, no headers, plain conversational text.
+- NEVER invent prices, measurements, stock or policies. If a fact is not in the context, say it must be confirmed by the team.
+- SPECS: answer directly from the [SYSTEM CONTEXT] block (width, length, thickness, weight, colours). If a spec is absent, say it is not published; do not guess.
+- PRICES: only when asked, always APPROXIMATE per unit and dependent on measurements, quantity and reference. Use only the [LISTA DE PRECIOS] block; if the product is not there, say "Price on request".
+- ESCALATE ONCE, at the end, only if a formal quote is needed, information is missing, or the customer asks for a person. Never deliver a contact and keep qualifying at the same time.
+- If an advisor is already attending the conversation, you do not reply.
+
+${_bp.rules}`;
+
+    const BASE_FRONT_DESK = brandId === 'building' ? BASE_FRONT_DESK_BUILDING : BASE_FRONT_DESK_UNITEC;
+
     // Has a real base prompt already been sent by the client? The full
     // getSystemInstruction from constants.ts always contains the bodega/location
     // rule and the role header. If either is present, we leave the client's
@@ -316,9 +344,13 @@ GOOD EXAMPLE: "¡Hola! ¿En qué producto te interesa?"`;
     // literalmente lo contrario. Aquí manda la configuración.
     try {
       const { resolveBotName } = await import('./chat-config.js');
-      const botName = await resolveBotName();
+      const botName = await resolveBotName({ brand: brandId });
       if (botName && botName !== 'Decky') {
         instructions = instructions.replace(/\bDecky\b/g, botName);
+      }
+      // Building Innovation must not carry the UNITEC-branded bot name either.
+      if (brandId === 'building' && botName) {
+        instructions = instructions.replace(/\bIAgo UNITEC\b/g, botName).replace(/\bUNITEC\b(?=[^.]{0,40}(asistente|assistant))/gi, 'Building Innovation');
       }
     } catch (e) {
       console.warn('[chat] botName lookup skipped:', e?.message);
@@ -441,39 +473,57 @@ GOOD EXAMPLE: "¡Hola! ¿En qué producto te interesa?"`;
       }
 
       if (matched.length > 0) {
+            const isBI = brandId === 'building';
             const productContext = matched.map((p) => {
-              const price = brandId === 'unitec' ? (p.price_cop || p.price) : (p.price_usd || p.price);
+              // Brand price: BI must NEVER see a COP figure. Unknown -> "on request".
+              const price = priceForBrand(p, brandId);
+              const priceTxt = price
+                ? (isBI ? `Price: ${price} per ${p.unit || 'unit'}${p.price_approx ? ' (APPROXIMATE)' : ''}`
+                        : `Precio: ${price} por ${p.unit || 'Unidad'}${p.price_approx ? ' (APROXIMADO)' : ''}`)
+                : (isBI ? 'Price: on request' : 'Precio: Consultar precio');
               const bits = [
                 `RefCode: ${p.id}`,
                 p.name,
-                `Precio: ${price} por ${p.unit || 'Unidad'}${p.price_approx ? ' (APROXIMADO)' : ''}`,
-                `Stock: ${p.stock_status || 'Consultar'}`,
+                priceTxt,
+                `Stock: ${p.stock_status || (isBI ? 'confirm with sales' : 'Consultar')}`,
               ];
-              // Inject catalog specs INLINE (replaces Drive PDF links)
-              if (p.catalog_specs) bits.push(`ESPECIFICACIONES: ${p.catalog_specs}`);
-              if (p.catalog_colors?.length) bits.push(`Colores: ${p.catalog_colors.join(', ')}`);
-              if (p.catalog_use) bits.push(`Uso: ${p.catalog_use}`);
-              if (p.pdf_tech_sheet) bits.push(`Ficha técnica: ${p.pdf_tech_sheet}`);
-              if (p.image_url) bits.push(`Imagen: ${p.image_url}`);
+              // Inject catalog specs INLINE (replaces Drive PDF links). BI gets US customary
+              // units with the metric original in parentheses: converted, never invented.
+              if (p.catalog_specs) bits.push(isBI ? `SPECS: ${specsToImperial(p.catalog_specs)}` : `ESPECIFICACIONES: ${p.catalog_specs}`);
+              if (p.catalog_colors?.length) bits.push(`${isBI ? 'Colors' : 'Colores'}: ${p.catalog_colors.join(', ')}`);
+              if (p.catalog_use) bits.push(`${isBI ? 'Use' : 'Uso'}: ${p.catalog_use}`);
+              if (p.pdf_tech_sheet) bits.push(`${isBI ? 'Tech sheet' : 'Ficha técnica'}: ${p.pdf_tech_sheet}`);
+              if (p.image_url) bits.push(`${isBI ? 'Image' : 'Imagen'}: ${p.image_url}`);
               return '- ' + bits.join(' | ');
             }).join('\n');
-            blocks.push(`[SYSTEM CONTEXT - Productos que coinciden con la consulta]:\n${productContext}\nREGLA CRÍTICA: Responde las especificaciones técnicas DIRECTAMENTE de los datos anteriores (medidas, espesor, peso, colores). NO redirijas a fichas técnicas de Drive. Si una especificación (por ejemplo el espesor) NO aparece en los datos anteriores, NO la inventes ni la supongas: di que ese dato no está publicado y ofrece confirmarlo con el equipo. Nunca mezcles especificaciones de productos distintos. Solo si el cliente pide explícitamente "la ficha técnica completa" o "el catálogo completo", entonces envía el enlace. Si el producto consultado no está en la lista, di "Consultar precio".`);
+            blocks.push(isBI
+              ? `[SYSTEM CONTEXT - Products matching the query]:\n${productContext}\nCRITICAL RULE: answer technical specs DIRECTLY from the data above (width, length, thickness, weight, colours). Do NOT redirect to spec sheets. If a spec is NOT in the data above, do NOT invent or estimate it: say that figure is not published and offer to confirm it with the team. Never mix specs from different products. Only if the customer explicitly asks for "the full spec sheet" or "the full catalog" send the link. If the product is not in the list, say "Price on request".`
+              : `[SYSTEM CONTEXT - Productos que coinciden con la consulta]:\n${productContext}\nREGLA CRÍTICA: Responde las especificaciones técnicas DIRECTAMENTE de los datos anteriores (medidas, espesor, peso, colores). NO redirijas a fichas técnicas de Drive. Si una especificación (por ejemplo el espesor) NO aparece en los datos anteriores, NO la inventes ni la supongas: di que ese dato no está publicado y ofrece confirmarlo con el equipo. Nunca mezcles especificaciones de productos distintos. Solo si el cliente pide explícitamente "la ficha técnica completa" o "el catálogo completo", entonces envía el enlace. Si el producto consultado no está en la lista, di "Consultar precio".`);
       }
 
       if (PRICE_INTENT_RE.test(String(message)) && matched.length) {
         try {
-          // Reuse the top-scored matches; quote only rows present in the build-time price map
+          // Reuse the top-scored matches; quote only rows with a REAL price for this brand.
+          // BUILDING INNOVATION never receives a COP row: without price_usd it gets no line.
+          const isBI = brandId === 'building';
           const matchedProducts = matched;
 
           const priceLines = [];
           for (const p of matchedProducts) {
             const priceInfo = priceForProduct(p.id);
-            if (priceInfo) {
+            if (isBI) {
+              const usd = priceForBrand(p, 'building');
+              if (usd) priceLines.push(`- ${p.name} (${p.subcategory || p.category || '—'}): ${usd} per ${p.unit || 'unit'} (APPROXIMATE)`);
+              continue;
+            }
+            if (priceInfo && priceInfo.price_cop) {
               priceLines.push(`- ${p.name} (${p.subcategory || p.category || '—'}): ${priceInfo.price_cop} por ${priceInfo.unit} (APROXIMADO)`);
             }
           }
           if (priceLines.length > 0) {
-            blocks.push(`[LISTA DE PRECIOS - LISTA MARKETING cliente final]:\n${priceLines.join('\n')}\nValores aproximados por unidad. Cita SOLO la fila del producto preguntado. Si no está en la lista, di "Consultar precio".`);
+            blocks.push(isBI
+              ? `[LISTA DE PRECIOS - USD per unit, approximate]:\n${priceLines.join('\n')}\nApproximate values per unit. Quote ONLY the row for the product asked. If it is not in this list, say "Price on request". Never convert to another currency.`
+              : `[LISTA DE PRECIOS - LISTA MARKETING cliente final]:\n${priceLines.join('\n')}\nValores aproximados por unidad. Cita SOLO la fila del producto preguntado. Si no está en la lista, di "Consultar precio".`);
           }
         } catch (e) {
           console.warn('Failed to inject price list:', e);

@@ -13,6 +13,8 @@ import { ConversationSession } from '../types';
 interface RecentAlertsProps {
   sessions: ConversationSession[];
   onOpenSession: (sessionId: string) => void;
+  /** Brand scope: alerts are only shown for the company selected in the panel header. */
+  brandId?: 'unitec' | 'building';
 }
 
 interface EscalationRow {
@@ -25,6 +27,7 @@ interface EscalationRow {
   message: string;
   at: string;
   delivered: boolean;
+  brand?: string;
 }
 
 const TYPE_LABEL: Record<string, { label: string; cls: string }> = {
@@ -36,7 +39,7 @@ const TYPE_LABEL: Record<string, { label: string; cls: string }> = {
   custom: { label: 'Aviso', cls: 'bg-slate-100 text-slate-600 border-slate-200' },
 };
 
-const RecentAlerts: React.FC<RecentAlertsProps> = ({ sessions, onOpenSession }) => {
+const RecentAlerts: React.FC<RecentAlertsProps> = ({ sessions, onOpenSession, brandId }) => {
   const [rows, setRows] = useState<EscalationRow[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
@@ -59,6 +62,14 @@ const RecentAlerts: React.FC<RecentAlertsProps> = ({ sessions, onOpenSession }) 
   }, []);
 
   const visible = rows.filter((r) => {
+    // Brand scope first: an alert belongs to the company of its session (or its own brand field).
+    if (brandId) {
+      const s: any = sessions.find((x) => x.id === r.sessionId);
+      const b = r.brand || s?.brandId;
+      // Legacy rows without any brand tag are UNITEC's.
+      const rowBrand = b === 'building' ? 'building' : 'unitec';
+      if (rowBrand !== brandId) return false;
+    }
     if (filter === 'all') return true;
     if (filter === 'staff') return r.type === 'staff' || r.type === 'sla';
     return r.type === filter;

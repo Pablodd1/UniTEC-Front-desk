@@ -45,6 +45,7 @@ export default async function handler(req, res) {
           message: str(f.message),
           at: str(f.createdAt) || str(f.timestamp) || '',
           delivered: bool(f.anyDelivered),
+          brand: str(f.brand) || '',
         };
       })
       .filter((x) => x.sessionId && !isTestSession(x.sessionId) && !/^test-monitor/i.test(x.sessionId));

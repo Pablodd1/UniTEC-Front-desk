@@ -101,17 +101,17 @@ interface ChatTabProps {
 const ChatTab: React.FC<ChatTabProps> = ({ quickActions, initialMessage, emergencyMode, language, customGreeting, bgImage, brandId }) => {
   const t = UI_TRANSLATIONS[language];
   // Nombre del bot configurable (Ajustes/entrenamiento → config/main.botName).
-  // Estaba fijo en el texto del saludo ("Decky"), así que la instrucción del administrador
-  // ("mi nombre es IAgo UNITEC") no podía cambiar nada: el widget no la lee.
-  const [botName, setBotName] = useState<string>('Decky');
+  // Per brand: config/main.botNameBuilding overrides the shared botName for Building Innovation,
+  // so the Miami widget never greets as "IAgo UNITEC".
+  const [botName, setBotName] = useState<string>(brandId === 'building' ? 'IAgo' : 'Decky');
   useEffect(() => {
     let alive = true;
-    fetch('/api/chat-config')
+    fetch(`/api/chat-config?brand=${brandId || 'unitec'}`)
       .then((r) => (r.ok ? r.json() : null))
       .then((d) => { if (alive && d?.botName) setBotName(String(d.botName)); })
       .catch(() => {});
     return () => { alive = false; };
-  }, []);
+  }, [brandId]);
   
   const [onboardingStage, setOnboardingStage] = useState<'name' | 'phone' | 'profession' | 'ready'>(() => {
     if (typeof window !== 'undefined') {

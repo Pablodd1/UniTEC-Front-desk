@@ -12,11 +12,14 @@ import { getFirestoreToken, projectId } from './_analytics-core.js';
 const DOCS = `https://firestore.googleapis.com/v1/projects/${projectId}/databases/(default)/documents`;
 const DEFAULT_NAME = 'Decky';
 
-let cache = { name: DEFAULT_NAME, at: 0 };
+let cache = { name: DEFAULT_NAME, at: 0, brand: 'unitec' };
 const TTL_MS = 60 * 1000;
 
-export async function resolveBotName({ force = false } = {}) {
-  if (!force && Date.now() - cache.at < TTL_MS && cache.name) return cache.name;
+const DEFAULT_BY_BRAND = { unitec: DEFAULT_NAME, building: 'IAgo' };
+
+export async function resolveBotName({ force = false, brand = 'unitec' } = {}) {
+  const fallback = DEFAULT_BY_BRAND[brand === 'building' ? 'building' : 'unitec'];
+  if (!force && Date.now() - cache.at < TTL_MS && cache.name && cache.brand === brand) return cache.name;
   try {
     const token = await getFirestoreToken();
     const r = await fetch(`${DOCS}/config/main`, {
@@ -25,13 +28,17 @@ export async function resolveBotName({ force = false } = {}) {
     });
     if (r.ok) {
       const d = await r.json();
-      const name = String(d?.fields?.botName?.stringValue || '').trim();
-      cache = { name: name || DEFAULT_NAME, at: Date.now() };
+      const f = d?.fields || {};
+      // Brand-specific override wins; the shared botName stays for UNITEC.
+      const name = brand === 'building'
+        ? String(f.botNameBuilding?.stringValue || f.botName?.stringValue || '').trim()
+        : String(f.botName?.stringValue || '').trim();
+      cache = { name: name || fallback, at: Date.now(), brand };
     }
   } catch (e) {
     console.warn('[chat-config] botName lookup failed:', e?.message || e);
   }
-  return cache.name || DEFAULT_NAME;
+  return cache.name || fallback;
 }
 
 export default async function handler(req, res) {
@@ -40,7 +47,8 @@ export default async function handler(req, res) {
   if (req.method === 'OPTIONS') return res.status(204).end();
   if (req.method !== 'GET') return res.status(405).json({ error: 'method_not_allowed' });
 
-  const botName = await resolveBotName({ force: String(req.query?.force || '') === '1' });
+  const brand = String(req.query?.brand || 'unitec') === 'building' ? 'building' : 'unitec';
+  const botName = await resolveBotName({ force: String(req.query?.force || '') === '1', brand });
   res.setHeader('Cache-Control', 's-maxage=30, stale-while-revalidate=60');
-  return res.status(200).json({ botName, source: 'config/main.botName' });
+  return res.status(200).json({ botName, brand, source: brand === 'building' ? 'config/main.botNameBuilding' : 'config/main.botName' });
 }

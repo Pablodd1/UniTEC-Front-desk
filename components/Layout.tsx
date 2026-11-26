@@ -3,6 +3,7 @@ import React from 'react';
 import { Tab, BusinessConfig, Language, CartItem } from '../types';
 import { MessageSquare, Phone, ShieldCheck, LayoutDashboard, ChevronDown, ShoppingCart } from 'lucide-react';
 import { UI_TRANSLATIONS } from '../constants';
+import { themeFor } from '../brandTheme';
 
 interface LayoutProps {
   children: React.ReactNode;
@@ -22,13 +23,13 @@ interface LayoutProps {
   showAdminTab?: boolean;
 }
 
-const Layout: React.FC<LayoutProps> = ({ 
-  children, 
-  activeTab, 
-  onTabChange, 
-  config, 
-  language, 
-  onCloseWidget, 
+const Layout: React.FC<LayoutProps> = ({
+  children,
+  activeTab,
+  onTabChange,
+  config,
+  language,
+  onCloseWidget,
   isEmbedMode,
   currentBrandId,
   cart = [],
@@ -37,6 +38,10 @@ const Layout: React.FC<LayoutProps> = ({
   showAdminTab
 }) => {
   const t = UI_TRANSLATIONS[language];
+  // Visual separation: the widget itself is themed per company, so a screenshot of the
+  // Miami widget can never be mistaken for the Colombian one.
+  const fallbackBrand = (config?.name || '').toUpperCase().includes('BUILDING') ? 'building' : 'unitec';
+  const theme = themeFor(currentBrandId || fallbackBrand);
 
   const NavItem = ({ tab, icon, label }: { tab: Tab, icon: React.ReactNode, label: string }) => {
     const isActive = tab === activeTab;
@@ -44,10 +49,14 @@ const Layout: React.FC<LayoutProps> = ({
       <button
         onClick={() => onTabChange(tab)}
         className={`flex flex-col items-center justify-center flex-1 py-2 transition-all duration-300 ${
-          isActive ? 'text-brand-600' : 'text-slate-400 hover:text-slate-600'
+          isActive ? '' : 'text-slate-400 hover:text-slate-600'
         }`}
+        style={isActive ? { color: theme.accent } : undefined}
       >
-        <div className={`p-1.5 rounded-xl transition-colors ${isActive ? 'bg-brand-50' : ''}`}>
+        <div
+          className="p-1.5 rounded-xl transition-colors"
+          style={isActive ? { backgroundColor: theme.accentSoft } : undefined}
+        >
           {React.cloneElement(icon as React.ReactElement<any>, { size: 20 })}
         </div>
         <span className="text-[10px] font-bold uppercase tracking-tight mt-1">{label}</span>
@@ -59,16 +68,18 @@ const Layout: React.FC<LayoutProps> = ({
   const firstName = nameParts[0];
   const restName = nameParts.slice(1).join(' ');
 
-  // Full page mode (when visiting directly) - NO popup, full screen
-  const layoutClasses = isEmbedMode 
-    ? "h-full w-full flex flex-col bg-white overflow-hidden" 
+  const layoutClasses = isEmbedMode
+    ? "h-full w-full flex flex-col bg-white overflow-hidden"
     : "h-screen w-screen flex flex-col bg-white overflow-hidden";
 
   return (
     <div className={layoutClasses}>
-      
-      {/* Widget Header */}
-      <header className={`bg-[#075e54] p-4 shrink-0 relative overflow-hidden ${isEmbedMode ? '' : ''}`}>
+
+      {/* Widget Header — brand-tinted */}
+      <header
+        className="p-4 shrink-0 relative overflow-hidden"
+        style={{ background: `linear-gradient(135deg, ${theme.accentDark} 0%, ${theme.accent} 100%)` }}
+      >
         <div className="absolute top-0 left-0 w-full h-full opacity-10 grass-texture pointer-events-none"></div>
         <div className="flex flex-col gap-3 relative z-10">
           <div className="flex items-center justify-between">
@@ -80,32 +91,32 @@ const Layout: React.FC<LayoutProps> = ({
                </div>
                <div>
                  <h1 className="text-white text-sm font-black tracking-wider uppercase leading-none">
-                   {firstName} <span className="text-brand-300 font-light">{restName}</span>
+                   {firstName} <span className="text-white/70 font-light">{restName}</span>
                  </h1>
                  <div className="flex items-center gap-1.5 mt-1">
-                    <div className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></div>
-                    <span className="text-[9px] text-brand-300 font-bold uppercase tracking-widest">
-                      Online / En Línea
+                    <div className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></div>
+                    <span className="text-[9px] text-white/70 font-bold uppercase tracking-widest">
+                      {theme.country} · {theme.currency}
                     </span>
                  </div>
                </div>
             </div>
-                        <div className="flex items-center gap-2">
+            <div className="flex items-center gap-2">
               {onOpenCart && (
-                <button 
+                <button
                   onClick={onOpenCart}
                   className="relative p-2 text-white/80 hover:text-white transition-colors"
                 >
                   <ShoppingCart size={20} />
                   {cart && cart.length > 0 && (
-                    <span className="absolute top-0 right-0 h-4 w-4 bg-brand-500 text-white text-[10px] font-bold rounded-full flex items-center justify-center border border-brand-900">
+                    <span className="absolute top-0 right-0 h-4 w-4 bg-white text-[10px] font-bold rounded-full flex items-center justify-center" style={{ color: theme.accent }}>
                       {cart.reduce((total, item) => total + item.quantity, 0)}
                     </span>
                   )}
                 </button>
               )}
               {!isEmbedMode && (
-                  <button 
+                  <button
                   onClick={onCloseWidget}
                   className="p-2 rounded-full hover:bg-white/10 text-white/60 hover:text-white transition-all"
                   >
@@ -115,25 +126,25 @@ const Layout: React.FC<LayoutProps> = ({
             </div>
           </div>
 
-          {/* Quick Responsive Brand Switcher */}
+          {/* Brand switcher — explicit, coloured, never ambiguous */}
           {onToggleBrand && currentBrandId && (
-            <div className="flex bg-white/10 p-0.5 rounded-xl border border-white/[0.08]">
-              <button 
-                onClick={() => onToggleBrand('unitec')}
-                className={`flex-1 py-1 px-2 text-[9px] font-black uppercase tracking-wider rounded-lg transition-all duration-300 ${
-                  currentBrandId === 'unitec' ? 'bg-white text-brand-950 shadow-sm' : 'text-white/75 hover:text-white'
-                }`}
-              >
-                Unitec USA
-              </button>
-              <button 
-                onClick={() => onToggleBrand('building')}
-                className={`flex-1 py-1 px-2 text-[9px] font-black uppercase tracking-wider rounded-lg transition-all duration-300 ${
-                  currentBrandId === 'building' ? 'bg-white text-brand-950 shadow-sm' : 'text-white/75 hover:text-white'
-                }`}
-              >
-                Building Innovation
-              </button>
+            <div className="flex bg-black/20 p-1 rounded-xl border border-white/10">
+              {(['unitec', 'building'] as const).map((bid) => {
+                const bt = themeFor(bid);
+                const active = currentBrandId === bid;
+                return (
+                  <button
+                    key={bid}
+                    onClick={() => onToggleBrand(bid)}
+                    className={`flex-1 py-1.5 px-2 text-[9px] font-black uppercase tracking-wider rounded-lg transition-all duration-300 ${
+                      active ? 'shadow-sm' : 'text-white/60 hover:text-white'
+                    }`}
+                    style={active ? { backgroundColor: '#fff', color: bt.accent } : undefined}
+                  >
+                    {bt.short}
+                  </button>
+                );
+              })}
             </div>
           )}
         </div>
@@ -147,7 +158,10 @@ const Layout: React.FC<LayoutProps> = ({
       </main>
 
       {/* Bottom Navigation - Admin tab hidden in embed mode; lives at standalone domain */}
-      <nav className="h-20 bg-white border-t border-slate-100 flex items-center justify-around px-2 shrink-0 pb-safe shadow-[0_-4px_12px_rgba(0,0,0,0.03)]">
+      <nav
+        className="h-20 bg-white border-t flex items-center justify-around px-2 shrink-0 pb-safe shadow-[0_-4px_12px_rgba(0,0,0,0.03)]"
+        style={{ borderTopColor: theme.accentSoft }}
+      >
           <NavItem tab={Tab.CHAT} icon={<MessageSquare />} label={t.navChat} />
           <NavItem tab={Tab.CALL} icon={<Phone />} label={t.navCall} />
           <NavItem tab={Tab.PRIVACY} icon={<ShieldCheck />} label={language === 'en' ? 'Privacy' : 'Privacidad'} />
@@ -158,11 +172,3 @@ const Layout: React.FC<LayoutProps> = ({
 };
 
 export default Layout;
-
-
-
-
-
-
-
-

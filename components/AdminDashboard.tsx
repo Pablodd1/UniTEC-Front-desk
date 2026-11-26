@@ -20,6 +20,7 @@ import RetrainingAnalytics from './RetrainingAnalytics';
 import ApiHealthMonitor from './ApiHealthMonitor';
 import { summarizeAndArchiveOldConversations, RetentionResult } from '../services/retentionService';
 import { playNotificationSound, showBrowserNotification, requestNotificationPermission } from '../services/soundService';
+import { themeFor, sessionBrand } from '../brandTheme';
 
 interface AdminDashboardProps {
   emergencyMode: boolean;
@@ -61,6 +62,24 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({
   const [conversations, setConversations] = useState<ConversationSession[]>([]);
   const [_interventions, _setInterventions] = useState<InterventionRequest[]>([]);
   const [_selectedConversation, _setSelectedConversation] = useState<ConversationSession | null>(null);
+
+  // ── BRAND SCOPE ─────────────────────────────────────────────────────────────
+  // The panel is shared by two companies. Everything an operator reads — monitor, alerts,
+  // analytics, retraining — is scoped to the brand selected in the header, and the whole
+  // surface is tinted with that brand's colour. No mixed numbers, no "which company is this?".
+  const theme = themeFor(currentBrandId);
+  const brandConversations = React.useMemo(
+    () => (conversations as any[]).filter((s) => sessionBrand(s) === currentBrandId),
+    [conversations, currentBrandId]
+  );
+  // Alerts follow the brand too: an alert whose session belongs to the other company is hidden.
+  const brandPendingAlerts = React.useMemo(
+    () => (pendingAlerts as any[]).filter((a) => {
+      const s = (conversations as any[]).find((c) => c.id === a.sessionId);
+      return !s || sessionBrand(s) === currentBrandId;
+    }),
+    [pendingAlerts, conversations, currentBrandId]
+  );
 
   // ALERTS: Real-time intervention alert system
   const [pendingAlerts, setPendingAlerts] = useState<InterventionRequest[]>([]);
@@ -2229,7 +2248,7 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({
                 <div className="h-[calc(100vh-200px)] animate-in slide-in-from-bottom-2 duration-500">
                     <ErrorBoundary label="monitor" onReset={() => _setSelectedConversation(null)}>
                     <ConversationMonitor 
-                        sessions={conversations}
+                        sessions={brandConversations}
                         focusSessionId={_selectedConversation?.id ?? initialSessionId ?? null}
                         onSelectSession={(session) => {
                             _setSelectedConversation(session);
@@ -2247,7 +2266,8 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({
                     {/* Avisos realmente enviados (escalations): abandono/SLA/cotización no
                         generaban doc en `interventions`, así que no había dónde hacer clic. */}
                     <RecentAlerts
-                        sessions={conversations}
+                        sessions={brandConversations}
+                        brandId={currentBrandId}
                         onOpenSession={(sessionId) => {
                             const s = conversations.find((x) => x.id === sessionId);
                             if (s) _setSelectedConversation(s);
@@ -2255,7 +2275,7 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({
                         }}
                     />
                     <StaffIntervention 
-                        sessions={conversations}
+                        sessions={brandConversations}
                         onCallCustomer={(phone) => {
                             console.log('Calling customer:', phone);
                         }}
@@ -2272,8 +2292,25 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({
         case 'analytics':
             return (
                 <div className="h-[calc(100vh-200px)] animate-in slide-in-from-bottom-2 duration-500">
+                    <div
+                      className="flex flex-wrap items-center justify-between gap-2 mb-3 px-4 py-3 rounded-2xl"
+                      style={{ backgroundColor: theme.accentSoft, border: `1px solid ${theme.accent}33` }}
+                    >
+                      <div className="flex items-center gap-2">
+                        <BarChart3 size={15} style={{ color: theme.accentText }} />
+                        <span className="text-[10px] font-black uppercase tracking-[0.16em]" style={{ color: theme.accentText }}>
+                          {language === 'en' ? 'Analytics scoped to' : 'Analíticas de'} {theme.label}
+                        </span>
+                        <span className="px-2 py-0.5 rounded-full text-[9px] font-black uppercase text-white" style={{ backgroundColor: theme.accent }}>
+                          {theme.currency}
+                        </span>
+                      </div>
+                      <span className="text-[10px] font-semibold text-slate-500">
+                        {brandConversations.length} {language === 'en' ? 'sessions · switch brand in the bar above' : 'sesiones · cambia de marca en la barra superior'}
+                      </span>
+                    </div>
                     <AnalyticsDashboard 
-                        sessions={conversations} 
+                        sessions={brandConversations} 
                         googleAnalyticsVisits={googleAnalyticsVisits}
                         onOpenConversation={async (session) => {
                             // Abrir para LEER no es tomar la conversación: antes esto marcaba
@@ -2299,7 +2336,7 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({
         case 'retraining':
             return (
                 <div className="h-[calc(100vh-200px)] animate-in slide-in-from-bottom-2 duration-500">
-                    <RetrainingAnalytics liveSessions={conversations} />
+                    <RetrainingAnalytics liveSessions={brandConversations} />
                 </div>
             );
 
@@ -2488,9 +2525,9 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({
   return (
     <div className="h-full flex flex-col bg-slate-50 font-sans">
         {/* INTERVENTION ALERT BANNERS */}
-        {pendingAlerts.length > 0 && (
+        {brandPendingAlerts.length > 0 && (
           <div className="flex flex-col gap-2 p-3 bg-red-50 border-b border-red-200 shrink-0">
-            {pendingAlerts.map(alert => (
+            {brandPendingAlerts.map(alert => (
               <div key={alert.id} className="flex items-start gap-3 bg-red-600 text-white rounded-xl px-4 py-3 shadow-lg animate-pulse-once">
                 <AlertTriangle size={18} className="shrink-0 mt-0.5 text-red-200" />
                 <div className="flex-1 min-w-0">
@@ -2554,19 +2591,61 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({
                  <span className="text-[9px] font-bold text-emerald-500 uppercase tracking-widest">Live</span>
                </span>
              </div>
+             {/* BRAND SCOPE BAR — the operator must never doubt which company they are looking at */}
+             <div
+               className="flex flex-wrap items-center justify-between gap-2 mt-1 mb-2 px-3 py-2 rounded-xl"
+               style={{ backgroundColor: theme.accentSoft, border: `1px solid ${theme.accent}33` }}
+             >
+               <div className="flex flex-wrap items-center gap-2">
+                 <span className="text-[9px] font-black uppercase tracking-[0.18em]" style={{ color: theme.accentText }}>
+                   {language === 'en' ? 'Viewing' : 'Viendo'}
+                 </span>
+                 <span className="px-2.5 py-0.5 rounded-full text-[10px] font-black uppercase tracking-wider text-white" style={{ backgroundColor: theme.accent }}>
+                   {theme.label}
+                 </span>
+                 <span className="text-[10px] font-bold" style={{ color: theme.accentText }}>
+                   {theme.country} · {theme.currency} · {theme.language.toUpperCase()}
+                 </span>
+                 <span className="text-[10px] font-semibold text-slate-500">
+                   · {brandConversations.length} {language === 'en' ? 'conversations' : 'conversaciones'}
+                 </span>
+               </div>
+               {onToggleBrand && (
+                 <div className="flex items-center gap-1">
+                   {(['unitec', 'building'] as const).map((bid) => {
+                     const bt = themeFor(bid);
+                     const active = currentBrandId === bid;
+                     return (
+                       <button
+                         key={bid}
+                         onClick={() => onToggleBrand(bid)}
+                         className={`px-2.5 py-1 rounded-lg text-[9px] font-black uppercase tracking-wider transition-all ${
+                           active ? 'text-white shadow-sm' : 'bg-white text-slate-500 hover:text-slate-800 border border-slate-200'
+                         }`}
+                         style={active ? { backgroundColor: bt.accent } : undefined}
+                       >
+                         {bt.short}
+                       </button>
+                     );
+                   })}
+                 </div>
+               )}
+             </div>
+
 <div className="flex items-end gap-0">
                {/* CRM & OPERATIONS GROUP */}
                {[
                  { id: 'chats',           label: 'Bandeja',        icon: <MessageSquare size={13} /> },
                  { id: 'conversations',   label: 'Monitor', icon: <Phone size={13} /> },
-                 { id: 'interventions',   label: 'Alertas',       icon: <span className="relative flex items-center gap-1"><Headphones size={13} />{pendingAlerts.length > 0 && <span className="absolute -top-1.5 -right-2 w-3.5 h-3.5 bg-red-500 rounded-full text-[8px] font-black text-white flex items-center justify-center animate-bounce">{pendingAlerts.length}</span>}</span> },
+                 { id: 'interventions',   label: 'Alertas',       icon: <span className="relative flex items-center gap-1"><Headphones size={13} />{brandPendingAlerts.length > 0 && <span className="absolute -top-1.5 -right-2 w-3.5 h-3.5 bg-red-500 rounded-full text-[8px] font-black text-white flex items-center justify-center animate-bounce">{brandPendingAlerts.length}</span>}</span> },
                  { id: 'catalogs',        label: 'Catálogos',     icon: <Copy size={13} /> },
                  { id: 'tasks',           label: 'Tareas',        icon: <ClipboardList size={13} /> },
                ].map((t: any) => (
                  <button
                    key={t.id}
                    onClick={() => setActiveSubTab(t.id as any)}
-                   className={`py-3.5 px-3 text-[10px] font-bold uppercase tracking-widest border-b-2 flex items-center gap-1.5 transition-all whitespace-nowrap ${activeSubTab === t.id ? 'border-emerald-500 text-emerald-600' : 'border-transparent text-slate-400 hover:text-slate-600'}`}
+                   className={`py-3.5 px-3 text-[10px] font-bold uppercase tracking-widest border-b-2 flex items-center gap-1.5 transition-all whitespace-nowrap ${activeSubTab === t.id ? '' : 'border-transparent text-slate-400 hover:text-slate-600'}`}
+                   style={activeSubTab === t.id ? { borderBottomColor: theme.accent, color: theme.accentText } : undefined}
                  >
                    {t.icon}{t.label}
                  </button>
@@ -2585,7 +2664,8 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({
                  <button
                    key={t.id}
                    onClick={() => setActiveSubTab(t.id as any)}
-                   className={`py-3.5 px-3 text-[10px] font-bold uppercase tracking-widest border-b-2 flex items-center gap-1.5 transition-all whitespace-nowrap ${activeSubTab === t.id ? 'border-blue-500 text-blue-600' : 'border-transparent text-slate-400 hover:text-slate-600'}`}
+                   className={`py-3.5 px-3 text-[10px] font-bold uppercase tracking-widest border-b-2 flex items-center gap-1.5 transition-all whitespace-nowrap ${activeSubTab === t.id ? '' : 'border-transparent text-slate-400 hover:text-slate-600'}`}
+                   style={activeSubTab === t.id ? { borderBottomColor: theme.accent, color: theme.accentText } : undefined}
                  >
                    {t.icon}{t.label}
                  </button>
@@ -2602,12 +2682,13 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({
                  { id: 'voice',           label: 'Voz y TTS',     icon: <Volume2 size={13} /> },
                  { id: 'visuals',         label: 'Diseño de Imagen', icon: <Store size={13} /> },
                 ].map((t: any) => {
-                 const activeBrandColor = currentBrandId === 'building' ? 'border-indigo-600 text-indigo-600' : 'border-brand-600 text-brand-600';
+                 const activeBrandColor = 'border-transparent';
                  return (
                  <button
                    key={t.id}
                    onClick={() => setActiveSubTab(t.id as any)}
                    className={`py-3.5 px-3 text-[10px] font-bold uppercase tracking-widest border-b-2 flex items-center gap-1.5 transition-all whitespace-nowrap ${activeSubTab === t.id ? activeBrandColor : 'border-transparent text-slate-400 hover:text-slate-600'}`}
+                   style={activeSubTab === t.id ? { borderBottomColor: theme.accent, color: theme.accentText } : undefined}
                  >
                    {t.icon}{t.label}
                  </button>

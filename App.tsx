@@ -12,7 +12,7 @@ import InfoTab from './components/InfoTab';
 import PrivacyTab from './components/PrivacyTab';
 import CartSidebar from './components/CartSidebar';
 import { Tab, Language, VoiceName, VoiceProvider, CartItem } from './types';
-import { UNITEC_CONFIG, BUILDING_INNOVATION_CONFIG, QUICK_ACTIONS } from './constants';
+import { UNITEC_CONFIG, BUILDING_INNOVATION_CONFIG, quickActionsFor } from './constants';
 import { resetChatSession } from './services/geminiService';
 import { auth, logOut } from './firebase';
 import { onAuthStateChanged, signInAnonymously } from 'firebase/auth';
@@ -232,7 +232,7 @@ const App: React.FC = () => {
     switch (activeTab) {
       case Tab.CHAT:
         return <ChatTab 
-            quickActions={QUICK_ACTIONS} 
+            quickActions={quickActionsFor(currentBrandId)} 
             emergencyMode={emergencyMode} 
             language={language}
             initialMessage={initialMessage}
@@ -292,7 +292,7 @@ const App: React.FC = () => {
         />;
       default:
         return <ChatTab 
-            quickActions={QUICK_ACTIONS} 
+            quickActions={quickActionsFor(currentBrandId)} 
             emergencyMode={emergencyMode} 
             language={language}
             brandId={currentBrandId}
