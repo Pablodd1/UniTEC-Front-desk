@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { AlertTriangle, BellRing, Clock, Eye, Phone, RefreshCw } from 'lucide-react';
 import { ConversationSession } from '../types';
+import { alertBrand } from '../brandTheme';
 
 /**
  * Avisos recientes del equipo (auditoría real de `escalations`).
@@ -63,13 +64,7 @@ const RecentAlerts: React.FC<RecentAlertsProps> = ({ sessions, onOpenSession, br
 
   const visible = rows.filter((r) => {
     // Brand scope first: an alert belongs to the company of its session (or its own brand field).
-    if (brandId) {
-      const s: any = sessions.find((x) => x.id === r.sessionId);
-      const b = r.brand || s?.brandId;
-      // Legacy rows without any brand tag are UNITEC's.
-      const rowBrand = b === 'building' ? 'building' : 'unitec';
-      if (rowBrand !== brandId) return false;
-    }
+    if (brandId && alertBrand(r, sessions as any[]) !== brandId) return false;
     if (filter === 'all') return true;
     if (filter === 'staff') return r.type === 'staff' || r.type === 'sla';
     return r.type === filter;

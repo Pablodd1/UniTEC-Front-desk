@@ -70,3 +70,17 @@ export const sessionBrand = (s: any): BrandId =>
 
 export const filterByBrand = <T extends { brandId?: string }>(rows: T[], brand: BrandId): T[] =>
   rows.filter((r) => sessionBrand(r) === brand);
+
+/**
+ * Which company does an ALERT belong to? The escalation carries its own brand, but older rows
+ * don't, so the owning session decides; anything still unknown is UNITEC (legacy default).
+ * This lives here (not inline in the component) so the panel rule is unit-testable.
+ */
+export const alertBrand = (
+  row: { brand?: string; sessionId?: string },
+  sessions: Array<{ id: string; brandId?: string }> = [],
+): BrandId => {
+  const owner = row?.sessionId ? sessions.find((s) => s.id === row.sessionId) : undefined;
+  const raw = row?.brand || owner?.brandId;
+  return raw === 'building' ? 'building' : 'unitec';
+};
