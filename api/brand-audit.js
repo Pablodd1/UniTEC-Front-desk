@@ -62,11 +62,18 @@ export default async function handler(req, res) {
 
   const days = Math.min(Math.max(parseInt(String(req.query?.days || '7'), 10) || 7, 1), 60);
   const dry = String(req.query?.dry || '') === '1';
+  const selftest = String(req.query?.selftest || '') === '1';
   const proto = String(req.headers['x-forwarded-proto'] || 'https');
   const host = req.headers.host;
   const base = `${proto}://${host}`;
   const from = bogotaDay(new Date(Date.now() - (days - 1) * 86400000));
   const to = bogotaDay(new Date());
+
+  // Proves the alert rail itself (credentials + delivery) without faking a failure.
+  if (selftest) {
+    const sent = await sendTelegram(`✅ SELF-TEST — brand audit alert rail OK.\n${base}\nNo failure was detected; this is a delivery check.`);
+    return res.status(200).json({ ok: true, selftest: true, telegram: sent, generatedAt: new Date().toISOString() });
+  }
 
   const fails = [];
   const warns = [];
