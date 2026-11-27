@@ -47,6 +47,12 @@ async function remember(code, detail) {
 }
 
 export async function alertAnomaly(code, detail, sessionId = '') {
+  // Las sesiones de sondeo (test-monitor-*, probes, verify...) se excluyen de métricas y del
+  // panel. Alerts about them are noise: the operator opens the panel and finds nothing.
+  // Keep the same pattern as api/_alert.js TEST_SESSION_RE.
+  const TEST_SESSION_RE = /^(diag|lat-test|verify|warm-check|secret-verify|post-fix|analytics-verify|sweep|abandon-test|staff-test|rules-probe|test[-_]|probe[-_]|monitor)/;
+  if (TEST_SESSION_RE.test(String(sessionId || ''))) return { sent: false, why: 'test_session' };
+
   const key = String(code || 'ANOMALIA');
   const now = Date.now();
   const last = recent.get(key) || 0;
