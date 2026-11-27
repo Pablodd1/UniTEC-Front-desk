@@ -56,7 +56,7 @@ async function getProducts() {
 }
 
 // ── Price intent regex ──
-const PRICE_INTENT_RE = /(precio|precios|vale|valor|costo|costar|cu[aá]nto|cuanto cuesta|cotiz|presupuesto|price|cost)/i;
+const PRICE_INTENT_RE = /(precio|precios|vale|valor|costo|costar|cu[aá]nto|cuanto cuesta|cotiz|presupuesto|price|pricing|cost|how much|worth|quote|dollar|usd)/i;
 
 // Exact price lookup from build-time map
 function priceForProduct(productId) {
@@ -504,6 +504,11 @@ ${_bp.rules}`;
       if (matched.length > 0) {
             const isBI = brandId === 'building';
             biConverted = isBI && matched.some((p) => !priceForBrand(p, 'building') && copToUsdLocal(p.price_cop));
+            // A price the context legitimately carries (stored USD or converted from COP) makes
+            // an amount in the reply valid; the guard is only for turns with no price at all.
+            if (isBI && matched.some((p) => priceForBrand(p, 'building') || copToUsdLocal(p.price_cop))) {
+              biPricesKnown = true;
+            }
             const productContext = matched.map((p) => {
               // Brand price: BI must NEVER see a COP figure. Unknown -> "on request".
               // BI's list is UNITEC's COP list, so when there is no stored USD price the
