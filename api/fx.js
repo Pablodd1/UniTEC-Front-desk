@@ -9,6 +9,7 @@
 // Response: { ok, rate, at, source, ageHours, stale }
 
 import { getDoc, setDoc } from './_firestore-rest.js';
+import DEFAULTS from './fx-default.json' with { type: 'json' };
 
 const SOURCE = 'open.er-api.com';
 const TTL_HOURS = 12;
@@ -40,14 +41,17 @@ export async function getFxRate({ force = false } = {}) {
 
   let stored = null;
   try {
-    const d = await getDoc('config/main');
+    const d = await Promise.race([
+      getDoc('config/main'),
+      new Promise((_, reject) => setTimeout(() => reject(new Error('fx_store_timeout')), 700)),
+    ]);
     const f = d?.fields || {};
     const rate = Number(f.fxRate?.doubleValue ?? f.fxRate?.integerValue ?? 0) || null;
     stored = rate
       ? { rate, at: String(f.fxAt?.stringValue || ''), source: String(f.fxSource?.stringValue || '') }
       : null;
   } catch (e) {
-    // Firestore unreachable: fall through to the public feed.
+    // Firestore slow or unreachable: fall back to the rate shipped with this build.
   }
 
   const fresh = stored && hoursSince(stored.at) < TTL_HOURS;
@@ -71,7 +75,8 @@ export async function getFxRate({ force = false } = {}) {
       mem = { ...stored, fetchedAt: Date.now() };
       return mem;
     }
-    return { rate: null, at: '', source: '', fetchedAt: Date.now() };
+    // Last resort: the dated rate that shipped with the build, so a chat turn is never blocked.
+    return { rate: Number(DEFAULTS.rate) || null, at: DEFAULTS.at || '', source: DEFAULTS.source || '', fetchedAt: Date.now() };
   }
 }
 
