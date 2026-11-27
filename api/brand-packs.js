@@ -62,6 +62,31 @@ export function specsToImperial(specs = '') {
 /** A price that must never be invented. Empty / placeholder -> the bot says "Consultar precio". */
 const UNKNOWN_PRICE = /consultar|n\/a|—|-|^$/i;
 
+/**
+ * "$ 27.000" (Colombian list format) -> 27000. Returns null when there is no real number.
+ * Dots are thousands separators; a comma is the decimal mark ("1.234,50" -> 1234.5).
+ */
+export function parseCop(copRaw) {
+  const digits = String(copRaw || '').replace(/[^\d,.]/g, '');
+  if (!digits) return null;
+  const normalized = digits.includes(',')
+    ? digits.replace(/\./g, '').replace(',', '.')
+    : digits.replace(/\./g, '');
+  const cop = Number(normalized);
+  return Number.isFinite(cop) && cop > 0 ? cop : null;
+}
+
+/**
+ * COP list price -> USD at a given rate, rounded UP to the cent so an approximate quote never
+ * undercuts the list. Returns null without a usable rate or price (never a guess).
+ */
+export function copToUsd(copRaw, rate) {
+  const cop = parseCop(copRaw);
+  const r = Number(rate);
+  if (!cop || !Number.isFinite(r) || r <= 0) return null;
+  return Math.ceil((cop / r) * 100) / 100;
+}
+
 export function priceForBrand(p, brandId) {
   const raw = brandId === 'building'
     ? (p.price_usd || '')

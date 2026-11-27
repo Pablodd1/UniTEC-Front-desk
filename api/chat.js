@@ -18,7 +18,7 @@ import { recordChatTurn } from './_record-chat-turn.js';
 import { normalizeHistory, catalogReply, tightenReply, detectEscalation, digitsFromSpelledPhone } from './turn-text.js';
 import { alertAnomaly } from './anomaly-alert.js';
 import { createRequire } from 'module';
-import { brandPack, specsToImperial, priceForBrand } from './brand-packs.js';
+import { brandPack, specsToImperial, priceForBrand, copToUsd } from './brand-packs.js';
 const require_ = createRequire(import.meta.url);
 const firebaseConfig = require_('../firebase-applet-config.json');
 
@@ -220,6 +220,18 @@ export default async function handler(req, res) {
       return `${cleaned} The exact USD price for this reference must be confirmed by our sales team.`;
     };
     const origin = req.headers.origin || 'https://chatbuildinginnovation.us';
+    // Building Innovation quotes the same list as UNITEC, which is priced in COP. The dollar
+    // figure is derived here from the live rate — never invented by the model.
+    let fx = null;
+    if (brandId === 'building') {
+      try {
+        const { getFxRate } = await import('./fx.js');
+        fx = await getFxRate();
+      } catch (e) {
+        console.warn('[chat] fx unavailable:', e?.message || e);
+      }
+    }
+    const copToUsdLocal = (copRaw) => copToUsd(copRaw, fx?.rate);
     if (!message) {
       return res.status(400).json({ error: 'Missing message in request body' });
     }
@@ -492,11 +504,16 @@ ${_bp.rules}`;
             const isBI = brandId === 'building';
             const productContext = matched.map((p) => {
               // Brand price: BI must NEVER see a COP figure. Unknown -> "on request".
+              // BI's list is UNITEC's COP list, so when there is no stored USD price the
+              // dollar value is derived from the live rate and labelled as converted.
               const price = priceForBrand(p, brandId);
+              const converted = isBI && !price ? copToUsdLocal(p.price_cop) : null;
               const priceTxt = price
                 ? (isBI ? `Price: ${price} per ${p.unit || 'unit'}${p.price_approx ? ' (APPROXIMATE)' : ''}`
                         : `Precio: ${price} por ${p.unit || 'Unidad'}${p.price_approx ? ' (APROXIMADO)' : ''}`)
-                : (isBI ? 'Price: on request' : 'Precio: Consultar precio');
+                : converted
+                  ? `Price: $${converted.toFixed(2)} USD per ${p.unit || 'unit'} (APPROXIMATE — converted from the list at ${fx.rate} COP→USD, ${String(fx.at).slice(0, 10)})`
+                  : (isBI ? 'Price: on request' : 'Precio: Consultar precio');
               const bits = [
                 `RefCode: ${p.id}`,
                 p.name,
@@ -528,8 +545,15 @@ ${_bp.rules}`;
           for (const p of matchedProducts) {
             const priceInfo = priceForProduct(p.id);
             if (isBI) {
-              const usd = priceForBrand(p, 'building');
-              if (usd) priceLines.push(`- ${p.name} (${p.subcategory || p.category || '—'}): ${usd} per ${p.unit || 'unit'} (APPROXIMATE)`);
+              const listed = priceForBrand(p, 'building');
+              const usd = listed || copToUsdLocal(p.price_cop);
+              if (usd) {
+                const amount = typeof usd === 'number' ? `$${usd.toFixed(2)} USD` : `${usd} USD`;
+                const note = listed
+                  ? ''
+                  : ` — converted from the COP list at ${fx.rate} COP→USD (${String(fx.at).slice(0, 10)})`;
+                priceLines.push(`- ${p.name} (${p.subcategory || p.category || '—'}): ${amount} per ${p.unit || 'unit'} (APPROXIMATE${note})`);
+              }
               continue;
             }
             if (priceInfo && priceInfo.price_cop) {
@@ -546,7 +570,7 @@ ${_bp.rules}`;
       }
           if (priceLines.length > 0) {
             blocks.push(isBI
-              ? `[LISTA DE PRECIOS - USD per unit, approximate]:\n${priceLines.join('\n')}\nApproximate values per unit. Quote ONLY the row for the product asked. If it is not in this list, say "Price on request". Never convert to another currency.`
+              ? `[LISTA DE PRECIOS - USD per unit, approximate]:\n${priceLines.join('\n')}\nApproximate values per unit. Quote ONLY the row for the product asked. Rows marked "converted" come from the COP list at the rate shown: quote them in USD as approximate and mention that they are converted at today's rate. If it is not in this list, say "Price on request". Never invent a price and never convert on your own.`
               : `[LISTA DE PRECIOS - LISTA MARKETING cliente final]:\n${priceLines.join('\n')}\nValores aproximados por unidad. Cita SOLO la fila del producto preguntado. Si no está en la lista, di "Consultar precio".`);
           }
         } catch (e) {

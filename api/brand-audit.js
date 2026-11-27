@@ -23,7 +23,6 @@ const LEAK = {
     [/centro comercial ideo/i, 'CC Ideo'],
     [/transferencia electr[oó]nica/i, 'UNITEC payment wording'],
     [/canva\.link/i, 'UNITEC catalog link'],
-    [/\bCOP\b|pesos colombianos/i, 'COP mentioned'],
   ],
   unitec: [
     [/doral/i, 'Doral showroom'],
@@ -103,11 +102,17 @@ export default async function handler(req, res) {
       for (const [re, label] of LEAK[brand]) {
         if (re.test(msg)) fails.push(`${brand} session ${r.id} leaks ${label}: "${msg.slice(0, 80)}"`);
       }
-      if (brand === 'building' && USD_AMOUNT.test(msg)) {
-        fails.push(`building session ${r.id} quotes an amount (${msg.match(USD_AMOUNT)[0]}) with no USD price list`);
-      }
-      if (brand === 'building' && COP_AMOUNT.test(msg)) {
-        fails.push(`building session ${r.id} shows a COP-style amount`);
+      if (brand === 'building') {
+        const withoutRate = msg.replace(/COP\s*(?:→|\/|-)\s*USD/gi, '');
+        if (/\bCOP\b|pesos colombianos/i.test(withoutRate)) {
+          fails.push(`building session ${r.id} mentions COP outside a conversion`);
+        }
+        if (USD_AMOUNT.test(msg) && !/convert|USD|approx/i.test(msg)) {
+          fails.push(`building session ${r.id} quotes an amount with no stated basis`);
+        }
+        if (COP_AMOUNT.test(withoutRate)) {
+          fails.push(`building session ${r.id} shows a COP-style amount`);
+        }
       }
       if (!r.lastUpdated) warns.push(`session ${r.id} has no lastUpdated`);
     }
@@ -139,7 +144,7 @@ export default async function handler(req, res) {
       const prod = await (await fetch(`${base}/products.json`, { signal: AbortSignal.timeout(12000) })).json();
       skus = Array.isArray(prod) ? prod.length : 0;
       usd = (prod || []).filter((p) => /^\s*\$?\s*\d/.test(String(p.price_usd || ''))).length;
-      if (skus && !usd) warns.push('no SKU has a USD price: every BI quote must end in "price on request"');
+      if (skus && !usd) warns.push('no SKU has a stored USD price — BI converts from the COP list at the /api/fx rate');
     } catch { warns.push('products.json unavailable'); }
 
     const summary = `${fails.length} failure(s), ${warns.length} warning(s) · ${days}d · unitec ${count.unitec} / building ${count.building} · ${skus} SKUs, ${usd} with USD`;

@@ -44,7 +44,6 @@ const LEAK = {
     [/centro comercial ideo/i, 'CC Ideo'],
     [/transferencia electr[oó]nica/i, 'UNITEC payment wording'],
     [/canva\.link/i, 'UNITEC catalog link'],
-    [/\bCOP\b|pesos colombianos/i, 'COP mentioned'],
   ],
   unitec: [
     [/doral/i, 'Doral showroom'],
@@ -78,12 +77,18 @@ const COP_AMOUNT = /\$\s?\d{1,3}(?:[.,]\d{3})+\s*(COP|pesos)?/i;
     for (const [re, label] of LEAK[brand]) {
       if (re.test(msg)) fail(`${brand} session ${r.id} last message leaks ${label}: "${msg.slice(0, 90)}"`);
     }
-    if (brand === 'building' && USD_AMOUNT.test(msg)) {
-      const m = msg.match(USD_AMOUNT)[0];
-      fail(`building session ${r.id} quotes an amount (${m}) with no USD price list: "${msg.slice(0, 90)}"`);
-    }
-    if (brand === 'building' && COP_AMOUNT.test(msg)) {
-      fail(`building session ${r.id} shows a COP-style amount: "${msg.slice(0, 90)}"`);
+    if (brand === 'building') {
+      // COP is allowed ONLY as the rate behind a conversion ("COP→USD"); a bare COP price is not.
+      const withoutRate = msg.replace(/COP\s*(?:→|\/|-)\s*USD/gi, '');
+      if (/\bCOP\b|pesos colombianos/i.test(withoutRate)) {
+        fail(`building session ${r.id} mentions COP outside a conversion: "${msg.slice(0, 90)}"`);
+      }
+      if (USD_AMOUNT.test(msg) && !/convert|USD|approx/i.test(msg)) {
+        fail(`building session ${r.id} quotes an amount with no stated basis: "${msg.slice(0, 90)}"`);
+      }
+      if (COP_AMOUNT.test(withoutRate)) {
+        fail(`building session ${r.id} shows a COP-style amount: "${msg.slice(0, 90)}"`);
+      }
     }
     if (!r.lastMessage && !r.isEmptySession) warn(`session ${r.id} (${brand}) has no lastMessage — blank row in the monitor`);
     if (r.isEmptySession) emptied++;
@@ -126,7 +131,7 @@ const COP_AMOUNT = /\$\s?\d{1,3}(?:[.,]\d{3})+\s*(COP|pesos)?/i;
   const usd = prod.filter((p) => /^\s*\$?\s*\d/.test(String(p.price_usd || ''))).length;
   const specs = prod.filter((p) => String(p.catalog_specs || '').trim()).length;
   console.log(`catalog: ${prod.length} SKUs · ${specs} with specs · ${usd} with a USD price`);
-  if (!usd) warn('no SKU has a USD price: every Building Innovation quote must end in "price on request"');
+  if (!usd) console.log('note: no SKU has a stored USD price — Building Innovation converts from the COP list at the live /api/fx rate');
 
   // ── report ─────────────────────────────────────────────────────────────────
   if (warns.length) { console.log('\nWARNINGS'); warns.forEach((w) => console.log('  ~ ' + w)); }
