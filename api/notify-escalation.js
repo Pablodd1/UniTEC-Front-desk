@@ -306,20 +306,27 @@ function buildWhatsAppText(d) {
 // 8 teléfonos del equipo (solo Telegram). La sesión y el contador los escribe api/_meeting.js.
 function buildMeetingTelegramMessage(d) {
   const nn = (v) => (v && String(v).trim() ? String(v).trim() : 'no indicado');
+  const nnEn = (v) => (v && String(v).trim() ? String(v).trim() : 'not provided');
+  const en = d.brand === 'building';
+  const n = en ? nnEn : nn;
   return [
     `<b>ALERTFROMCHATBOT</b>`,
-    `<b>🤝 REUNIÓN VIRTUAL ACEPTADA</b>`,
+    en ? `<b>🤝 VIRTUAL MEETING ACCEPTED</b>` : `<b>🤝 REUNIÓN VIRTUAL ACEPTADA</b>`,
     ``,
-    `<b>Marca:</b> ${nn(d.brand)}`,
-    `<b>Cliente:</b> ${nn(d.customerName)}`,
-    `<b>Teléfono:</b> ${nn(d.customerPhone)}`,
-    `<b>Sesión:</b> ${nn(d.sessionId)}`,
+    en ? `<b>Brand:</b> ${n(d.brand)}` : `<b>Marca:</b> ${n(d.brand)}`,
+    en ? `<b>Customer:</b> ${n(d.customerName)}` : `<b>Cliente:</b> ${n(d.customerName)}`,
+    en ? `<b>Phone:</b> ${n(d.customerPhone)}` : `<b>Teléfono:</b> ${n(d.customerPhone)}`,
+    en ? `<b>Session:</b> ${n(d.sessionId)}` : `<b>Sesión:</b> ${n(d.sessionId)}`,
     ``,
-    `<b>El cliente aceptó agendar:</b>`,
-    d.message ? String(d.message).slice(0, 300) : 'no indicado',
+    en ? `<b>Customer accepted to schedule:</b>` : `<b>El cliente aceptó agendar:</b>`,
+    d.message ? String(d.message).slice(0, 300) : (en ? 'not provided' : 'no indicado'),
     ``,
-    `<b>Acción:</b> un asesor debe contactar al cliente para agendar la presentación del portafolio y condiciones comerciales para distribuidores.`,
-    `<b>Hora:</b> ${new Date(d.timestamp || Date.now()).toLocaleString('es-CO', { timeZone: 'America/Bogota' })}`,
+    en
+      ? `<b>Action:</b> an advisor must contact the customer to schedule the presentation of the portfolio and commercial terms for distributors.`
+      : `<b>Acción:</b> un asesor debe contactar al cliente para agendar la presentación del portafolio y condiciones comerciales para distribuidores.`,
+    en
+      ? `<b>Time:</b> ${new Date(d.timestamp || Date.now()).toLocaleString('en-US', { timeZone: 'America/New_York' })}`
+      : `<b>Hora:</b> ${new Date(d.timestamp || Date.now()).toLocaleString('es-CO', { timeZone: 'America/Bogota' })}`,
   ].join('\n');
 }
 

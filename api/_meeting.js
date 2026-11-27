@@ -18,6 +18,10 @@ import { sendMeetingAlert } from './notify-escalation.js';
 export const MEETING_QUESTION =
   '¿Te gustaría agendar una presentación de nuestro portafolio y condiciones comerciales para distribuidores?';
 
+/** Pregunta EXACTA en inglés para BUILDING INNOVATION (mantener en sync con el prompt BI). */
+export const MEETING_QUESTION_EN =
+  'Would you like to schedule a presentation of our portfolio and commercial terms for distributors?';
+
 /** Sesiones de prueba/probe — mismas que api/_alert.js y api/anomaly-alert.js. */
 export const TEST_SESSION_RE = /^(diag|lat-test|verify|warm-check|secret-verify|post-fix|analytics-verify|sweep|abandon-test|staff-test|rules-probe|test[-_]|probe[-_]|monitor)/;
 
@@ -52,11 +56,44 @@ const isWhenAccept = (t) => {
   return false;
 };
 
+// ── Aceptación afirmativa EN INGLÉS (BUILDING INNOVATION) ─────────────────────
+// Palabras/frases de aceptación en inglés. Mismas reglas: corta, en contexto de
+// cotización, y las hedge/negaciones invierten la aceptación ("sure, but not now").
+const ACCEPT_WORDS_EN = [
+  /\bsounds good\b/,
+  /\bi(?:'m|\s+am)\s+interested\b/,
+  /\blet(?:'s| us)?\s+schedule\b/,
+  /\bschedule it\b/,
+  /\bwhen can we\b/,
+  /\bof course\b/,
+  /\babsolutely\b/,
+  /\byes\b/,
+  /\bsure\b/,
+];
+
+const EN_HEDGES = [
+  /\bbut\b/,
+  /\bnot\b/,
+  /\bno\b/,
+  /\blater\b/,
+  /\bno thanks\b/,
+  /\bnot interested\b/,
+  /\bnot now\b/,
+];
+
+/** Aceptación en inglés: hedge primero, luego palabras afirmativas. */
+function detectMeetingAcceptanceEn(t) {
+  if (EN_HEDGES.some((re) => re.test(t))) return false;
+  return ACCEPT_WORDS_EN.some((re) => re.test(t));
+}
+
 /** Detección conservadora de aceptación de la reunión. Sin contexto de cotización, el caller NO la usa. */
-export function detectMeetingAcceptance(text) {
+export function detectMeetingAcceptance(text, brand = 'unitec') {
   const raw = String(text || '').trim();
   if (!raw || raw.length > 200) return false; // una aceptación es corta
   const t = raw.toLowerCase();
+
+  if (brand === 'building') return detectMeetingAcceptanceEn(t);
 
   // Hedge/negaciones: "sí, pero…", "claro, no por ahora", "de acuerdo, luego".
   if (
@@ -80,20 +117,26 @@ const digitsOnly = (s) => String(s).replace(/\D/g, '');
 
 /**
  * Extrae un teléfono válido del mensaje o devuelve null.
- * Nunca devuelve un número que no sea claramente un teléfono:
+ * Nunca devuelve un número que no sea claramente un teléfono.
  *   · E.164 explícito (+57 314 233 2147, +1 786 968 5783, …) — 10 a 15 dígitos.
- *   · Móvil colombiano sin prefijo: 10 dígitos empezando en 3 (3XXXXXXXXX).
- *   · Fijo colombiano con indicativo: 60[1-8] + 7 dígitos.
- *   · 57 + 10 dígitos sin '+'.
+ *   · BUILDING INNOVATION (brand === 'building'): US — 10 dígitos (NPA 2-9) o 1 + 10 sin '+'.
+ *   · UNITEC (default): móvil colombiano sin prefijo (3XXXXXXXXX), fijo con indicativo
+ *     (60[1-8] + 7 dígitos), o 57 + 10 dígitos sin '+'.
  */
-export function extractPhone(text) {
+export function extractPhone(text, brand = 'unitec') {
   if (!text) return null;
   const raw = String(text);
   const cands = raw.match(/(?:\+?[0-9][0-9\s().\-]{5,})/g) || [];
+  const isBI = brand === 'building';
   for (const c of cands) {
     const d = digitsOnly(c);
     if (c.trim().startsWith('+')) {
       if (d.length >= 10 && d.length <= 15 && /^[1-9]/.test(d)) return '+' + d;
+      continue;
+    }
+    if (isBI) {
+      if (d.length === 11 && d.startsWith('1')) return '+' + d;      // 1 + 10 dígitos sin '+'
+      if (d.length === 10 && /^[2-9][0-9]{9}$/.test(d)) return '+1' + d; // 10 dígitos US
       continue;
     }
     if (d.length === 10 && d[0] === '3') return '+57' + d;      // móvil colombiano
@@ -104,8 +147,8 @@ export function extractPhone(text) {
 }
 
 // Palabras que indican que el cliente está dando su teléfono (evita capturar cantidades
-// como "3500000000 unidades" fuera del flujo de reunión).
-const PHONE_SIGNAL = /tel[eé]fono|n[uú]mero|numero|celular|cel\b|whatsapp|whats|ll[aá]mame|ll[aá]mame al|cont[aá]ctame|contacto|es el \d|mi cel|comunicate|comunícate|escr[ií]beme|al \d/;
+// como "3500000000 unidades" fuera del flujo de reunión). Incluye señales en español e inglés.
+const PHONE_SIGNAL = /tel[eé]fono|n[uú]mero|numero|celular|cel\b|cell\b|whatsapp|whats|ll[aá]mame|ll[aá]mame al|cont[aá]ctame|contacto|es el \d|mi cel|comunicate|comunícate|escr[ií]beme|al \d|phone\b|number\b|call me|contact me|my number|my cell|reach me/i;
 
 /** ¿Debe capturarse un teléfono detectado? Sí en el flujo de reunión o con señal explícita. */
 export function shouldCapturePhone(text, fields) {
@@ -114,6 +157,7 @@ export function shouldCapturePhone(text, fields) {
 
 // ── Contexto de cotización (reutiliza el mismo patrón que PRICE_INTENT_RE en api/chat.js) ──
 const PRICE_INTENT_RE = /(precio|precios|vale|valor|costo|costar|cu[aá]nto|cuanto cuesta|cotiz|presupuesto|price|pricing|cost|how much|worth|quote|dollar|usd)/i;
+const PORTFOLIO_CONTEXT_RE = /presentaci[oó]n de nuestro portafolio|condiciones comerciales|agendar una presentaci[oó]n|portafolio|presentation of our portfolio|commercial terms|schedule a (?:presentation|meeting)|portfolio/i;
 
 function isQuoteContext(text, history, fields) {
   if (PRICE_INTENT_RE.test(text)) return true;
@@ -121,7 +165,7 @@ function isQuoteContext(text, history, fields) {
   for (const t of turns) {
     const s = String(t?.text || '');
     if (PRICE_INTENT_RE.test(s)) return true;
-    if (/presentaci[oó]n de nuestro portafolio|condiciones comerciales|agendar una presentaci[oó]n|portafolio/i.test(s)) return true;
+    if (PORTFOLIO_CONTEXT_RE.test(s)) return true;
   }
   if (fields?.meetingStatus || fields?.meetingProposedAt || fields?.escalationType === 'quote') return true;
   return false;
@@ -147,13 +191,13 @@ function meetingDeduped(sessionId) {
  */
 export async function runMeetingFlow({ sessionId, message, history = [], brand = 'unitec', parentHost = '' }) {
   if (!sessionId || TEST_SESSION_RE.test(String(sessionId))) return { action: null, why: 'test_session' };
-  if (brand && brand !== 'unitec') return { action: null, why: 'brand_not_unitec' }; // pregunta en español, para distribuidores UNITEC
+  if (brand && brand !== 'unitec' && brand !== 'building') return { action: null, why: 'brand_not_supported' };
 
   const text = String(message || '').trim();
   if (!text) return { action: null, why: 'no_message' };
 
-  const acceptance = detectMeetingAcceptance(text);
-  const phone = extractPhone(text);
+  const acceptance = detectMeetingAcceptance(text, brand);
+  const phone = extractPhone(text, brand);
   if (!acceptance && !phone) return { action: null, why: 'no_signal' };
 
   // Leer la sesión UNA vez (solo cuando hay señal).
