@@ -28,6 +28,7 @@ import { getSharedTraining } from './shared-training.js';
 import { recordChatTurn } from './_record-chat-turn.js';
 import { normalizeHistory, catalogReply, tightenReply, detectEscalation, digitsFromSpelledPhone } from './turn-text.js';
 import { alertAnomaly } from './anomaly-alert.js';
+import { runMeetingFlow } from './_meeting.js';
 import { createRequire } from 'module';
 import { brandPack, specsToImperial, priceForBrand, copToUsd } from './brand-packs.js';
 const require_ = createRequire(import.meta.url);
@@ -305,6 +306,7 @@ You are the professional AI Front Desk Assistant and Senior Sales Representative
 9a. TELÉFONOS: escribe SIEMPRE el número con DÍGITOS y agrupado (ej. +57 314 233 2147). NUNCA lo deletrees ni lo escribas con palabras ("tres uno cuatro…"): el cliente no puede marcarlo.
 9b. NUNCA respondas solo con un saludo o una cortesía ("¡Hola! Con gusto te ayudo"). Si el cliente hizo una pregunta, entrega la información concreta que tengas; si no tienes el precio, di "Consultar precio" y ofrece pasar los datos al equipo comercial. Siempre termina con UNA pregunta.
 10. ESPERA Y DESPEDIDA (política del cliente 2026-10-15): si ya avisaste que un asesor del equipo viene en camino, SIGUES atendiendo cualquier otra consulta del cliente mientras esperan (nunca los dejes sin respuesta). Si el cliente dice que no necesita nada más ("no gracias", "eso es todo", "ya está", "listo gracias"), despídete con calidez y compártele el sitio web https://www.unitecusadesign.com/ para más información. Si un asesor YA está atendiendo la conversación, tú NO respondes: el asesor es quien escribe.
+11. REUNIÓN VIRTUAL (COTIZACIÓN/PORTAFOLIO): cuando el cliente pida una cotización o el portafolio y ya se lo hayas ofrecido o enviado, ANTES de escalar al equipo, propónle agendar una presentación virtual con EXACTAMENTE esta pregunta: "¿Te gustaría agendar una presentación de nuestro portafolio y condiciones comerciales para distribuidores?" Si acepta, pídele ÚNICAMENTE su número de teléfono (una sola pregunta, sin interrogar) y luego confírmale que un asesor lo contactará para agendar la reunión. Se mantiene UN ÚNICO escalamiento al final.
 
 # REGLAS ESPECÍFICAS DEL NEGOCIO (RESPONDE EXACTAMENTE según estas reglas):
 - INSTALACIÓN: Cuando pregunten por instalación de producto, responde EXACTAMENTE: "Señor o Señora te cuento que actualmente nuestra compañía solo realiza distribución mas no instalación para este proceso te podemos informar el contacto de una persona externa, posterior"
@@ -730,6 +732,14 @@ ${_bp.rules}`;
       // first and escalates once, at the end. Shared detector — see turn-text.js.
       const { isEscalation, isQuote, isStaff } = detectEscalation(message);
 
+      // Reunión virtual (cotización/portafolio): detecta aceptación + captura teléfono y
+      // avisa por el raíl de Telegram existente. Awaited para que Vercel no mate la promesa
+      // (mismo criterio que recordChatTurn); sin señal (aceptación/teléfono) no hace I/O.
+      if (clientSessionId) {
+        await runMeetingFlow({ sessionId: clientSessionId, message, history, brand: brandId, parentHost })
+          .catch((e) => console.warn('[meeting] flow failed:', e?.message));
+      }
+
       try {
         res.write(`data: ${JSON.stringify({
           done: true,
@@ -884,6 +894,12 @@ ${_bp.rules}`;
           }
 
           const { isEscalation, isQuote, isStaff } = detectEscalation(message);
+
+          // Reunión virtual: misma red de seguridad que el camino streaming (ver arriba).
+          if (clientSessionId) {
+            await runMeetingFlow({ sessionId: clientSessionId, message, history, brand: brandId, parentHost })
+              .catch((e) => console.warn('[meeting] flow failed:', e?.message));
+          }
 
           return res.status(200).json({
             ...(req.body?.debug ? { debug: dbg } : {}),

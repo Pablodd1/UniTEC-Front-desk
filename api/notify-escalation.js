@@ -300,6 +300,35 @@ function buildWhatsAppText(d) {
   return lines.join('\n');
 }
 
+// --- Reunión virtual (cotización/portafolio): propuesta aceptada por el cliente ---
+// MISMO raíl de Telegram que el resto (sendTelegram): no se crea un sender paralelo.
+// Es un paso NUEVO ANTES del escalamiento, por eso NO sube escalationCount ni pagina los
+// 8 teléfonos del equipo (solo Telegram). La sesión y el contador los escribe api/_meeting.js.
+function buildMeetingTelegramMessage(d) {
+  const nn = (v) => (v && String(v).trim() ? String(v).trim() : 'no indicado');
+  return [
+    `<b>ALERTFROMCHATBOT</b>`,
+    `<b>🤝 REUNIÓN VIRTUAL ACEPTADA</b>`,
+    ``,
+    `<b>Marca:</b> ${nn(d.brand)}`,
+    `<b>Cliente:</b> ${nn(d.customerName)}`,
+    `<b>Teléfono:</b> ${nn(d.customerPhone)}`,
+    `<b>Sesión:</b> ${nn(d.sessionId)}`,
+    ``,
+    `<b>El cliente aceptó agendar:</b>`,
+    d.message ? String(d.message).slice(0, 300) : 'no indicado',
+    ``,
+    `<b>Acción:</b> un asesor debe contactar al cliente para agendar la presentación del portafolio y condiciones comerciales para distribuidores.`,
+    `<b>Hora:</b> ${new Date(d.timestamp || Date.now()).toLocaleString('es-CO', { timeZone: 'America/Bogota' })}`,
+  ].join('\n');
+}
+
+/** Envía SOLO Telegram (sin email ni SMS). Reutiliza sendTelegram (raíl existente). */
+export async function sendMeetingAlert(d) {
+  const telegram = await sendTelegram(buildMeetingTelegramMessage(d));
+  return { success: !!telegram?.success, telegram };
+}
+
 // --- Persistence: audit doc + the counters the panels/reports read ---
 async function recordEscalation(d, results, anySuccess) {
   const channels = Object.entries(results).map(([name, r]) => ({

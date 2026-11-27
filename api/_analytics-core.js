@@ -161,6 +161,8 @@ export function parseFirestoreDoc(doc) {
         avgResponseTime: parseFloat(af.avgResponseTime?.doubleValue ?? af.avgResponseTime?.integerValue ?? '0'),
         escalationCount: parseInt(af.escalationCount?.integerValue ?? '0', 10),
         staffInteractions: parseInt(af.staffInteractions?.integerValue ?? '0', 10),
+        meetingRequested: parseInt(af.meetingRequested?.integerValue ?? af.meetingRequested?.doubleValue ?? '0', 10),
+        phoneCaptured: parseInt(af.phoneCaptured?.integerValue ?? af.phoneCaptured?.doubleValue ?? '0', 10),
         productMentions: af.productMentions?.arrayValue?.values?.map((v) => v.stringValue).filter(Boolean) || [],
       };
     })(),
