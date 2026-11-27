@@ -8,6 +8,7 @@
     "build": "vite build",
     "test": "vitest run",
     "test:brands": "tsx scripts/test-brand-prompts.ts",
+    "check:api": "esbuild api/chat.js api/fx.js api/brand-packs.js api/brand-audit.js api/sessions.js api/escalations.js api/chat-config.js --outdir=.apicheck --log-level=error",
     "lint": "tsc --noEmit",
     "preview": "vite preview"
   },
