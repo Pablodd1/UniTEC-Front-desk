@@ -595,7 +595,7 @@ ${_bp.rules}`;
       }
           if (priceLines.length > 0) {
             blocks.push(isBI
-              ? `[LISTA DE PRECIOS - USD per unit, approximate${fx ? ' (converted at ' + fx.rate + ' COP per USD, ' + String(fx.at).slice(0, 10) + ')' : ''}]:\n${priceLines.join('\n')}\nApproximate values per unit. Quote ONLY the row for the product asked. Rows marked "converted" come from the COP list at the rate shown: quote them in USD as approximate and mention that they are converted at today's rate. If it is not in this list, say "Price on request". Never invent a price and never convert on your own.`
+              ? `[LISTA DE PRECIOS - USD per unit, approximate${fx ? ' (converted at ' + fx.rate + ' COP per USD, ' + String(fx.at).slice(0, 10) + ')' : ''}]:\n${priceLines.join('\n')}\nApproximate values per unit. THE CUSTOMER ASKED THE PRICE: answer with the USD figure from the row that matches the product above, state it is approximate and converted from the COP list at the current rate, then ask how many units or sq ft they need. Do NOT answer \"price on request\" when a matching row is present. Only say \"Price on request\" when the product is absent from this list. Never invent a price.`
               : `[LISTA DE PRECIOS - LISTA MARKETING cliente final]:\n${priceLines.join('\n')}\nValores aproximados por unidad. Cita SOLO la fila del producto preguntado. Si no está en la lista, di "Consultar precio".`);
           }
         } catch (e) {
