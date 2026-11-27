@@ -20,6 +20,10 @@
       "schedule": "0 10 * * *"
     },
     {
+      "path": "/api/fx?force=1",
+      "schedule": "0 9 * * *"
+    },
+    {
       "path": "/api/warm",
       "schedule": "*/5 * * * *"
     },
