@@ -100,6 +100,10 @@ interface ChatTabProps {
 
 const ChatTab: React.FC<ChatTabProps> = ({ quickActions, initialMessage, emergencyMode, language, customGreeting, bgImage, brandId }) => {
   const t = UI_TRANSLATIONS[language];
+  // Per-brand contacts: the error fallback used to hand a Miami customer UNITEC's Colombian
+  // WhatsApp number, which is exactly the leak the brand split is meant to prevent.
+  const companyWa = brandId === 'building' ? 'https://wa.me/17869685783' : COMPANY_WA;
+  const companySite = brandId === 'building' ? 'https://www.building-innovation.us/' : COMPANY_WEBSITE;
   // Nombre del bot configurable (Ajustes/entrenamiento → config/main.botName).
   // Per brand: config/main.botNameBuilding overrides the shared botName for Building Innovation,
   // so the Miami widget never greets as "IAgo UNITEC".
@@ -614,13 +618,13 @@ const ChatTab: React.FC<ChatTabProps> = ({ quickActions, initialMessage, emergen
     // al equipo Y que el bot sigue disponible para cualquier otra consulta mientras espera.
     // UNA vez por conversación (antes esto vivía en showEscalationAutoReply, que no tenía llamadores).
     const isEn = language === 'en';
-    const waLink = COMPANY_WA;
+    const waLink = companyWa;
     setMessages((prev) => [...prev, {
       id: `escalation-ack-${Date.now()}`,
       role: 'model',
       text: isEn
-        ? `✅ I've let our team know — an advisor will write to you right here shortly.\nMeanwhile I'm still here for you 🙂 feel free to ask me about products, prices or measurements and I'll help you right away.\nUrgent? WhatsApp: ${waLink} · More info: ${COMPANY_WEBSITE}`
-        : `✅ Ya avisé a un asesor del equipo: te escribirá por aquí en breve.\nMientras tanto yo sigo contigo 🙂 puedes seguir preguntándome por productos, precios o medidas y te ayudo de una vez.\nSi es urgente, WhatsApp: ${waLink} · Más información: ${COMPANY_WEBSITE}`,
+        ? `✅ I've let our team know — an advisor will write to you right here shortly.\nMeanwhile I'm still here for you 🙂 feel free to ask me about products, prices or measurements and I'll help you right away.\nUrgent? WhatsApp: ${waLink} · More info: ${companySite}`
+        : `✅ Ya avisé a un asesor del equipo: te escribirá por aquí en breve.\nMientras tanto yo sigo contigo 🙂 puedes seguir preguntándome por productos, precios o medidas y te ayudo de una vez.\nSi es urgente, WhatsApp: ${waLink} · Más información: ${companySite}`,
       timestamp: new Date(),
     }]);
 
@@ -846,8 +850,8 @@ const ChatTab: React.FC<ChatTabProps> = ({ quickActions, initialMessage, emergen
           id: `handoff-notice-${Date.now()}`,
           role: 'model',
           text: language === 'en'
-            ? `🧑‍💼 An advisor from our team is handling this conversation — your message was recorded and they will reply right here. No need to send it again 🙂 More info: ${COMPANY_WEBSITE}`
-            : `🧑‍💼 Un asesor del equipo ya está atendiendo esta conversación: tu mensaje quedó registrado y te responderá por aquí. No necesitas repetirlo 🙂 Más información: ${COMPANY_WEBSITE}`,
+            ? `🧑‍💼 An advisor from our team is handling this conversation — your message was recorded and they will reply right here. No need to send it again 🙂 More info: ${companySite}`
+            : `🧑‍💼 Un asesor del equipo ya está atendiendo esta conversación: tu mensaje quedó registrado y te responderá por aquí. No necesitas repetirlo 🙂 Más información: ${companySite}`,
           timestamp: new Date(),
           // 2026-10-15: SÍ se guarda — el cierre de la conversación y lo que el cliente vio deben
           // quedar en el registro para la evaluación (antes se pintaba y no quedaba en ninguna parte).
@@ -895,8 +899,8 @@ const ChatTab: React.FC<ChatTabProps> = ({ quickActions, initialMessage, emergen
       const closing = detectClosing(text);
       if (closing.isClosing) {
         const goodbye = language === 'en'
-          ? `My pleasure! I'm here whenever you need 🙌\nYou can see our full portfolio and reach the team here: ${COMPANY_WEBSITE} or on WhatsApp: ${COMPANY_WA}\nHave a great day! 👋`
-          : `¡Con mucho gusto! Quedo atento cuando necesites 🙌\nPuedes ver todo nuestro portafolio y contactar al equipo aquí: ${COMPANY_WEBSITE} o por WhatsApp: ${COMPANY_WA}\n¡Que tengas un excelente día! 👋`;
+          ? `My pleasure! I'm here whenever you need 🙌\nYou can see our full portfolio and reach the team here: ${companySite} or on WhatsApp: ${companyWa}\nHave a great day! 👋`
+          : `¡Con mucho gusto! Quedo atento cuando necesites 🙌\nPuedes ver todo nuestro portafolio y contactar al equipo aquí: ${companySite} o por WhatsApp: ${companyWa}\n¡Que tengas un excelente día! 👋`;
         const exitId = `polite-exit-${Date.now()}`;
         // `keepClosed` en LOS DOS mensajes del cierre: el guardado de mensajes reabría la sesión
         // que acabamos de cerrar (verificado en vivo: quedaba 'completed' → 'active').
@@ -1043,8 +1047,8 @@ const ChatTab: React.FC<ChatTabProps> = ({ quickActions, initialMessage, emergen
         // Give a clear, actionable retry message. If escalations are enabled,
         // also surface the WhatsApp fallback so the customer is never stuck.
         let errorText = language === 'en'
-          ? 'Oops! I lost the connection for a moment. Please send your message again — I am here to help! If it keeps happening, reach us on WhatsApp: https://wa.me/573142332147'
-          : 'Ups, tuve un problema momentaneo con la conexion. Por favor envia tu mensaje de nuevo, estoy aqui para ayudarte! Si continua fallando, escribenos por WhatsApp: https://wa.me/573142332147';
+          ? `Oops! I lost the connection for a moment. Please send your message again — I am here to help! If it keeps happening, reach us on WhatsApp: ${companyWa}`
+          : `Ups, tuve un problema momentaneo con la conexion. Por favor envia tu mensaje de nuevo, estoy aqui para ayudarte! Si continua fallando, escribenos por WhatsApp: ${companyWa}`;
 
         // Show inline warning in chat history, but do not set global error to keep the input enabled for retry
         setMessages(prev => [...prev, {

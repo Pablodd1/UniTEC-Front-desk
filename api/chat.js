@@ -541,6 +541,10 @@ ${_bp.rules}`;
               : `[SYSTEM CONTEXT - Productos que coinciden con la consulta]:\n${productContext}\nREGLA CRÍTICA: Responde las especificaciones técnicas DIRECTAMENTE de los datos anteriores (medidas, espesor, peso, colores). NO redirijas a fichas técnicas de Drive. Si una especificación (por ejemplo el espesor) NO aparece en los datos anteriores, NO la inventes ni la supongas: di que ese dato no está publicado y ofrece confirmarlo con el equipo. Nunca mezcles especificaciones de productos distintos. Solo si el cliente pide explícitamente "la ficha técnica completa" o "el catálogo completo", entonces envía el enlace. Si el producto consultado no está en la lista, di "Consultar precio".`);
       }
 
+      if (isBI && matched.length > 0) {
+        blocks.push('[CATALOG LANGUAGE]: Catalogue names are in Spanish. Map English requests before answering: LAMINA = sheet/panel, PISO = flooring, PARED = wall panel, BLANCO = white, NEGRO = black, BRILLANTE = glossy, MATE = matte, MADERA = wood grain, DECK = deck board, ACUSTICO = acoustic panel. If the customer describes a product in English, match it to the Spanish reference above instead of saying it is unavailable.');
+      }
+
       if (biConverted) {
         blocks.push('[USD CONVERSION NOTE]: All USD values above come from the client list converted at ' + fx.rate + ' COP to USD (' + String(fx.at).slice(0, 10) + '). Quote them as APPROXIMATE USD and say they are converted from the COP list at the current rate if the customer asks.');
       }
