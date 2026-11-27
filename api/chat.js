@@ -481,6 +481,7 @@ ${_bp.rules}`;
 
       let products = [];
       let matched = [];
+      let biConverted = false;
       if (msgWords.length) {
         try {
           products = await getProducts();
@@ -502,6 +503,7 @@ ${_bp.rules}`;
 
       if (matched.length > 0) {
             const isBI = brandId === 'building';
+            biConverted = isBI && matched.some((p) => !priceForBrand(p, 'building') && copToUsdLocal(p.price_cop));
             const productContext = matched.map((p) => {
               // Brand price: BI must NEVER see a COP figure. Unknown -> "on request".
               // BI's list is UNITEC's COP list, so when there is no stored USD price the
@@ -512,7 +514,7 @@ ${_bp.rules}`;
                 ? (isBI ? `Price: ${price} per ${p.unit || 'unit'}${p.price_approx ? ' (APPROXIMATE)' : ''}`
                         : `Precio: ${price} por ${p.unit || 'Unidad'}${p.price_approx ? ' (APROXIMADO)' : ''}`)
                 : converted
-                  ? `Price: $${converted.toFixed(2)} USD per ${p.unit || 'unit'} (APPROXIMATE — converted from the list at ${fx.rate} COP→USD, ${String(fx.at).slice(0, 10)})`
+                  ? `Price: $${converted.toFixed(2)} USD per ${p.unit || 'unit'} (APPROXIMATE)`
                   : (isBI ? 'Price: on request' : 'Precio: Consultar precio');
               const bits = [
                 `RefCode: ${p.id}`,
@@ -534,6 +536,12 @@ ${_bp.rules}`;
               : `[SYSTEM CONTEXT - Productos que coinciden con la consulta]:\n${productContext}\nREGLA CRÍTICA: Responde las especificaciones técnicas DIRECTAMENTE de los datos anteriores (medidas, espesor, peso, colores). NO redirijas a fichas técnicas de Drive. Si una especificación (por ejemplo el espesor) NO aparece en los datos anteriores, NO la inventes ni la supongas: di que ese dato no está publicado y ofrece confirmarlo con el equipo. Nunca mezcles especificaciones de productos distintos. Solo si el cliente pide explícitamente "la ficha técnica completa" o "el catálogo completo", entonces envía el enlace. Si el producto consultado no está en la lista, di "Consultar precio".`);
       }
 
+      // Where the dollar figures come from: every quoted USD stays traceable to the
+      // client's own COP list and a dated rate.
+      if (biConverted) {
+        blocks.push(`[USD CONVERSION NOTE]: All USD values above come from the client's COP list converted at ${fx.rate} COP→USD (${String(fx.at).slice(0, 10)}). Quote them as APPROXIMATE USD and say they are converted from the COP list at today's rate if the customer asks.`);
+      }
+
       if (PRICE_INTENT_RE.test(String(message)) && matched.length) {
         try {
           // Reuse the top-scored matches; quote only rows with a REAL price for this brand.
@@ -549,10 +557,7 @@ ${_bp.rules}`;
               const usd = listed || copToUsdLocal(p.price_cop);
               if (usd) {
                 const amount = typeof usd === 'number' ? `$${usd.toFixed(2)} USD` : `${usd} USD`;
-                const note = listed
-                  ? ''
-                  : ` — converted from the COP list at ${fx.rate} COP→USD (${String(fx.at).slice(0, 10)})`;
-                priceLines.push(`- ${p.name} (${p.subcategory || p.category || '—'}): ${amount} per ${p.unit || 'unit'} (APPROXIMATE${note})`);
+                priceLines.push(`- ${p.name} (${p.subcategory || p.category || '—'}): ${amount} per ${p.unit || 'unit'} (APPROXIMATE)`);
               }
               continue;
             }
@@ -570,7 +575,7 @@ ${_bp.rules}`;
       }
           if (priceLines.length > 0) {
             blocks.push(isBI
-              ? `[LISTA DE PRECIOS - USD per unit, approximate]:\n${priceLines.join('\n')}\nApproximate values per unit. Quote ONLY the row for the product asked. Rows marked "converted" come from the COP list at the rate shown: quote them in USD as approximate and mention that they are converted at today's rate. If it is not in this list, say "Price on request". Never invent a price and never convert on your own.`
+              ? `[LISTA DE PRECIOS - USD per unit, approximate${fx ? ` — converted from the client's COP list at ${fx.rate} COP→USD (${String(fx.at).slice(0, 10)})` : ''}]:\n${priceLines.join('\n')}\nApproximate values per unit. Quote ONLY the row for the product asked. Quote the USD value as approximate and say it is converted from the client's COP list at today's rate.
               : `[LISTA DE PRECIOS - LISTA MARKETING cliente final]:\n${priceLines.join('\n')}\nValores aproximados por unidad. Cita SOLO la fila del producto preguntado. Si no está en la lista, di "Consultar precio".`);
           }
         } catch (e) {
