@@ -1,3 +1,14 @@
+/**
+ * Last-resort message when every AI key fails. Brand-aware on purpose: a Miami customer must
+ * never be handed UNITEC's Colombian WhatsApp by an outage message.
+ */
+function brandFallbackText(brandId) {
+  if (brandId === 'building') {
+    return "Hello! Thanks for contacting BUILDING INNOVATION. Our AI assistant is briefly updating its credentials. To be helped right away by a human sales advisor, please message our official WhatsApp: https://wa.me/17869685783";
+  }
+  return "¡Hola! Gracias por contactar a UNITEC USA Design. En este momento nuestra pasarela de Inteligencia Artificial se encuentra en actualización de credenciales. Para ser atendido inmediatamente por un asesor de ventas humano, por favor comunícate a nuestro WhatsApp oficial: https://wa.me/573142332147";
+}
+
 // Rate limiting memory map
 const rateMap = new Map();
 function isRateLimited(ip, limit = 120, windowMs = 60000) {
@@ -692,7 +703,7 @@ ${_bp.rules}`;
 
       if (!streamedText) {
         // All providers failed before any delta → same fallback copy as the JSON path.
-        const fallbackText = "¡Hola! Gracias por contactar a UNITEC USA Design. En este momento nuestra pasarela de Inteligencia Artificial se encuentra en actualización de credenciales. Para ser atendido inmediatamente por un asesor de ventas humano, por favor comunícate a nuestro WhatsApp oficial: https://wa.me/573142332147";
+        const fallbackText = brandFallbackText(brandId);
         forward(fallbackText);
         await alertAnomaly('BOT_SIN_RESPUESTA', sawError || 'Todas las llaves de IA fallaron (stream).', clientSessionId);
       }
@@ -885,7 +896,7 @@ ${_bp.rules}`;
     }
 
     // Graceful Fallback: If all API keys fail or are expired (401), return a polite receptionist fallback response
-    const fallbackText = "¡Hola! Gracias por contactar a UNITEC USA Design. En este momento nuestra pasarela de Inteligencia Artificial se encuentra en actualización de credenciales. Para ser atendido inmediatamente por un asesor de ventas humano, por favor comunícate a nuestro WhatsApp oficial: https://wa.me/573142332147";
+    const fallbackText = brandFallbackText(brandId);
     await alertAnomaly('BOT_SIN_RESPUESTA', lastErrorDetails || 'Todas las llaves de IA fallaron.', clientSessionId);
     // El cliente SÍ ve el texto de respaldo, así que se graba tal cual se mostró, marcado como
     // degradado: la conversación queda evaluable en vez de invisible.
