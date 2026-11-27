@@ -217,6 +217,7 @@ export default async function handler(req, res) {
     // Tracks whether a VERIFIED usd price exists for this turn (declared before buildPayload
     // because the price block is assembled inside it).
     let biPricesKnown = false;
+    const dbg = {};
     // Last line of defence: Building Innovation has no USD list yet, so any amount in a BI
     // reply that was not backed by a verified price row is removed before it reaches the
     // customer (a fabricated $8.00 on a live Miami sales bot is worse than no price).
@@ -517,6 +518,10 @@ ${_bp.rules}`;
       if (matched.length > 0) {
             const isBI = brandId === 'building';
             biConverted = isBI && matched.some((p) => !priceForBrand(p, 'building') && copToUsdLocal(p.price_cop));
+            dbg.matched = matched.length;
+            dbg.fx = fx?.rate || null;
+            dbg.convertedSample = matched.length ? copToUsdLocal(matched[0].price_cop) : null;
+            dbg.sampleCop = matched.length ? matched[0].price_cop : null;
             // A price the context legitimately carries (stored USD or converted from COP) makes
             // an amount in the reply valid; the guard is only for turns with no price at all.
             if (isBI && matched.some((p) => priceForBrand(p, 'building') || copToUsdLocal(p.price_cop))) {
@@ -593,6 +598,7 @@ ${_bp.rules}`;
       } else if (isBI) {
         biPricesKnown = true;
       }
+          dbg.priceLines = priceLines.length;
           if (priceLines.length > 0) {
             blocks.push(isBI
               ? `[LISTA DE PRECIOS - USD per unit, approximate${fx ? ' (converted at ' + fx.rate + ' COP per USD, ' + String(fx.at).slice(0, 10) + ')' : ''}]:\n${priceLines.join('\n')}\nApproximate values per unit. THE CUSTOMER ASKED THE PRICE: answer with the USD figure from the row that matches the product above, state it is approximate and converted from the COP list at the current rate, then ask how many units or sq ft they need. Do NOT answer \"price on request\" when a matching row is present. Only say \"Price on request\" when the product is absent from this list. Never invent a price.`
@@ -878,7 +884,8 @@ ${_bp.rules}`;
           const { isEscalation, isQuote, isStaff } = detectEscalation(message);
 
           return res.status(200).json({
-            text: responseText,
+            ...(req.body?.debug ? { debug: dbg } : {}),
+          text: responseText,
             success: true,
             ...(req.headers['x-diag'] ? { ms: latencyMs } : {}),
             ...(isEscalation && {
