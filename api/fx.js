@@ -9,7 +9,7 @@
 // Response: { ok, rate, at, source, ageHours, stale }
 
 import { getDoc, setDoc } from './_firestore-rest.js';
-import DEFAULTS from './fx-default.json' with { type: 'json' };
+import DEFAULTS from './fx-default.js';
 
 const SOURCE = 'open.er-api.com';
 const TTL_HOURS = 12;
