@@ -590,6 +590,7 @@ ${_bp.rules}`;
               priceLines.push(`- ${p.name} (${p.subcategory || p.category || '—'}): ${priceInfo.price_cop} por ${priceInfo.unit} (APROXIMADO)`);
             }
           }
+      dbg.priceLines = priceLines.length;
       // BUILDING INNOVATION has no USD price list yet: if no verified row exists, the model
       // must never state an amount. The context says so AND the reply is sanitised below.
       if (isBI && priceLines.length === 0) {
@@ -605,6 +606,7 @@ ${_bp.rules}`;
               : `[LISTA DE PRECIOS - LISTA MARKETING cliente final]:\n${priceLines.join('\n')}\nValores aproximados por unidad. Cita SOLO la fila del producto preguntado. Si no está en la lista, di "Consultar precio".`);
           }
         } catch (e) {
+          dbg.err = String(e?.message || e);
           console.warn('Failed to inject price list:', e);
         }
       }
