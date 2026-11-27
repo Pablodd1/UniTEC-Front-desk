@@ -237,7 +237,12 @@ export default async function handler(req, res) {
     if (brandId === 'building') {
       try {
         const { getFxRate } = await import('./fx.js');
-        fx = await getFxRate();
+        // Never let the rate lookup eat the chat's time budget: if Firestore is slow, the turn
+        // proceeds without a conversion (and says "price on request") instead of timing out.
+        fx = await Promise.race([
+          getFxRate().catch(() => null),
+          new Promise((resolve) => setTimeout(() => resolve(null), 1200)),
+        ]);
       } catch (e) {
         console.warn('[chat] fx unavailable:', e?.message || e);
       }
